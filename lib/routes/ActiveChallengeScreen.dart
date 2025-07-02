@@ -394,6 +394,8 @@ class NotSureWhatToSayDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Ersetze | durch Zeilenumbruch für schönere Formatierung
+    final formattedText = text.replaceAll('|', '\n');
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       title: Row(
@@ -409,7 +411,7 @@ class NotSureWhatToSayDialog extends StatelessWidget {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [Text(text, style: TextStyle(fontSize: 18))],
+        children: [Text(formattedText, style: TextStyle(fontSize: 18))],
       ),
       actions: [
         TextButton(

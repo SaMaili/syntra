@@ -99,6 +99,10 @@ class ChallengeDoneScreen extends StatelessWidget {
                     perception = surveyState.perceived;
                     notes = surveyState.notes;
                     if (!surveyState.submitted) surveyState.submit();
+                    // Korrigiere: Wenn Werte nicht gesetzt wurden, auf null setzen
+                    if (feeling == null || feeling < 0 || feeling > 4) feeling = null;
+                    if (perception == null || perception < 0 || perception > 4) perception = null;
+                    if (notes != null && notes.trim().isEmpty) notes = null;
                   } else {
                     feeling = null;
                     perception = null;
