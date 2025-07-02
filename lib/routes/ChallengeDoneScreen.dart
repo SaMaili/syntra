@@ -19,17 +19,17 @@ class ChallengeDoneScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final isAborted = rewardFactor < 0;
     final title = isAborted
-        ? 'Challenge abgebrochen'
-        : 'Challenge abgeschlossen!';
+        ? 'Challenge aborted'
+        : 'Challenge completed!';
     final icon = isAborted ? Icons.sentiment_dissatisfied : Icons.emoji_events;
     final iconColor = isAborted ? Colors.red : Colors.green;
     final message = isAborted
-        ? 'Schade! Du hast die Challenge abgebrochen.'
-        : 'Glückwunsch! Du hast die Challenge abgeschlossen.';
+        ? 'Too bad! You aborted the challenge.'
+        : 'Congratulations! You completed the challenge.';
     final xpColor = isAborted ? Colors.red : Colors.green;
     final encouragement = isAborted
-        ? 'Versuche es beim nächsten Mal erneut!'
-        : 'Super gemacht! Weiter so!';
+        ? 'Try again next time!'
+        : 'Well done! Keep it up!';
 
     return Scaffold(
       appBar: AppBar(title: Text(title), automaticallyImplyLeading: false),
@@ -63,7 +63,7 @@ class ChallengeDoneScreen extends StatelessWidget {
                     style: TextStyle(fontSize: 18),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 80), // Platz für Floating Button
+                  SizedBox(height: 80), // Space for Floating Button
                 ],
               ),
             ),
@@ -88,7 +88,7 @@ class ChallengeDoneScreen extends StatelessWidget {
                   elevation: 4,
                 ),
                 icon: Icon(Icons.home, size: 28),
-                label: Text('Zurück zum Start'),
+                label: Text('Back to Home'),
                 onPressed: () async {
                   final surveyState = _SurveyWidget.of(context);
                   int? feeling;
@@ -107,7 +107,7 @@ class ChallengeDoneScreen extends StatelessWidget {
 
                   await ChallengeDatabase.instance.addLogbookEntry({
                     'user_id': null,
-                    // TODO ggf. anpassen, falls User-IDs verwendet werden
+                    // TODO adjust if user IDs are used
                     'challenge_id': challenge.id,
                     'earned': (challenge.xp * rewardFactor).round(),
                     'timestamp': DateTime.now().toIso8601String(),
@@ -117,13 +117,13 @@ class ChallengeDoneScreen extends StatelessWidget {
                     'notes': notes,
                   });
                   print(
-                    'Challenge ins Logbuch eingetragen: ${challenge.title}',
+                    'Challenge added to logbook: ${challenge.title}',
                   );
                   if (onDone != null)
                     onDone!(rewardFactor); // <-- Score-Update Callback
                   Navigator.of(context).pop(
                     rewardFactor,
-                  ); // Ergebnis an vorherigen Screen zurückgeben
+                  ); // Return result to previous screen
                 },
               ),
             ),
@@ -146,8 +146,8 @@ class _SurveyWidget extends StatefulWidget {
 
 class _SurveyWidgetState extends State<_SurveyWidget> {
   // if feeling or perceived is 5, the user has not selected an option
-  int _feeling = 2; // Standardmäßig neutral
-  int _perceived = 2; // Standardmäßig neutral
+  int _feeling = 2; // Default neutral
+  int _perceived = 2; // Default neutral
   bool _submitted = false;
   final TextEditingController _notesController = TextEditingController();
 
@@ -178,7 +178,7 @@ class _SurveyWidgetState extends State<_SurveyWidget> {
       return Column(
         children: [
           Text(
-            'Danke für dein Feedback!',
+            'Thank you for your feedback!',
             style: TextStyle(fontSize: 18, color: Colors.green),
           ),
           SizedBox(height: 16),
@@ -189,7 +189,7 @@ class _SurveyWidgetState extends State<_SurveyWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Wie hast du dich gefühlt?',
+          'How did you feel?',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 8),
@@ -205,18 +205,18 @@ class _SurveyWidgetState extends State<_SurveyWidget> {
               ),
               onPressed: () => setState(() => _feeling = i),
               tooltip: [
-                "Sehr schlecht",
-                "Schlecht",
+                "Very bad",
+                "Bad",
                 "Neutral",
-                "Gut",
-                "Sehr gut",
+                "Good",
+                "Very good",
               ][i],
             ),
           ),
         ),
         SizedBox(height: 20),
         Text(
-          'Wie wurdest du deiner Meinung nach wahrgenommen?',
+          'How do you think you were perceived?',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 8),
@@ -232,17 +232,17 @@ class _SurveyWidgetState extends State<_SurveyWidget> {
               ),
               onPressed: () => setState(() => _perceived = i),
               tooltip: [
-                "Sehr negativ",
-                "Negativ",
+                "Very negative",
+                "Negative",
                 "Neutral",
-                "Positiv",
-                "Sehr positiv",
+                "Positive",
+                "Very positive",
               ][i],
             ),
           ),
         ),
         SizedBox(height: 20),
-        Text('Notizen:', style: TextStyle(fontSize: 16)),
+        Text('Notes:', style: TextStyle(fontSize: 16)),
         SizedBox(height: 4),
         TextField(
           controller: _notesController,
@@ -250,7 +250,7 @@ class _SurveyWidgetState extends State<_SurveyWidget> {
           maxLines: 4,
           decoration: InputDecoration(
             border: OutlineInputBorder(),
-            hintText: 'Deine Gedanken, Beobachtungen, ...',
+            hintText: 'Your thoughts, observations, ...',
           ),
         ),
         SizedBox(height: 16),

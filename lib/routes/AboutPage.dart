@@ -1,0 +1,75 @@
+import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+class AboutNotePage extends StatelessWidget {
+  const AboutNotePage({super.key});
+
+  Future<String> _getVersion() async {
+    final info = await PackageInfo.fromPlatform();
+    return '${info.version}+${info.buildNumber}';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('About the App')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: FutureBuilder<String>(
+          future: _getVersion(),
+          builder: (context, snapshot) {
+            final version = snapshot.data ?? '';
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Syntra',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Syntra is an innovative app that helps users overcome social challenges and achieve their goals.'
+                  '\n'
+                  '\nVersion: $version'
+                  '\nDeveloper: SaMaili',
+                  style: const TextStyle(fontSize: 16),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    const Text('GitHub: ', style: TextStyle(fontSize: 16)),
+                    InkWell(
+                      child: const Text(
+                        'https://github.com/SaMaili/syntra',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline,
+                          fontSize: 16,
+                        ),
+                      ),
+                      onTap: () async {
+                        final url = Uri.parse(
+                          'https://github.com/SaMaili/syntra',
+                        );
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(url);
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                const Text(
+                  // copyright notice
+                  '\u00a9 2025 Syntra. All rights reserved.',
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}

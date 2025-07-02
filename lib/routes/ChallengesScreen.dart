@@ -8,7 +8,7 @@ import '../static.dart';
 import '../widgets/ChallengeCard.dart';
 import 'ActiveChallengeScreen.dart';
 import 'ChallengeDoneScreen.dart';
-import 'Stats.dart';
+import 'StatisticsScreen.dart';
 
 final statsContainer = StatsOverviewContainer();
 
@@ -104,7 +104,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                   Navigator.of(context).pop(false);
                 },
                 style: TextButton.styleFrom(foregroundColor: Colors.grey),
-                child: Text('Ups, das wollte ich nicht'),
+                child: Text('🙈 Doch lieber eine andere?'),
               ),
               SizedBox(height: 12),
               ElevatedButton(

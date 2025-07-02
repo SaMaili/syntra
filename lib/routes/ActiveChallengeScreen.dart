@@ -27,9 +27,9 @@ class ActiveChallengeScreen extends StatefulWidget {
 
 class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
     with SingleTickerProviderStateMixin {
-  /// Timer-Variablen runter setzen für debugging
-  int abortLockTimer = 2; // 10 Sekunden
-  int mainTimer = 0; // Wird im initState gesetzt
+  /// TODO Timer-Variablen runter setzen für debugging
+  int abortLockTimer = 15; // 10 seconds
+  int mainTimer = 0; // Set in initState
   bool abortLockDone = false;
   late final mainTicker;
   late final abortLockTicker;
@@ -70,7 +70,7 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
     final InitializationSettings initializationSettings =
         InitializationSettings(android: initializationSettingsAndroid);
     await flutterLocalNotificationsPlugin!.initialize(initializationSettings);
-    // Anfrage für Benachrichtigungsberechtigung (Android 13+)
+    // Request notification permission (Android 13+)
     if (Theme.of(context).platform == TargetPlatform.android) {
       final status = await Permission.notification.request();
       print('Notification permission status: ' + status.toString());
@@ -92,21 +92,21 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
   }
 
   Future<void> _askForExactAlarmPermission() async {
-    // Nur für Android relevant
+    // Only relevant for Android
     if (Theme.of(context).platform != TargetPlatform.android) return;
     bool canSchedule = await _canScheduleExactAlarms();
     if (canSchedule) return;
     await showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Text('Exakte Alarme erlauben'),
+        title: Text('Allow exact alarms'),
         content: Text(
-          'Damit geplante Benachrichtigungen exakt funktionieren, benötigt Syntra die Berechtigung für exakte Alarme. Bitte erteile diese in den Einstellungen.',
+          'To make scheduled notifications work exactly, Syntra needs permission for exact alarms. Please grant this in the settings.',
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text('Abbrechen'),
+            child: Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -116,7 +116,7 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
               await intent.launch();
               Navigator.of(dialogContext).pop();
             },
-            child: Text('Zu den Einstellungen'),
+            child: Text('Go to settings'),
           ),
         ],
       ),
@@ -129,7 +129,7 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
         AndroidNotificationDetails(
           'challenge_timer',
           'Challenge Timer',
-          channelDescription: 'Benachrichtigung für Challenge Timer',
+          channelDescription: 'Notification for challenge timer',
           importance: Importance.max,
           priority: Priority.high,
           playSound: true,
@@ -203,7 +203,7 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
   Widget build(BuildContext context) {
     final bool Over = abortLockTimer <= 0;
     final bool mainTimeOver = mainTimer <= 0;
-    // Keine Vibration mehr bei Timer-Ende
+    // No more vibration at timer end
 
     return WillPopScope(
       onWillPop: () async => false,

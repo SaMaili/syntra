@@ -23,7 +23,7 @@ class ChallengeDatabase {
     final path = join(dbPath, filePath);
     final exists = await databaseExists(path);
     if (!exists) {
-      // Datenbank aus Asset kopieren
+      // Copy database from asset
       ByteData data = await rootBundle.load('assets/challenge_database.db');
       List<int> bytes = data.buffer.asUint8List(
         data.offsetInBytes,
@@ -64,13 +64,13 @@ class ChallengeDatabase {
       final challenges = result.map((json) => Challenge.fromMap(json)).toList();
       print(
         challenges.isEmpty
-            ? 'Keine Challenges gefunden.'
-            : 'Challenges geladen: \n${challenges.map((c) => c.title).join(', ')}',
+            ? 'No challenges found.'
+            : 'Challenges loaded: \n${challenges.map((c) => c.title).join(', ')}',
       );
       return challenges;
     } catch (e, stack) {
       print(
-        'Error when loading Challenges: $e\nStacktrace:\n${stack.toString()}',
+        'Error when loading challenges: $e\nStacktrace:\n${stack.toString()}',
       );
       return [];
     }

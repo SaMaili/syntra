@@ -4,9 +4,10 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../static.dart';
+import 'LogbookPage.dart';
 
-class Stats extends stats.StatelessWidget {
-  const Stats({super.key});
+class StatisticsScreen extends stats.StatelessWidget {
+  const StatisticsScreen({super.key});
 
   @override
   stats.Widget build(stats.BuildContext context) {
@@ -23,6 +24,26 @@ class Stats extends stats.StatelessWidget {
                 fontWeight: stats.FontWeight.bold,
                 color: AppStatic.grape,
               ),
+            ),
+            stats.SizedBox(height: 16),
+            stats.ElevatedButton.icon(
+              icon: stats.Icon(stats.Icons.history),
+              label: stats.Text('Challenge Logbook'),
+              style: stats.ElevatedButton.styleFrom(
+                backgroundColor: AppStatic.grape,
+                foregroundColor: stats.Colors.white,
+                padding: const stats.EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                shape: stats.RoundedRectangleBorder(
+                  borderRadius: stats.BorderRadius.circular(12),
+                ),
+              ),
+              onPressed: () {
+                stats.Navigator.of(context).push(
+                  stats.MaterialPageRoute(
+                    builder: (_) => LogbookPage(),
+                  ),
+                );
+              },
             ),
             stats.SizedBox(height: 30),
             StatsOverviewContainer(),
@@ -44,12 +65,12 @@ class Stats extends stats.StatelessWidget {
                       child: stats.CircularProgressIndicator(),
                     );
                   }
-                  final days = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+                  final days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
                   final xpList = snapshot.data!;
                   return stats.Column(
                     children: [
                       stats.Text(
-                        'Wöchentlicher XP-Verlauf',
+                        'Weekly XP Progress',
                         style: stats.TextStyle(
                           fontSize: 18,
                           fontWeight: stats.FontWeight.bold,
@@ -138,7 +159,7 @@ class Stats extends stats.StatelessWidget {
                       child: stats.CircularProgressIndicator(),
                     );
                   }
-                  final days = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+                  final days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
                   final completed = snapshot.data![0];
                   final failed = snapshot.data![1];
                   final maxY =
@@ -151,7 +172,7 @@ class Stats extends stats.StatelessWidget {
                   return stats.Column(
                     children: [
                       stats.Text(
-                        'Wöchentliche Challenges (erfolgreich/abgebrochen)',
+                        'Weekly Challenges (completed/failed)',
                         style: stats.TextStyle(
                           fontSize: 18,
                           fontWeight: stats.FontWeight.bold,
@@ -462,15 +483,15 @@ class _DebugDbButtonState extends stats.State<DebugDbButton> {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'challenge_database.db');
     StringBuffer buffer = StringBuffer();
-    buffer.writeln('DB-Pfad: $path');
+    buffer.writeln('DB path: $path');
     final db = await openDatabase(path);
     final tables = await db.rawQuery(
       "SELECT name FROM sqlite_master WHERE type='table'",
     );
-    buffer.writeln('Tabellen:');
+    buffer.writeln('Tables:');
     buffer.writeln('logbook');
     final rows = await db.rawQuery('SELECT * FROM logbook');
-    buffer.writeln('Inhalt von logbook (${rows.length} Zeilen):');
+    buffer.writeln('Content of logbook (${rows.length} rows):');
     for (final row in rows) {
       buffer.writeln(row.toString());
     }
@@ -487,7 +508,7 @@ class _DebugDbButtonState extends stats.State<DebugDbButton> {
       children: [
         stats.ElevatedButton(
           onPressed: _loading ? null : _printDbContent,
-          child: stats.Text('DB-Debug: Alles anzeigen logbook tabbelle'),
+          child: stats.Text('DB Debug: Show all logbook table'),
         ),
         if (_loading)
           stats.Padding(

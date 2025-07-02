@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../main.dart';
 import '../static.dart';
-import 'AboutNotePage.dart';
+import 'AboutPage.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -52,7 +52,7 @@ class _SettingsState extends State<Settings> {
   Future<void> _saveSettings() async {
     final file = await _settingsFile;
     final dir = file.parent;
-    // Prüfe, ob der Verzeichnispfad nicht leer ist und nicht root
+    // Check if the directory path is not empty and not root
     if (dir.path.isNotEmpty && dir.path != '/') {
       if (!(await dir.exists())) {
         await dir.create(recursive: true);
@@ -92,18 +92,27 @@ class _SettingsState extends State<Settings> {
             ),
             child: Column(
               children: [
-                _buildSettingItem(
-                  'Notifications',
-                  'Get reminded about daily challenges',
-                  Icons.notifications,
-                  Switch(
-                    value: _notificationsEnabled,
-                    onChanged: (value) {
-                      setState(() {
-                        _notificationsEnabled = value;
-                      });
-                    },
-                    activeColor: AppStatic.grape,
+                GestureDetector(
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('coming soon'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  },
+                  child: Opacity(
+                    opacity: 0.4,
+                    child: _buildSettingItem(
+                      'Notifications',
+                      'Get reminded about daily challenges',
+                      Icons.notifications,
+                      Icon(
+                        Icons.toggle_off,
+                        color: Colors.grey,
+                        size: 32,
+                      ),
+                    ),
                   ),
                 ),
                 Divider(color: AppStatic.grapeDivider),
@@ -130,18 +139,27 @@ class _SettingsState extends State<Settings> {
                   ),
                 ),
                 Divider(color: AppStatic.grapeDivider),
-                _buildSettingItem(
-                  'Sound Effects',
-                  'Play sounds for interactions',
-                  Icons.volume_up,
-                  Switch(
-                    value: _soundEnabled,
-                    onChanged: (value) {
-                      setState(() {
-                        _soundEnabled = value;
-                      });
-                    },
-                    activeColor: AppStatic.grape,
+                GestureDetector(
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('coming soon'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  },
+                  child: Opacity(
+                    opacity: 0.4,
+                    child: _buildSettingItem(
+                      'Sound Effects',
+                      'Play sounds for interactions',
+                      Icons.volume_up,
+                      Icon(
+                        Icons.toggle_off,
+                        color: Colors.grey,
+                        size: 32,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -157,26 +175,35 @@ class _SettingsState extends State<Settings> {
             child: Column(
               children: [
                 // TODO : Implement language selection
-                _buildSettingItem(
-                  'Language',
-                  'Choose your preferred language',
-                  Icons.language,
-                  DropdownButton<String>(
-                    value: _selectedLanguage,
-                    underline: Container(),
-                    items: ['English', 'Spanish', 'French', 'German'].map((
-                      String value,
-                    ) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _selectedLanguage = newValue!;
-                      });
-                    },
+                GestureDetector(
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('coming soon'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  },
+                  child: Opacity(
+                    opacity: 0.4,
+                    child: _buildSettingItem(
+                      'Language',
+                      'Choose your preferred language',
+                      Icons.language,
+                      DropdownButton<String>(
+                        value: _selectedLanguage,
+                        underline: Container(),
+                        items: ['English', 'Spanish', 'French', 'German'].map((
+                          String value,
+                        ) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: null,
+                      ),
+                    ),
                   ),
                 ),
                 Divider(color: AppStatic.marianBlue.withOpacity(0.3)),
@@ -200,16 +227,6 @@ class _SettingsState extends State<Settings> {
                   ),
                 ),
                 Divider(color: AppStatic.marianBlue.withOpacity(0.3)),
-                _buildSettingItem(
-                  'Privacy Policy',
-                  'Read our privacy policy',
-                  Icons.privacy_tip,
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    color: AppStatic.marianBlue,
-                    size: 16,
-                  ),
-                ),
               ],
             ),
           ),

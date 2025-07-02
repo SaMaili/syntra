@@ -11,7 +11,7 @@ import 'database/challenge_database.dart';
 import 'routes/ChallengesScreen.dart';
 import 'routes/Mindset.dart';
 import 'routes/Settings.dart';
-import 'routes/Stats.dart';
+import 'routes/StatisticsScreen.dart';
 import 'static.dart';
 
 final themeModeNotifier = ValueNotifier<ThemeMode>(ThemeMode.system);
@@ -133,7 +133,7 @@ class _HomeBarState extends State<HomeBar> {
 
   static final List<Widget> _widgetOptions = <Widget>[
     ChallengesScreen(),
-    Stats(),
+    StatisticsScreen(),
     Mindset(),
     Settings(),
   ];

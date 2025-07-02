@@ -12,7 +12,7 @@ Syntra is a modern Flutter application designed to help users elevate their soci
 - **Reminders & Notifications:** The app can send notifications to remind users about their daily tasks and challenges.
 - **Dark Mode:** Users can switch between light and dark themes for comfortable viewing in any environment.
 - **Sound Effects:** Interactive sound effects enhance the user experience.
-- **Language Selection:** Users can choose their preferred language from a selection of options.
+- **TODO: Language Selection:** Users can choose their preferred language from a selection of options.
 - **About Page:** Displays up-to-date app information, including the current version, using dynamic version fetching.
 - **Privacy Policy:** Easy access to the app's privacy policy.
 
