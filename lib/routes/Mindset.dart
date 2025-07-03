@@ -52,9 +52,16 @@ class Mindset extends StatelessWidget {
                   SizedBox(height: 18),
                   ..._buildGuidelinesList(),
                   SizedBox(height: 10),
-                  Divider(thickness: 1, color: AppStatic.grape.withOpacity(0.2)),
+                  Divider(
+                    thickness: 1,
+                    color: AppStatic.grape.withOpacity(0.2),
+                  ),
                   SizedBox(height: 10),
-                  _buildGuideline('That\'s it. Now go out & speak up!', null, true),
+                  _buildGuideline(
+                    'That\'s it. Now go out & speak up!',
+                    null,
+                    true,
+                  ),
                 ],
               ),
             ),
@@ -77,7 +84,11 @@ class Mindset extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.lightbulb, color: AppStatic.marianBlue, size: 24),
+                      Icon(
+                        Icons.lightbulb,
+                        color: AppStatic.marianBlue,
+                        size: 24,
+                      ),
                       SizedBox(width: 8),
                       Text(
                         'Mindset Tips',
@@ -197,7 +208,6 @@ class Mindset extends StatelessWidget {
     ];
     return tips.map(_buildTipItem).toList();
   }
-
 }
 
 class _MotivationCard extends StatelessWidget {

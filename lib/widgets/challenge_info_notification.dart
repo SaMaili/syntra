@@ -108,7 +108,7 @@ class ChallengeInfoNotification {
       // Show snackbar if no notes found
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('You never did this challenge. Time to do it!'),
+          content: Text('You don\'t have any notes for this challenge yet.'),
         ),
       );
     }

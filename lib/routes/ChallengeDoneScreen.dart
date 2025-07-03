@@ -103,7 +103,9 @@ class ChallengeDoneScreen extends StatelessWidget {
                     perception = null;
                     notes = null;
                   }
-                  print('feeling: $feeling, perception: $perception, notes: $notes');
+                  print(
+                    'feeling: $feeling, perception: $perception, notes: $notes',
+                  );
                   await ChallengeDatabase.instance.addLogbookEntry({
                     // TODO adjust if user IDs are used
                     'user_id': null,
@@ -136,7 +138,6 @@ class _SurveyWidget extends StatefulWidget {
 
   @override
   State<_SurveyWidget> createState() => _SurveyWidgetState();
-
 }
 
 class _SurveyWidgetState extends State<_SurveyWidget> {

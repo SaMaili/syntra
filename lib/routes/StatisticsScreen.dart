@@ -119,7 +119,6 @@ class StatisticsScreen extends stats.StatelessWidget {
                             ),
                             minX: 0,
                             maxX: 6,
-                            minY: 0,
                             maxY: (xpList.reduce((a, b) => a > b ? a : b) + 20)
                                 .toDouble(),
                             lineBarsData: [
