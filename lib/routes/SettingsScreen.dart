@@ -8,14 +8,14 @@ import '../main.dart';
 import '../static.dart';
 import 'AboutPage.dart';
 
-class Settings extends StatefulWidget {
-  const Settings({super.key});
+class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({super.key});
 
   @override
-  _SettingsState createState() => _SettingsState();
+  _SettingsScreenState createState() => _SettingsScreenState();
 }
 
-class _SettingsState extends State<Settings> {
+class _SettingsScreenState extends State<SettingsScreen> {
   bool _notificationsEnabled = true;
   bool _darkModeEnabled = false;
   bool _soundEnabled = true;
@@ -107,11 +107,7 @@ class _SettingsState extends State<Settings> {
                       'Notifications',
                       'Get reminded about daily challenges',
                       Icons.notifications,
-                      Icon(
-                        Icons.toggle_off,
-                        color: Colors.grey,
-                        size: 32,
-                      ),
+                      Icon(Icons.toggle_off, color: Colors.grey, size: 32),
                     ),
                   ),
                 ),
@@ -154,11 +150,7 @@ class _SettingsState extends State<Settings> {
                       'Sound Effects',
                       'Play sounds for interactions',
                       Icons.volume_up,
-                      Icon(
-                        Icons.toggle_off,
-                        color: Colors.grey,
-                        size: 32,
-                      ),
+                      Icon(Icons.toggle_off, color: Colors.grey, size: 32),
                     ),
                   ),
                 ),
@@ -226,7 +218,6 @@ class _SettingsState extends State<Settings> {
                     ),
                   ),
                 ),
-                Divider(color: AppStatic.marianBlue.withOpacity(0.3)),
               ],
             ),
           ),

@@ -7,20 +7,19 @@ class ChallengeDoneScreen extends StatelessWidget {
   final Challenge challenge;
   final double rewardFactor;
   final ValueChanged<double>? onDone;
+  final GlobalKey<_SurveyWidgetState> _surveyKey;
 
-  const ChallengeDoneScreen({
+  ChallengeDoneScreen({
     super.key,
     required this.challenge,
     this.rewardFactor = 1.0,
     this.onDone,
-  });
+  }) : _surveyKey = GlobalKey<_SurveyWidgetState>();
 
   @override
   Widget build(BuildContext context) {
     final isAborted = rewardFactor < 0;
-    final title = isAborted
-        ? 'Challenge aborted'
-        : 'Challenge completed!';
+    final title = isAborted ? 'Challenge aborted' : 'Challenge completed!';
     final icon = isAborted ? Icons.sentiment_dissatisfied : Icons.emoji_events;
     final iconColor = isAborted ? Colors.red : Colors.green;
     final message = isAborted
@@ -57,7 +56,7 @@ class ChallengeDoneScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 24),
-                  if (!isAborted) _SurveyWidget(),
+                  if (!isAborted) _SurveyWidget(key: _surveyKey),
                   Text(
                     encouragement,
                     style: TextStyle(fontSize: 18),
@@ -90,25 +89,21 @@ class ChallengeDoneScreen extends StatelessWidget {
                 icon: Icon(Icons.home, size: 28),
                 label: Text('Back to Home'),
                 onPressed: () async {
-                  final surveyState = _SurveyWidget.of(context);
+                  final surveyState = _surveyKey.currentState;
                   int? feeling;
                   int? perception;
                   String? notes;
                   if (surveyState != null) {
+                    if (!surveyState.submitted) surveyState.submit();
                     feeling = surveyState.feeling;
                     perception = surveyState.perceived;
                     notes = surveyState.notes;
-                    if (!surveyState.submitted) surveyState.submit();
-                    // Korrigiere: Wenn Werte nicht gesetzt wurden, auf null setzen
-                    if (feeling == null || feeling < 0 || feeling > 4) feeling = null;
-                    if (perception == null || perception < 0 || perception > 4) perception = null;
-                    if (notes != null && notes.trim().isEmpty) notes = null;
                   } else {
                     feeling = null;
                     perception = null;
                     notes = null;
                   }
-
+                  print('feeling: $feeling, perception: $perception, notes: $notes');
                   await ChallengeDatabase.instance.addLogbookEntry({
                     'user_id': null,
                     // TODO adjust if user IDs are used
@@ -120,14 +115,12 @@ class ChallengeDoneScreen extends StatelessWidget {
                     'perception': perception,
                     'notes': notes,
                   });
-                  print(
-                    'Challenge added to logbook: ${challenge.title}',
-                  );
+                  print('Challenge added to logbook: ${challenge.title}');
                   if (onDone != null)
                     onDone!(rewardFactor); // <-- Score-Update Callback
-                  Navigator.of(context).pop(
-                    rewardFactor,
-                  ); // Return result to previous screen
+                  Navigator.of(
+                    context,
+                  ).pop(rewardFactor); // Return result to previous screen
                 },
               ),
             ),
@@ -139,13 +132,11 @@ class ChallengeDoneScreen extends StatelessWidget {
 }
 
 class _SurveyWidget extends StatefulWidget {
+  const _SurveyWidget({Key? key}) : super(key: key);
+
   @override
   State<_SurveyWidget> createState() => _SurveyWidgetState();
 
-  static _SurveyWidgetState? of(BuildContext context) {
-    final state = context.findAncestorStateOfType<_SurveyWidgetState>();
-    return state;
-  }
 }
 
 class _SurveyWidgetState extends State<_SurveyWidget> {
@@ -207,14 +198,11 @@ class _SurveyWidgetState extends State<_SurveyWidget> {
                 color: _feeling == i ? _smileyColors[i] : Colors.grey,
                 size: 36,
               ),
-              onPressed: () => setState(() => _feeling = i),
-              tooltip: [
-                "Very bad",
-                "Bad",
-                "Neutral",
-                "Good",
-                "Very good",
-              ][i],
+              onPressed: () {
+                print("Feeling changed: $i");
+                setState(() => _feeling = i);
+              },
+              tooltip: ["Very bad", "Bad", "Neutral", "Good", "Very good"][i],
             ),
           ),
         ),
@@ -234,7 +222,10 @@ class _SurveyWidgetState extends State<_SurveyWidget> {
                 color: _perceived == i ? _smileyColors[i] : Colors.grey,
                 size: 36,
               ),
-              onPressed: () => setState(() => _perceived = i),
+              onPressed: () {
+                print("Perception changed: $i");
+                setState(() => _perceived = i);
+              },
               tooltip: [
                 "Very negative",
                 "Negative",

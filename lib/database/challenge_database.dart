@@ -96,6 +96,21 @@ class ChallengeDatabase {
     return await db.insert('logbook', entry);
   }
 
+  Future<Map<String, dynamic>?> readLogbookEntry(int id) async {
+    final db = await instance.database;
+    final result = await db.query(
+      'logbook',
+      where: 'id = ?',
+      whereArgs: [id],
+      limit: 1,
+    );
+    if (result.isNotEmpty) {
+      return result.first;
+    } else {
+      return null;
+    }
+  }
+
   Future close() async {
     final db = await instance.database;
     db.close();

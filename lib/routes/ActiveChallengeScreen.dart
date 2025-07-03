@@ -28,7 +28,7 @@ class ActiveChallengeScreen extends StatefulWidget {
 class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
     with SingleTickerProviderStateMixin {
   /// TODO Timer-Variablen runter setzen für debugging
-  int abortLockTimer = 15; // 10 seconds
+  int abortLockTimer = 2; // 10 seconds
   int mainTimer = 0; // Set in initState
   bool abortLockDone = false;
   late final mainTicker;

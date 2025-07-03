@@ -10,7 +10,7 @@ import 'package:sqflite/sqflite.dart';
 import 'database/challenge_database.dart';
 import 'routes/ChallengesScreen.dart';
 import 'routes/Mindset.dart';
-import 'routes/Settings.dart';
+import 'routes/SettingsScreen.dart';
 import 'routes/StatisticsScreen.dart';
 import 'static.dart';
 
@@ -135,7 +135,7 @@ class _HomeBarState extends State<HomeBar> {
     ChallengesScreen(),
     StatisticsScreen(),
     Mindset(),
-    Settings(),
+    SettingsScreen(),
   ];
 
   void _onItemTapped(int index) {
