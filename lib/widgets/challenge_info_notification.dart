@@ -21,6 +21,7 @@ class ChallengeInfoNotification {
       notes = result.first['notes']?.toString() ?? '';
       time = result.first['timestamp']?.toString() ?? '';
     }
+    String body;
     String formattedTime = '';
     if (time.isNotEmpty) {
       try {
