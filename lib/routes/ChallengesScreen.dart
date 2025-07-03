@@ -140,149 +140,207 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppStatic.grapeLight,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 36),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ToggleSwitch(
-              minWidth: 90.0,
-              minHeight: 22.0,
-              initialLabelIndex: session.selectedToggle,
-              cornerRadius: 20.0,
-              activeFgColor: Colors.white,
-              inactiveBgColor: Colors.grey,
-              inactiveFgColor: Colors.white,
-              totalSwitches: 2,
-              icons: [Icons.person, Icons.group],
-              iconSize: 12.0,
-              borderWidth: 2.0,
-              borderColor: [AppStatic.grapeLight],
-              labels: ['Solo', 'Group'],
-              activeBgColors: [
-                [Colors.lightBlueAccent],
-                [Colors.pink],
-              ],
-              onToggle: (index) {
-                setState(() {
-                  session.selectedToggle = index!;
-                  // staticCardIndex bleibt erhalten
-                });
-              },
-            ),
-            SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.emoji_events, color: Colors.amber, size: 28),
-                  SizedBox(width: 10),
-                  Text(
-                    'Score today: ',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.amber[800],
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-                  SizedBox(width: 12),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.amber[50],
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.amber, width: 2),
-                    ),
-                    child: Text(
-                      score.toString(), // Zeigt den Score an
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.amber[900],
-                      ),
-                    ),
-                  ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFe0c3fc), Color(0xFF8ec5fc)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 18),
+              ToggleSwitch(
+                minWidth: 100.0,
+                minHeight: 32.0,
+                initialLabelIndex: session.selectedToggle,
+                cornerRadius: 24.0,
+                activeFgColor: Colors.white,
+                inactiveBgColor: Colors.grey[300],
+                inactiveFgColor: Colors.deepPurple[400],
+                totalSwitches: 2,
+                icons: [Icons.person, Icons.group],
+                iconSize: 20.0,
+                borderWidth: 2.0,
+                borderColor: [Colors.deepPurple[100]!],
+                labels: ['Solo', 'Group'],
+                activeBgColors: [
+                  [Colors.deepPurpleAccent],
+                  [Colors.pinkAccent],
                 ],
+                onToggle: (index) {
+                  setState(() {
+                    session.selectedToggle = index!;
+                  });
+                },
               ),
-            ),
-            Expanded(
-              child: filteredCards.isEmpty
-                  ? Center(child: Text('Keine Challenges gefunden'))
-                  : CardSwiper(
-                      controller: _cardSwiperController,
-                      cardsCount: filteredCards.length,
-                      initialIndex: staticCardIndex,
-                      allowedSwipeDirection: AllowedSwipeDirection.symmetric(
-                        horizontal: true,
+              const SizedBox(height: 24),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.amber[50],
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.amber.withOpacity(0.2),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
                       ),
-                      cardBuilder:
-                          (
-                            context,
-                            index,
-                            percentThresholdX,
-                            percentThresholdY,
-                          ) => filteredCards[index],
-                      onSwipe: (previousIndex, newIndex, direction) async {
-                        print(
-                          'Swiped from $previousIndex to $newIndex in direction $direction',
-                        );
-                        if (direction == CardSwiperDirection.right) {
-                          print('Right swipe detected');
-                          final player = AudioPlayer();
-                          await player.play(AssetSource('ding-126626.mp3'));
-                          // Notiz-Dialog anzeigen
-                          bool? completed = await showDialog<bool>(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (context) => buildChallengeDialog(
-                              filteredCards[previousIndex].challenge.title,
-                            ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.emoji_events, color: Colors.amber, size: 32),
+                      const SizedBox(width: 10),
+                      Text(
+                        'Score heute:',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.amber[800],
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 18,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.amber[100],
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: Colors.amber, width: 2),
+                        ),
+                        child: Text(
+                          score.toString(),
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.amber[900],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 18),
+              Expanded(
+                child: filteredCards.isEmpty
+                    ? Center(
+                        child: Text(
+                          'Keine Challenges gefunden',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.deepPurple[300],
+                          ),
+                        ),
+                      )
+                    : CardSwiper(
+                        controller: _cardSwiperController,
+                        cardsCount: filteredCards.length,
+                        initialIndex: staticCardIndex,
+                        allowedSwipeDirection: AllowedSwipeDirection.symmetric(
+                          horizontal: true,
+                        ),
+                        cardBuilder:
+                            (
+                              context,
+                              index,
+                              percentThresholdX,
+                              percentThresholdY,
+                            ) {
+                              return Container(
+                                margin: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                  horizontal: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(28),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.deepPurple.withOpacity(
+                                        0.08,
+                                      ),
+                                      blurRadius: 16,
+                                      offset: const Offset(0, 8),
+                                    ),
+                                  ],
+                                ),
+                                child: filteredCards[index],
+                              );
+                            },
+                        onSwipe: (previousIndex, newIndex, direction) async {
+                          print(
+                            'Swiped from $previousIndex to $newIndex in direction $direction',
                           );
-                          if (completed == true) {
-                            // Navigation zum ActiveChallengeScreen
-                            final result = await Navigator.of(context)
-                                .push<double>(
+                          if (direction == CardSwiperDirection.right) {
+                            print('Right swipe detected');
+                            final player = AudioPlayer();
+                            await player.play(AssetSource('ding-126626.mp3'));
+                            // Notiz-Dialog anzeigen
+                            bool? completed = await showDialog<bool>(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (context) => buildChallengeDialog(
+                                filteredCards[previousIndex].challenge.title,
+                              ),
+                            );
+                            if (completed == true) {
+                              // Navigation zum ActiveChallengeScreen
+                              final result = await Navigator.of(context)
+                                  .push<double>(
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          ActiveChallengeScreen(
+                                            challenge:
+                                                filteredCards[previousIndex]
+                                                    .challenge,
+                                          ),
+                                    ),
+                                  );
+                              // Nach Rückkehr: ChallengeDoneScreen je nach Ergebnis
+                              if (result != null) {
+                                await Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (context) => ActiveChallengeScreen(
+                                    builder: (context) => ChallengeDoneScreen(
                                       challenge: filteredCards[previousIndex]
                                           .challenge,
+                                      rewardFactor: result,
+                                      // Success factor from ActiveChallengeScreen
+                                      onDone: (double rewardFactor) async {
+                                        // removed, update happens after return
+                                      },
                                     ),
                                   ),
                                 );
-                            // Nach Rückkehr: ChallengeDoneScreen je nach Ergebnis
-                            if (result != null) {
-                              await Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => ChallengeDoneScreen(
-                                    challenge:
-                                        filteredCards[previousIndex].challenge,
-                                    rewardFactor: result,
-                                    // Erfolgsfaktor aus ActiveChallengeScreen
-                                    onDone: (double rewardFactor) async {
-                                      // entfernt, Aktualisierung erfolgt nach Rückkehr
-                                    },
-                                  ),
-                                ),
-                              );
-                              await _initializeScore(); // Score nach Rückkehr aktualisieren
+                                // Update score after returning
+                                await _initializeScore();
+                              }
+                            } else {
+                              _cardSwiperController.undo();
                             }
-                          } else {
-                            _cardSwiperController.undo();
+                          } else if (direction == CardSwiperDirection.left) {
+                            // Optionally show a message or animation for left swipe
+                            print('Left swipe detected');
                           }
-                        } else if (direction == CardSwiperDirection.left) {
-                          print('Left swipe detected');
-                        }
-                        // NEU: aktuellen Index speichern
-                        setState(() {
-                          if (newIndex != null) staticCardIndex = newIndex;
-                        });
-                        return true;
-                      },
-                    ),
-            ),
-          ],
+                          // NEW: Save current index
+                          setState(() {
+                            if (newIndex != null) staticCardIndex = newIndex;
+                          });
+                          return true;
+                        },
+                      ),
+              ),
+            ],
+          ),
         ),
       ),
     );
