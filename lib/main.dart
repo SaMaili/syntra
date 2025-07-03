@@ -9,7 +9,7 @@ import 'package:sqflite/sqflite.dart';
 
 import 'database/challenge_database.dart';
 import 'routes/ChallengesScreen.dart';
-import 'routes/Mindset.dart';
+import 'routes/MindsetScreen.dart';
 import 'routes/SettingsScreen.dart';
 import 'routes/StatisticsScreen.dart';
 import 'static.dart';
@@ -54,7 +54,7 @@ void main() async {
   await initializeThemeMode();
   await copyDatabaseFromAssets();
   final challenges = await ChallengeDatabase.instance.readAllChallenges();
-  AppStatic.CHALLENGES = List.unmodifiable(challenges);
+  AppStatic.CHALLENGES = challenges.toList();
   runApp(SyntraApp());
 }
 
@@ -134,7 +134,7 @@ class _HomeBarState extends State<HomeBar> {
   static final List<Widget> _widgetOptions = <Widget>[
     ChallengesScreen(),
     StatisticsScreen(),
-    Mindset(),
+    MindsetScreen(),
     SettingsScreen(),
   ];
 

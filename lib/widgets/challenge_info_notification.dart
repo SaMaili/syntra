@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
 class ChallengeInfoNotification {
-  static Future<void> showLastNotesNotification(BuildContext context, String challengeId) async {
+  static Future<void> showLastNotesNotification(
+    BuildContext context,
+    String challengeId,
+  ) async {
     // Open DB and get last logbook entry for this challenge
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'challenge_database.db');
@@ -18,12 +21,12 @@ class ChallengeInfoNotification {
       notes = result.first['notes']?.toString() ?? '';
       time = result.first['timestamp']?.toString() ?? '';
     }
-    String body;
     String formattedTime = '';
     if (time.isNotEmpty) {
       try {
         final dt = DateTime.parse(time);
-        formattedTime = '${dt.day.toString().padLeft(2, '0')}.${dt.month.toString().padLeft(2, '0')}.${dt.year}';
+        formattedTime =
+            '${dt.day.toString().padLeft(2, '0')}.${dt.month.toString().padLeft(2, '0')}.${dt.year}';
       } catch (_) {
         formattedTime = time;
       }
@@ -33,7 +36,9 @@ class ChallengeInfoNotification {
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           title: Row(
             children: [
               Icon(Icons.check_circle_outline, color: Colors.green, size: 28),
@@ -41,7 +46,11 @@ class ChallengeInfoNotification {
               Expanded(
                 child: Text(
                   'You have already completed this challenge!',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17, color: Colors.green),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17,
+                    color: Colors.green,
+                  ),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                 ),
@@ -68,7 +77,11 @@ class ChallengeInfoNotification {
                     Expanded(
                       child: Text(
                         notes,
-                        style: const TextStyle(fontSize: 16, fontStyle: FontStyle.italic, color: Colors.black87),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontStyle: FontStyle.italic,
+                          color: Colors.black87,
+                        ),
                       ),
                     ),
                   ],
@@ -76,9 +89,16 @@ class ChallengeInfoNotification {
               ),
               Row(
                 children: [
-                  const Icon(Icons.calendar_today, color: Colors.blueGrey, size: 20),
+                  const Icon(
+                    Icons.calendar_today,
+                    color: Colors.blueGrey,
+                    size: 20,
+                  ),
                   const SizedBox(width: 6),
-                  Text('Last completed: $formattedTime', style: const TextStyle(fontSize: 15)),
+                  Text(
+                    'Last completed: $formattedTime',
+                    style: const TextStyle(fontSize: 15),
+                  ),
                 ],
               ),
               const SizedBox(height: 12),

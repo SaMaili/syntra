@@ -11,253 +11,339 @@ class StatisticsScreen extends stats.StatelessWidget {
 
   @override
   stats.Widget build(stats.BuildContext context) {
-    return stats.Padding(
-      padding: const stats.EdgeInsets.symmetric(horizontal: 24, vertical: 36),
+    return stats.Container(
+      decoration: const stats.BoxDecoration(
+        gradient: stats.LinearGradient(
+          colors: [stats.Color(0xFFe0c3fc), stats.Color(0xFF8ec5fc)],
+          begin: stats.Alignment.topLeft,
+          end: stats.Alignment.bottomRight,
+        ),
+      ),
       child: stats.SingleChildScrollView(
-        child: stats.Column(
-          crossAxisAlignment: stats.CrossAxisAlignment.center,
-          children: [
-            stats.Text(
-              'Your Statistics',
-              style: stats.TextStyle(
-                fontSize: 28,
-                fontWeight: stats.FontWeight.bold,
-                color: AppStatic.grape,
+        child: stats.Padding(
+          padding: const stats.EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 28,
+          ),
+          child: stats.Column(
+            crossAxisAlignment: stats.CrossAxisAlignment.center,
+            children: [
+              stats.Row(
+                mainAxisAlignment: stats.MainAxisAlignment.center,
+                children: [
+                  stats.Icon(
+                    stats.Icons.bar_chart,
+                    color: AppStatic.marianBlue,
+                    size: 32,
+                  ),
+                  const stats.SizedBox(width: 10),
+                  stats.Text(
+                    'Your Statistics',
+                    style: stats.TextStyle(
+                      fontSize: 32,
+                      fontWeight: stats.FontWeight.bold,
+                      color: AppStatic.marianBlue,
+                      letterSpacing: 1.5,
+                      shadows: [
+                        stats.Shadow(
+                          color: stats.Colors.white.withOpacity(0.5),
+                          blurRadius: 8,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ),
-            stats.SizedBox(height: 16),
-            stats.ElevatedButton.icon(
-              icon: stats.Icon(stats.Icons.history),
-              label: stats.Text('Challenge Logbook'),
-              style: stats.ElevatedButton.styleFrom(
-                backgroundColor: AppStatic.grape,
-                foregroundColor: stats.Colors.white,
-                padding: const stats.EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                shape: stats.RoundedRectangleBorder(
-                  borderRadius: stats.BorderRadius.circular(12),
+              stats.SizedBox(height: 18),
+              stats.ElevatedButton.icon(
+                icon: stats.Icon(stats.Icons.history),
+                label: stats.Text('Challenge Logbook'),
+                style: stats.ElevatedButton.styleFrom(
+                  backgroundColor: AppStatic.grape,
+                  foregroundColor: stats.Colors.white,
+                  padding: const stats.EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
+                  shape: stats.RoundedRectangleBorder(
+                    borderRadius: stats.BorderRadius.circular(12),
+                  ),
+                  elevation: 6,
+                  shadowColor: AppStatic.grape.withOpacity(0.18),
+                ),
+                onPressed: () {
+                  stats.Navigator.of(context).push(
+                    stats.MaterialPageRoute(builder: (_) => LogbookPage()),
+                  );
+                },
+              ),
+              stats.SizedBox(height: 28),
+              stats.Container(
+                padding: stats.EdgeInsets.all(22),
+                decoration: stats.BoxDecoration(
+                  color: AppStatic.grapeLight,
+                  borderRadius: stats.BorderRadius.circular(24),
+                  boxShadow: [
+                    stats.BoxShadow(
+                      color: AppStatic.grape.withOpacity(0.08),
+                      blurRadius: 16,
+                      offset: stats.Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: StatsOverviewContainer(),
+              ),
+              stats.SizedBox(height: 28),
+              stats.Container(
+                padding: stats.EdgeInsets.all(20),
+                margin: stats.EdgeInsets.only(bottom: 18),
+                decoration: stats.BoxDecoration(
+                  color: AppStatic.marianBlueLight,
+                  borderRadius: stats.BorderRadius.circular(20),
+                  boxShadow: [
+                    stats.BoxShadow(
+                      color: AppStatic.marianBlue.withOpacity(0.08),
+                      blurRadius: 12,
+                      offset: stats.Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: stats.FutureBuilder<List<int>>(
+                  // XP als int
+                  future: _fetchWeeklyXp(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData ||
+                        snapshot.data == null ||
+                        snapshot.data!.length != 7) {
+                      return stats.Center(
+                        child: stats.CircularProgressIndicator(),
+                      );
+                    }
+                    final days = [
+                      'Mon',
+                      'Tue',
+                      'Wed',
+                      'Thu',
+                      'Fri',
+                      'Sat',
+                      'Sun',
+                    ];
+                    final xpList = snapshot.data!;
+                    return stats.Column(
+                      children: [
+                        stats.Text(
+                          'Weekly XP Progress',
+                          style: stats.TextStyle(
+                            fontSize: 18,
+                            fontWeight: stats.FontWeight.bold,
+                            color: AppStatic.marianBlue,
+                          ),
+                        ),
+                        stats.SizedBox(height: 15),
+                        stats.SizedBox(
+                          height: 200,
+                          child: LineChart(
+                            LineChartData(
+                              gridData: FlGridData(show: true),
+                              titlesData: FlTitlesData(
+                                leftTitles: AxisTitles(
+                                  sideTitles: SideTitles(
+                                    showTitles: true,
+                                    reservedSize: 40,
+                                  ),
+                                ),
+                                bottomTitles: AxisTitles(
+                                  sideTitles: SideTitles(
+                                    showTitles: true,
+                                    getTitlesWidget: (value, meta) {
+                                      int idx = value.toInt();
+                                      if (idx < 0 || idx > 6)
+                                        return stats.Container();
+                                      return stats.Padding(
+                                        padding: const stats.EdgeInsets.only(
+                                          top: 8.0,
+                                        ),
+                                        child: stats.Text(
+                                          days[idx],
+                                          style: stats.TextStyle(fontSize: 12),
+                                        ),
+                                      );
+                                    },
+                                    interval: 1,
+                                  ),
+                                ),
+                                rightTitles: AxisTitles(
+                                  sideTitles: SideTitles(showTitles: false),
+                                ),
+                                topTitles: AxisTitles(
+                                  sideTitles: SideTitles(showTitles: false),
+                                ),
+                              ),
+                              minX: 0,
+                              maxX: 6,
+                              maxY:
+                                  (xpList.reduce((a, b) => a > b ? a : b) + 20)
+                                      .toDouble(),
+                              lineBarsData: [
+                                LineChartBarData(
+                                  spots: [
+                                    for (int i = 0; i < 7; i++)
+                                      FlSpot(
+                                        i.toDouble(),
+                                        xpList[i].toDouble(),
+                                      ),
+                                  ],
+                                  isCurved: false,
+                                  color: AppStatic.marianBlue,
+                                  barWidth: 4,
+                                  dotData: FlDotData(show: true),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
-              onPressed: () {
-                stats.Navigator.of(context).push(
-                  stats.MaterialPageRoute(
-                    builder: (_) => LogbookPage(),
-                  ),
-                );
-              },
-            ),
-            stats.SizedBox(height: 30),
-            StatsOverviewContainer(),
-            stats.SizedBox(height: 30),
-            stats.Container(
-              padding: stats.EdgeInsets.all(20),
-              decoration: stats.BoxDecoration(
-                color: AppStatic.marianBlueLight,
-                borderRadius: stats.BorderRadius.circular(20),
-              ),
-              child: stats.FutureBuilder<List<int>>(
-                // XP als int
-                future: _fetchWeeklyXp(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData ||
-                      snapshot.data == null ||
-                      snapshot.data!.length != 7) {
-                    return stats.Center(
-                      child: stats.CircularProgressIndicator(),
-                    );
-                  }
-                  final days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-                  final xpList = snapshot.data!;
-                  return stats.Column(
-                    children: [
-                      stats.Text(
-                        'Weekly XP Progress',
-                        style: stats.TextStyle(
-                          fontSize: 18,
-                          fontWeight: stats.FontWeight.bold,
-                          color: AppStatic.marianBlue,
-                        ),
-                      ),
-                      stats.SizedBox(height: 15),
-                      stats.SizedBox(
-                        height: 200,
-                        child: LineChart(
-                          LineChartData(
-                            gridData: FlGridData(show: true),
-                            titlesData: FlTitlesData(
-                              leftTitles: AxisTitles(
-                                sideTitles: SideTitles(
-                                  showTitles: true,
-                                  reservedSize: 40,
-                                ),
-                              ),
-                              bottomTitles: AxisTitles(
-                                sideTitles: SideTitles(
-                                  showTitles: true,
-                                  getTitlesWidget: (value, meta) {
-                                    int idx = value.toInt();
-                                    if (idx < 0 || idx > 6)
-                                      return stats.Container();
-                                    return stats.Padding(
-                                      padding: const stats.EdgeInsets.only(
-                                        top: 8.0,
-                                      ),
-                                      child: stats.Text(
-                                        days[idx],
-                                        style: stats.TextStyle(fontSize: 12),
-                                      ),
-                                    );
-                                  },
-                                  interval: 1,
-                                ),
-                              ),
-                              rightTitles: AxisTitles(
-                                sideTitles: SideTitles(showTitles: false),
-                              ),
-                              topTitles: AxisTitles(
-                                sideTitles: SideTitles(showTitles: false),
-                              ),
-                            ),
-                            minX: 0,
-                            maxX: 6,
-                            maxY: (xpList.reduce((a, b) => a > b ? a : b) + 20)
-                                .toDouble(),
-                            lineBarsData: [
-                              LineChartBarData(
-                                spots: [
-                                  for (int i = 0; i < 7; i++)
-                                    FlSpot(i.toDouble(), xpList[i].toDouble()),
-                                ],
-                                isCurved: false,
-                                color: AppStatic.marianBlue,
-                                barWidth: 4,
-                                dotData: FlDotData(show: true),
-                              ),
-                            ],
+              stats.SizedBox(height: 30),
+              stats.Container(
+                padding: stats.EdgeInsets.all(20),
+                margin: stats.EdgeInsets.only(bottom: 18),
+                decoration: stats.BoxDecoration(
+                  color: AppStatic.marianBlueLight,
+                  borderRadius: stats.BorderRadius.circular(20),
+                  boxShadow: [
+                    stats.BoxShadow(
+                      color: AppStatic.marianBlue.withOpacity(0.08),
+                      blurRadius: 12,
+                      offset: stats.Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: stats.FutureBuilder<List<List<int>>>(
+                  future: _fetchWeeklyChallengeCounts(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData ||
+                        snapshot.data == null ||
+                        snapshot.data!.length != 2) {
+                      return stats.Center(
+                        child: stats.CircularProgressIndicator(),
+                      );
+                    }
+                    final days = [
+                      'Mon',
+                      'Tue',
+                      'Wed',
+                      'Thu',
+                      'Fri',
+                      'Sat',
+                      'Sun',
+                    ];
+                    final completed = snapshot.data![0];
+                    final failed = snapshot.data![1];
+                    final maxY =
+                        (([
+                                  ...completed,
+                                  ...failed,
+                                ].reduce((a, b) => a > b ? a : b)) +
+                                1)
+                            .toDouble();
+                    return stats.Column(
+                      children: [
+                        stats.Text(
+                          'Weekly Challenges (completed/failed)',
+                          style: stats.TextStyle(
+                            fontSize: 18,
+                            fontWeight: stats.FontWeight.bold,
+                            color: AppStatic.marianBlue,
                           ),
                         ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
-            stats.SizedBox(height: 30),
-            stats.Container(
-              padding: stats.EdgeInsets.all(20),
-              decoration: stats.BoxDecoration(
-                color: AppStatic.marianBlueLight,
-                borderRadius: stats.BorderRadius.circular(20),
-              ),
-              child: stats.FutureBuilder<List<List<int>>>(
-                future: _fetchWeeklyChallengeCounts(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData ||
-                      snapshot.data == null ||
-                      snapshot.data!.length != 2) {
-                    return stats.Center(
-                      child: stats.CircularProgressIndicator(),
-                    );
-                  }
-                  final days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-                  final completed = snapshot.data![0];
-                  final failed = snapshot.data![1];
-                  final maxY =
-                      (([
-                                ...completed,
-                                ...failed,
-                              ].reduce((a, b) => a > b ? a : b)) +
-                              1)
-                          .toDouble();
-                  return stats.Column(
-                    children: [
-                      stats.Text(
-                        'Weekly Challenges (completed/failed)',
-                        style: stats.TextStyle(
-                          fontSize: 18,
-                          fontWeight: stats.FontWeight.bold,
-                          color: AppStatic.marianBlue,
-                        ),
-                      ),
-                      stats.SizedBox(height: 15),
-                      stats.SizedBox(
-                        height: 200,
-                        child: LineChart(
-                          LineChartData(
-                            gridData: FlGridData(show: true),
-                            titlesData: FlTitlesData(
-                              leftTitles: AxisTitles(
-                                sideTitles: SideTitles(
-                                  showTitles: true,
-                                  reservedSize: 40,
+                        stats.SizedBox(height: 15),
+                        stats.SizedBox(
+                          height: 200,
+                          child: LineChart(
+                            LineChartData(
+                              gridData: FlGridData(show: true),
+                              titlesData: FlTitlesData(
+                                leftTitles: AxisTitles(
+                                  sideTitles: SideTitles(
+                                    showTitles: true,
+                                    reservedSize: 40,
+                                  ),
+                                ),
+                                bottomTitles: AxisTitles(
+                                  sideTitles: SideTitles(
+                                    showTitles: true,
+                                    getTitlesWidget: (value, meta) {
+                                      int idx = value.toInt();
+                                      if (idx < 0 || idx > 6)
+                                        return stats.Container();
+                                      return stats.Padding(
+                                        padding: const stats.EdgeInsets.only(
+                                          top: 8.0,
+                                        ),
+                                        child: stats.Text(
+                                          days[idx],
+                                          style: stats.TextStyle(fontSize: 12),
+                                        ),
+                                      );
+                                    },
+                                    interval: 1,
+                                  ),
+                                ),
+                                rightTitles: AxisTitles(
+                                  sideTitles: SideTitles(showTitles: false),
+                                ),
+                                topTitles: AxisTitles(
+                                  sideTitles: SideTitles(showTitles: false),
                                 ),
                               ),
-                              bottomTitles: AxisTitles(
-                                sideTitles: SideTitles(
-                                  showTitles: true,
-                                  getTitlesWidget: (value, meta) {
-                                    int idx = value.toInt();
-                                    if (idx < 0 || idx > 6)
-                                      return stats.Container();
-                                    return stats.Padding(
-                                      padding: const stats.EdgeInsets.only(
-                                        top: 8.0,
+                              minX: 0,
+                              maxX: 6,
+                              minY: 0,
+                              maxY: maxY,
+                              lineBarsData: [
+                                LineChartBarData(
+                                  spots: [
+                                    for (int i = 0; i < 7; i++)
+                                      FlSpot(
+                                        i.toDouble(),
+                                        completed[i].toDouble(),
                                       ),
-                                      child: stats.Text(
-                                        days[idx],
-                                        style: stats.TextStyle(fontSize: 12),
-                                      ),
-                                    );
-                                  },
-                                  interval: 1,
+                                  ],
+                                  isCurved: false,
+                                  color: stats.Colors.greenAccent,
+                                  barWidth: 4,
+                                  dotData: FlDotData(show: true),
                                 ),
-                              ),
-                              rightTitles: AxisTitles(
-                                sideTitles: SideTitles(showTitles: false),
-                              ),
-                              topTitles: AxisTitles(
-                                sideTitles: SideTitles(showTitles: false),
-                              ),
+                                LineChartBarData(
+                                  spots: [
+                                    for (int i = 0; i < 7; i++)
+                                      FlSpot(
+                                        i.toDouble(),
+                                        failed[i].toDouble(),
+                                      ),
+                                  ],
+                                  isCurved: false,
+                                  color: stats.Colors.red,
+                                  barWidth: 4,
+                                  dotData: FlDotData(show: true),
+                                ),
+                              ],
                             ),
-                            minX: 0,
-                            maxX: 6,
-                            minY: 0,
-                            maxY: maxY,
-                            lineBarsData: [
-                              LineChartBarData(
-                                spots: [
-                                  for (int i = 0; i < 7; i++)
-                                    FlSpot(
-                                      i.toDouble(),
-                                      completed[i].toDouble(),
-                                    ),
-                                ],
-                                isCurved: false,
-                                color: stats.Colors.green,
-                                barWidth: 4,
-                                dotData: FlDotData(show: true),
-                              ),
-                              LineChartBarData(
-                                spots: [
-                                  for (int i = 0; i < 7; i++)
-                                    FlSpot(i.toDouble(), failed[i].toDouble()),
-                                ],
-                                isCurved: false,
-                                color: stats.Colors.red,
-                                barWidth: 4,
-                                dotData: FlDotData(show: true),
-                              ),
-                            ],
                           ),
                         ),
-                      ),
-                    ],
-                  );
-                },
+                      ],
+                    );
+                  },
+                ),
               ),
-            ),
-            stats.SizedBox(height: 30),
-            DebugDbButton(),
-          ],
+              stats.SizedBox(height: 30),
+              DebugDbButton(),
+            ],
+          ),
         ),
       ),
     );

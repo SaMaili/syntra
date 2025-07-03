@@ -70,175 +70,215 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 36),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            'Settings',
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: AppStatic.grape,
-            ),
-          ),
-          SizedBox(height: 30),
-          Container(
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: AppStatic.grapeLight,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Column(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('coming soon'),
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
-                  },
-                  child: Opacity(
-                    opacity: 0.4,
-                    child: _buildSettingItem(
-                      'Notifications',
-                      'Get reminded about daily challenges',
-                      Icons.notifications,
-                      Icon(Icons.toggle_off, color: Colors.grey, size: 32),
-                    ),
-                  ),
-                ),
-                Divider(color: AppStatic.grapeDivider),
-                _buildSettingItem(
-                  'Dark Mode',
-                  'Switch to dark theme',
-                  Icons.dark_mode,
-                  Switch(
-                    value: _darkModeEnabled,
-
-                    // TODO: Implement dark mode correctly and fix switch behavior
-                    onChanged: (value) {
-                      setState(() {
-                        _darkModeEnabled = value;
-                        if (value) {
-                          themeModeNotifier.value = ThemeMode.dark;
-                        } else {
-                          themeModeNotifier.value = ThemeMode.light;
-                        }
-                        _saveSettings();
-                      });
-                    },
-                    activeColor: AppStatic.grape,
-                  ),
-                ),
-                Divider(color: AppStatic.grapeDivider),
-                GestureDetector(
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('coming soon'),
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
-                  },
-                  child: Opacity(
-                    opacity: 0.4,
-                    child: _buildSettingItem(
-                      'Sound Effects',
-                      'Play sounds for interactions',
-                      Icons.volume_up,
-                      Icon(Icons.toggle_off, color: Colors.grey, size: 32),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 20),
-          Container(
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: AppStatic.marianBlueLight,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Column(
-              children: [
-                // TODO : Implement language selection
-                GestureDetector(
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('coming soon'),
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
-                  },
-                  child: Opacity(
-                    opacity: 0.4,
-                    child: _buildSettingItem(
-                      'Language',
-                      'Choose your preferred language',
-                      Icons.language,
-                      DropdownButton<String>(
-                        value: _selectedLanguage,
-                        underline: Container(),
-                        items: ['English', 'Spanish', 'French', 'German'].map((
-                          String value,
-                        ) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        onChanged: null,
-                      ),
-                    ),
-                  ),
-                ),
-                Divider(color: AppStatic.marianBlue.withOpacity(0.3)),
-                _buildSettingItem(
-                  'About',
-                  'App version and information',
-                  Icons.info,
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const AboutNotePage(),
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFFe0c3fc), Color(0xFF8ec5fc)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 36),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.settings, color: AppStatic.grape, size: 32),
+                  const SizedBox(width: 10),
+                  Text(
+                    'Settings',
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: AppStatic.grape,
+                      letterSpacing: 1.5,
+                      shadows: [
+                        Shadow(
+                          color: Colors.white.withOpacity(0.5),
+                          blurRadius: 8,
                         ),
-                      );
-                    },
-                    child: Icon(
-                      Icons.arrow_forward_ios,
-                      color: AppStatic.marianBlue,
-                      size: 16,
+                      ],
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 30),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppStatic.grapeDark,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                ],
               ),
-              padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-            ),
-            onPressed: () {
-              // TODO: Implement save settings
-            },
-            child: Text(
-              'Save Settings',
-              style: TextStyle(fontSize: 18, color: AppStatic.white),
-            ),
+              SizedBox(height: 30),
+              Container(
+                padding: EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: AppStatic.grapeLight,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppStatic.grape.withOpacity(0.08),
+                      blurRadius: 16,
+                      offset: Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('coming soon'),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                      },
+                      child: Opacity(
+                        opacity: 0.4,
+                        child: _buildSettingItem(
+                          'Notifications',
+                          'Get reminded about daily challenges',
+                          Icons.notifications,
+                          Icon(Icons.toggle_off, color: Colors.grey, size: 32),
+                        ),
+                      ),
+                    ),
+                    Divider(color: AppStatic.grapeDivider),
+                    _buildSettingItem(
+                      'Dark Mode',
+                      'Switch to dark theme',
+                      Icons.dark_mode,
+                      Switch(
+                        value: _darkModeEnabled,
+                        onChanged: (value) {
+                          setState(() {
+                            _darkModeEnabled = value;
+                            if (value) {
+                              themeModeNotifier.value = ThemeMode.dark;
+                            } else {
+                              themeModeNotifier.value = ThemeMode.light;
+                            }
+                            _saveSettings();
+                          });
+                        },
+                        activeColor: AppStatic.grape,
+                      ),
+                    ),
+                    Divider(color: AppStatic.grapeDivider),
+                    GestureDetector(
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('coming soon'),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                      },
+                      child: Opacity(
+                        opacity: 0.4,
+                        child: _buildSettingItem(
+                          'Sound Effects',
+                          'Play sounds for interactions',
+                          Icons.volume_up,
+                          Icon(Icons.toggle_off, color: Colors.grey, size: 32),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+              Container(
+                padding: EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: AppStatic.marianBlueLight,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppStatic.marianBlue.withOpacity(0.08),
+                      blurRadius: 16,
+                      offset: Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('coming soon'),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                      },
+                      child: Opacity(
+                        opacity: 0.4,
+                        child: _buildSettingItem(
+                          'Language',
+                          'Choose your preferred language',
+                          Icons.language,
+                          DropdownButton<String>(
+                            value: _selectedLanguage,
+                            underline: Container(),
+                            items: ['English', 'Spanish', 'French', 'German']
+                                .map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                })
+                                .toList(),
+                            onChanged: null,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Divider(color: AppStatic.marianBlue.withOpacity(0.3)),
+                    _buildSettingItem(
+                      'About',
+                      'App version and information',
+                      Icons.info,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const AboutNotePage(),
+                            ),
+                          );
+                        },
+                        child: Icon(
+                          Icons.arrow_forward_ios,
+                          color: AppStatic.marianBlue,
+                          size: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 30),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppStatic.grapeDark,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                  elevation: 6,
+                  shadowColor: AppStatic.grapeDark.withOpacity(0.18),
+                ),
+                onPressed: () {
+                  // TODO: Implement save settings
+                },
+                child: Text(
+                  'Save Settings',
+                  style: TextStyle(fontSize: 18, color: AppStatic.white),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

@@ -234,13 +234,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                           icon: Icon(Icons.shuffle, color: Colors.deepPurple[400], size: 28),
                           onPressed: () {
                             setState(() {
-                              if (session.selectedToggle == 1) {
-                                print("groupcards shuffle");
-                                //TODO _groupCards.shuffle();
-                              } else {
-                                print("solocards shuffle");
-                                //TODO _soloCards.shuffle();
-                              }
+                              AppStatic.CHALLENGES.shuffle();
                             });
                           },
                         ),
