@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syntra/Challenge.dart';
 import 'package:syntra/static.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
 import 'package:syntra/widgets/challenge_info_notification.dart';
 
 class ChallengeCard extends StatelessWidget {

@@ -105,8 +105,8 @@ class ChallengeDoneScreen extends StatelessWidget {
                   }
                   print('feeling: $feeling, perception: $perception, notes: $notes');
                   await ChallengeDatabase.instance.addLogbookEntry({
-                    'user_id': null,
                     // TODO adjust if user IDs are used
+                    'user_id': null,
                     'challenge_id': challenge.id,
                     'earned': (challenge.xp * rewardFactor).round(),
                     'timestamp': DateTime.now().toIso8601String(),
