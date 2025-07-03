@@ -199,7 +199,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                       Icon(Icons.emoji_events, color: Colors.amber, size: 32),
                       const SizedBox(width: 10),
                       Text(
-                        'Score heute:',
+                        'Score today:',
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -227,11 +227,28 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                           ),
                         ),
                       ),
+                      const SizedBox(width: 16),
+                      Tooltip(
+                        message: 'shuffle challenges',
+                        child: IconButton(
+                          icon: Icon(Icons.shuffle, color: Colors.deepPurple[400], size: 28),
+                          onPressed: () {
+                            setState(() {
+                              if (session.selectedToggle == 1) {
+                                print("groupcards shuffle");
+                                //TODO _groupCards.shuffle();
+                              } else {
+                                print("solocards shuffle");
+                                //TODO _soloCards.shuffle();
+                              }
+                            });
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
-              const SizedBox(height: 18),
               Expanded(
                 child: filteredCards.isEmpty
                     ? Center(
