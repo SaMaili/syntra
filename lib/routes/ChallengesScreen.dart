@@ -8,11 +8,11 @@ import 'package:syntra/logic/StatisticsLogic.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 import '../../main.dart';
+import '../logic/ChallengesScreenLogic.dart';
 import '../static.dart';
 import '../widgets/ChallengeCard.dart';
 import 'ActiveChallengeScreen.dart';
 import 'ChallengeDoneScreen.dart';
-import '../logic/ChallengesScreenLogic.dart';
 import 'StatisticsScreen.dart';
 
 // Container for statistics overview (used to fetch today's score)
@@ -282,7 +282,9 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                                 await _initializeScore();
                                 // Show snackbar when challenge is completed
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Challenge completed!')),
+                                  SnackBar(
+                                    content: Text('Challenge completed!'),
+                                  ),
                                 );
                               }
                             } else {

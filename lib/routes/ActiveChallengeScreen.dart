@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:syntra/Challenge.dart';
 import 'package:syntra/widgets/ChallengeCard.dart';
-import 'package:syntra/widgets/not_sure_what_to_say_dialog.dart';
+import 'package:syntra/widgets/NotSureWhatToSayDialog.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
 import 'ChallengeDoneScreen.dart';
