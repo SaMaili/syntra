@@ -84,15 +84,27 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
   @override
   Widget build(BuildContext context) {
     final filteredCards = logic.getFilteredCards();
-    return Scaffold(
-      backgroundColor: AppStatic.grapeLight,
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bgGradient = isDark
+        ? const LinearGradient(
+            colors: [Color(0xFF232526), Color(0xFF414345)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          )
+        : const LinearGradient(
             colors: [Color(0xFFe0c3fc), Color(0xFF8ec5fc)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-          ),
+          );
+    final scoreBoxColor = isDark ? Colors.grey[900] : Colors.amber[50];
+    final scoreTextColor = isDark ? Colors.amber[200] : Colors.amber[800];
+    final scoreValueColor = isDark ? Colors.amberAccent : Colors.amber[900];
+    final shuffleIconColor = isDark ? Colors.pinkAccent : Colors.deepPurple[400];
+    return Scaffold(
+      backgroundColor: isDark ? Colors.black : AppStatic.grapeLight,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: bgGradient,
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
@@ -129,11 +141,11 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.amber[50],
+                    color: scoreBoxColor,
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.amber.withOpacity(0.2),
+                        color: (isDark ? Colors.amber : Colors.amber).withOpacity(0.2),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),
@@ -150,7 +162,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
-                            color: Colors.amber[800],
+                            color: scoreTextColor,
                             letterSpacing: 1.2,
                           ),
                           overflow: TextOverflow.ellipsis,
@@ -164,7 +176,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                           vertical: 8,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.amber[100],
+                          color: isDark ? Colors.amber[900] : Colors.amber[100],
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(color: Colors.amber, width: 2),
                         ),
@@ -173,7 +185,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
-                            color: Colors.amber[900],
+                            color: scoreValueColor,
                           ),
                         ),
                       ),
@@ -183,7 +195,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                         child: IconButton(
                           icon: Icon(
                             Icons.shuffle,
-                            color: Colors.deepPurple[400],
+                            color: shuffleIconColor,
                             size: 28,
                           ),
                           onPressed: () {
@@ -207,7 +219,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                           'No challenges found',
                           style: TextStyle(
                             fontSize: 20,
-                            color: Colors.deepPurple[300],
+                            color: isDark ? Colors.deepPurple[100] : Colors.deepPurple[300],
                           ),
                         ),
                       )
@@ -235,7 +247,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                                   boxShadow: [
                                     BoxShadow(
                                       color: Colors.deepPurple.withOpacity(
-                                        0.08,
+                                        isDark ? 0.18 : 0.08,
                                       ),
                                       blurRadius: 16,
                                       offset: const Offset(0, 8),

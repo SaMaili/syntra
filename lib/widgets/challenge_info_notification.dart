@@ -34,9 +34,11 @@ class ChallengeInfoNotification {
     }
     if (notes.isNotEmpty) {
       body = '📝 Last note:\n"$notes"\n\n📅 Last completed: $formattedTime';
+      final isDark = Theme.of(context).brightness == Brightness.dark;
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
+          backgroundColor: isDark ? Colors.grey[900] : null,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -66,7 +68,7 @@ class ChallengeInfoNotification {
                 padding: const EdgeInsets.all(12),
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
-                  color: Colors.blue[50],
+                  color: isDark ? Colors.blueGrey[900] : Colors.blue[50],
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: Colors.blueAccent.withOpacity(0.2)),
                 ),
@@ -78,10 +80,10 @@ class ChallengeInfoNotification {
                     Expanded(
                       child: Text(
                         notes,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontStyle: FontStyle.italic,
-                          color: Colors.black87,
+                          color: isDark ? Colors.white : Colors.black87,
                         ),
                       ),
                     ),
@@ -98,7 +100,7 @@ class ChallengeInfoNotification {
                   const SizedBox(width: 6),
                   Text(
                     'Last completed: $formattedTime',
-                    style: const TextStyle(fontSize: 15),
+                    style: TextStyle(fontSize: 15, color: isDark ? Colors.white : null),
                   ),
                 ],
               ),
@@ -110,7 +112,7 @@ class ChallengeInfoNotification {
                   Expanded(
                     child: Text(
                       'You can repeat this challenge as often as you like!',
-                      style: TextStyle(fontSize: 14, color: Colors.blueGrey),
+                      style: TextStyle(fontSize: 14, color: isDark ? Colors.grey[300] : Colors.blueGrey),
                     ),
                   ),
                 ],

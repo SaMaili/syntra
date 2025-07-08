@@ -33,8 +33,13 @@ class ChallengeDoneScreen extends StatelessWidget {
     final xpColor = logic.xpColor;
     final encouragement = logic.encouragement;
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bgColor = isDark ? Colors.black : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final encouragementColor = isDark ? Colors.greenAccent : Colors.green;
     return Scaffold(
       appBar: AppBar(title: Text(title), automaticallyImplyLeading: false),
+      backgroundColor: bgColor,
       body: Stack(
         children: [
           Center(
@@ -47,7 +52,7 @@ class ChallengeDoneScreen extends StatelessWidget {
                   SizedBox(height: 24),
                   Text(
                     message,
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 24),
@@ -65,7 +70,7 @@ class ChallengeDoneScreen extends StatelessWidget {
                   if (!isAborted) _SurveyWidget(key: _surveyKey),
                   Text(
                     encouragement,
-                    style: TextStyle(fontSize: 18),
+                    style: TextStyle(fontSize: 18, color: encouragementColor),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 80), // Space for Floating Button
@@ -203,6 +208,8 @@ class _SurveyWidgetState extends State<_SurveyWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? Colors.white : Colors.black87;
     if (_submitted) {
       // Thank you message after submission
       return Column(
@@ -221,7 +228,7 @@ class _SurveyWidgetState extends State<_SurveyWidget> {
       children: [
         Text(
           'How did you feel?',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
         ),
         SizedBox(height: 8),
         Row(
@@ -244,7 +251,7 @@ class _SurveyWidgetState extends State<_SurveyWidget> {
         SizedBox(height: 20),
         Text(
           'How do you think you were perceived?',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
         ),
         SizedBox(height: 8),
         Row(
@@ -271,7 +278,7 @@ class _SurveyWidgetState extends State<_SurveyWidget> {
           ),
         ),
         SizedBox(height: 20),
-        Text('Notes:', style: TextStyle(fontSize: 16)),
+        Text('Notes:', style: TextStyle(fontSize: 16, color: textColor)),
         SizedBox(height: 4),
         TextField(
           controller: _notesController,

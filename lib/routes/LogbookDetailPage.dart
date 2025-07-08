@@ -26,9 +26,14 @@ class LogbookDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bgColor = isDark ? Colors.black : Colors.grey[100];
+    final cardColor = isDark ? Colors.grey[900] : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final secondaryTextColor = isDark ? Colors.grey[400] : Colors.black87;
     return Scaffold(
       appBar: AppBar(title: const Text('Logbook Entry')),
-      backgroundColor: Colors.grey[100],
+      backgroundColor: bgColor,
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: FutureBuilder<String>(
@@ -41,6 +46,7 @@ class LogbookDetailPage extends StatelessWidget {
             return SingleChildScrollView(
               child: Card(
                 elevation: 4,
+                color: cardColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
@@ -57,43 +63,49 @@ class LogbookDetailPage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      _detailRow('Challenge', challengeTitle, icon: Icons.flag),
+                      _detailRow('Challenge', challengeTitle, icon: Icons.flag, textColor: textColor),
                       _detailRow(
                         'Date',
                         _formatDate(entry['timestamp']?.toString()),
                         icon: Icons.calendar_today,
+                        textColor: textColor,
                       ),
                       _detailRow(
                         'XP',
                         entry['earned']?.toString(),
                         icon: Icons.star,
+                        textColor: textColor,
                       ),
                       _detailRow(
                         'Status',
                         entry['status']?.toString(),
                         icon: Icons.info,
+                        textColor: textColor,
                       ),
                       _detailRow(
                         'Feeling',
                         entry['feeling']?.toString(),
                         icon: Icons.mood,
+                        textColor: textColor,
                       ),
                       _detailRow(
                         'Perception',
                         entry['perception']?.toString(),
                         icon: Icons.visibility,
+                        textColor: textColor,
                       ),
                       _detailRow(
                         'Challenge ID',
                         entry['challenge_id']?.toString() ?? '-',
                         icon: Icons.confirmation_number,
+                        textColor: textColor,
                       ),
                       if ((entry['notes']?.toString() ?? '').isNotEmpty)
                         Container(
                           margin: const EdgeInsets.only(top: 24, bottom: 8),
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: Colors.blue[50],
+                            color: isDark ? Colors.blueGrey[900] : Colors.blue[50],
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(
                               color: Colors.blueAccent.withOpacity(0.2),
@@ -107,10 +119,10 @@ class LogbookDetailPage extends StatelessWidget {
                               Expanded(
                                 child: Text(
                                   entry['notes'],
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 16,
                                     fontStyle: FontStyle.italic,
-                                    color: Colors.black87,
+                                    color: textColor,
                                   ),
                                 ),
                               ),
@@ -199,7 +211,7 @@ class LogbookDetailPage extends StatelessWidget {
     }
   }
 
-  Widget _detailRow(String label, String? value, {IconData? icon}) {
+  Widget _detailRow(String label, String? value, {IconData? icon, Color? textColor}) {
     // Special case for Feeling: show emoji + name
     if (label == 'Feeling') {
       final int? feelingValue = int.tryParse(value ?? '');
@@ -214,9 +226,9 @@ class LogbookDetailPage extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               '$label: ',
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
             ),
-            Text(feelingName, style: const TextStyle(color: Colors.black87)),
+            Text(feelingName, style: TextStyle(color: textColor)),
           ],
         ),
       );
@@ -235,9 +247,9 @@ class LogbookDetailPage extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               '$label: ',
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
             ),
-            Text(perceptionName, style: const TextStyle(color: Colors.black87)),
+            Text(perceptionName, style: TextStyle(color: textColor)),
           ],
         ),
       );
@@ -252,11 +264,11 @@ class LogbookDetailPage extends StatelessWidget {
             Icon(icon, size: 20, color: Colors.blueGrey),
             const SizedBox(width: 8),
           ],
-          Text('$label: ', style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text('$label: ', style: TextStyle(fontWeight: FontWeight.bold, color: textColor)),
           Expanded(
             child: Text(
               value ?? '-',
-              style: const TextStyle(color: Colors.black87),
+              style: TextStyle(color: textColor),
             ),
           ),
         ],

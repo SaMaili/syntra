@@ -20,13 +20,23 @@ class StatisticsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bgGradient = isDark
+        ? const LinearGradient(
+            colors: [Color(0xFF232526), Color(0xFF414345)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          )
+        : const LinearGradient(
+            colors: [Color(0xFFe0c3fc), Color(0xFF8ec5fc)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          );
+    final cardColor = isDark ? Colors.grey[900] : AppStatic.marianBlueLight;
+    final statTitleColor = isDark ? Colors.pinkAccent : AppStatic.marianBlue;
     return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFFe0c3fc), Color(0xFF8ec5fc)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+      decoration: BoxDecoration(
+        gradient: bgGradient,
       ),
       child: SingleChildScrollView(
         child: Padding(
@@ -38,14 +48,14 @@ class StatisticsScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.bar_chart, color: AppStatic.marianBlue, size: 32),
+                  Icon(Icons.bar_chart, color: statTitleColor, size: 32),
                   const SizedBox(width: 10),
                   Text(
                     'Your Statistics',
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
-                      color: AppStatic.marianBlue,
+                      color: statTitleColor,
                       letterSpacing: 1.5,
                       shadows: [
                         Shadow(
@@ -90,7 +100,7 @@ class StatisticsScreen extends StatelessWidget {
                 padding: EdgeInsets.all(20),
                 margin: EdgeInsets.only(bottom: 18),
                 decoration: BoxDecoration(
-                  color: AppStatic.marianBlueLight,
+                  color: cardColor,
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
@@ -203,7 +213,7 @@ class StatisticsScreen extends StatelessWidget {
                 padding: EdgeInsets.all(20),
                 margin: EdgeInsets.only(bottom: 18),
                 decoration: BoxDecoration(
-                  color: AppStatic.marianBlueLight,
+                  color: cardColor,
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
@@ -348,6 +358,8 @@ class StatsOverviewContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = isDark ? Colors.grey[900] : Colors.white;
     return FutureBuilder<List<dynamic>>(
       future: Future.wait([
         logic.fetchTotalXp(),
@@ -368,7 +380,7 @@ class StatsOverviewContainer extends StatelessWidget {
         return Container(
           padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 18),
           decoration: BoxDecoration(
-            color: Colors.white, // Better contrast background
+            color: cardColor, // Better contrast background
             borderRadius: BorderRadius.circular(22),
             boxShadow: [
               BoxShadow(

@@ -75,8 +75,13 @@ class _LogbookPageState extends State<LogbookPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bgColor = isDark ? Colors.black : null;
+    final cardColor = isDark ? Colors.grey[900] : Colors.grey[100];
+    final textColor = isDark ? Colors.white : Colors.black87;
     return Scaffold(
       appBar: AppBar(title: const Text('Logbook')),
+      backgroundColor: bgColor,
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : NotificationListener<ScrollNotification>(
@@ -107,16 +112,16 @@ class _LogbookPageState extends State<LogbookPage> {
                       vertical: 8,
                       horizontal: 12,
                     ),
-                    tileColor: Colors.grey[100],
+                    tileColor: cardColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                     leading: CircleAvatar(
-                      backgroundColor: Colors.grey[300],
+                      backgroundColor: isDark ? Colors.grey[800] : Colors.grey[300],
                       child: Text(
                         (i + 1).toString(),
-                        style: const TextStyle(
-                          color: Colors.black87,
+                        style: TextStyle(
+                          color: textColor,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -124,10 +129,11 @@ class _LogbookPageState extends State<LogbookPage> {
                     title: Text(
                       _challengeTitles[entry['challenge_id']?.toString()] ??
                           'Unknown',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
                     ),
                     subtitle: Text(
                       _formatTimestamp(entry['timestamp']?.toString()),
+                      style: TextStyle(color: isDark ? Colors.grey[400] : null),
                     ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,

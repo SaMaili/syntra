@@ -70,15 +70,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bgGradient = isDark
+        ? const LinearGradient(
+            colors: [Color(0xFF232526), Color(0xFF414345)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          )
+        : const LinearGradient(
+            colors: [Color(0xFFe0c3fc), Color(0xFF8ec5fc)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          );
+    final cardColor = isDark ? Colors.grey[900] : AppStatic.grapeLight;
+    final card2Color = isDark ? Colors.blueGrey[900] : AppStatic.marianBlueLight;
+    final textPrimary = isDark ? Colors.white : AppStatic.textPrimary;
+    final textSecondary = isDark ? Colors.grey[400] : AppStatic.textSecondaryLight;
     return Container(
       width: double.infinity,
       height: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFFe0c3fc), Color(0xFF8ec5fc)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+      decoration: BoxDecoration(
+        gradient: bgGradient,
       ),
       child: SafeArea(
         child: SingleChildScrollView(
@@ -112,7 +124,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Container(
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: AppStatic.grapeLight,
+                  color: cardColor,
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
@@ -140,6 +152,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           'Get reminded about daily challenges',
                           Icons.notifications,
                           Icon(Icons.toggle_off, color: Colors.grey, size: 32),
+                          textPrimary: textPrimary,
+                          textSecondary: textSecondary,
                         ),
                       ),
                     ),
@@ -163,6 +177,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         },
                         activeColor: AppStatic.grape,
                       ),
+                      textPrimary: textPrimary,
+                      textSecondary: textSecondary,
                     ),
                     Divider(color: AppStatic.grapeDivider),
                     GestureDetector(
@@ -181,6 +197,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           'Play sounds for interactions',
                           Icons.volume_up,
                           Icon(Icons.toggle_off, color: Colors.grey, size: 32),
+                          textPrimary: textPrimary,
+                          textSecondary: textSecondary,
                         ),
                       ),
                     ),
@@ -191,7 +209,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Container(
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: AppStatic.marianBlueLight,
+                  color: card2Color,
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
@@ -231,6 +249,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 .toList(),
                             onChanged: null,
                           ),
+                          textPrimary: textPrimary,
+                          textSecondary: textSecondary,
                         ),
                       ),
                     ),
@@ -253,27 +273,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           size: 16,
                         ),
                       ),
+                      textPrimary: textPrimary,
+                      textSecondary: textSecondary,
                     ),
                   ],
-                ),
-              ),
-              SizedBox(height: 30),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppStatic.grapeDark,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-                  elevation: 6,
-                  shadowColor: AppStatic.grapeDark.withOpacity(0.18),
-                ),
-                onPressed: () {
-                  // TODO: Implement save settings
-                },
-                child: Text(
-                  'Save Settings',
-                  style: TextStyle(fontSize: 18, color: AppStatic.white),
                 ),
               ),
             ],
@@ -287,8 +290,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     String title,
     String subtitle,
     IconData icon,
-    Widget trailing,
-  ) {
+    Widget trailing, {
+    Color? textPrimary,
+    Color? textSecondary,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
@@ -304,14 +309,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: AppStatic.textPrimary,
+                    color: textPrimary ?? AppStatic.textPrimary,
                   ),
                 ),
                 Text(
                   subtitle,
                   style: TextStyle(
                     fontSize: 12,
-                    color: AppStatic.textSecondaryLight,
+                    color: textSecondary ?? AppStatic.textSecondaryLight,
                   ),
                 ),
               ],

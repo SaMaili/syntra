@@ -61,15 +61,27 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
     if (_loading) {
       return const Center(child: CircularProgressIndicator());
     }
-    return Scaffold(
-      backgroundColor: AppStatic.grapeLight,
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bgGradient = isDark
+        ? const LinearGradient(
+            colors: [Color(0xFF232526), Color(0xFF414345)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          )
+        : const LinearGradient(
             colors: [Color(0xFFe0c3fc), Color(0xFF8ec5fc)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-          ),
+          );
+    final cardColor = isDark ? Colors.grey[900]!.withOpacity(0.98) : Colors.white.withOpacity(0.95);
+    final titleColor = isDark ? Colors.pinkAccent : AppStatic.grape;
+    final descColor = isDark ? Colors.pinkAccent[100] : AppStatic.marianBlue;
+    final completedTextColor = isDark ? Colors.greenAccent : Colors.green[700];
+    return Scaffold(
+      backgroundColor: isDark ? Colors.black : AppStatic.grapeLight,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: bgGradient,
         ),
         child: Center(
           child: Padding(
@@ -82,7 +94,7 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
                       const SizedBox(height: 32),
                       Text('Challenge completed!',
                           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                color: Colors.green[700],
+                                color: completedTextColor,
                                 fontWeight: FontWeight.bold,
                               )),
                     ],
@@ -96,7 +108,7 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
                         'Daily Challenge',
                         style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: AppStatic.grape,
+                              color: titleColor,
                             ),
                         textAlign: TextAlign.center,
                       ),
@@ -107,7 +119,7 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          color: Colors.white.withOpacity(0.95),
+                          color: cardColor,
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 20),
                             child: Column(
@@ -116,7 +128,7 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
                                 Text(
                                   _challenge!.title,
                                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                        color: AppStatic.grape,
+                                        color: titleColor,
                                         fontWeight: FontWeight.w600,
                                       ),
                                   textAlign: TextAlign.center,
@@ -125,7 +137,7 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
                                 Text(
                                   _challenge!.description,
                                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                        color: AppStatic.marianBlue,
+                                        color: descColor,
                                       ),
                                   textAlign: TextAlign.center,
                                 ),
@@ -137,7 +149,7 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
                       if (!_accepted)
                         ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppStatic.grape,
+                            backgroundColor: titleColor,
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -153,7 +165,7 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
                       if (_accepted && !_completed)
                         ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppStatic.grape,
+                            backgroundColor: titleColor,
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -177,16 +189,19 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
                         onPressed: () {
                           showDialog(
                             context: context,
-                            builder: (context) => AlertDialog(
-                              title: const Text('Need Inspiration?'),
-                              content: const Text('Try to focus on your breath, your steps, and the environment around you. Notice the little things!'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.of(context).pop(),
-                                  child: const Text('Got it!'),
-                                ),
-                              ],
-                            ),
+                            builder: (context) {
+                              return AlertDialog(
+                                backgroundColor: isDark ? Colors.grey[900] : null,
+                                title: const Text('Need Inspiration?'),
+                                content: const Text('Try to focus on your breath, your steps, and the environment around you. Notice the little things!'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.of(context).pop(),
+                                    child: const Text('Got it!'),
+                                  ),
+                                ],
+                              );
+                            },
                           );
                         },
                         icon: const Icon(Icons.lightbulb_outline, color: Colors.amber),

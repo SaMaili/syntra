@@ -12,8 +12,14 @@ class AboutNotePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final secondaryTextColor = isDark ? Colors.grey[400] : Colors.grey;
+    final linkColor = isDark ? Colors.lightBlueAccent : Colors.blue;
+    final bgColor = isDark ? Colors.grey[900] : Colors.white;
     return Scaffold(
       appBar: AppBar(title: const Text('About the App')),
+      backgroundColor: bgColor,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: FutureBuilder<String>(
@@ -23,9 +29,13 @@ class AboutNotePage extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Syntra',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: textColor,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Text(
@@ -33,17 +43,17 @@ class AboutNotePage extends StatelessWidget {
                   '\n'
                   '\nVersion: $version'
                   '\nDeveloper: SaMaili',
-                  style: const TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: 16, color: textColor),
                 ),
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    const Text('GitHub: ', style: TextStyle(fontSize: 16)),
+                    Text('GitHub: ', style: TextStyle(fontSize: 16, color: textColor)),
                     InkWell(
-                      child: const Text(
+                      child: Text(
                         'https://github.com/SaMaili/syntra',
                         style: TextStyle(
-                          color: Colors.blue,
+                          color: linkColor,
                           decoration: TextDecoration.underline,
                           fontSize: 16,
                         ),
@@ -63,10 +73,10 @@ class AboutNotePage extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 24),
-                const Text(
+                Text(
                   // copyright notice
                   '\u00a9 2025 Syntra. All rights reserved.',
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                  style: TextStyle(fontSize: 12, color: secondaryTextColor),
                 ),
               ],
             );

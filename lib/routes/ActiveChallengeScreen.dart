@@ -143,6 +143,19 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
     final over = abortLockTimer <= 0;
     // Whether main timer is over.
     final mainTimeOver = mainTimer <= 0;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bgColor = isDark ? Colors.black : null;
+    final helpBtnBg = isDark ? Colors.grey[800] : Colors.grey[300];
+    final helpBtnFg = isDark ? Colors.white : Colors.black;
+    final doneBtnBg = mainTimeOver
+        ? (isDark ? Colors.greenAccent[400] : const Color(0xFF39FF14))
+        : (over
+            ? (isDark ? Colors.green[700] : Colors.green)
+            : (isDark ? Colors.grey[700] : Colors.grey[400]));
+    final doneBtnFg = Colors.white;
+    final doneBtnShadow = mainTimeOver
+        ? (isDark ? Colors.greenAccent : const Color(0xFF39FF14))
+        : (isDark ? Colors.black54 : Colors.black26);
     return WillPopScope(
       onWillPop: () async => false, // Prevent back navigation.
       child: Scaffold(
@@ -150,6 +163,7 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
           title: const Text('SPOT! RUN! TALK!'),
           automaticallyImplyLeading: false,
         ),
+        backgroundColor: bgColor,
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -174,8 +188,8 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[300],
-                  foregroundColor: Colors.black,
+                  backgroundColor: helpBtnBg,
+                  foregroundColor: helpBtnFg,
                   minimumSize: const Size(double.infinity, 48),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
@@ -201,11 +215,11 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                               }
                             : null,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF39FF14),
-                          foregroundColor: Colors.white,
+                          backgroundColor: doneBtnBg,
+                          foregroundColor: doneBtnFg,
                           textStyle: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
                           elevation: 12,
-                          shadowColor: const Color(0xFF39FF14),
+                          shadowColor: doneBtnShadow,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                         ),
                         child: Row(
@@ -225,11 +239,11 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                             }
                           : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: over ? Colors.green : Colors.grey[400],
-                        foregroundColor: Colors.white,
+                        backgroundColor: doneBtnBg,
+                        foregroundColor: doneBtnFg,
                         textStyle: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                         elevation: 2,
-                        shadowColor: Colors.black26,
+                        shadowColor: doneBtnShadow,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                       ),
                       child: over
