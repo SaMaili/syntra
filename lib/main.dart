@@ -9,7 +9,7 @@ import 'package:sqflite/sqflite.dart';
 
 import 'database/challenge_database.dart';
 import 'routes/ChallengesScreen.dart';
-import 'routes/MindsetScreen.dart';
+import 'routes/DailyChallengeScreen.dart';
 import 'routes/SettingsScreen.dart';
 import 'routes/StatisticsScreen.dart';
 import 'static.dart';
@@ -133,8 +133,8 @@ class _HomeBarState extends State<HomeBar> {
 
   static final List<Widget> _widgetOptions = <Widget>[
     ChallengesScreen(),
+    DailyChallengeScreen(),
     StatisticsScreen(),
-    MindsetScreen(),
     SettingsScreen(),
   ];
 
@@ -159,10 +159,13 @@ class _HomeBarState extends State<HomeBar> {
             icon: Icon(Icons.explore),
             label: 'Challenge',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Stats'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.psychology),
-            label: 'Mindset',
+            icon: Icon(Icons.calendar_today),
+            label: 'Daily',
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.bar_chart),
+              label: 'Stats',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),

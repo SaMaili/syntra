@@ -280,6 +280,10 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                                   ),
                                 );
                                 await _initializeScore();
+                                // Show snackbar when challenge is completed
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Challenge completed!')),
+                                );
                               }
                             } else {
                               // If user cancels, undo the swipe.
