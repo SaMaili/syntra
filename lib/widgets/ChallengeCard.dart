@@ -80,14 +80,31 @@ class ChallengeCard extends StatelessWidget {
             // Center section with the main text
             Expanded(
               child: Center(
-                child: Text(
-                  challenge.description,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: descriptionFontSize ?? 20,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.pinkAccent
-                        : descriptionColor ?? AppStatic.textSecondary,
+                child: GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text('Challenge Description'),
+                        content: Text(challenge.description),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: Text('Close'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  child: Text(
+                    challenge.description,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: descriptionFontSize ?? 20,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.pinkAccent
+                          : descriptionColor ?? AppStatic.textSecondary,
+                    ),
                   ),
                 ),
               ),

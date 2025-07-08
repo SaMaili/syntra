@@ -1,6 +1,10 @@
-import 'package:audioplayers/audioplayers.dart';
+// ChallengesScreen.dart
+// This file defines the ChallengesScreen widget, which displays and manages the challenge cards UI.
+// Imports necessary packages and logic for challenge management.
+
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
+import 'package:syntra/logic/StatisticsLogic.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 import '../../main.dart';
@@ -8,15 +12,18 @@ import '../static.dart';
 import '../widgets/ChallengeCard.dart';
 import 'ActiveChallengeScreen.dart';
 import 'ChallengeDoneScreen.dart';
+import '../logic/ChallengesScreenLogic.dart';
 import 'StatisticsScreen.dart';
 
+// Container for statistics overview (used to fetch today's score)
 final statsContainer = StatsOverviewContainer();
 
+// List of all challenge cards (used for initial display)
 final List<ChallengeCard> cards = AppStatic.CHALLENGES
     .map((challenge) => ChallengeCard(challenge: challenge))
     .toList();
 
-// Singleton für Session-State
+// Singleton for session state (current card index, toggle selection)
 class ChallengeSessionState {
   static final ChallengeSessionState _instance =
       ChallengeSessionState._internal();
@@ -25,8 +32,8 @@ class ChallengeSessionState {
 
   ChallengeSessionState._internal();
 
-  int currentCardIndex = 0;
-  int selectedToggle = 0;
+  int currentCardIndex = 0; // Index of the currently displayed card
+  int selectedToggle = 0; // 0 = Solo, 1 = Group
 }
 
 class ChallengesScreen extends StatefulWidget {
@@ -37,27 +44,10 @@ class ChallengesScreen extends StatefulWidget {
 }
 
 class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
-  static int staticCardIndex =
-      0; // Statisch gespeicherter Index der obersten Karte
-  int score = 0;
+  static int staticCardIndex = 0;
   final CardSwiperController _cardSwiperController = CardSwiperController();
   DateTime? lastScoreDate;
-
-  // Zugriff auf Session-State
-  ChallengeSessionState session = ChallengeSessionState();
-
-  List<ChallengeCard> get _soloCards => AppStatic.CHALLENGES
-      .where((challenge) => challenge.type != 'group')
-      .map((challenge) => ChallengeCard(challenge: challenge))
-      .toList();
-
-  List<ChallengeCard> get _groupCards => AppStatic.CHALLENGES
-      .where((challenge) => challenge.type == 'group')
-      .map((challenge) => ChallengeCard(challenge: challenge))
-      .toList();
-
-  List<ChallengeCard> get filteredCards =>
-      session.selectedToggle == 1 ? _groupCards : _soloCards;
+  final ChallengesScreenLogic logic = ChallengesScreenLogic();
 
   @override
   void initState() {
@@ -84,60 +74,16 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
   }
 
   Future<void> _initializeScore() async {
-    int todayScore = await statsContainer.fetchTotalXpToday();
+    // Use the StatisticsScreenLogic to fetch today's XP
+    int todayScore = await StatisticsLogic().fetchTotalXp();
     setState(() {
-      score = todayScore;
+      logic.score = todayScore;
     });
-  }
-
-  Widget buildChallengeDialog(String challengeTitle) {
-    return AlertDialog(
-      title: Text('Notiz'),
-      content: Text('Du hast dich für "$challengeTitle" entschieden. Bereit?'),
-      actions: [
-        Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(false);
-                },
-                style: TextButton.styleFrom(foregroundColor: Colors.grey),
-                child: Text('🙈 Doch lieber eine andere?'),
-              ),
-              SizedBox(height: 12),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.lightBlueAccent,
-                  foregroundColor: Colors.white,
-                  elevation: 8,
-                  shadowColor: Colors.blueAccent.withOpacity(0.5),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    side: BorderSide(color: Colors.white, width: 2),
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 28, vertical: 16),
-                  textStyle: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    letterSpacing: 1.2,
-                  ),
-                ),
-                child: Text('Los geht\'s!'),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final filteredCards = logic.getFilteredCards();
     return Scaffold(
       backgroundColor: AppStatic.grapeLight,
       body: Container(
@@ -157,7 +103,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
               ToggleSwitch(
                 minWidth: 100.0,
                 minHeight: 32.0,
-                initialLabelIndex: session.selectedToggle,
+                initialLabelIndex: logic.session.selectedToggle,
                 cornerRadius: 24.0,
                 activeFgColor: Colors.white,
                 inactiveBgColor: Colors.grey[300],
@@ -174,7 +120,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                 ],
                 onToggle: (index) {
                   setState(() {
-                    session.selectedToggle = index!;
+                    logic.session.selectedToggle = index!;
                   });
                 },
               ),
@@ -198,13 +144,17 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                     children: [
                       Icon(Icons.emoji_events, color: Colors.amber, size: 32),
                       const SizedBox(width: 10),
-                      Text(
-                        'Score today:',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.amber[800],
-                          letterSpacing: 1.2,
+                      Flexible(
+                        child: Text(
+                          'Score:',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.amber[800],
+                            letterSpacing: 1.2,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: false,
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -219,7 +169,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                           border: Border.all(color: Colors.amber, width: 2),
                         ),
                         child: Text(
-                          score.toString(),
+                          logic.score.toString(),
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -231,11 +181,18 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                       Tooltip(
                         message: 'shuffle challenges',
                         child: IconButton(
-                          icon: Icon(Icons.shuffle, color: Colors.deepPurple[400], size: 28),
+                          icon: Icon(
+                            Icons.shuffle,
+                            color: Colors.deepPurple[400],
+                            size: 28,
+                          ),
                           onPressed: () {
                             setState(() {
-                              AppStatic.CHALLENGES.shuffle();
+                              logic.shuffleChallenges();
                             });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Challenges shuffled!')),
+                            );
                           },
                         ),
                       ),
@@ -247,7 +204,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                 child: filteredCards.isEmpty
                     ? Center(
                         child: Text(
-                          'Keine Challenges gefunden',
+                          'No challenges found',
                           style: TextStyle(
                             fontSize: 20,
                             color: Colors.deepPurple[300],
@@ -289,23 +246,16 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                               );
                             },
                         onSwipe: (previousIndex, newIndex, direction) async {
-                          print(
-                            'Swiped from $previousIndex to $newIndex in direction $direction',
-                          );
+                          // Called when a card is swiped.
+                          // If swiped right, play sound, show dialog, and possibly start challenge.
                           if (direction == CardSwiperDirection.right) {
-                            print('Right swipe detected');
-                            final player = AudioPlayer();
-                            await player.play(AssetSource('ding-126626.mp3'));
-                            // Notiz-Dialog anzeigen
-                            bool? completed = await showDialog<bool>(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (context) => buildChallengeDialog(
-                                filteredCards[previousIndex].challenge.title,
-                              ),
+                            await logic.playSwipeSound();
+                            bool? completed = await logic.showChallengeDialog(
+                              context,
+                              filteredCards[previousIndex].challenge.title,
                             );
                             if (completed == true) {
-                              // Navigation zum ActiveChallengeScreen
+                              // If user confirms, navigate to ActiveChallengeScreen.
                               final result = await Navigator.of(context)
                                   .push<double>(
                                     MaterialPageRoute(
@@ -317,32 +267,26 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                                           ),
                                     ),
                                   );
-                              // Nach Rückkehr: ChallengeDoneScreen je nach Ergebnis
                               if (result != null) {
+                                // After challenge, show ChallengeDoneScreen and update score.
                                 await Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (context) => ChallengeDoneScreen(
                                       challenge: filteredCards[previousIndex]
                                           .challenge,
                                       rewardFactor: result,
-                                      // Success factor from ActiveChallengeScreen
-                                      onDone: (double rewardFactor) async {
-                                        // removed, update happens after return
-                                      },
+                                      onDone: (double rewardFactor) async {},
                                     ),
                                   ),
                                 );
-                                // Update score after returning
                                 await _initializeScore();
                               }
                             } else {
+                              // If user cancels, undo the swipe.
                               _cardSwiperController.undo();
                             }
-                          } else if (direction == CardSwiperDirection.left) {
-                            // Optionally show a message or animation for left swipe
-                            print('Left swipe detected');
                           }
-                          // NEW: Save current index
+                          // Update the static card index after swipe.
                           setState(() {
                             if (newIndex != null) staticCardIndex = newIndex;
                           });

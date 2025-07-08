@@ -131,7 +131,7 @@ class LogbookDetailPage extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
         child: ElevatedButton.icon(
           icon: const Icon(Icons.delete, color: Colors.white),
-          label: const Text('Delete Entry'),
+          label: const Text('Delete Entry', style: TextStyle(color: Colors.white)),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.red,
             minimumSize: const Size.fromHeight(50),

@@ -1,52 +1,55 @@
+// StatisticsScreen.dart
+// This file defines the StatisticsScreen and StatsOverviewContainer widgets for displaying user statistics in the Syntra app.
+// It includes logic for fetching and displaying XP, completed quests, and streaks, as well as a debug button for database inspection.
+
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart' as stats;
+import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../static.dart';
 import 'LogbookPage.dart';
+import '../logic/StatisticsLogic.dart';
 
-class StatisticsScreen extends stats.StatelessWidget {
+// Main statistics screen widget
+class StatisticsScreen extends StatelessWidget {
   const StatisticsScreen({super.key});
 
+  // Logic class instance for all data fetching
+  static final StatisticsLogic logic = StatisticsLogic();
+
   @override
-  stats.Widget build(stats.BuildContext context) {
-    return stats.Container(
-      decoration: const stats.BoxDecoration(
-        gradient: stats.LinearGradient(
-          colors: [stats.Color(0xFFe0c3fc), stats.Color(0xFF8ec5fc)],
-          begin: stats.Alignment.topLeft,
-          end: stats.Alignment.bottomRight,
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFFe0c3fc), Color(0xFF8ec5fc)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
       ),
-      child: stats.SingleChildScrollView(
-        child: stats.Padding(
-          padding: const stats.EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 28,
-          ),
-          child: stats.Column(
-            crossAxisAlignment: stats.CrossAxisAlignment.center,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              stats.Row(
-                mainAxisAlignment: stats.MainAxisAlignment.center,
+              // Title row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  stats.Icon(
-                    stats.Icons.bar_chart,
-                    color: AppStatic.marianBlue,
-                    size: 32,
-                  ),
-                  const stats.SizedBox(width: 10),
-                  stats.Text(
+                  Icon(Icons.bar_chart, color: AppStatic.marianBlue, size: 32),
+                  const SizedBox(width: 10),
+                  Text(
                     'Your Statistics',
-                    style: stats.TextStyle(
+                    style: TextStyle(
                       fontSize: 32,
-                      fontWeight: stats.FontWeight.bold,
+                      fontWeight: FontWeight.bold,
                       color: AppStatic.marianBlue,
                       letterSpacing: 1.5,
                       shadows: [
-                        stats.Shadow(
-                          color: stats.Colors.white.withOpacity(0.5),
+                        Shadow(
+                          color: Colors.white.withOpacity(0.5),
                           blurRadius: 8,
                         ),
                       ],
@@ -54,70 +57,57 @@ class StatisticsScreen extends stats.StatelessWidget {
                   ),
                 ],
               ),
-              stats.SizedBox(height: 18),
-              stats.ElevatedButton.icon(
-                icon: stats.Icon(stats.Icons.history),
-                label: stats.Text('Challenge Logbook'),
-                style: stats.ElevatedButton.styleFrom(
+              // Overview container with all crucial stats
+              SizedBox(height: 18),
+              Row(children: [Expanded(child: StatsOverviewContainer())]),
+              SizedBox(height: 18),
+              // Button to open the challenge logbook
+              ElevatedButton.icon(
+                icon: Icon(Icons.history),
+                label: Text('Challenge Logbook'),
+                style: ElevatedButton.styleFrom(
                   backgroundColor: AppStatic.grape,
-                  foregroundColor: stats.Colors.white,
-                  padding: const stats.EdgeInsets.symmetric(
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
                     horizontal: 24,
                     vertical: 12,
                   ),
-                  shape: stats.RoundedRectangleBorder(
-                    borderRadius: stats.BorderRadius.circular(12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   elevation: 6,
                   shadowColor: AppStatic.grape.withOpacity(0.18),
                 ),
                 onPressed: () {
-                  stats.Navigator.of(context).push(
-                    stats.MaterialPageRoute(builder: (_) => LogbookPage()),
-                  );
+                  Navigator.of(
+                    context,
+                  ).push(MaterialPageRoute(builder: (_) => LogbookPage()));
                 },
               ),
-              stats.SizedBox(height: 28),
-              stats.Container(
-                padding: stats.EdgeInsets.all(22),
-                decoration: stats.BoxDecoration(
-                  color: AppStatic.grapeLight,
-                  borderRadius: stats.BorderRadius.circular(24),
-                  boxShadow: [
-                    stats.BoxShadow(
-                      color: AppStatic.grape.withOpacity(0.08),
-                      blurRadius: 16,
-                      offset: stats.Offset(0, 8),
-                    ),
-                  ],
-                ),
-                child: StatsOverviewContainer(),
-              ),
-              stats.SizedBox(height: 28),
-              stats.Container(
-                padding: stats.EdgeInsets.all(20),
-                margin: stats.EdgeInsets.only(bottom: 18),
-                decoration: stats.BoxDecoration(
+              SizedBox(height: 28),
+              // Weekly XP chart container
+              Container(
+                padding: EdgeInsets.all(20),
+                margin: EdgeInsets.only(bottom: 18),
+                decoration: BoxDecoration(
                   color: AppStatic.marianBlueLight,
-                  borderRadius: stats.BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(20),
                   boxShadow: [
-                    stats.BoxShadow(
+                    BoxShadow(
                       color: AppStatic.marianBlue.withOpacity(0.08),
                       blurRadius: 12,
-                      offset: stats.Offset(0, 6),
+                      offset: Offset(0, 6),
                     ),
                   ],
                 ),
-                child: stats.FutureBuilder<List<int>>(
-                  // XP als int
-                  future: _fetchWeeklyXp(),
+                child: FutureBuilder<List<int>>(
+                  // XP as int, now uses logic class
+                  future: logic.fetchWeeklyXp(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData ||
                         snapshot.data == null ||
                         snapshot.data!.length != 7) {
-                      return stats.Center(
-                        child: stats.CircularProgressIndicator(),
-                      );
+                      return Center(child: CircularProgressIndicator());
                     }
                     final days = [
                       'Mon',
@@ -129,18 +119,18 @@ class StatisticsScreen extends stats.StatelessWidget {
                       'Sun',
                     ];
                     final xpList = snapshot.data!;
-                    return stats.Column(
+                    return Column(
                       children: [
-                        stats.Text(
+                        Text(
                           'Weekly XP Progress',
-                          style: stats.TextStyle(
+                          style: TextStyle(
                             fontSize: 18,
-                            fontWeight: stats.FontWeight.bold,
+                            fontWeight: FontWeight.bold,
                             color: AppStatic.marianBlue,
                           ),
                         ),
-                        stats.SizedBox(height: 15),
-                        stats.SizedBox(
+                        SizedBox(height: 15),
+                        SizedBox(
                           height: 200,
                           child: LineChart(
                             LineChartData(
@@ -158,14 +148,14 @@ class StatisticsScreen extends stats.StatelessWidget {
                                     getTitlesWidget: (value, meta) {
                                       int idx = value.toInt();
                                       if (idx < 0 || idx > 6)
-                                        return stats.Container();
-                                      return stats.Padding(
-                                        padding: const stats.EdgeInsets.only(
+                                        return Container();
+                                      return Padding(
+                                        padding: const EdgeInsets.only(
                                           top: 8.0,
                                         ),
-                                        child: stats.Text(
+                                        child: Text(
                                           days[idx],
-                                          style: stats.TextStyle(fontSize: 12),
+                                          style: TextStyle(fontSize: 12),
                                         ),
                                       );
                                     },
@@ -207,30 +197,29 @@ class StatisticsScreen extends stats.StatelessWidget {
                   },
                 ),
               ),
-              stats.SizedBox(height: 30),
-              stats.Container(
-                padding: stats.EdgeInsets.all(20),
-                margin: stats.EdgeInsets.only(bottom: 18),
-                decoration: stats.BoxDecoration(
+              SizedBox(height: 30),
+              // Weekly challenges chart container
+              Container(
+                padding: EdgeInsets.all(20),
+                margin: EdgeInsets.only(bottom: 18),
+                decoration: BoxDecoration(
                   color: AppStatic.marianBlueLight,
-                  borderRadius: stats.BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(20),
                   boxShadow: [
-                    stats.BoxShadow(
+                    BoxShadow(
                       color: AppStatic.marianBlue.withOpacity(0.08),
                       blurRadius: 12,
-                      offset: stats.Offset(0, 6),
+                      offset: Offset(0, 6),
                     ),
                   ],
                 ),
-                child: stats.FutureBuilder<List<List<int>>>(
-                  future: _fetchWeeklyChallengeCounts(),
+                child: FutureBuilder<List<List<int>>>(
+                  future: logic.fetchWeeklyChallengeCounts(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData ||
                         snapshot.data == null ||
                         snapshot.data!.length != 2) {
-                      return stats.Center(
-                        child: stats.CircularProgressIndicator(),
-                      );
+                      return Center(child: CircularProgressIndicator());
                     }
                     final days = [
                       'Mon',
@@ -250,18 +239,18 @@ class StatisticsScreen extends stats.StatelessWidget {
                                 ].reduce((a, b) => a > b ? a : b)) +
                                 1)
                             .toDouble();
-                    return stats.Column(
+                    return Column(
                       children: [
-                        stats.Text(
+                        Text(
                           'Weekly Challenges (completed/failed)',
-                          style: stats.TextStyle(
+                          style: TextStyle(
                             fontSize: 18,
-                            fontWeight: stats.FontWeight.bold,
+                            fontWeight: FontWeight.bold,
                             color: AppStatic.marianBlue,
                           ),
                         ),
-                        stats.SizedBox(height: 15),
-                        stats.SizedBox(
+                        SizedBox(height: 15),
+                        SizedBox(
                           height: 200,
                           child: LineChart(
                             LineChartData(
@@ -279,14 +268,14 @@ class StatisticsScreen extends stats.StatelessWidget {
                                     getTitlesWidget: (value, meta) {
                                       int idx = value.toInt();
                                       if (idx < 0 || idx > 6)
-                                        return stats.Container();
-                                      return stats.Padding(
-                                        padding: const stats.EdgeInsets.only(
+                                        return Container();
+                                      return Padding(
+                                        padding: const EdgeInsets.only(
                                           top: 8.0,
                                         ),
-                                        child: stats.Text(
+                                        child: Text(
                                           days[idx],
-                                          style: stats.TextStyle(fontSize: 12),
+                                          style: TextStyle(fontSize: 12),
                                         ),
                                       );
                                     },
@@ -314,7 +303,7 @@ class StatisticsScreen extends stats.StatelessWidget {
                                       ),
                                   ],
                                   isCurved: false,
-                                  color: stats.Colors.greenAccent,
+                                  color: Colors.greenAccent,
                                   barWidth: 4,
                                   dotData: FlDotData(show: true),
                                 ),
@@ -327,7 +316,7 @@ class StatisticsScreen extends stats.StatelessWidget {
                                       ),
                                   ],
                                   isCurved: false,
-                                  color: stats.Colors.red,
+                                  color: Colors.red,
                                   barWidth: 4,
                                   dotData: FlDotData(show: true),
                                 ),
@@ -340,7 +329,8 @@ class StatisticsScreen extends stats.StatelessWidget {
                   },
                 ),
               ),
-              stats.SizedBox(height: 30),
+              SizedBox(height: 30),
+              // Debug database button
               DebugDbButton(),
             ],
           ),
@@ -348,200 +338,129 @@ class StatisticsScreen extends stats.StatelessWidget {
       ),
     );
   }
-
-  stats.Widget _buildStatItem(String label, String value) {
-    return stats.Row(
-      mainAxisAlignment: stats.MainAxisAlignment.spaceBetween,
-      children: [
-        stats.Text(
-          label,
-          style: stats.TextStyle(fontSize: 16, color: AppStatic.textPrimary),
-        ),
-        stats.Text(
-          value,
-          style: stats.TextStyle(
-            fontSize: 16,
-            fontWeight: stats.FontWeight.bold,
-            color: AppStatic.grape,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Future<List<int>> _fetchWeeklyXp() async {
-    final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'challenge_database.db');
-    final db = await openDatabase(path);
-    final now = DateTime.now();
-    final weekDay = now.weekday; // 1 = Montag, 7 = Sonntag
-    final startOfWeek = now.subtract(Duration(days: weekDay - 1));
-    final List<int> xpList = [];
-    for (int i = 0; i < 7; i++) {
-      final day = startOfWeek.add(Duration(days: i));
-      final dayStr = day.toIso8601String().substring(0, 10);
-      final result = await db.rawQuery(
-        "SELECT SUM(earned) as xp FROM logbook WHERE date(timestamp) = ? AND earned IS NOT NULL",
-        [dayStr],
-      );
-      final xp = (result.first['xp'] as int?) ?? 0;
-      xpList.add(xp);
-    }
-    return xpList;
-  }
-
-  Future<List<List<int>>> _fetchWeeklyChallengeCounts() async {
-    final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'challenge_database.db');
-    final db = await openDatabase(path);
-    final now = DateTime.now();
-    final weekDay = now.weekday; // 1 = Montag, 7 = Sonntag
-    final startOfWeek = now.subtract(Duration(days: weekDay - 1));
-    final List<int> completed = [];
-    final List<int> failed = [];
-    for (int i = 0; i < 7; i++) {
-      final day = startOfWeek.add(Duration(days: i));
-      final dayStr = day.toIso8601String().substring(0, 10);
-      final resultCompleted = await db.rawQuery(
-        "SELECT COUNT(*) as cnt FROM logbook WHERE date(timestamp) = ? AND status = 'success'",
-        [dayStr],
-      );
-      final resultFailed = await db.rawQuery(
-        "SELECT COUNT(*) as cnt FROM logbook WHERE date(timestamp) = ? AND status = 'failed'",
-        [dayStr],
-      );
-      completed.add((resultCompleted.first['cnt'] as int?) ?? 0);
-      failed.add((resultFailed.first['cnt'] as int?) ?? 0);
-    }
-    return [completed, failed];
-  }
 }
 
-class StatsOverviewContainer extends stats.StatelessWidget {
+// Container widget that displays all crucial user stats
+class StatsOverviewContainer extends StatelessWidget {
   const StatsOverviewContainer({super.key});
 
-  Future<int> _fetchTotalXp() async {
-    final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'challenge_database.db');
-    final db = await openDatabase(path);
-    final result = await db.rawQuery(
-      'SELECT SUM(earned) as totalXp FROM logbook WHERE earned IS NOT NULL',
-    );
-
-    return (result.first['totalXp'] as int?) ?? 0;
-  }
-
-  Future<int> fetchTotalXpToday() async {
-    final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'challenge_database.db');
-    final db = await openDatabase(path);
-    final result = await db.rawQuery(
-      "SELECT SUM(earned) as totalXpToday FROM logbook WHERE date(timestamp) = date('now') AND earned IS NOT NULL",
-    );
-    return (result.first['totalXpToday'] as int?) ?? 0;
-  }
-
-  Future<int> _fetchQuestsCompleted() async {
-    final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'challenge_database.db');
-    final db = await openDatabase(path);
-    final result = await db.rawQuery(
-      "SELECT COUNT(*) as count FROM logbook WHERE status = 'success'",
-    );
-
-    return (result.first['count'] as int?) ?? 0;
-  }
-
-  Future<int> _fetchDaysActive() async {
-    final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'challenge_database.db');
-    final db = await openDatabase(path);
-    final result = await db.rawQuery(
-      'SELECT COUNT(DISTINCT date(timestamp)) as days FROM logbook',
-    );
-
-    return (result.first['days'] as int?) ?? 0;
-  }
-
-  Future<int> _fetchCurrentStreak() async {
-    final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'challenge_database.db');
-    final db = await openDatabase(path);
-    final result = await db.rawQuery('''
-      WITH days AS (
-        SELECT DISTINCT date(timestamp) as d FROM logbook
-      ),
-      numbered AS (
-        SELECT d, ROW_NUMBER() OVER (ORDER BY d DESC) as rn FROM days
-      ),
-      streaks AS (
-        SELECT d, rn, DATE('now', '-'||(rn-1)||' day') as expected
-        FROM numbered
-      )
-      SELECT COUNT(*) as streak FROM streaks WHERE d = expected;
-    ''');
-    return (result.first['streak'] as int?) ?? 0;
-  }
+  static final StatisticsLogic logic = StatisticsLogic();
 
   @override
-  stats.Widget build(stats.BuildContext context) {
-    return stats.Container(
-      padding: stats.EdgeInsets.all(20),
-      decoration: stats.BoxDecoration(
-        color: AppStatic.grapeLight,
-        borderRadius: stats.BorderRadius.circular(20),
-      ),
-      child: stats.FutureBuilder<List<int>>(
-        future: Future.wait([
-          _fetchTotalXp(),
-          _fetchQuestsCompleted(),
-          _fetchDaysActive(),
-          _fetchCurrentStreak(),
-          fetchTotalXpToday(),
-        ]),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData ||
-              snapshot.data == null ||
-              snapshot.data!.length < 5) {
-            return stats.Center(child: stats.CircularProgressIndicator());
-          }
-          final totalXp = snapshot.data![0];
-          final questsCompleted = snapshot.data![1];
-          final daysActive = snapshot.data![2];
-          final currentStreak = snapshot.data![3];
-          final totalXpToday = snapshot.data![4];
-          return stats.Column(
-            children: [
-              _buildStatItem('Total XP', totalXp.toString()),
-              stats.SizedBox(height: 15),
-              _buildStatItem('Total XP today', totalXpToday.toString()),
-              stats.SizedBox(height: 15),
-              _buildStatItem('Quests Completed', questsCompleted.toString()),
-              stats.SizedBox(height: 15),
-              _buildStatItem('Days Active', daysActive.toString()),
-              stats.SizedBox(height: 15),
-              _buildStatItem('Current Streak', '$currentStreak days'),
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<dynamic>>(
+      future: Future.wait([
+        logic.fetchTotalXp(),
+        logic.fetchTodayXp(),
+        logic.fetchCompletedAllTime(),
+        logic.fetchCompletedToday(),
+        logic.fetchCurrentStreak(),
+      ]),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(child: CircularProgressIndicator());
+        }
+        final totalXp = snapshot.data![0] as int;
+        final todayXp = snapshot.data![1] as int;
+        final completedAllTime = snapshot.data![2] as int;
+        final completedToday = snapshot.data![3] as int;
+        final streak = snapshot.data![4] as int;
+        return Container(
+          padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 18),
+          decoration: BoxDecoration(
+            color: Colors.white, // Better contrast background
+            borderRadius: BorderRadius.circular(22),
+            boxShadow: [
+              BoxShadow(
+                color: AppStatic.grape.withOpacity(0.10),
+                blurRadius: 18,
+                offset: Offset(0, 8),
+              ),
             ],
-          );
-        },
-      ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _StatTile(
+                icon: Icons.stars,
+                label: 'Total XP',
+                value: totalXp.toString(),
+                color: AppStatic.grape,
+              ),
+              _StatTile(
+                icon: Icons.flash_on,
+                label: 'XP Today',
+                value: todayXp.toString(),
+                color: AppStatic.marianBlue,
+              ),
+              _StatTile(
+                icon: Icons.check_circle,
+                label: 'Done',
+                value: completedAllTime.toString(),
+                color: Colors.green,
+              ),
+              _StatTile(
+                icon: Icons.today,
+                label: 'Today',
+                value: completedToday.toString(),
+                color: Colors.orange,
+              ),
+              _StatTile(
+                icon: Icons.local_fire_department,
+                label: 'Streak',
+                value: streak.toString(),
+                color: Colors.redAccent,
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
+}
 
-  stats.Widget _buildStatItem(String label, String value) {
-    return stats.Row(
-      mainAxisAlignment: stats.MainAxisAlignment.spaceBetween,
+class _StatTile extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+  final Color color;
+
+  const _StatTile({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        stats.Text(
-          label,
-          style: stats.TextStyle(fontSize: 16, color: AppStatic.textPrimary),
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.12),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: color, size: 28),
         ),
-        stats.Text(
+        const SizedBox(height: 6),
+        Text(
           value,
-          style: stats.TextStyle(
-            fontSize: 16,
-            fontWeight: stats.FontWeight.bold,
-            color: AppStatic.grape,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 13,
+            color: color.withOpacity(0.8),
+            fontWeight: FontWeight.w500,
           ),
         ),
       ],
@@ -549,17 +468,20 @@ class StatsOverviewContainer extends stats.StatelessWidget {
   }
 }
 
-class DebugDbButton extends stats.StatefulWidget {
+// Debug button to print the logbook table from the database
+class DebugDbButton extends StatefulWidget {
   const DebugDbButton({super.key});
 
   @override
-  stats.State<DebugDbButton> createState() => _DebugDbButtonState();
+  State<DebugDbButton> createState() => _DebugDbButtonState();
 }
 
-class _DebugDbButtonState extends stats.State<DebugDbButton> {
+// State for DebugDbButton, handles DB output and loading state
+class _DebugDbButtonState extends State<DebugDbButton> {
   String _output = '';
   bool _loading = false;
 
+  // Prints the content of the logbook table to the UI
   Future<void> _printDbContent() async {
     setState(() {
       _loading = true;
@@ -587,33 +509,31 @@ class _DebugDbButtonState extends stats.State<DebugDbButton> {
   }
 
   @override
-  stats.Widget build(stats.BuildContext context) {
-    return stats.Column(
-      crossAxisAlignment: stats.CrossAxisAlignment.stretch,
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        stats.ElevatedButton(
+        // Button to trigger DB print
+        ElevatedButton(
           onPressed: _loading ? null : _printDbContent,
-          child: stats.Text('DB Debug: Show all logbook table'),
+          child: Text('DB Debug: Show all logbook table'),
         ),
         if (_loading)
-          stats.Padding(
-            padding: const stats.EdgeInsets.all(8.0),
-            child: stats.Center(child: stats.CircularProgressIndicator()),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(child: CircularProgressIndicator()),
           ),
         if (_output.isNotEmpty)
-          stats.Container(
-            margin: const stats.EdgeInsets.only(top: 12),
-            padding: const stats.EdgeInsets.all(8),
-            decoration: stats.BoxDecoration(
-              color: stats.Colors.black.withOpacity(0.05),
-              borderRadius: stats.BorderRadius.circular(8),
+          Container(
+            margin: const EdgeInsets.only(top: 12),
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.05),
+              borderRadius: BorderRadius.circular(8),
             ),
-            constraints: stats.BoxConstraints(maxHeight: 300),
-            child: stats.SingleChildScrollView(
-              child: stats.SelectableText(
-                _output,
-                style: stats.TextStyle(fontSize: 12),
-              ),
+            constraints: BoxConstraints(maxHeight: 300),
+            child: SingleChildScrollView(
+              child: SelectableText(_output, style: TextStyle(fontSize: 12)),
             ),
           ),
       ],

@@ -1,8 +1,13 @@
+// ChallengeDoneScreen.dart
+// This file defines the ChallengeDoneScreen widget, which displays the result of a completed or aborted challenge.
+// It separates UI and logic, and includes a feedback survey for the user.
+
 import 'package:flutter/material.dart';
 
 import '../Challenge.dart';
 import '../database/challenge_database.dart';
 
+// Main screen shown after a challenge is completed or aborted.
 class ChallengeDoneScreen extends StatelessWidget {
   final Challenge challenge;
   final double rewardFactor;
@@ -18,17 +23,15 @@ class ChallengeDoneScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isAborted = rewardFactor < 0;
-    final title = isAborted ? 'Challenge aborted' : 'Challenge completed!';
-    final icon = isAborted ? Icons.sentiment_dissatisfied : Icons.emoji_events;
-    final iconColor = isAborted ? Colors.red : Colors.green;
-    final message = isAborted
-        ? 'Too bad! You aborted the challenge.'
-        : 'Congratulations! You completed the challenge.';
-    final xpColor = isAborted ? Colors.red : Colors.green;
-    final encouragement = isAborted
-        ? 'Try again next time!'
-        : 'Well done! Keep it up!';
+    // Use logic class to determine UI state
+    final ChallengeDoneScreenLogic logic = ChallengeDoneScreenLogic(rewardFactor);
+    final isAborted = logic.isAborted;
+    final title = logic.title;
+    final icon = logic.icon;
+    final iconColor = logic.iconColor;
+    final message = logic.message;
+    final xpColor = logic.xpColor;
+    final encouragement = logic.encouragement;
 
     return Scaffold(
       appBar: AppBar(title: Text(title), automaticallyImplyLeading: false),
@@ -39,6 +42,7 @@ class ChallengeDoneScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  // Icon and message for challenge result
                   Icon(icon, color: iconColor, size: 80),
                   SizedBox(height: 24),
                   Text(
@@ -47,6 +51,7 @@ class ChallengeDoneScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 24),
+                  // XP/Aura reward display
                   Text(
                     '${(challenge.xp * rewardFactor).round() >= 0 ? '+' : ''}${(challenge.xp * rewardFactor).round()} Aura',
                     style: TextStyle(
@@ -56,6 +61,7 @@ class ChallengeDoneScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 24),
+                  // Feedback survey (only if not aborted)
                   if (!isAborted) _SurveyWidget(key: _surveyKey),
                   Text(
                     encouragement,
@@ -67,6 +73,7 @@ class ChallengeDoneScreen extends StatelessWidget {
               ),
             ),
           ),
+          // Button to return to home and save logbook entry
           Positioned(
             left: 0,
             right: 0,
@@ -89,6 +96,7 @@ class ChallengeDoneScreen extends StatelessWidget {
                 icon: Icon(Icons.home, size: 28),
                 label: Text('Back to Home'),
                 onPressed: () async {
+                  // Collect survey results if available
                   final surveyState = _surveyKey.currentState;
                   int? feeling;
                   int? perception;
@@ -103,12 +111,9 @@ class ChallengeDoneScreen extends StatelessWidget {
                     perception = null;
                     notes = null;
                   }
-                  print(
-                    'feeling: $feeling, perception: $perception, notes: $notes',
-                  );
+                  // Save logbook entry
                   await ChallengeDatabase.instance.addLogbookEntry({
-                    // TODO adjust if user IDs are used
-                    'user_id': null,
+                    'user_id': null, // TODO: adjust if user IDs are used
                     'challenge_id': challenge.id,
                     'earned': (challenge.xp * rewardFactor).round(),
                     'timestamp': DateTime.now().toIso8601String(),
@@ -117,12 +122,10 @@ class ChallengeDoneScreen extends StatelessWidget {
                     'perception': perception,
                     'notes': notes,
                   });
-                  print('Challenge added to logbook: ${challenge.title}');
-                  if (onDone != null)
-                    onDone!(rewardFactor); // <-- Score-Update Callback
-                  Navigator.of(
-                    context,
-                  ).pop(rewardFactor); // Return result to previous screen
+                  if (onDone != null) {
+                    onDone!(rewardFactor); // Score-Update Callback
+                  }
+                  Navigator.of(context).pop(rewardFactor); // Return result
                 },
               ),
             ),
@@ -133,20 +136,50 @@ class ChallengeDoneScreen extends StatelessWidget {
   }
 }
 
+// Logic class for ChallengeDoneScreen: determines UI state based on rewardFactor
+class ChallengeDoneScreenLogic {
+  final double rewardFactor;
+
+  ChallengeDoneScreenLogic(this.rewardFactor);
+
+  bool get isAborted => rewardFactor < 0;
+
+  String get title => isAborted ? 'Challenge aborted' : 'Challenge completed!';
+
+  IconData get icon => isAborted ? Icons.sentiment_dissatisfied : Icons.emoji_events;
+
+  Color get iconColor => isAborted ? Colors.red : Colors.green;
+
+  String get message => isAborted
+      ? 'Too bad! You aborted the challenge.'
+      : 'Congratulations! You completed the challenge.';
+
+  Color get xpColor => isAborted ? Colors.red : Colors.green;
+
+  String get encouragement => isAborted
+      ? 'Try again next time!'
+      : 'Well done! Keep it up!';
+}
+
+// Widget for user feedback survey after challenge
 class _SurveyWidget extends StatefulWidget {
-  const _SurveyWidget({Key? key}) : super(key: key);
+  const _SurveyWidget({super.key});
 
   @override
   State<_SurveyWidget> createState() => _SurveyWidgetState();
 }
 
 class _SurveyWidgetState extends State<_SurveyWidget> {
-  // if feeling or perceived is 5, the user has not selected an option
-  int _feeling = 2; // Default neutral
-  int _perceived = 2; // Default neutral
+  // User's self-reported feeling (0-4, default neutral)
+  int _feeling = 2;
+  // User's perceived impression (0-4, default neutral)
+  int _perceived = 2;
+  // Whether the survey has been submitted
   bool _submitted = false;
+  // Controller for notes text field
   final TextEditingController _notesController = TextEditingController();
 
+  // Icons and colors for smiley ratings
   final List<IconData> _smileys = [
     Icons.sentiment_very_dissatisfied,
     Icons.sentiment_dissatisfied,
@@ -171,6 +204,7 @@ class _SurveyWidgetState extends State<_SurveyWidget> {
   @override
   Widget build(BuildContext context) {
     if (_submitted) {
+      // Thank you message after submission
       return Column(
         children: [
           Text(
@@ -181,6 +215,7 @@ class _SurveyWidgetState extends State<_SurveyWidget> {
         ],
       );
     }
+    // Survey UI
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -200,7 +235,6 @@ class _SurveyWidgetState extends State<_SurveyWidget> {
                 size: 36,
               ),
               onPressed: () {
-                print("Feeling changed: $i");
                 setState(() => _feeling = i);
               },
               tooltip: ["Very bad", "Bad", "Neutral", "Good", "Very good"][i],
@@ -224,7 +258,6 @@ class _SurveyWidgetState extends State<_SurveyWidget> {
                 size: 36,
               ),
               onPressed: () {
-                print("Perception changed: $i");
                 setState(() => _perceived = i);
               },
               tooltip: [
@@ -254,14 +287,13 @@ class _SurveyWidgetState extends State<_SurveyWidget> {
     );
   }
 
+  // Getters for survey results
   bool get submitted => _submitted;
-
   int get feeling => _feeling;
-
   int get perceived => _perceived;
-
   String get notes => _notesController.text;
 
+  // Mark survey as submitted
   void submit() {
     setState(() => _submitted = true);
   }

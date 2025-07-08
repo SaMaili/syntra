@@ -53,7 +53,10 @@ class AboutNotePage extends StatelessWidget {
                           'https://github.com/SaMaili/syntra',
                         );
                         if (await canLaunchUrl(url)) {
-                          await launchUrl(url);
+                          await launchUrl(
+                            url,
+                            mode: LaunchMode.externalApplication,
+                          );
                         }
                       },
                     ),

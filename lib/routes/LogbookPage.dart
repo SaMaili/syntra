@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
 import 'LogbookDetailPage.dart';
 
@@ -41,15 +41,18 @@ class _LogbookPageState extends State<LogbookPage> {
     );
     // Load all challenge titles
     if (_challengeTitles.isEmpty) {
-      final challengeRows = await db.rawQuery('SELECT id, title FROM challenges');
+      final challengeRows = await db.rawQuery(
+        'SELECT id, title FROM challenges',
+      );
       _challengeTitles = {
         for (final row in challengeRows)
-          row['id'].toString(): row['title']?.toString() ?? 'Unknown'
+          row['id'].toString(): row['title']?.toString() ?? 'Unknown',
       };
     }
     setState(() {
       if (append) {
-        _entries = List<Map<String, dynamic>>.from(_entries)..addAll(List<Map<String, dynamic>>.from(result));
+        _entries = List<Map<String, dynamic>>.from(_entries)
+          ..addAll(List<Map<String, dynamic>>.from(result));
       } else {
         _entries = List<Map<String, dynamic>>.from(result);
         _currentPage = 0;
@@ -78,8 +81,10 @@ class _LogbookPageState extends State<LogbookPage> {
           ? const Center(child: CircularProgressIndicator())
           : NotificationListener<ScrollNotification>(
               onNotification: (scrollInfo) {
-                if (_hasMore && !_isLoadingMore &&
-                    scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent - 200) {
+                if (_hasMore &&
+                    !_isLoadingMore &&
+                    scrollInfo.metrics.pixels >=
+                        scrollInfo.metrics.maxScrollExtent - 200) {
                   _currentPage++;
                   _loadEntries(append: true);
                 }
@@ -98,9 +103,14 @@ class _LogbookPageState extends State<LogbookPage> {
                   }
                   final entry = _entries[i];
                   return ListTile(
-                    contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 8,
+                      horizontal: 12,
+                    ),
                     tileColor: Colors.grey[100],
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     leading: CircleAvatar(
                       backgroundColor: Colors.grey[300],
                       child: Text(
@@ -112,25 +122,32 @@ class _LogbookPageState extends State<LogbookPage> {
                       ),
                     ),
                     title: Text(
-                      _challengeTitles[entry['challenge_id']?.toString()] ?? 'Unknown',
+                      _challengeTitles[entry['challenge_id']?.toString()] ??
+                          'Unknown',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    subtitle: Text(_formatTimestamp(entry['timestamp']?.toString())),
+                    subtitle: Text(
+                      _formatTimestamp(entry['timestamp']?.toString()),
+                    ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          (entry['earned'] ?? 0).toString(),
+                          ((entry['earned'] ?? 0) >= 0 ? '+' : '') +
+                              (entry['earned'] ?? 0).toString(),
                           style: TextStyle(
-                            color: (entry['earned'] ?? 0) >= 0 ? Colors.green : Colors.red,
+                            color: (entry['earned'] ?? 0) >= 0
+                                ? Colors.green
+                                : Colors.red,
                             fontWeight: FontWeight.bold,
+                            fontSize: 16,
                           ),
                         ),
                         const SizedBox(width: 12),
                         Icon(
                           _emotionIcon(entry['feeling'] as int?),
                           color: _emotionColor(entry['feeling'] as int?),
-                          size: 28,
+                          size: 40,
                         ),
                       ],
                     ),
