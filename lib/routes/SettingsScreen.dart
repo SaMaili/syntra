@@ -279,6 +279,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ],
                 ),
               ),
+              SizedBox(height: 30),
+              IconButton(
+                icon: Icon(Icons.delete, color: Colors.red),
+                tooltip: 'Debug Delete',
+                onPressed: () {
+                  // TODO: Implement delete logic here
+                  debugPrint('Debug delete button pressed');
+                },
+              ),
             ],
           ),
         ),
