@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../Challenge.dart';
 import '../logic/DailyChallengeLogic.dart';
 import '../static.dart';
@@ -84,16 +85,16 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           );
-    final cardColor = isDark ? Colors.grey[900]!.withOpacity(0.98) : Colors.white.withOpacity(0.95);
+    final cardColor = isDark
+        ? Colors.grey[900]!.withOpacity(0.98)
+        : Colors.white.withOpacity(0.95);
     final titleColor = isDark ? Colors.pinkAccent : AppStatic.grape;
     final descColor = isDark ? Colors.pinkAccent[100] : AppStatic.marianBlue;
     final completedTextColor = isDark ? Colors.greenAccent : Colors.green[700];
     return Scaffold(
       backgroundColor: isDark ? Colors.black : AppStatic.grapeLight,
       body: Container(
-        decoration: BoxDecoration(
-          gradient: bgGradient,
-        ),
+        decoration: BoxDecoration(gradient: bgGradient),
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
@@ -103,11 +104,14 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
                     children: [
                       Icon(Icons.check_circle, color: Colors.green, size: 120),
                       const SizedBox(height: 32),
-                      Text('Challenge completed!',
-                          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                color: completedTextColor,
-                                fontWeight: FontWeight.bold,
-                              )),
+                      Text(
+                        'Challenge completed!',
+                        style: Theme.of(context).textTheme.headlineMedium
+                            ?.copyWith(
+                              color: completedTextColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
                     ],
                   )
                 : Column(
@@ -117,7 +121,8 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
                       const SizedBox(height: 18),
                       Text(
                         'Daily Challenge',
-                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        style: Theme.of(context).textTheme.headlineMedium
+                            ?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: titleColor,
                             ),
@@ -131,13 +136,18 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
                             showXP: true,
                             cardColor: cardColor,
                             titleColor: titleColor,
-                            xpColor: isDark ? Colors.greenAccent : Colors.green[700],
+                            xpColor: isDark
+                                ? Colors.greenAccent
+                                : Colors.green[700],
                             descriptionColor: descColor,
                             onInfoPressed: null,
                             height: double.infinity,
                             elevation: 10,
                             borderRadius: 24,
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 18,
+                              vertical: 18,
+                            ),
                           ),
                         ),
                       if (_challenge != null) ...[
@@ -153,8 +163,14 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16),
                               ),
-                              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                              textStyle: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 32,
+                                vertical: 16,
+                              ),
+                              textStyle: const TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             child: const Text('Accept Challenge'),
                           ),

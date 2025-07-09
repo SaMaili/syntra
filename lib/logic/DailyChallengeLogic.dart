@@ -1,7 +1,9 @@
+import 'dart:math';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syntra/Challenge.dart';
+
 import '../database/challenge_database.dart';
-import 'dart:math';
 
 class DailyChallengeData {
   final String title;
@@ -31,7 +33,8 @@ class DailyChallengeLogic {
 
     if (storedDate != todayStr || challengeId == null) {
       // Pick a new random challenge
-      final allChallenges = await ChallengeDatabase.instance.readAllChallenges();
+      final allChallenges = await ChallengeDatabase.instance
+          .readAllChallenges();
       final random = Random();
       final challenge = allChallenges[random.nextInt(allChallenges.length)];
       challengeId = challenge.id;
@@ -42,8 +45,12 @@ class DailyChallengeLogic {
       return challenge;
     } else {
       // Load the challenge by ID
-      final allChallenges = await ChallengeDatabase.instance.readAllChallenges();
-      final challenge = allChallenges.firstWhere((c) => c.id == challengeId, orElse: () => allChallenges.first);
+      final allChallenges = await ChallengeDatabase.instance
+          .readAllChallenges();
+      final challenge = allChallenges.firstWhere(
+        (c) => c.id == challengeId,
+        orElse: () => allChallenges.first,
+      );
       return challenge;
     }
   }

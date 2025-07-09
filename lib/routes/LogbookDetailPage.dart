@@ -63,7 +63,12 @@ class LogbookDetailPage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      _detailRow('Challenge', challengeTitle, icon: Icons.flag, textColor: textColor),
+                      _detailRow(
+                        'Challenge',
+                        challengeTitle,
+                        icon: Icons.flag,
+                        textColor: textColor,
+                      ),
                       _detailRow(
                         'Date',
                         _formatDate(entry['timestamp']?.toString()),
@@ -105,7 +110,9 @@ class LogbookDetailPage extends StatelessWidget {
                           margin: const EdgeInsets.only(top: 24, bottom: 8),
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: isDark ? Colors.blueGrey[900] : Colors.blue[50],
+                            color: isDark
+                                ? Colors.blueGrey[900]
+                                : Colors.blue[50],
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(
                               color: Colors.blueAccent.withOpacity(0.2),
@@ -143,7 +150,10 @@ class LogbookDetailPage extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
         child: ElevatedButton.icon(
           icon: const Icon(Icons.delete, color: Colors.white),
-          label: const Text('Delete Entry', style: TextStyle(color: Colors.white)),
+          label: const Text(
+            'Delete Entry',
+            style: TextStyle(color: Colors.white),
+          ),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.red,
             minimumSize: const Size.fromHeight(50),
@@ -211,7 +221,12 @@ class LogbookDetailPage extends StatelessWidget {
     }
   }
 
-  Widget _detailRow(String label, String? value, {IconData? icon, Color? textColor}) {
+  Widget _detailRow(
+    String label,
+    String? value, {
+    IconData? icon,
+    Color? textColor,
+  }) {
     // Special case for Feeling: show emoji + name
     if (label == 'Feeling') {
       final int? feelingValue = int.tryParse(value ?? '');
@@ -264,12 +279,12 @@ class LogbookDetailPage extends StatelessWidget {
             Icon(icon, size: 20, color: Colors.blueGrey),
             const SizedBox(width: 8),
           ],
-          Text('$label: ', style: TextStyle(fontWeight: FontWeight.bold, color: textColor)),
+          Text(
+            '$label: ',
+            style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
+          ),
           Expanded(
-            child: Text(
-              value ?? '-',
-              style: TextStyle(color: textColor),
-            ),
+            child: Text(value ?? '-', style: TextStyle(color: textColor)),
           ),
         ],
       ),

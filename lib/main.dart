@@ -163,10 +163,7 @@ class _HomeBarState extends State<HomeBar> {
             icon: Icon(Icons.calendar_today),
             label: 'Daily',
           ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.bar_chart),
-              label: 'Stats',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Stats'),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             label: 'Settings',

@@ -117,7 +117,9 @@ class _LogbookPageState extends State<LogbookPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     leading: CircleAvatar(
-                      backgroundColor: isDark ? Colors.grey[800] : Colors.grey[300],
+                      backgroundColor: isDark
+                          ? Colors.grey[800]
+                          : Colors.grey[300],
                       child: Text(
                         (i + 1).toString(),
                         style: TextStyle(
@@ -129,7 +131,10 @@ class _LogbookPageState extends State<LogbookPage> {
                     title: Text(
                       _challengeTitles[entry['challenge_id']?.toString()] ??
                           'Unknown',
-                      style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: textColor,
+                      ),
                     ),
                     subtitle: Text(
                       _formatTimestamp(entry['timestamp']?.toString()),

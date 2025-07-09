@@ -83,15 +83,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
             end: Alignment.bottomRight,
           );
     final cardColor = isDark ? Colors.grey[900] : AppStatic.grapeLight;
-    final card2Color = isDark ? Colors.blueGrey[900] : AppStatic.marianBlueLight;
+    final card2Color = isDark
+        ? Colors.blueGrey[900]
+        : AppStatic.marianBlueLight;
     final textPrimary = isDark ? Colors.white : AppStatic.textPrimary;
-    final textSecondary = isDark ? Colors.grey[400] : AppStatic.textSecondaryLight;
+    final textSecondary = isDark
+        ? Colors.grey[400]
+        : AppStatic.textSecondaryLight;
     return Container(
       width: double.infinity,
       height: double.infinity,
-      decoration: BoxDecoration(
-        gradient: bgGradient,
-      ),
+      decoration: BoxDecoration(gradient: bgGradient),
       child: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 36),

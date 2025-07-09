@@ -41,9 +41,7 @@ class ChallengeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Card(
-      color: isDark
-          ? Colors.grey[900]
-          : cardColor ?? Colors.white,
+      color: isDark ? Colors.grey[900] : cardColor ?? Colors.white,
       elevation: elevation,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(borderRadius),
@@ -72,7 +70,9 @@ class ChallengeCard extends StatelessWidget {
                     '+${challenge.xp} Aura',
                     style: TextStyle(
                       fontSize: 18,
-                      color: xpColor ?? (isDark ? Colors.greenAccent : Colors.green[700]),
+                      color:
+                          xpColor ??
+                          (isDark ? Colors.greenAccent : Colors.green[700]),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -87,12 +87,23 @@ class ChallengeCard extends StatelessWidget {
                       context: context,
                       builder: (context) => AlertDialog(
                         backgroundColor: isDark ? Colors.grey[900] : null,
-                        title: Text('Challenge Description', style: TextStyle(color: isDark ? Colors.white : null)),
-                        content: Text(challenge.description, style: TextStyle(color: isDark ? Colors.white : null)),
+                        title: Text(
+                          'Challenge Description',
+                          style: TextStyle(color: isDark ? Colors.white : null),
+                        ),
+                        content: Text(
+                          challenge.description,
+                          style: TextStyle(color: isDark ? Colors.white : null),
+                        ),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.of(context).pop(),
-                            child: Text('Close', style: TextStyle(color: isDark ? Colors.pinkAccent : null)),
+                            child: Text(
+                              'Close',
+                              style: TextStyle(
+                                color: isDark ? Colors.pinkAccent : null,
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -120,14 +131,15 @@ class ChallengeCard extends StatelessWidget {
                       infoIcon ??
                       Icon(
                         Icons.info_outline,
-                        color: isDark
-                            ? Colors.pinkAccent
-                            : Colors.grey[700],
+                        color: isDark ? Colors.pinkAccent : Colors.grey[700],
                       ),
                   onPressed:
                       onInfoPressed ??
                       () async {
-                        await ChallengeInfoNotification.showLastNotesNotification(context, challenge.id);
+                        await ChallengeInfoNotification.showLastNotesNotification(
+                          context,
+                          challenge.id,
+                        );
                       },
                 ),
               ],

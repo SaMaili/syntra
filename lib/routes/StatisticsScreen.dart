@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../logic/StatisticsLogic.dart';
 import '../static.dart';
 import 'LogbookPage.dart';
-import '../logic/StatisticsLogic.dart';
 
 // Main statistics screen widget
 class StatisticsScreen extends StatelessWidget {
@@ -35,9 +35,7 @@ class StatisticsScreen extends StatelessWidget {
     final cardColor = isDark ? Colors.grey[900] : AppStatic.marianBlueLight;
     final statTitleColor = isDark ? Colors.pinkAccent : AppStatic.marianBlue;
     return Container(
-      decoration: BoxDecoration(
-        gradient: bgGradient,
-      ),
+      decoration: BoxDecoration(gradient: bgGradient),
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 28),

@@ -11,19 +11,19 @@
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:syntra/Challenge.dart';
+import 'package:syntra/logic/ActiveChallengeLogic.dart';
 import 'package:syntra/widgets/ChallengeCard.dart';
 import 'package:syntra/widgets/NotSureWhatToSayDialog.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
 import 'ChallengeDoneScreen.dart';
-import 'package:syntra/logic/ActiveChallengeLogic.dart';
 
 // The ActiveChallengeScreen widget manages the UI and logic for an active challenge session.
 class ActiveChallengeScreen extends StatefulWidget {
   // The challenge to be performed.
   final Challenge challenge;
+
   // Optional callback when the challenge is done.
   final ValueChanged<double>? onDone;
 
@@ -42,13 +42,17 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
     with SingleTickerProviderStateMixin {
   // Timer for abort lock (prevents aborting the challenge immediately).
   int abortLockTimer = 2;
+
   // Main challenge timer (counts down challenge duration).
   int mainTimer = 0;
+
   // Whether abort lock is finished.
   bool abortLockDone = false;
+
   // Futures for managing timers.
   late final Future<void> mainTicker;
   late final Future<void> abortLockTicker;
+
   // Animation controller for pulse effect.
   AnimationController? _pulseController;
   Animation<double>? _pulseAnimation;
@@ -150,8 +154,8 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
     final doneBtnBg = mainTimeOver
         ? (isDark ? Colors.greenAccent[400] : const Color(0xFF39FF14))
         : (over
-            ? (isDark ? Colors.green[700] : Colors.green)
-            : (isDark ? Colors.grey[700] : Colors.grey[400]));
+              ? (isDark ? Colors.green[700] : Colors.green)
+              : (isDark ? Colors.grey[700] : Colors.grey[400]));
     final doneBtnFg = Colors.white;
     final doneBtnShadow = mainTimeOver
         ? (isDark ? Colors.greenAccent : const Color(0xFF39FF14))
@@ -169,14 +173,25 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
           children: [
             if (!mainTimeOver) ...[
               const SizedBox(height: 16),
-              const Text('Time Remaining', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const Text(
+                'Time Remaining',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 8),
               // Display the main timer.
-              Text(_formatTime(mainTimer), style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+              Text(
+                _formatTime(mainTimer),
+                style: const TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 32),
             ],
             // Show the challenge card.
-            Expanded(child: ChallengeCard(challenge: widget.challenge, showXP: false)),
+            Expanded(
+              child: ChallengeCard(challenge: widget.challenge, showXP: false),
+            ),
             const SizedBox(height: 32),
             if (!mainTimeOver) ...[
               // Button for help dialog if user is unsure what to say.
@@ -184,14 +199,18 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                 onPressed: () {
                   showDialog(
                     context: context,
-                    builder: (context) => NotSureWhatToSayDialog(text: widget.challenge.notSureWhatToSay),
+                    builder: (context) => NotSureWhatToSayDialog(
+                      text: widget.challenge.notSureWhatToSay,
+                    ),
                   );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: helpBtnBg,
                   foregroundColor: helpBtnFg,
                   minimumSize: const Size(double.infinity, 48),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 child: const Text('Not sure what to say?'),
               ),
@@ -209,22 +228,35 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                             ? () async {
                                 // Play success sound and finish challenge with reduced reward.
                                 final player = AudioPlayer();
-                                await player.play(AssetSource('yipee-45360.mp3'));
-                                await Future.delayed(const Duration(milliseconds: 600));
+                                await player.play(
+                                  AssetSource('yipee-45360.mp3'),
+                                );
+                                await Future.delayed(
+                                  const Duration(milliseconds: 600),
+                                );
                                 await _finishChallenge(0.8);
                               }
                             : null,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: doneBtnBg,
                           foregroundColor: doneBtnFg,
-                          textStyle: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                          textStyle: const TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                          ),
                           elevation: 12,
                           shadowColor: doneBtnShadow,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [Icon(Icons.flash_on, color: Colors.white, size: 32), SizedBox(width: 12), Text('DONE! 😎')],
+                          children: const [
+                            Icon(Icons.flash_on, color: Colors.white, size: 32),
+                            SizedBox(width: 12),
+                            Text('DONE! 😎'),
+                          ],
                         ),
                       ),
                     )
@@ -234,20 +266,30 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                               // Play success sound and finish challenge with full reward.
                               final player = AudioPlayer();
                               await player.play(AssetSource('yipee-45360.mp3'));
-                              await Future.delayed(const Duration(milliseconds: 600));
+                              await Future.delayed(
+                                const Duration(milliseconds: 600),
+                              );
                               await _finishChallenge(1);
                             }
                           : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: doneBtnBg,
                         foregroundColor: doneBtnFg,
-                        textStyle: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                        textStyle: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
                         elevation: 2,
                         shadowColor: doneBtnShadow,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                       ),
                       child: over
-                          ? const Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text('DONE! 😎')])
+                          ? const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [Text('DONE! 😎')],
+                            )
                           : Text('Noch $abortLockTimer Sekunden...'),
                     ),
             ),
@@ -258,14 +300,26 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                 onPressed: () async {
                   // Play error sound and finish challenge with penalty.
                   final player = AudioPlayer();
-                  await player.play(AssetSource('error-call-to-attention-129258.mp3'));
+                  await player.play(
+                    AssetSource('error-call-to-attention-129258.mp3'),
+                  );
                   await Future.delayed(const Duration(milliseconds: 600));
                   await _finishChallenge(-0.5);
                 },
                 style: TextButton.styleFrom(
-                  foregroundColor: mainTimeOver ? Colors.amberAccent.shade700 : Colors.black54,
-                  textStyle: TextStyle(fontSize: mainTimeOver ? 18 : 12, fontWeight: mainTimeOver ? FontWeight.bold : FontWeight.normal),
-                  padding: EdgeInsets.symmetric(vertical: mainTimeOver ? 12 : 4, horizontal: 8),
+                  foregroundColor: mainTimeOver
+                      ? Colors.amberAccent.shade700
+                      : Colors.black54,
+                  textStyle: TextStyle(
+                    fontSize: mainTimeOver ? 18 : 12,
+                    fontWeight: mainTimeOver
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                  ),
+                  padding: EdgeInsets.symmetric(
+                    vertical: mainTimeOver ? 12 : 4,
+                    horizontal: 8,
+                  ),
                 ),
                 child: const Text('Not today 🙈'),
               ),

@@ -100,7 +100,10 @@ class ChallengeInfoNotification {
                   const SizedBox(width: 6),
                   Text(
                     'Last completed: $formattedTime',
-                    style: TextStyle(fontSize: 15, color: isDark ? Colors.white : null),
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: isDark ? Colors.white : null,
+                    ),
                   ),
                 ],
               ),
@@ -112,7 +115,10 @@ class ChallengeInfoNotification {
                   Expanded(
                     child: Text(
                       'You can repeat this challenge as often as you like!',
-                      style: TextStyle(fontSize: 14, color: isDark ? Colors.grey[300] : Colors.blueGrey),
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: isDark ? Colors.grey[300] : Colors.blueGrey,
+                      ),
                     ),
                   ),
                 ],

@@ -24,7 +24,9 @@ class ChallengeDoneScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Use logic class to determine UI state
-    final ChallengeDoneScreenLogic logic = ChallengeDoneScreenLogic(rewardFactor);
+    final ChallengeDoneScreenLogic logic = ChallengeDoneScreenLogic(
+      rewardFactor,
+    );
     final isAborted = logic.isAborted;
     final title = logic.title;
     final icon = logic.icon;
@@ -52,7 +54,11 @@ class ChallengeDoneScreen extends StatelessWidget {
                   SizedBox(height: 24),
                   Text(
                     message,
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor),
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: textColor,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 24),
@@ -151,7 +157,8 @@ class ChallengeDoneScreenLogic {
 
   String get title => isAborted ? 'Challenge aborted' : 'Challenge completed!';
 
-  IconData get icon => isAborted ? Icons.sentiment_dissatisfied : Icons.emoji_events;
+  IconData get icon =>
+      isAborted ? Icons.sentiment_dissatisfied : Icons.emoji_events;
 
   Color get iconColor => isAborted ? Colors.red : Colors.green;
 
@@ -161,9 +168,8 @@ class ChallengeDoneScreenLogic {
 
   Color get xpColor => isAborted ? Colors.red : Colors.green;
 
-  String get encouragement => isAborted
-      ? 'Try again next time!'
-      : 'Well done! Keep it up!';
+  String get encouragement =>
+      isAborted ? 'Try again next time!' : 'Well done! Keep it up!';
 }
 
 // Widget for user feedback survey after challenge
@@ -177,10 +183,13 @@ class _SurveyWidget extends StatefulWidget {
 class _SurveyWidgetState extends State<_SurveyWidget> {
   // User's self-reported feeling (0-4, default neutral)
   int _feeling = 2;
+
   // User's perceived impression (0-4, default neutral)
   int _perceived = 2;
+
   // Whether the survey has been submitted
   bool _submitted = false;
+
   // Controller for notes text field
   final TextEditingController _notesController = TextEditingController();
 
@@ -228,7 +237,11 @@ class _SurveyWidgetState extends State<_SurveyWidget> {
       children: [
         Text(
           'How did you feel?',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: textColor,
+          ),
         ),
         SizedBox(height: 8),
         Row(
@@ -251,7 +264,11 @@ class _SurveyWidgetState extends State<_SurveyWidget> {
         SizedBox(height: 20),
         Text(
           'How do you think you were perceived?',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: textColor,
+          ),
         ),
         SizedBox(height: 8),
         Row(
@@ -296,8 +313,11 @@ class _SurveyWidgetState extends State<_SurveyWidget> {
 
   // Getters for survey results
   bool get submitted => _submitted;
+
   int get feeling => _feeling;
+
   int get perceived => _perceived;
+
   String get notes => _notesController.text;
 
   // Mark survey as submitted

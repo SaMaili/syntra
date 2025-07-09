@@ -99,13 +99,13 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
     final scoreBoxColor = isDark ? Colors.grey[900] : Colors.amber[50];
     final scoreTextColor = isDark ? Colors.amber[200] : Colors.amber[800];
     final scoreValueColor = isDark ? Colors.amberAccent : Colors.amber[900];
-    final shuffleIconColor = isDark ? Colors.pinkAccent : Colors.deepPurple[400];
+    final shuffleIconColor = isDark
+        ? Colors.pinkAccent
+        : Colors.deepPurple[400];
     return Scaffold(
       backgroundColor: isDark ? Colors.black : AppStatic.grapeLight,
       body: Container(
-        decoration: BoxDecoration(
-          gradient: bgGradient,
-        ),
+        decoration: BoxDecoration(gradient: bgGradient),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
           child: Column(
@@ -145,7 +145,8 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: (isDark ? Colors.amber : Colors.amber).withOpacity(0.2),
+                        color: (isDark ? Colors.amber : Colors.amber)
+                            .withOpacity(0.2),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),
@@ -219,7 +220,9 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                           'No challenges found',
                           style: TextStyle(
                             fontSize: 20,
-                            color: isDark ? Colors.deepPurple[100] : Colors.deepPurple[300],
+                            color: isDark
+                                ? Colors.deepPurple[100]
+                                : Colors.deepPurple[300],
                           ),
                         ),
                       )

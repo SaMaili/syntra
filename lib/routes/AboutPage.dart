@@ -48,7 +48,10 @@ class AboutNotePage extends StatelessWidget {
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    Text('GitHub: ', style: TextStyle(fontSize: 16, color: textColor)),
+                    Text(
+                      'GitHub: ',
+                      style: TextStyle(fontSize: 16, color: textColor),
+                    ),
                     InkWell(
                       child: Text(
                         'https://github.com/SaMaili/syntra',

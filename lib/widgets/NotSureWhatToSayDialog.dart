@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class NotSureWhatToSayDialog extends StatelessWidget {
   final String text;
+
   const NotSureWhatToSayDialog({super.key, required this.text});
 
   String _formatText(String text) {
@@ -24,7 +25,10 @@ class NotSureWhatToSayDialog extends StatelessWidget {
       children: const [
         Icon(Icons.lightbulb_outline, color: Colors.amber, size: 28),
         SizedBox(width: 8),
-        Text('Lost for words?', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        Text(
+          'Lost for words?',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
       ],
     );
   }
