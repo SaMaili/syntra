@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 /// Handles logic for active challenges, including notifications and permissions
@@ -87,6 +88,8 @@ class ActiveChallengeLogic {
     );
     const details = NotificationDetails(android: androidDetails);
     final canSchedule = await canScheduleExactAlarms();
+    final scheduledTime = DateTime.now().add(Duration(seconds: mainTimer));
+
     await flutterLocalNotificationsPlugin!.zonedSchedule(
       0,
       'Zeit abgelaufen!',
@@ -98,10 +101,71 @@ class ActiveChallengeLogic {
           : AndroidScheduleMode.inexact,
       matchDateTimeComponents: null,
     );
+    // Store the scheduled notification time for Android reboot rescheduling
+    await storeScheduledNotification(scheduledTime);
   }
 
   /// Cancels the scheduled timer notification
   Future<void> cancelTimerNotification() async {
     await flutterLocalNotificationsPlugin?.cancel(0);
+  }
+
+  /// Stores a scheduled notification time in persistent storage (Android only)
+  Future<void> storeScheduledNotification(DateTime scheduledTime) async {
+    // TODO: Implement for iOS if needed (using appropriate iOS background APIs)
+    if (Theme.of(context).platform == TargetPlatform.android) {
+      final prefs = await SharedPreferences.getInstance();
+      final List<String> times = prefs.getStringList('flutter.scheduled_notifications') ?? [];
+      times.add(scheduledTime.toIso8601String());
+      await prefs.setStringList('flutter.scheduled_notifications', times);
+    }
+  }
+
+  /// Checks if battery optimizations are ignored for this app (Android only)
+  Future<bool> isIgnoringBatteryOptimizations() async {
+    if (Theme.of(context).platform != TargetPlatform.android) return true;
+    const platform = MethodChannel('channel_battery_optimizations');
+    try {
+      final bool result = await platform.invokeMethod('isIgnoringBatteryOptimizations');
+      return result;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Prompts the user to disable battery optimizations and check background/autostart/lockscreen settings (Android only)
+  Future<void> askForAllNotificationPermissions() async {
+    if (Theme.of(context).platform != TargetPlatform.android) return;
+    if (await isIgnoringBatteryOptimizations()) return;
+    await showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Wichtige Hinweise für Benachrichtigungen'),
+        content: const Text(
+          'Damit Syntra dich immer rechtzeitig benachrichtigen kann, solltest du Folgendes prüfen:\n\n'
+          '• Batterieoptimierung für Syntra deaktivieren\n'
+          '• Syntra darf im Hintergrund laufen\n'
+          '• Syntra darf automatisch starten (Autostart)\n'
+          '• Benachrichtigungen auf dem Sperrbildschirm erlauben\n\n'
+          'Diese Einstellungen findest du in den Geräteeinstellungen (oft unter Akku, Apps oder Benachrichtigungen).'
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('OK'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final intent = AndroidIntent(
+                action: 'android.settings.IGNORE_BATTERY_OPTIMIZATION_SETTINGS',
+              );
+              await intent.launch();
+              Navigator.of(ctx).pop();
+            },
+            child: const Text('Akku-Optimierung öffnen'),
+          ),
+        ],
+      ),
+    );
   }
 }

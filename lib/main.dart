@@ -3,11 +3,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 import 'database/challenge_database.dart';
+import 'logic/NotificationManager.dart';
 import 'routes/ChallengesScreen.dart';
 import 'routes/DailyChallengeScreen.dart';
 import 'routes/SettingsScreen.dart';
@@ -22,7 +25,7 @@ Future<void> copyDatabaseFromAssets() async {
   final dbPath = await getDatabasesPath();
   final path = join(dbPath, 'challenge_database.db');
   final exists = await databaseExists(path);
-  print('DB-Pfad: ' + path); // <-- Hier wird der Pfad ausgegeben
+  print('DB-Pfad: $path'); // <-- Hier wird der Pfad ausgegeben
   if (!exists) {
     ByteData data = await rootBundle.load('assets/challenge_database.db');
     List<int> bytes = data.buffer.asUint8List(
@@ -51,10 +54,32 @@ Future<void> initializeThemeMode() async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize timezone data
+  tz.initializeTimeZones();
+
   await initializeThemeMode();
   await copyDatabaseFromAssets();
   final challenges = await ChallengeDatabase.instance.readAllChallenges();
   AppStatic.CHALLENGES = challenges.toList();
+
+  // Initialize notifications but only start background service if not already running
+  await NotificationManager.initialize();
+
+  // Check if service is already running before starting it
+  try {
+    final isServiceRunning = await FlutterBackgroundService().isRunning();
+    if (!isServiceRunning) {
+      print('Starting background service...');
+      await NotificationManager.startBackgroundService();
+    } else {
+      print('Background service already running, skipping initialization');
+    }
+  } catch (e) {
+    print('Error checking/starting background service: $e');
+    // Continue app startup even if background service fails
+  }
+
   runApp(SyntraApp());
 }
 

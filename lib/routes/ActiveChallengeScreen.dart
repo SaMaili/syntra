@@ -12,7 +12,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:syntra/Challenge.dart';
-import 'package:syntra/logic/ActiveChallengeLogic.dart';
+import 'package:syntra/logic/NotificationManager.dart';
 import 'package:syntra/widgets/ChallengeCard.dart';
 import 'package:syntra/widgets/NotSureWhatToSayDialog.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -39,12 +39,16 @@ class ActiveChallengeScreen extends StatefulWidget {
 
 // State class for ActiveChallengeScreen, handles timers, notifications, and UI updates.
 class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   // Timer for abort lock (prevents aborting the challenge immediately).
-  int abortLockTimer = 2;
+  int abortLockTimer = 15;
 
   // Main challenge timer (counts down challenge duration).
   int mainTimer = 0;
+
+  // Store the challenge start time.
+  late DateTime _startTime;
+  late DateTime _endTime;
 
   // Whether abort lock is finished.
   bool abortLockDone = false;
@@ -57,15 +61,14 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
   AnimationController? _pulseController;
   Animation<double>? _pulseAnimation;
 
-  late ActiveChallengeLogic logic;
-
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     // Initialize main timer with challenge time.
     mainTimer = widget.challenge.time;
-    logic = ActiveChallengeLogic(context: context, mainTimer: mainTimer);
-    logic.initNotifications();
+    _startTime = DateTime.now();
+    _endTime = _startTime.add(Duration(seconds: mainTimer));
     tz.initializeTimeZones();
     _startMainTimer();
     _startAbortLockTimer();
@@ -84,23 +87,80 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
 
   @override
   void dispose() {
-    logic.cancelTimerNotification();
+    WidgetsBinding.instance.removeObserver(this);
     _pulseController?.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // Recalculate the remaining time when app resumes
+      final now = DateTime.now();
+      final secondsLeft = _endTime.difference(now).inSeconds;
+      setState(() {
+        mainTimer = secondsLeft > 0 ? secondsLeft : 0;
+      });
+    }
   }
 
   // --- Business Logic ---
 
   // Start the main challenge timer and update the UI every second.
   void _startMainTimer() {
-    logic.scheduleTimerNotification();
+    print("=== CHALLENGE TIMER STARTING ===");
+    print("Challenge: ${widget.challenge.title}");
+    print("Timer duration: $mainTimer seconds");
+    print("Current time: ${DateTime.now()}");
+    print("Notification scheduled for: ${DateTime.now().add(Duration(seconds: mainTimer))}");
+
+    // Schedule notification for when timer ends using the reliable NotificationManager
+    try {
+      NotificationManager.sendNotification(
+        channelId: 'challenge_timer', // Use the same channel ID as ActiveChallengeLogic
+        channelName: 'Challenge Timer',
+        channelDescription: 'Notification for challenge timer',
+        title: '🎉 Challenge Complete!',
+        body: 'Amazing! You completed "${widget.challenge.title}" - time to celebrate! 🏆',
+        vibration: true,
+        scheduledTime: DateTime.now().add(Duration(seconds: mainTimer)),
+      );
+      print("✅ Challenge notification scheduled successfully!");
+    } catch (e) {
+      print("❌ Failed to schedule challenge notification: $e");
+    }
+
     mainTicker = Future.doWhile(() async {
-      if (mainTimer > 0) {
-        await Future.delayed(const Duration(seconds: 1));
-        if (mounted) setState(() => mainTimer--);
-        return mainTimer > 0 && mounted;
+      await Future.delayed(const Duration(seconds: 1));
+      final now = DateTime.now();
+      final secondsLeft = _endTime.difference(now).inSeconds;
+
+      if (secondsLeft > 0) {
+        if (mounted) setState(() => mainTimer = secondsLeft);
+        return true; // Continue the timer
+      } else {
+        // Timer has reached zero
+        if (mounted) setState(() => mainTimer = 0);
+        print("🏁 Challenge timer finished at: ${DateTime.now()}");
+
+        // Send an immediate notification as backup
+        try {
+          print("🚨 Sending immediate notification as timer finished");
+          // Try immediate notification first
+          await NotificationManager.sendImmediateNotification(
+            channelId: 'challenge_timer',
+            channelName: 'Challenge Timer',
+            channelDescription: 'Notification for challenge timer',
+            title: '🎉 Timer Complete!',
+            body: 'Your challenge "${widget.challenge.title}" just finished! 🏆',
+            vibration: true,
+          );
+        } catch (e) {
+          print("❌ Failed to send immediate notification: $e");
+        }
+
+        return false; // Exit the timer loop
       }
-      return false;
     });
   }
 
@@ -321,7 +381,13 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                     horizontal: 8,
                   ),
                 ),
-                child: const Text('Not today 🙈'),
+                child: Text(
+                  'Not today 🙈',
+                  style: TextStyle(
+                    color: isDark ? Colors.pink[200] : Colors.redAccent,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
           ],
         ),

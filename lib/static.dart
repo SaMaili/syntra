@@ -60,4 +60,22 @@ class AppStatic {
 
   /// Konstante Liste aller Challenges, wird beim App-Start befüllt
   static late List<Challenge> CHALLENGES;
+
+  /// Motivational notification time windows
+  static const int motivationFirstHourStart = 9;
+  static const int motivationFirstHourRange = 6; // 9-14
+  static const int motivationSecondHourStart = 18;
+  static const int motivationSecondHourRange = 5; // 16-20
+
+  /// Motivational notification messages
+  static const List<String> motivationMessages = [
+    "Ready for a new challenge? Let's go!",
+    "Keep up the great work! Try a challenge today!",
+    "Your next win is waiting. Take on a challenge!",
+    "Small steps, big results. Do a challenge!",
+    "Stay motivated! Complete a challenge now!"
+    "You are the sun! But what is the sun if it can't shine?\nDo a challenge!",
+    "Are you outside? Then you should do a challenge!",
+    "It takes only 5 minutes to do a challenge!\nWhat are you waiting for?",
+  ];
 }

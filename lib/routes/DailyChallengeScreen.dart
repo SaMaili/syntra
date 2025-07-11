@@ -4,10 +4,10 @@ import '../Challenge.dart';
 import '../logic/DailyChallengeLogic.dart';
 import '../static.dart';
 import '../widgets/ChallengeCard.dart';
-import 'ActiveChallengeScreen.dart';
+import 'ChallengeDoneScreen.dart';
 
 class DailyChallengeScreen extends StatefulWidget {
-  const DailyChallengeScreen({Key? key}) : super(key: key);
+  const DailyChallengeScreen({super.key});
 
   @override
   State<DailyChallengeScreen> createState() => _DailyChallengeScreenState();
@@ -49,29 +49,45 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
   }
 
   Future<void> _acceptChallenge() async {
-    await DailyChallengeLogic().acceptChallenge();
-    setState(() {
-      _accepted = true;
-    });
-    if (_challenge != null) {
-      final result = await Navigator.of(context).push(
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Challenge starten?'),
+        content: const Text('Möchtest du die heutige Challenge jetzt wirklich machen?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Abbrechen'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Ja, Challenge starten'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true && _challenge != null) {
+      await DailyChallengeLogic().markAsCompleted();
+      setState(() {
+        _completed = true;
+      });
+      Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => ActiveChallengeScreen(challenge: _challenge!),
+          builder: (context) => ChallengeDoneScreen(
+            challenge: _challenge!,
+            rewardFactor: 1.0,
+          ),
         ),
       );
-      if (result != null) {
-        await DailyChallengeLogic().markAsCompleted();
-        setState(() {
-          _completed = true;
-        });
-      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     if (_loading) {
-      return const Center(child: CircularProgressIndicator());
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
     }
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bgGradient = isDark
@@ -90,45 +106,101 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
         : Colors.white.withOpacity(0.95);
     final titleColor = isDark ? Colors.pinkAccent : AppStatic.grape;
     final descColor = isDark ? Colors.pinkAccent[100] : AppStatic.marianBlue;
-    final completedTextColor = isDark ? Colors.greenAccent : Colors.green[700];
+    final completedTextColor = isDark ? Color(0xFF7ED957) : Color(0xFF4BB543); // sanftes Grün
+    final completedBgColor = isDark ? Color(0xFF232526) : Color(0xFFF0FFF4); // sanftes hellgrün
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+        title: Text(
+          'Daily Challenge',
+          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: titleColor,
+              ),
+        ),
+      ),
       backgroundColor: isDark ? Colors.black : AppStatic.grapeLight,
       body: Container(
+        width: double.infinity,
+        height: double.infinity,
         decoration: BoxDecoration(gradient: bgGradient),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-            child: _completed
-                ? Column(
+        child: SafeArea(
+          child: _completed
+              ? Center(
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.check_circle, color: Colors.green, size: 120),
-                      const SizedBox(height: 32),
-                      Text(
-                        'Challenge completed!',
-                        style: Theme.of(context).textTheme.headlineMedium
-                            ?.copyWith(
-                              color: completedTextColor,
-                              fontWeight: FontWeight.bold,
+                      Container(
+                        padding: const EdgeInsets.all(28),
+                        decoration: BoxDecoration(
+                          color: completedBgColor,
+                          borderRadius: BorderRadius.circular(32),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.08),
+                              blurRadius: 16,
+                              offset: Offset(0, 8),
                             ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  colors: [completedTextColor, completedTextColor.withOpacity(0.7)],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: completedTextColor.withOpacity(0.3),
+                                    blurRadius: 24,
+                                    spreadRadius: 2,
+                                  ),
+                                ],
+                              ),
+                              padding: const EdgeInsets.all(18),
+                              child: Icon(
+                                Icons.emoji_events_rounded,
+                                color: Colors.white,
+                                size: 64,
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                            Text(
+                              'Challenge completed!',
+                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                    color: completedTextColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              'Great job! You have mastered today\'s challenge.',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: isDark ? Colors.white70 : Colors.black87,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 24),
+                          ],
+                        ),
                       ),
                     ],
-                  )
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  ),
+                )
+              : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+                  child: Column(
                     children: [
-                      const SizedBox(height: 18),
-                      Text(
-                        'Daily Challenge',
-                        style: Theme.of(context).textTheme.headlineMedium
-                            ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: titleColor,
-                            ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 32),
                       if (_challenge != null)
                         Expanded(
                           child: ChallengeCard(
@@ -178,7 +250,7 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
                       ],
                     ],
                   ),
-          ),
+                ),
         ),
       ),
     );

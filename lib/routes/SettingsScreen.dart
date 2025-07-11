@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -16,10 +17,10 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool _notificationsEnabled = true;
+  final bool _notificationsEnabled = true;
   bool _darkModeEnabled = false;
-  bool _soundEnabled = true;
-  String _selectedLanguage = 'English';
+  final bool _soundEnabled = true;
+  final String _selectedLanguage = 'English';
 
   Future<String> get _settingsPath async {
     final directory = await getApplicationDocumentsDirectory();
@@ -290,6 +291,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   debugPrint('Debug delete button pressed');
                 },
               ),
+              // Debug: Zeige die nächsten beiden Motivation-Benachrichtigungszeiten
+              FutureBuilder<List<DateTime>>(
+                future: getNextMotivationNotificationTimes(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) return const SizedBox();
+                  final times = snapshot.data!;
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Nächste Motivation 1: ${_formatTime(times[0])}'),
+                      Text('Nächste Motivation 2: ${_formatTime(times[1])}'),
+                    ],
+                  );
+                },
+              ),
             ],
           ),
         ),
@@ -337,5 +353,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ],
       ),
     );
+  }
+
+  String _formatTime(DateTime dt) {
+    return '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+  }
+
+  Future<List<DateTime>> getNextMotivationNotificationTimes() async {
+    // Simuliere die gleiche Logik wie in NotificationManager
+    final now = DateTime.now();
+    final random = Random(now.day + now.month + now.year); // deterministisch für heute
+    final int firstHour = AppStatic.motivationFirstHourStart + random.nextInt(AppStatic.motivationFirstHourRange);
+    final int secondHour = AppStatic.motivationSecondHourStart + random.nextInt(AppStatic.motivationSecondHourRange);
+    final DateTime t1 = DateTime(now.year, now.month, now.day, firstHour, random.nextInt(60));
+    final DateTime t2 = DateTime(now.year, now.month, now.day, secondHour, random.nextInt(60));
+    return [t1, t2];
   }
 }

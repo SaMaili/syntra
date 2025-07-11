@@ -5,7 +5,7 @@ import 'package:sqflite/sqflite.dart';
 class LogbookDetailPage extends StatelessWidget {
   final Map<String, dynamic> entry;
 
-  const LogbookDetailPage({Key? key, required this.entry}) : super(key: key);
+  const LogbookDetailPage({super.key, required this.entry});
 
   Future<String> _getChallengeTitle(
     BuildContext context,

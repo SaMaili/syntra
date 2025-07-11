@@ -5,7 +5,7 @@ import 'package:sqflite/sqflite.dart';
 import 'LogbookDetailPage.dart';
 
 class LogbookPage extends StatefulWidget {
-  const LogbookPage({Key? key}) : super(key: key);
+  const LogbookPage({super.key});
 
   @override
   State<LogbookPage> createState() => _LogbookPageState();

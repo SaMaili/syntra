@@ -32,11 +32,12 @@ class DailyChallengeLogic {
     String? challengeId = prefs.getString(_challengeIdKey);
 
     if (storedDate != todayStr || challengeId == null) {
-      // Pick a new random challenge
-      final allChallenges = await ChallengeDatabase.instance
-          .readAllChallenges();
+      // Pick a new random solo challenge
+      final allChallenges = await ChallengeDatabase.instance.readAllChallenges();
+      final soloChallenges = allChallenges.where((c) => c.type == 'solo').toList();
+      if (soloChallenges.isEmpty) return null;
       final random = Random();
-      final challenge = allChallenges[random.nextInt(allChallenges.length)];
+      final challenge = soloChallenges[random.nextInt(soloChallenges.length)];
       challengeId = challenge.id;
       await prefs.setString(_challengeIdKey, challengeId);
       await prefs.setString(_challengeDateKey, todayStr);

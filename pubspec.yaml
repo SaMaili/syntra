@@ -41,7 +41,7 @@ dependencies:
   screen_state: ^4.1.1
   flutter_local_notifications: ^19.3.0
   android_intent_plus: ^5.3.0
-  permission_handler: ^11.0.1
+  permission_handler: ^12.0.1
   timezone: any
   path_provider: any
   sqflite: ^2.4.2
@@ -49,7 +49,10 @@ dependencies:
   fl_chart: ^1.0.0
   package_info_plus: ^8.3.0
   url_launcher: ^6.3.1
+  flutter_background_service: ^5.1.0
+  flutter_background_service_android: ^6.2.6
 
+  path: any
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -59,8 +62,8 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^5.0.0
-  flutter_launcher_icons: ^0.13.1
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

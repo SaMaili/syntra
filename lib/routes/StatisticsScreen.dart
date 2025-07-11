@@ -71,20 +71,22 @@ class StatisticsScreen extends StatelessWidget {
               SizedBox(height: 18),
               // Button to open the challenge logbook
               ElevatedButton.icon(
-                icon: Icon(Icons.history),
-                label: Text('Challenge Logbook'),
+                icon: Icon(Icons.history, size: 36),
+                label: Text('Challenge Logbook',
+                    style: TextStyle(
+                        fontSize: 22, fontWeight: FontWeight.bold)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppStatic.grape,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
+                    horizontal: 36,
+                    vertical: 20,
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  elevation: 6,
-                  shadowColor: AppStatic.grape.withOpacity(0.18),
+                  elevation: 8,
+                  shadowColor: AppStatic.grape.withOpacity(0.22),
                 ),
                 onPressed: () {
                   Navigator.of(
@@ -155,8 +157,9 @@ class StatisticsScreen extends StatelessWidget {
                                     showTitles: true,
                                     getTitlesWidget: (value, meta) {
                                       int idx = value.toInt();
-                                      if (idx < 0 || idx > 6)
+                                      if (idx < 0 || idx > 6) {
                                         return Container();
+                                      }
                                       return Padding(
                                         padding: const EdgeInsets.only(
                                           top: 8.0,
@@ -275,8 +278,9 @@ class StatisticsScreen extends StatelessWidget {
                                     showTitles: true,
                                     getTitlesWidget: (value, meta) {
                                       int idx = value.toInt();
-                                      if (idx < 0 || idx > 6)
+                                      if (idx < 0 || idx > 6) {
                                         return Container();
+                                      }
                                       return Padding(
                                         padding: const EdgeInsets.only(
                                           top: 8.0,

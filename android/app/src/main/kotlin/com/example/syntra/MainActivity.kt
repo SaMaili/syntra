@@ -1,4 +1,4 @@
-package com.example.syntra
+package com.syntra.syntra
 
 import android.app.AlarmManager
 import android.os.Build
