@@ -347,6 +347,24 @@ class NotificationManager {
       print("❌ Failed to send immediate notification: $e");
     }
   }
+
+  /// Cancels all scheduled and active notifications.
+  static Future<void> cancelAllNotifications() async {
+    await _notificationsPlugin.cancelAll();
+  }
+
+  /// Stops the Flutter background service and cancels notifications.
+  static Future<void> stopBackgroundService() async {
+    try {
+      final service = FlutterBackgroundService();
+      // Invoke platform method to stop the service
+      service.invoke('stopService');
+      print('Background service stop requested');
+      await cancelAllNotifications();
+    } catch (e) {
+      print('Error stopping background service: $e');
+    }
+  }
 }
 
 // TODO: Implement iOS background notification support.

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'package:syntra/logic/NotificationManager.dart';
 
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -17,10 +18,9 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  final bool _notificationsEnabled = true;
+  bool _notificationsEnabled = true;
   bool _darkModeEnabled = false;
-  final bool _soundEnabled = true;
-  final String _selectedLanguage = 'English';
+  String _selectedLanguage = 'English';
 
   Future<String> get _settingsPath async {
     final directory = await getApplicationDocumentsDirectory();
@@ -40,11 +40,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
         final data = jsonDecode(contents);
         setState(() {
           _darkModeEnabled = data['darkMode'] ?? _darkModeEnabled;
+          _notificationsEnabled = data['notificationsEnabled'] ?? _notificationsEnabled;
         });
         if (_darkModeEnabled) {
           themeModeNotifier.value = ThemeMode.dark;
         } else {
           themeModeNotifier.value = ThemeMode.light;
+        }
+        // Initialize or cancel notifications based on setting
+        if (_notificationsEnabled) {
+          NotificationManager.startBackgroundService();
+        } else {
+          NotificationManager.stopBackgroundService();
         }
       }
     } catch (_) {}
@@ -59,7 +66,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
         await dir.create(recursive: true);
       }
     }
-    final data = {'darkMode': _darkModeEnabled};
+    final data = {
+      'darkMode': _darkModeEnabled,
+      'notificationsEnabled': _notificationsEnabled,
+    };
     await file.writeAsString(jsonEncode(data));
   }
 
@@ -139,26 +149,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 child: Column(
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('coming soon'),
-                            duration: Duration(seconds: 2),
-                          ),
-                        );
-                      },
-                      child: Opacity(
-                        opacity: 0.4,
-                        child: _buildSettingItem(
-                          'Notifications',
-                          'Get reminded about daily challenges',
-                          Icons.notifications,
-                          Icon(Icons.toggle_off, color: Colors.grey, size: 32),
-                          textPrimary: textPrimary,
-                          textSecondary: textSecondary,
-                        ),
+                    _buildSettingItem(
+                      'Notifications',
+                      'Get reminded about daily challenges',
+                      Icons.notifications,
+                      Switch(
+                        value: _notificationsEnabled,
+                        onChanged: (value) {
+                          setState(() {
+                            _notificationsEnabled = value;
+                          });
+                          _saveSettings();
+                          if (value) {
+                            NotificationManager.startBackgroundService();
+                          } else {
+                            NotificationManager.stopBackgroundService();
+                          }
+                        },
+                        activeColor: AppStatic.grape,
                       ),
+                      textPrimary: textPrimary,
+                      textSecondary: textSecondary,
                     ),
                     Divider(color: AppStatic.grapeDivider),
                     _buildSettingItem(
