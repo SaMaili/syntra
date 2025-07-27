@@ -124,7 +124,7 @@ class ChallengeDoneScreen extends StatelessWidget {
                   }
                   // Save logbook entry
                   await ChallengeDatabase.instance.addLogbookEntry({
-                    'user_id': null, // TODO: adjust if user IDs are used
+                    'user_id': null, // TODO: adjust when user IDs are used
                     'challenge_id': challenge.id,
                     'earned': (challenge.xp * rewardFactor).round(),
                     'timestamp': DateTime.now().toIso8601String(),
@@ -133,6 +133,13 @@ class ChallengeDoneScreen extends StatelessWidget {
                     'perception': perception,
                     'notes': notes,
                   });
+                  // Show confirmation snackbar with context-specific message
+                  final snackMessage = logic.isAborted
+                      ? 'Challenge aborted!'
+                      : 'Challenge completed! Logbook entry saved.';
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(snackMessage)),
+                  );
                   if (onDone != null) {
                     onDone!(rewardFactor); // Score-Update Callback
                   }
