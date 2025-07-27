@@ -208,7 +208,7 @@ class NotificationManager {
     });
   }
 
-  static Future<void> sendNotification({
+  static Future<int> sendNotification({
     required String channelId,
     required String channelName,
     required String channelDescription,
@@ -226,8 +226,7 @@ class NotificationManager {
     );
 
     // Generate a proper 32-bit notification ID
-    final notificationId = (DateTime.now().millisecondsSinceEpoch % 2147483647)
-        .toInt();
+    final int notificationId = (DateTime.now().millisecondsSinceEpoch % 2147483647).toInt();
     print("  - Notification ID: $notificationId");
 
     try {
@@ -252,7 +251,6 @@ class NotificationManager {
           ),
         ),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        matchDateTimeComponents: DateTimeComponents.time,
       );
       print("✅ Exact alarm notification scheduled successfully!");
     } catch (e) {
@@ -278,7 +276,6 @@ class NotificationManager {
             ),
           ),
           androidScheduleMode: AndroidScheduleMode.inexact,
-          matchDateTimeComponents: DateTimeComponents.time,
         );
         print("✅ Inexact alarm notification scheduled successfully!");
       } catch (e2) {
@@ -304,6 +301,14 @@ class NotificationManager {
         print("✅ Immediate notification sent as fallback!");
       }
     }
+    // Return the ID for possible cancellation
+    return notificationId;
+  }
+
+  /// Cancel a scheduled notification by its ID
+  static Future<void> cancelNotification(int id) async {
+    await _notificationsPlugin.cancel(id);
+    print('Cancelled notification with ID: $id');
   }
 
   static Future<void> sendImmediateNotification({

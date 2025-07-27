@@ -61,6 +61,10 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
   AnimationController? _pulseController;
   Animation<double>? _pulseAnimation;
 
+  int? _scheduledNotificationId;
+
+  bool _isDone = false;
+
   @override
   void initState() {
     super.initState();
@@ -107,7 +111,7 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
   // --- Business Logic ---
 
   // Start the main challenge timer and update the UI every second.
-  void _startMainTimer() {
+  Future<void> _startMainTimer() async {
     print("=== CHALLENGE TIMER STARTING ===");
     print("Challenge: ${widget.challenge.title}");
     print("Timer duration: $mainTimer seconds");
@@ -116,8 +120,8 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
 
     // Schedule notification for when timer ends using the reliable NotificationManager
     try {
-      NotificationManager.sendNotification(
-        channelId: 'challenge_timer', // Use the same channel ID as ActiveChallengeLogic
+      final id = await NotificationManager.sendNotification(
+        channelId: 'challenge_timer',
         channelName: 'Challenge Timer',
         channelDescription: 'Notification for challenge timer',
         title: '🎉 Challenge Complete!',
@@ -125,13 +129,15 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
         vibration: true,
         scheduledTime: DateTime.now().add(Duration(seconds: mainTimer)),
       );
-      print("✅ Challenge notification scheduled successfully!");
+      print("✅ Challenge notification scheduled successfully! ID: $id");
+      _scheduledNotificationId = id;
     } catch (e) {
       print("❌ Failed to schedule challenge notification: $e");
     }
 
     mainTicker = Future.doWhile(() async {
       await Future.delayed(const Duration(seconds: 1));
+      if (_isDone) return false;
       final now = DateTime.now();
       final secondsLeft = _endTime.difference(now).inSeconds;
 
@@ -286,6 +292,10 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                       child: ElevatedButton(
                         onPressed: over
                             ? () async {
+                                _isDone = true;
+                                if (_scheduledNotificationId != null) {
+                                  await NotificationManager.cancelNotification(_scheduledNotificationId!);
+                                }
                                 // Play success sound and finish challenge with reduced reward.
                                 final player = AudioPlayer();
                                 await player.play(
@@ -323,6 +333,10 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                   : ElevatedButton(
                       onPressed: over
                           ? () async {
+                              _isDone = true;
+                              if (_scheduledNotificationId != null) {
+                                await NotificationManager.cancelNotification(_scheduledNotificationId!);
+                              }
                               // Play success sound and finish challenge with full reward.
                               final player = AudioPlayer();
                               await player.play(AssetSource('yipee-45360.mp3'));
