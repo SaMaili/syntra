@@ -34,24 +34,6 @@ class ChallengeDatabase {
     return await openDatabase(path, version: 1);
   }
 
-  Future _createDB(Database db, int version) async {
-    await db.execute('''
-      CREATE TABLE challenges (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT NOT NULL,
-        description TEXT,
-        notSureWhatToSay TEXT DEFAULT 'self explanatory',
-        info TEXT,
-        timer INTEGER,
-        xp INTEGER,
-        type TEXT,
-        flirt INTEGER DEFAULT 0,
-        tags TEXT,
-        frequency REAL DEFAULT 1.0
-      )
-    ''');
-  }
-
   Future<int> create(Challenge challenge) async {
     final db = await instance.database;
     return await db.insert('challenges', challenge.toMap());

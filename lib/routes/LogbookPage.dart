@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import 'AddChallengeScreen.dart';
 import 'LogbookDetailPage.dart';
 
 class LogbookPage extends StatefulWidget {
@@ -16,7 +17,6 @@ class _LogbookPageState extends State<LogbookPage> {
   bool _loading = true;
   Map<String, String> _challengeTitles = {};
   static const int _pageSize = 50;
-  int _currentPage = 0;
   bool _hasMore = true;
   bool _isLoadingMore = false;
 
@@ -35,6 +35,9 @@ class _LogbookPageState extends State<LogbookPage> {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'challenge_database.db');
     final db = await openDatabase(path);
+    try {
+      await db.execute("ALTER TABLE logbook ADD COLUMN custom_title TEXT");
+    } catch (_) {}
     final offset = append ? _entries.length : 0;
     final result = await db.rawQuery(
       'SELECT * FROM logbook ORDER BY timestamp DESC LIMIT $_pageSize OFFSET $offset',
@@ -55,7 +58,6 @@ class _LogbookPageState extends State<LogbookPage> {
           ..addAll(List<Map<String, dynamic>>.from(result));
       } else {
         _entries = List<Map<String, dynamic>>.from(result);
-        _currentPage = 0;
       }
       _hasMore = result.length == _pageSize;
       _loading = false;
@@ -90,7 +92,6 @@ class _LogbookPageState extends State<LogbookPage> {
                     !_isLoadingMore &&
                     scrollInfo.metrics.pixels >=
                         scrollInfo.metrics.maxScrollExtent - 200) {
-                  _currentPage++;
                   _loadEntries(append: true);
                 }
                 return false;
@@ -107,6 +108,11 @@ class _LogbookPageState extends State<LogbookPage> {
                     );
                   }
                   final entry = _entries[i];
+                  final isCustom = entry['status'] == 'custom';
+                  final displayTitle = isCustom && entry['custom_title'] != null
+                      ? entry['custom_title']
+                      : (_challengeTitles[entry['challenge_id']?.toString()] ??
+                          'Unknown');
                   return ListTile(
                     contentPadding: const EdgeInsets.symmetric(
                       vertical: 8,
@@ -129,8 +135,7 @@ class _LogbookPageState extends State<LogbookPage> {
                       ),
                     ),
                     title: Text(
-                      _challengeTitles[entry['challenge_id']?.toString()] ??
-                          'Unknown',
+                      displayTitle,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: textColor,
@@ -174,6 +179,17 @@ class _LogbookPageState extends State<LogbookPage> {
                 },
               ),
             ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).primaryColor,
+        child: Icon(Icons.add),
+        tooltip: 'Add Custom Challenge',
+        onPressed: () async {
+          await Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => AddChallengeScreen()),
+          );
+          _loadEntries();
+        },
+      ),
     );
   }
 
