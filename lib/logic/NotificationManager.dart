@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
@@ -18,12 +20,34 @@ class NotificationManager {
     // Initialization settings for Android
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
-    const InitializationSettings initializationSettings =
-        InitializationSettings(android: initializationSettingsAndroid);
+    // iOS settings to request permissions during initialization
+    const DarwinInitializationSettings initializationSettingsIos = DarwinInitializationSettings(
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
+    );
+    const InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIos,
+      macOS: initializationSettingsIos,
+    );
     await _notificationsPlugin.initialize(initializationSettings);
 
     // Create notification channels for Android
     await _createNotificationChannels();
+
+    // Request iOS notification permissions
+    final iosPlugin = _notificationsPlugin.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+    if (iosPlugin != null) {
+      await iosPlugin.requestPermissions(alert: true, badge: true, sound: true);
+    }
+    // Request Android notification permission using permission_handler (Android 13+)
+    if (Platform.isAndroid) {
+      final status = await Permission.notification.status;
+      if (status.isDenied) {
+        await Permission.notification.request();
+      }
+    }
   }
 
   static Future<void> _createNotificationChannels() async {
@@ -56,6 +80,15 @@ class NotificationManager {
           enableVibration: true,
         );
 
+    const AndroidNotificationChannel backgroundServiceChannel = AndroidNotificationChannel(
+      'syntra_bg_service',
+      'Background Service',
+      description: 'Persistent background service notification',
+      importance: Importance.low,
+      playSound: false,
+      enableVibration: false,
+    );
+
     // Create the channels
     final AndroidFlutterLocalNotificationsPlugin? androidPlugin =
         _notificationsPlugin
@@ -67,6 +100,7 @@ class NotificationManager {
       await androidPlugin.createNotificationChannel(testChannel);
       await androidPlugin.createNotificationChannel(challengeTimerChannel);
       await androidPlugin.createNotificationChannel(motivationChannel);
+      await androidPlugin.createNotificationChannel(backgroundServiceChannel);
       print('✅ Notification channels created successfully!');
     }
   }
@@ -75,9 +109,9 @@ class NotificationManager {
     await FlutterBackgroundService().configure(
       androidConfiguration: AndroidConfiguration(
         onStart: onStart,
-        autoStart: true, // Enable auto-start for better reliability
-        isForegroundMode: true, // Must be true for Android 12+ compliance
-        autoStartOnBoot: true, // Allow restart after reboot
+        autoStart: true,
+        isForegroundMode: true,    // enable foreground service
+        autoStartOnBoot: true,
       ),
       iosConfiguration: IosConfiguration(
         // TODO: Implement for iOS
