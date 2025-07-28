@@ -161,5 +161,14 @@
         "type": "String"
       }
     }
-  }
+  },
+  "challengeDescriptionTitle": "Challenge Description",
+  "closeDialog": "Close",
+  "lostForWords": "Lost for words?",
+  "okayButton": "Okay",
+  "challengeAlreadyCompleted": "You have already completed this challenge!",
+  "lastNote": "Last note:",
+  "lastCompleted": "Last completed:",
+  "repeatChallengeInfo": "You can repeat this challenge as often as you like!",
+  "noNotesYet": "You don't have any notes for this challenge yet."
 }

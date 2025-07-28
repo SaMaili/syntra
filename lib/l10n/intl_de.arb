@@ -161,5 +161,14 @@
         "type": "String"
       }
     }
-  }
+  },
+  "challengeDescriptionTitle": "Challenge-Beschreibung",
+  "closeDialog": "Schließen",
+  "lostForWords": "Sprachlos?",
+  "okayButton": "Okay",
+  "challengeAlreadyCompleted": "Du hast diese Challenge bereits abgeschlossen!",
+  "lastNote": "Letzte Notiz:",
+  "lastCompleted": "Zuletzt abgeschlossen:",
+  "repeatChallengeInfo": "Du kannst diese Challenge so oft wiederholen, wie du möchtest!",
+  "noNotesYet": "Du hast noch keine Notizen für diese Challenge."
 }

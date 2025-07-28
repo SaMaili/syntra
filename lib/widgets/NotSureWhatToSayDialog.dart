@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../generated/l10n.dart';
 
 class NotSureWhatToSayDialog extends StatelessWidget {
   final String text;
@@ -11,23 +12,24 @@ class NotSureWhatToSayDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     final formattedText = _formatText(text);
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-      title: _buildTitle(),
+      title: _buildTitle(l10n),
       content: _buildContent(formattedText),
-      actions: [_buildAction(context)],
+      actions: [_buildAction(context, l10n)],
     );
   }
 
-  Widget _buildTitle() {
+  Widget _buildTitle(S l10n) {
     return Row(
-      children: const [
-        Icon(Icons.lightbulb_outline, color: Colors.amber, size: 28),
-        SizedBox(width: 8),
+      children: [
+        const Icon(Icons.lightbulb_outline, color: Colors.amber, size: 28),
+        const SizedBox(width: 8),
         Text(
-          'Lost for words?',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          l10n.lostForWords,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ],
     );
@@ -41,10 +43,10 @@ class NotSureWhatToSayDialog extends StatelessWidget {
     );
   }
 
-  Widget _buildAction(BuildContext context) {
+  Widget _buildAction(BuildContext context, S l10n) {
     return TextButton(
       onPressed: () => Navigator.of(context).pop(),
-      child: const Text('Okay', style: TextStyle(fontWeight: FontWeight.bold)),
+      child: Text(l10n.okayButton, style: const TextStyle(fontWeight: FontWeight.bold)),
     );
   }
 }

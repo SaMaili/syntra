@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import '../generated/l10n.dart';
 
 class ChallengeInfoNotification {
   static Future<void> showLastNotesNotification(
     BuildContext context,
     String challengeId,
   ) async {
+    final l10n = S.of(context);
     // Open DB and get last logbook entry for this challenge
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'challenge_database.db');
@@ -33,7 +35,7 @@ class ChallengeInfoNotification {
       }
     }
     if (notes.isNotEmpty) {
-      body = '📝 Last note:\n"$notes"\n\n📅 Last completed: $formattedTime';
+      body = '📝 ${l10n.lastNote}\n"$notes"\n\n📅 ${l10n.lastCompleted} $formattedTime';
       final isDark = Theme.of(context).brightness == Brightness.dark;
       showDialog(
         context: context,
@@ -48,7 +50,7 @@ class ChallengeInfoNotification {
               SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  'You have already completed this challenge!',
+                  l10n.challengeAlreadyCompleted,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 17,
@@ -99,7 +101,7 @@ class ChallengeInfoNotification {
                   ),
                   const SizedBox(width: 6),
                   Text(
-                    'Last completed: $formattedTime',
+                    '${l10n.lastCompleted} $formattedTime',
                     style: TextStyle(
                       fontSize: 15,
                       color: isDark ? Colors.white : null,
@@ -114,7 +116,7 @@ class ChallengeInfoNotification {
                   SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      'You can repeat this challenge as often as you like!',
+                      l10n.repeatChallengeInfo,
                       style: TextStyle(
                         fontSize: 14,
                         color: isDark ? Colors.grey[300] : Colors.blueGrey,
@@ -128,7 +130,7 @@ class ChallengeInfoNotification {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(ctx).pop(),
-              child: Text('OK', style: TextStyle(color: Colors.blueAccent)),
+              child: Text(l10n.okayButton, style: TextStyle(color: Colors.blueAccent)),
             ),
           ],
         ),
@@ -136,8 +138,8 @@ class ChallengeInfoNotification {
     } else {
       // Show snackbar if no notes found
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('You don\'t have any notes for this challenge yet.'),
+        SnackBar(
+          content: Text(l10n.noNotesYet),
         ),
       );
     }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:syntra/Challenge.dart';
 import 'package:syntra/static.dart';
 import 'package:syntra/widgets/challenge_info_notification.dart';
+import '../generated/l10n.dart';
 
 class ChallengeCard extends StatelessWidget {
   final Challenge challenge;
@@ -39,6 +40,7 @@ class ChallengeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Card(
       color: isDark ? Colors.grey[900] : cardColor ?? Colors.white,
@@ -67,7 +69,7 @@ class ChallengeCard extends StatelessWidget {
                 SizedBox(height: 6),
                 if (showXP)
                   Text(
-                    '+${challenge.xp} Aura',
+                    '+${challenge.xp} ${l10n.auraPoints}',
                     style: TextStyle(
                       fontSize: 18,
                       color:
@@ -88,7 +90,7 @@ class ChallengeCard extends StatelessWidget {
                       builder: (context) => AlertDialog(
                         backgroundColor: isDark ? Colors.grey[900] : null,
                         title: Text(
-                          'Challenge Description',
+                          l10n.description,
                           style: TextStyle(color: isDark ? Colors.white : null),
                         ),
                         content: Text(
@@ -99,7 +101,7 @@ class ChallengeCard extends StatelessWidget {
                           TextButton(
                             onPressed: () => Navigator.of(context).pop(),
                             child: Text(
-                              'Close',
+                              l10n.closeDialog,
                               style: TextStyle(
                                 color: isDark ? Colors.pinkAccent : null,
                               ),

@@ -161,6 +161,15 @@
         "type": "String"
       }
     }
-  }
+  },
+  "challengeDescriptionTitle": "チャレンジの説明",
+  "closeDialog": "閉じる",
+  "lostForWords": "言葉に困った？",
+  "okayButton": "オーケー",
+  "challengeAlreadyCompleted": "このチャレンジは既に完了しています！",
+  "lastNote": "最後のメモ:",
+  "lastCompleted": "最後に完了:",
+  "repeatChallengeInfo": "このチャレンジは何度でも繰り返すことができます！",
+  "noNotesYet": "このチャレンジのメモはまだありません。"
 }
 
