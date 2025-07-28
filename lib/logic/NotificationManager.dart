@@ -4,8 +4,8 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -21,23 +21,28 @@ class NotificationManager {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
     // iOS settings to request permissions during initialization
-    const DarwinInitializationSettings initializationSettingsIos = DarwinInitializationSettings(
-      requestAlertPermission: false,
-      requestBadgePermission: false,
-      requestSoundPermission: false,
-    );
-    const InitializationSettings initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsIos,
-      macOS: initializationSettingsIos,
-    );
+    const DarwinInitializationSettings initializationSettingsIos =
+        DarwinInitializationSettings(
+          requestAlertPermission: false,
+          requestBadgePermission: false,
+          requestSoundPermission: false,
+        );
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
+          android: initializationSettingsAndroid,
+          iOS: initializationSettingsIos,
+          macOS: initializationSettingsIos,
+        );
     await _notificationsPlugin.initialize(initializationSettings);
 
     // Create notification channels for Android
     await _createNotificationChannels();
 
     // Request iOS notification permissions
-    final iosPlugin = _notificationsPlugin.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+    final iosPlugin = _notificationsPlugin
+        .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin
+        >();
     if (iosPlugin != null) {
       await iosPlugin.requestPermissions(alert: true, badge: true, sound: true);
     }
@@ -80,14 +85,15 @@ class NotificationManager {
           enableVibration: true,
         );
 
-    const AndroidNotificationChannel backgroundServiceChannel = AndroidNotificationChannel(
-      'syntra_bg_service',
-      'Background Service',
-      description: 'Persistent background service notification',
-      importance: Importance.low,
-      playSound: false,
-      enableVibration: false,
-    );
+    const AndroidNotificationChannel backgroundServiceChannel =
+        AndroidNotificationChannel(
+          'syntra_bg_service',
+          'Background Service',
+          description: 'Persistent background service notification',
+          importance: Importance.low,
+          playSound: false,
+          enableVibration: false,
+        );
 
     // Create the channels
     final AndroidFlutterLocalNotificationsPlugin? androidPlugin =
@@ -110,7 +116,7 @@ class NotificationManager {
       androidConfiguration: AndroidConfiguration(
         onStart: onStart,
         autoStart: true,
-        isForegroundMode: true,    // enable foreground service
+        isForegroundMode: true, // enable foreground service
         autoStartOnBoot: true,
       ),
       iosConfiguration: IosConfiguration(
@@ -211,7 +217,7 @@ class NotificationManager {
       print('Background service checking time: ${now.hour}:${now.minute}');
 
       // Original motivation notifications at 9:00 and 15:00
-      if (now.hour == 9 && now.minute == 0) {
+      if (now.hour == AppStatic.motivationFirstHourStart && now.minute == 0) {
         await sendNotification(
           channelId: 'motivation_channel',
           channelName: 'Motivation Notifications',
@@ -225,7 +231,7 @@ class NotificationManager {
           scheduledTime: now.add(const Duration(seconds: 5)),
         );
       }
-      if (now.hour == 15 && now.minute == 0) {
+      if (now.hour == AppStatic.motivationSecondHourStart && now.minute == 0) {
         await sendNotification(
           channelId: 'motivation_channel',
           channelName: 'Motivation Notifications',
@@ -260,7 +266,8 @@ class NotificationManager {
     );
 
     // Generate a proper 32-bit notification ID
-    final int notificationId = (DateTime.now().millisecondsSinceEpoch % 2147483647).toInt();
+    final int notificationId =
+        (DateTime.now().millisecondsSinceEpoch % 2147483647).toInt();
     print("  - Notification ID: $notificationId");
 
     try {
