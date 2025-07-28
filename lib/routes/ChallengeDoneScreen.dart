@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../Challenge.dart';
 import '../database/challenge_database.dart';
+import '../generated/l10n.dart';
 
 // Main screen shown after a challenge is completed or aborted.
 class ChallengeDoneScreen extends StatelessWidget {
@@ -28,19 +29,12 @@ class ChallengeDoneScreen extends StatelessWidget {
       rewardFactor,
     );
     final isAborted = logic.isAborted;
-    final title = logic.title;
-    final icon = logic.icon;
-    final iconColor = logic.iconColor;
-    final message = logic.message;
-    final xpColor = logic.xpColor;
-    final encouragement = logic.encouragement;
-
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bgColor = isDark ? Colors.black : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
     final encouragementColor = isDark ? Colors.greenAccent : Colors.green;
     return Scaffold(
-      appBar: AppBar(title: Text(title), automaticallyImplyLeading: false),
+      appBar: AppBar(title: Text(isAborted ? S.of(context).challengeAborted : S.of(context).challengeCompleted), automaticallyImplyLeading: false),
       backgroundColor: bgColor,
       body: Stack(
         children: [
@@ -50,10 +44,10 @@ class ChallengeDoneScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // Icon and message for challenge result
-                  Icon(icon, color: iconColor, size: 80),
+                  Icon(logic.icon, color: logic.iconColor, size: 80),
                   SizedBox(height: 24),
                   Text(
-                    message,
+                    isAborted ? S.of(context).tooBad : S.of(context).congratulations,
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -64,18 +58,18 @@ class ChallengeDoneScreen extends StatelessWidget {
                   SizedBox(height: 24),
                   // XP/Aura reward display
                   Text(
-                    '${(challenge.xp * rewardFactor).round() >= 0 ? '+' : ''}${(challenge.xp * rewardFactor).round()} Aura',
+                    '${(challenge.xp * rewardFactor).round() >= 0 ? '+' : ''}${(challenge.xp * rewardFactor).round()} ${S.of(context).auraPoints}',
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
-                      color: xpColor,
+                      color: logic.xpColor,
                     ),
                   ),
                   SizedBox(height: 24),
                   // Feedback survey (only if not aborted)
                   if (!isAborted) _SurveyWidget(key: _surveyKey),
                   Text(
-                    encouragement,
+                    isAborted ? S.of(context).tryAgainNextTime : S.of(context).wellDone,
                     style: TextStyle(fontSize: 18, color: encouragementColor),
                     textAlign: TextAlign.center,
                   ),
@@ -105,7 +99,7 @@ class ChallengeDoneScreen extends StatelessWidget {
                   elevation: 4,
                 ),
                 icon: Icon(Icons.home, size: 28),
-                label: Text('Back to Home'),
+                label: Text(S.of(context).backToHome),
                 onPressed: () async {
                   // Collect survey results if available
                   final surveyState = _surveyKey.currentState;
@@ -135,8 +129,8 @@ class ChallengeDoneScreen extends StatelessWidget {
                   });
                   // Show confirmation snackbar with context-specific message
                   final snackMessage = logic.isAborted
-                      ? 'Challenge aborted!'
-                      : 'Challenge completed! Logbook entry saved.';
+                      ? S.of(context).challengeAbortedSnackbar
+                      : S.of(context).challengeCompletedSnackbar;
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(snackMessage)),
                   );
@@ -162,21 +156,12 @@ class ChallengeDoneScreenLogic {
 
   bool get isAborted => rewardFactor < 0;
 
-  String get title => isAborted ? 'Challenge aborted' : 'Challenge completed!';
-
   IconData get icon =>
       isAborted ? Icons.sentiment_dissatisfied : Icons.emoji_events;
 
   Color get iconColor => isAborted ? Colors.red : Colors.green;
 
-  String get message => isAborted
-      ? 'Too bad! You aborted the challenge.'
-      : 'Congratulations! You completed the challenge.';
-
   Color get xpColor => isAborted ? Colors.red : Colors.green;
-
-  String get encouragement =>
-      isAborted ? 'Try again next time!' : 'Well done! Keep it up!';
 }
 
 // Widget for user feedback survey after challenge
@@ -231,7 +216,7 @@ class _SurveyWidgetState extends State<_SurveyWidget> {
       return Column(
         children: [
           Text(
-            'Thank you for your feedback!',
+            S.of(context).thankYouFeedback,
             style: TextStyle(fontSize: 18, color: Colors.green),
           ),
           SizedBox(height: 16),
@@ -243,7 +228,7 @@ class _SurveyWidgetState extends State<_SurveyWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'How did you feel?',
+          S.of(context).howDidYouFeel,
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -264,13 +249,19 @@ class _SurveyWidgetState extends State<_SurveyWidget> {
               onPressed: () {
                 setState(() => _feeling = i);
               },
-              tooltip: ["Very bad", "Bad", "Neutral", "Good", "Very good"][i],
+              tooltip: [
+                S.of(context).veryBad,
+                S.of(context).bad,
+                S.of(context).neutral,
+                S.of(context).good,
+                S.of(context).veryGood,
+              ][i],
             ),
           ),
         ),
         SizedBox(height: 20),
         Text(
-          'How do you think you were perceived?',
+          S.of(context).howPerceivedQuestion,
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -292,17 +283,17 @@ class _SurveyWidgetState extends State<_SurveyWidget> {
                 setState(() => _perceived = i);
               },
               tooltip: [
-                "Very negative",
-                "Negative",
-                "Neutral",
-                "Positive",
-                "Very positive",
+                S.of(context).veryNegative,
+                S.of(context).negative,
+                S.of(context).neutral,
+                S.of(context).positive,
+                S.of(context).veryPositive,
               ][i],
             ),
           ),
         ),
         SizedBox(height: 20),
-        Text('Notes:', style: TextStyle(fontSize: 16, color: textColor)),
+        Text(S.of(context).notes, style: TextStyle(fontSize: 16, color: textColor)),
         SizedBox(height: 4),
         TextField(
           controller: _notesController,
@@ -310,7 +301,7 @@ class _SurveyWidgetState extends State<_SurveyWidget> {
           maxLines: 4,
           decoration: InputDecoration(
             border: OutlineInputBorder(),
-            hintText: 'Your thoughts, observations, ...',
+            hintText: S.of(context).notesPlaceholder,
           ),
         ),
         SizedBox(height: 16),

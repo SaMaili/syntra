@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../generated/l10n.dart';
+
 class LogbookDetailPage extends StatelessWidget {
   final Map<String, dynamic> entry;
 
@@ -32,7 +34,7 @@ class LogbookDetailPage extends StatelessWidget {
     final textColor = isDark ? Colors.white : Colors.black87;
     final secondaryTextColor = isDark ? Colors.grey[400] : Colors.black87;
     return Scaffold(
-      appBar: AppBar(title: const Text('Logbook Entry')),
+      appBar: AppBar(title: Text(S.of(context).logbookEntry)),
       backgroundColor: bgColor,
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -64,46 +66,53 @@ class LogbookDetailPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       _detailRow(
-                        'Challenge',
+                        S.of(context).challenge,
                         challengeTitle,
                         icon: Icons.flag,
                         textColor: textColor,
+                        context: context,
                       ),
                       _detailRow(
-                        'Date',
+                        S.of(context).date,
                         _formatDate(entry['timestamp']?.toString()),
                         icon: Icons.calendar_today,
                         textColor: textColor,
+                        context: context,
                       ),
                       _detailRow(
-                        'XP',
+                        S.of(context).xp,
                         entry['earned']?.toString(),
                         icon: Icons.star,
                         textColor: textColor,
+                        context: context,
                       ),
                       _detailRow(
-                        'Status',
+                        S.of(context).status,
                         entry['status']?.toString(),
                         icon: Icons.info,
                         textColor: textColor,
+                        context: context,
                       ),
                       _detailRow(
-                        'Feeling',
+                        S.of(context).feeling,
                         entry['feeling']?.toString(),
                         icon: Icons.mood,
                         textColor: textColor,
+                        context: context,
                       ),
                       _detailRow(
-                        'Perception',
+                        S.of(context).perception,
                         entry['perception']?.toString(),
                         icon: Icons.visibility,
                         textColor: textColor,
+                        context: context,
                       ),
                       _detailRow(
-                        'Challenge ID',
+                        S.of(context).challengeId,
                         entry['challenge_id']?.toString() ?? '-',
                         icon: Icons.confirmation_number,
                         textColor: textColor,
+                        context: context,
                       ),
                       if ((entry['notes']?.toString() ?? '').isNotEmpty)
                         Container(
@@ -150,8 +159,8 @@ class LogbookDetailPage extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
         child: ElevatedButton.icon(
           icon: const Icon(Icons.delete, color: Colors.white),
-          label: const Text(
-            'Delete Entry',
+          label: Text(
+            S.of(context).deleteEntry,
             style: TextStyle(color: Colors.white),
           ),
           style: ElevatedButton.styleFrom(
@@ -169,19 +178,17 @@ class LogbookDetailPage extends StatelessWidget {
             final confirm = await showDialog<bool>(
               context: context,
               builder: (ctx) => AlertDialog(
-                title: const Text('Delete Entry'),
-                content: const Text(
-                  'Are you sure you want to delete this entry?',
-                ),
+                title: Text(S.of(context).deleteEntry),
+                content: Text(S.of(context).deleteEntryQuestion),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.of(ctx).pop(false),
-                    child: const Text('Cancel'),
+                    child: Text(S.of(context).cancel),
                   ),
                   TextButton(
                     onPressed: () => Navigator.of(ctx).pop(true),
-                    child: const Text(
-                      'Delete',
+                    child: Text(
+                      S.of(context).delete,
                       style: TextStyle(color: Colors.red),
                     ),
                   ),
@@ -199,8 +206,8 @@ class LogbookDetailPage extends StatelessWidget {
               );
               Navigator.of(context).pop(true);
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Entry deleted'),
+                SnackBar(
+                  content: Text(S.of(context).entryDeleted),
                   duration: Duration(milliseconds: 800),
                 ),
               );
@@ -226,12 +233,13 @@ class LogbookDetailPage extends StatelessWidget {
     String? value, {
     IconData? icon,
     Color? textColor,
+    required BuildContext context,
   }) {
     // Special case for Feeling: show emoji + name
-    if (label == 'Feeling') {
+    if (label == S.of(context).feeling) {
       final int? feelingValue = int.tryParse(value ?? '');
       final iconData = _emotionIcon(feelingValue);
-      final feelingName = _feelingName(feelingValue);
+      final feelingName = _feelingName(feelingValue, context);
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Row(
@@ -249,10 +257,10 @@ class LogbookDetailPage extends StatelessWidget {
       );
     }
     // Special case for Perception: show emoji + name
-    if (label == 'Perception') {
+    if (label == S.of(context).perception) {
       final int? perceptionValue = int.tryParse(value ?? '');
       final iconData = _emotionIcon(perceptionValue);
-      final perceptionName = _perceptionName(perceptionValue);
+      final perceptionName = _perceptionName(perceptionValue, context);
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Row(
@@ -325,35 +333,35 @@ class LogbookDetailPage extends StatelessWidget {
     }
   }
 
-  String _feelingName(int? value) {
+  String _feelingName(int? value, BuildContext context) {
     switch (value) {
       case 0:
-        return 'Very bad';
+        return S.of(context).veryBad;
       case 1:
-        return 'Bad';
+        return S.of(context).bad;
       case 2:
-        return 'Neutral';
+        return S.of(context).neutral;
       case 3:
-        return 'Good';
+        return S.of(context).good;
       case 4:
-        return 'Very good';
+        return S.of(context).veryGood;
       default:
         return '-';
     }
   }
 
-  String _perceptionName(int? value) {
+  String _perceptionName(int? value, BuildContext context) {
     switch (value) {
       case 0:
-        return 'Very negative';
+        return S.of(context).veryNegative;
       case 1:
-        return 'Negative';
+        return S.of(context).negative;
       case 2:
-        return 'Neutral';
+        return S.of(context).neutral;
       case 3:
-        return 'Positive';
+        return S.of(context).positive;
       case 4:
-        return 'Very positive';
+        return S.of(context).veryPositive;
       default:
         return '-';
     }

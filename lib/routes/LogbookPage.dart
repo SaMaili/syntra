@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../generated/l10n.dart';
 import 'AddChallengeScreen.dart';
 import 'LogbookDetailPage.dart';
 
@@ -82,7 +83,7 @@ class _LogbookPageState extends State<LogbookPage> {
     final cardColor = isDark ? Colors.grey[900] : Colors.grey[100];
     final textColor = isDark ? Colors.white : Colors.black87;
     return Scaffold(
-      appBar: AppBar(title: const Text('Logbook')),
+      appBar: AppBar(title: Text(S.of(context).logbook)),
       backgroundColor: bgColor,
       body: _loading
           ? const Center(child: CircularProgressIndicator())
@@ -182,7 +183,7 @@ class _LogbookPageState extends State<LogbookPage> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).primaryColor,
         child: Icon(Icons.add),
-        tooltip: 'Add Custom Challenge',
+        tooltip: S.of(context).addCustomChallenge,
         onPressed: () async {
           await Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => AddChallengeScreen()),

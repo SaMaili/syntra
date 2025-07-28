@@ -11,6 +11,7 @@ import '../../main.dart';
 import '../logic/ChallengesScreenLogic.dart';
 import '../static.dart';
 import '../widgets/ChallengeCard.dart';
+import '../generated/l10n.dart';
 import 'ActiveChallengeScreen.dart';
 import 'ChallengeDoneScreen.dart';
 import 'StatisticsScreen.dart';
@@ -125,7 +126,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                 iconSize: 20.0,
                 borderWidth: 2.0,
                 borderColor: [Colors.deepPurple[100]!],
-                labels: ['Solo', 'Group'],
+                labels: [S.of(context).solo, S.of(context).group],
                 activeBgColors: [
                   [Colors.deepPurpleAccent],
                   [Colors.pinkAccent],
@@ -159,7 +160,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                       const SizedBox(width: 10),
                       Flexible(
                         child: Text(
-                          'Score:',
+                          S.of(context).score,
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
@@ -192,7 +193,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                       ),
                       const SizedBox(width: 16),
                       Tooltip(
-                        message: 'shuffle challenges',
+                        message: S.of(context).shuffleTooltip,
                         child: IconButton(
                           icon: Icon(
                             Icons.shuffle,
@@ -204,7 +205,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                               logic.shuffleChallenges();
                             });
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Challenges shuffled!')),
+                              SnackBar(content: Text(S.of(context).challengesShuffled)),
                             );
                           },
                         ),
@@ -217,7 +218,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                 child: filteredCards.isEmpty
                     ? Center(
                         child: Text(
-                          'No challenges found',
+                          S.of(context).noChalllengesFound,
                           style: TextStyle(
                             fontSize: 20,
                             color: isDark
@@ -298,7 +299,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                                 // Show snackbar when challenge is completed
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text('Challenge completed!'),
+                                    content: Text(S.of(context).challengeCompletedGeneric),
                                   ),
                                 );
                               }

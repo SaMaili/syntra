@@ -17,6 +17,7 @@ import 'package:syntra/widgets/ChallengeCard.dart';
 import 'package:syntra/widgets/NotSureWhatToSayDialog.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
+import '../generated/l10n.dart';
 import 'ChallengeDoneScreen.dart';
 
 // The ActiveChallengeScreen widget manages the UI and logic for an active challenge session.
@@ -157,8 +158,8 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
             channelId: 'challenge_timer',
             channelName: 'Challenge Timer',
             channelDescription: 'Notification for challenge timer',
-            title: '🎉 Timer Complete!',
-            body: 'Your challenge "${widget.challenge.title}" just finished! 🏆',
+            title: S.of(context).challengeTimerCompleteTitle,
+            body: S.of(context).challengeTimerCompleteBody(widget.challenge.title),
             vibration: true,
           );
         } catch (e) {
@@ -227,10 +228,10 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
         ? (isDark ? Colors.greenAccent : const Color(0xFF39FF14))
         : (isDark ? Colors.black54 : Colors.black26);
     return WillPopScope(
-      onWillPop: () async => false, // Prevent back navigation.
+      onWillPop: () async => false,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('SPOT! RUN! TALK!'),
+          title: Text(S.of(context).activeChallengeTitle),
           automaticallyImplyLeading: false,
         ),
         backgroundColor: bgColor,
@@ -239,12 +240,11 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
           children: [
             if (!mainTimeOver) ...[
               const SizedBox(height: 16),
-              const Text(
-                'Time Remaining',
+              Text(
+                S.of(context).timeRemaining,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
-              // Display the main timer.
               Text(
                 _formatTime(mainTimer),
                 style: const TextStyle(
@@ -254,13 +254,11 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
               ),
               const SizedBox(height: 32),
             ],
-            // Show the challenge card.
             Expanded(
               child: ChallengeCard(challenge: widget.challenge, showXP: false),
             ),
             const SizedBox(height: 32),
             if (!mainTimeOver) ...[
-              // Button for help dialog if user is unsure what to say.
               ElevatedButton(
                 onPressed: () {
                   showDialog(
@@ -278,11 +276,10 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: const Text('Not sure what to say?'),
+                child: Text(S.of(context).notSureWhatToSay),
               ),
               const SizedBox(height: 24),
             ],
-            // Main DONE button or countdown.
             SizedBox(
               width: double.infinity,
               height: mainTimeOver ? 80 : 64,
@@ -296,7 +293,6 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                                 if (_scheduledNotificationId != null) {
                                   await NotificationManager.cancelNotification(_scheduledNotificationId!);
                                 }
-                                // Play success sound and finish challenge with reduced reward.
                                 final player = AudioPlayer();
                                 await player.play(
                                   AssetSource('yipee-45360.mp3'),
@@ -322,10 +318,10 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                             Icon(Icons.flash_on, color: Colors.white, size: 32),
                             SizedBox(width: 12),
-                            Text('DONE! 😎'),
+                            Text(S.of(context).doneExcited),
                           ],
                         ),
                       ),
@@ -337,7 +333,6 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                               if (_scheduledNotificationId != null) {
                                 await NotificationManager.cancelNotification(_scheduledNotificationId!);
                               }
-                              // Play success sound and finish challenge with full reward.
                               final player = AudioPlayer();
                               await player.play(AssetSource('yipee-45360.mp3'));
                               await Future.delayed(
@@ -360,19 +355,17 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                         ),
                       ),
                       child: over
-                          ? const Row(
+                          ? Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: [Text('DONE! 😎')],
+                              children: [Text(S.of(context).doneExcited)],
                             )
-                          : Text('Noch $abortLockTimer Sekunden...'),
+                          : Text(S.of(context).stillSecondsLeft(abortLockTimer.toString())),
                     ),
             ),
             SizedBox(height: mainTimeOver ? 16 : 8),
-            // Button to abort the challenge (shows after abort lock is over).
             if (over)
               TextButton(
                 onPressed: () async {
-                  // Play error sound and finish challenge with penalty.
                   final player = AudioPlayer();
                   await player.play(
                     AssetSource('error-call-to-attention-129258.mp3'),
@@ -396,7 +389,7 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                   ),
                 ),
                 child: Text(
-                  'Not today 🙈',
+                  S.of(context).notToday,
                   style: TextStyle(
                     color: isDark ? Colors.pink[200] : Colors.redAccent,
                     fontWeight: FontWeight.w500,

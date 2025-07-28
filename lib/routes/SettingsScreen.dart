@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../main.dart';
 import '../static.dart';
+import '../generated/l10n.dart';
 import 'AboutPage.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -20,7 +21,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _notificationsEnabled = true;
   bool _darkModeEnabled = false;
-  String _selectedLanguage = 'English';
+  String _selectedLanguageCode = 'en';
 
   Future<String> get _settingsPath async {
     final directory = await getApplicationDocumentsDirectory();
@@ -41,6 +42,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         setState(() {
           _darkModeEnabled = data['darkMode'] ?? _darkModeEnabled;
           _notificationsEnabled = data['notificationsEnabled'] ?? _notificationsEnabled;
+          _selectedLanguageCode = data['languageCode'] ?? _selectedLanguageCode;
         });
         if (_darkModeEnabled) {
           themeModeNotifier.value = ThemeMode.dark;
@@ -69,6 +71,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final data = {
       'darkMode': _darkModeEnabled,
       'notificationsEnabled': _notificationsEnabled,
+      'languageCode': _selectedLanguageCode,
     };
     await file.writeAsString(jsonEncode(data));
   }
@@ -84,15 +87,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bgGradient = isDark
         ? const LinearGradient(
-            colors: [Color(0xFF232526), Color(0xFF414345)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          )
+      colors: [Color(0xFF232526), Color(0xFF414345)],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    )
         : const LinearGradient(
-            colors: [Color(0xFFe0c3fc), Color(0xFF8ec5fc)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          );
+      colors: [Color(0xFFe0c3fc), Color(0xFF8ec5fc)],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    );
     final cardColor = isDark ? Colors.grey[900] : AppStatic.grapeLight;
     final card2Color = isDark
         ? Colors.blueGrey[900]
@@ -117,7 +120,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Icon(Icons.settings, color: AppStatic.grape, size: 32),
                   const SizedBox(width: 10),
                   Text(
-                    'Settings',
+                    S.of(context).settingsTitle,
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
@@ -150,8 +153,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 child: Column(
                   children: [
                     _buildSettingItem(
-                      'Notifications',
-                      'Get reminded about daily challenges',
+                      S.of(context).notifications,
+                      S.of(context).notificationsSubtitle,
                       Icons.notifications,
                       Switch(
                         value: _notificationsEnabled,
@@ -160,46 +163,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             _notificationsEnabled = value;
                           });
                           _saveSettings();
-                          if (value) {
-                            NotificationManager.startBackgroundService();
-                          } else {
-                            NotificationManager.stopBackgroundService();
-                          }
                         },
                         activeColor: AppStatic.grape,
                       ),
                       textPrimary: textPrimary,
                       textSecondary: textSecondary,
                     ),
-                    Divider(color: AppStatic.grapeDivider),
+                    Divider(color: AppStatic.grape.withOpacity(0.3)),
                     _buildSettingItem(
-                      'Dark Mode',
-                      'Switch to dark theme',
+                      S.of(context).darkMode,
+                      S.of(context).darkModeSubtitle,
                       Icons.dark_mode,
                       Switch(
                         value: _darkModeEnabled,
                         onChanged: (value) {
                           setState(() {
                             _darkModeEnabled = value;
-                            if (value) {
-                              themeModeNotifier.value = ThemeMode.dark;
-                            } else {
-                              themeModeNotifier.value = ThemeMode.light;
-                            }
-                            _saveSettings();
                           });
+                          if (value) {
+                            themeModeNotifier.value = ThemeMode.dark;
+                          } else {
+                            themeModeNotifier.value = ThemeMode.light;
+                          }
+                          _saveSettings();
                         },
                         activeColor: AppStatic.grape,
                       ),
                       textPrimary: textPrimary,
                       textSecondary: textSecondary,
                     ),
-                    Divider(color: AppStatic.grapeDivider),
+                    Divider(color: AppStatic.grape.withOpacity(0.3)),
                     GestureDetector(
                       onTap: () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('coming soon'),
+                            content: Text(S.of(context).comingSoon),
                             duration: Duration(seconds: 2),
                           ),
                         );
@@ -207,8 +205,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       child: Opacity(
                         opacity: 0.4,
                         child: _buildSettingItem(
-                          'Sound Effects',
-                          'Play sounds for interactions',
+                          S.of(context).soundEffects,
+                          S.of(context).soundEffectsSubtitle,
                           Icons.volume_up,
                           Icon(Icons.toggle_off, color: Colors.grey, size: 32),
                           textPrimary: textPrimary,
@@ -235,43 +233,45 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 child: Column(
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('coming soon'),
-                            duration: Duration(seconds: 2),
+                    _buildSettingItem(
+                      S.of(context).language,
+                      S.of(context).languageSubtitle,
+                      Icons.language,
+                      DropdownButton<String>(
+                        value: _selectedLanguageCode,
+                        underline: Container(),
+                        items: [
+                          DropdownMenuItem<String>(
+                            value: 'en',
+                            child: Text(S.of(context).languageEnglish),
                           ),
-                        );
-                      },
-                      child: Opacity(
-                        opacity: 0.4,
-                        child: _buildSettingItem(
-                          'Language',
-                          'Choose your preferred language',
-                          Icons.language,
-                          DropdownButton<String>(
-                            value: _selectedLanguage,
-                            underline: Container(),
-                            items: ['English', 'Spanish', 'French', 'German']
-                                .map((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                })
-                                .toList(),
-                            onChanged: null,
+                          DropdownMenuItem<String>(
+                            value: 'de',
+                            child: Text(S.of(context).languageGerman),
                           ),
-                          textPrimary: textPrimary,
-                          textSecondary: textSecondary,
-                        ),
+                          DropdownMenuItem<String>(
+                            value: 'ja',
+                            child: Text(S.of(context).languageJapanese),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() {
+                              _selectedLanguageCode = value;
+                            });
+                            // Update the app locale immediately
+                            localeNotifier.value = Locale(value);
+                            _saveSettings();
+                          }
+                        },
                       ),
+                      textPrimary: textPrimary,
+                      textSecondary: textSecondary,
                     ),
                     Divider(color: AppStatic.marianBlue.withOpacity(0.3)),
                     _buildSettingItem(
-                      'About',
-                      'App version and information',
+                      S.of(context).about,
+                      S.of(context).aboutSubtitle,
                       Icons.info,
                       GestureDetector(
                         onTap: () {
@@ -296,7 +296,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               SizedBox(height: 30),
               IconButton(
                 icon: Icon(Icons.delete, color: Colors.red),
-                tooltip: 'Debug Delete',
+                tooltip: S.of(context).debugDeleteTooltip,
                 onPressed: () {
                   // TODO: Implement delete logic here
                   debugPrint('Debug delete button pressed');
@@ -325,13 +325,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildSettingItem(
-    String title,
-    String subtitle,
-    IconData icon,
-    Widget trailing, {
-    Color? textPrimary,
-    Color? textSecondary,
-  }) {
+      String title,
+      String subtitle,
+      IconData icon,
+      Widget trailing, {
+        Color? textPrimary,
+        Color? textSecondary,
+      }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(

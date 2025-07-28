@@ -6,6 +6,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 
+import '../generated/l10n.dart';
+
 /// Handles logic for active challenges, including notifications and permissions
 class ActiveChallengeLogic {
   /// Plugin for local notifications
@@ -51,14 +53,12 @@ class ActiveChallengeLogic {
     await showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Allow exact alarms'),
-        content: const Text(
-          'To make scheduled notifications work exactly, Syntra needs permission for exact alarms. Please grant this in the settings.',
-        ),
+        title: Text(S.of(context).allowExactAlarms),
+        content: Text(S.of(context).exactAlarmsDescription),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel'),
+            child: Text(S.of(context).cancel),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -68,7 +68,7 @@ class ActiveChallengeLogic {
               await intent.launch();
               Navigator.of(ctx).pop();
             },
-            child: const Text('Go to settings'),
+            child: Text(S.of(context).goToSettings),
           ),
         ],
       ),
@@ -92,8 +92,8 @@ class ActiveChallengeLogic {
 
     await flutterLocalNotificationsPlugin!.zonedSchedule(
       0,
-      'Zeit abgelaufen!',
-      'Deine Challenge-Zeit ist vorbei! Zeit für Action! 💪',
+      S.of(context).timeUpNotificationTitle,
+      S.of(context).timeUpNotificationBody,
       tz.TZDateTime.now(tz.local).add(Duration(seconds: mainTimer)),
       details,
       androidScheduleMode: canSchedule
@@ -140,19 +140,12 @@ class ActiveChallengeLogic {
     await showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Wichtige Hinweise für Benachrichtigungen'),
-        content: const Text(
-          'Damit Syntra dich immer rechtzeitig benachrichtigen kann, solltest du Folgendes prüfen:\n\n'
-          '• Batterieoptimierung für Syntra deaktivieren\n'
-          '• Syntra darf im Hintergrund laufen\n'
-          '• Syntra darf automatisch starten (Autostart)\n'
-          '• Benachrichtigungen auf dem Sperrbildschirm erlauben\n\n'
-          'Diese Einstellungen findest du in den Geräteeinstellungen (oft unter Akku, Apps oder Benachrichtigungen).'
-        ),
+        title: Text(S.of(context).importantNotificationHints),
+        content: Text(S.of(context).notificationPermissionsDescription),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('OK'),
+            child: Text('OK'),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -162,7 +155,7 @@ class ActiveChallengeLogic {
               await intent.launch();
               Navigator.of(ctx).pop();
             },
-            child: const Text('Akku-Optimierung öffnen'),
+            child: Text(S.of(context).openBatteryOptimization),
           ),
         ],
       ),

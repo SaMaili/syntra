@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -16,8 +17,10 @@ import 'routes/DailyChallengeScreen.dart';
 import 'routes/SettingsScreen.dart';
 import 'routes/StatisticsScreen.dart';
 import 'static.dart';
+import 'generated/l10n.dart';
 
 final themeModeNotifier = ValueNotifier<ThemeMode>(ThemeMode.system);
+final localeNotifier = ValueNotifier<Locale>(Locale('en'));
 final RouteObserver<ModalRoute<void>> routeObserver =
     RouteObserver<ModalRoute<void>>();
 
@@ -36,7 +39,7 @@ Future<void> copyDatabaseFromAssets() async {
   }
 }
 
-Future<void> initializeThemeMode() async {
+Future<void> initializeSettings() async {
   try {
     final directory = await getApplicationDocumentsDirectory();
     final file = File('${directory.path}/settings.json');
@@ -48,6 +51,9 @@ Future<void> initializeThemeMode() async {
       } else {
         themeModeNotifier.value = ThemeMode.light;
       }
+      if (data['languageCode'] != null) {
+        localeNotifier.value = Locale(data['languageCode']);
+      }
     }
   } catch (_) {}
 }
@@ -58,8 +64,10 @@ void main() async {
   // Initialize timezone data
   tz.initializeTimeZones();
 
-  await initializeThemeMode();
+  await initializeSettings();
   await copyDatabaseFromAssets();
+
+
   final challenges = await ChallengeDatabase.instance.readAllChallenges();
   AppStatic.CHALLENGES = challenges.toList();
 
@@ -88,58 +96,77 @@ class SyntraApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<ThemeMode>(
-      valueListenable: themeModeNotifier,
-      builder: (context, mode, _) {
-        return MaterialApp(
-          title: 'Syntra',
-          theme: ThemeData(
-            scaffoldBackgroundColor: AppStatic.snow,
-            appBarTheme: AppBarTheme(
-              backgroundColor: AppStatic.snow,
-              titleTextStyle: TextStyle(
-                color: AppStatic.grape,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+    return ValueListenableBuilder<Locale>(
+      valueListenable: localeNotifier,
+      builder: (context, locale, _) {
+        return ValueListenableBuilder<ThemeMode>(
+          valueListenable: themeModeNotifier,
+          builder: (context, mode, _) {
+            return MaterialApp(
+              locale: locale,
+              localizationsDelegates: [
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+                S.delegate, // generated localization delegate
+              ],
+              supportedLocales: const [
+                Locale('en'),
+                Locale('de'),
+                Locale('ja'),
+              ],
+              // locale is managed by localeNotifier
+
+              title: 'Syntra',
+              theme: ThemeData(
+                scaffoldBackgroundColor: AppStatic.snow,
+                appBarTheme: AppBarTheme(
+                  backgroundColor: AppStatic.snow,
+                  titleTextStyle: TextStyle(
+                    color: AppStatic.grape,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  iconTheme: IconThemeData(color: AppStatic.grape),
+                ),
+                bottomNavigationBarTheme: BottomNavigationBarThemeData(
+                  backgroundColor: AppStatic.snow,
+                  selectedItemColor: AppStatic.grape,
+                  unselectedItemColor: AppStatic.marianBlue,
+                ),
+                primaryColor: AppStatic.grape,
+                colorScheme: ColorScheme.light(
+                  primary: AppStatic.grape,
+                  secondary: AppStatic.marianBlue,
+                ),
+                textTheme: TextTheme(
+                  bodyLarge: TextStyle(color: AppStatic.textPrimary),
+                  bodyMedium: TextStyle(color: AppStatic.textPrimary),
+                ),
               ),
-              iconTheme: IconThemeData(color: AppStatic.grape),
-            ),
-            bottomNavigationBarTheme: BottomNavigationBarThemeData(
-              backgroundColor: AppStatic.snow,
-              selectedItemColor: AppStatic.grape,
-              unselectedItemColor: AppStatic.marianBlue,
-            ),
-            primaryColor: AppStatic.grape,
-            colorScheme: ColorScheme.light(
-              primary: AppStatic.grape,
-              secondary: AppStatic.marianBlue,
-            ),
-            textTheme: TextTheme(
-              bodyLarge: TextStyle(color: AppStatic.textPrimary),
-              bodyMedium: TextStyle(color: AppStatic.textPrimary),
-            ),
-          ),
-          darkTheme: ThemeData(
-            brightness: Brightness.dark,
-            scaffoldBackgroundColor: Colors.black,
-            appBarTheme: AppBarTheme(
-              backgroundColor: Colors.black,
-              titleTextStyle: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+              darkTheme: ThemeData(
+                brightness: Brightness.dark,
+                scaffoldBackgroundColor: Colors.black,
+                appBarTheme: AppBarTheme(
+                  backgroundColor: Colors.black,
+                  titleTextStyle: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  iconTheme: IconThemeData(color: Colors.white),
+                ),
+                bottomNavigationBarTheme: BottomNavigationBarThemeData(
+                  backgroundColor: Colors.black,
+                  selectedItemColor: Colors.amberAccent,
+                  unselectedItemColor: Colors.grey,
+                ),
               ),
-              iconTheme: IconThemeData(color: Colors.white),
-            ),
-            bottomNavigationBarTheme: BottomNavigationBarThemeData(
-              backgroundColor: Colors.black,
-              selectedItemColor: Colors.amberAccent,
-              unselectedItemColor: Colors.grey,
-            ),
-          ),
-          themeMode: mode,
-          navigatorObservers: [routeObserver],
-          home: HomeBar(),
+              themeMode: mode,
+              navigatorObservers: [routeObserver],
+              home: HomeBar(),
+            );
+          },
         );
       },
     );
@@ -179,19 +206,22 @@ class _HomeBarState extends State<HomeBar> {
         unselectedItemColor: AppStatic.marianBlue,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        items: const <BottomNavigationBarItem>[
+        items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.explore),
-            label: 'Challenge',
+            label: S.of(context).navChallenge,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today),
-            label: 'Daily',
+            label: S.of(context).navDaily,
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Stats'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bar_chart),
+            label: S.of(context).navStats,
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
-            label: 'Settings',
+            label: S.of(context).navSettings,
           ),
         ],
       ),

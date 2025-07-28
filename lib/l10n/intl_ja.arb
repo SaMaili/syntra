@@ -1,0 +1,166 @@
+{
+  "@@locale": "ja",
+  "settingsTitle": "設定",
+  "notifications": "通知",
+  "notificationsSubtitle": "デイリーチャレンジの通知を受け取る",
+  "darkMode": "ダークモード",
+  "darkModeSubtitle": "ダークテーマに切り替え",
+  "soundEffects": "サウンドエフェクト",
+  "soundEffectsSubtitle": "操作音を再生する",
+  "language": "言語",
+  "languageSubtitle": "お好みの言語を選択",
+  "about": "アプリについて",
+  "aboutSubtitle": "アプリのバージョンと情報",
+  "debugDeleteTooltip": "デバッグ削除",
+  "nextMotivation1": "次のモチベーション1: {time}",
+  "@nextMotivation1": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "nextMotivation2": "次のモチベーション2: {time}",
+  "@nextMotivation2": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "languageEnglish": "English",
+  "languageGerman": "Deutsch",
+  "languageJapanese": "日本語",
+  "comingSoon": "近日公開",
+  "navChallenge": "チャレンジ",
+  "navDaily": "デイリー",
+  "navStats": "統計",
+  "navSettings": "設定",
+  "activeChallengeTitle": "SPOT! RUN! TALK!",
+  "timeRemaining": "残り時間",
+  "notSureWhatToSay": "何を話せばいいかわからない？",
+  "doneExcited": "完了！😎",
+  "stillSecondsLeft": "あと{seconds}秒...",
+  "@stillSecondsLeft": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "notToday": "今日はパス🙈",
+  "challengeCompleted": "チャレンジ完了！",
+  "challengeAborted": "チャレンジ中止",
+  "congratulations": "おめでとうございます！チャレンジを完了しました。",
+  "tooBad": "残念！チャレンジを中止しました。",
+  "auraPoints": "オーラ",
+  "howDidYouFeel": "どう感じましたか？",
+  "howPerceivedQuestion": "どのように見られたと思いますか？",
+  "notes": "メモ:",
+  "notesPlaceholder": "あなたの感想、観察など...",
+  "thankYouFeedback": "フィードバックをありがとうございます！",
+  "backToHome": "ホームに戻る",
+  "challengeAbortedSnackbar": "チャレンジを中止しました！",
+  "challengeCompletedSnackbar": "チャレンジ完了！ログブックエントリが保存されました。",
+  "wellDone": "よくできました！その調子で続けて！",
+  "tryAgainNextTime": "次回また挑戦してください！",
+  "noChalllengesFound": "チャレンジが見つかりません",
+  "challengesShuffled": "チャレンジをシャッフルしました！",
+  "challengeCompletedGeneric": "チャレンジ完了！",
+  "score": "スコア:",
+  "shuffleTooltip": "チャレンジをシャッフル",
+  "solo": "ソロ",
+  "group": "グループ",
+  "dailyChallenge": "デイリーチャレンジ",
+  "challengeStartQuestion": "チャレンジを開始しますか？",
+  "startChallengeQuestion": "今日のチャレンジを本当に始めますか？",
+  "cancel": "キャンセル",
+  "yesChallengeStart": "はい、チャレンジ開始",
+  "acceptChallenge": "チャレンジを受ける",
+  "challengeCompletedDaily": "チャレンジ完了！",
+  "greatJobDaily": "素晴らしい！今日のチャレンジをマスターしました。",
+  "yourStatistics": "統計",
+  "challengeLogbook": "チャレンジログブック",
+  "weeklyXpProgress": "週間XP進捗",
+  "weeklyChallenges": "週間チャレンジ（完了/失敗）",
+  "dbDebugShow": "DBデバッグ: 全ログブックテーブルを表示",
+  "total": "合計",
+  "today": "今日",
+  "done": "完了",
+  "streak": "連続記録",
+  "logbook": "ログブック",
+  "addCustomChallenge": "カスタムチャレンジを追加",
+  "logbookEntry": "ログブックエントリ",
+  "challenge": "チャレンジ",
+  "date": "日付",
+  "xp": "XP",
+  "status": "ステータス",
+  "feeling": "気分",
+  "perception": "印象",
+  "challengeId": "チャレンジID",
+  "deleteEntry": "エントリを削除",
+  "deleteEntryQuestion": "このエントリを削除してもよろしいですか？",
+  "delete": "削除",
+  "entryDeleted": "エントリが削除されました",
+  "addCustomChallengeTitle": "カスタムチャレンジを追加",
+  "challengeAlreadyExists": "チャレンジは既に存在しますか？",
+  "searchChallenge": "チャレンジを検索",
+  "challengeName": "チャレンジ名",
+  "description": "説明",
+  "enterName": "名前を入力",
+  "enterDescription": "説明を入力",
+  "howDoYouFeel": "どう感じますか？",
+  "howPerceivedThink": "どのように見られると思いますか？",
+  "saveEntry": "エントリを保存",
+  "logbookEntrySaved": "ログブックエントリが保存されました",
+  "veryBad": "とても悪い",
+  "bad": "悪い",
+  "neutral": "普通",
+  "good": "良い",
+  "veryGood": "とても良い",
+  "veryNegative": "とても否定的",
+  "negative": "否定的",
+  "positive": "肯定的",
+  "veryPositive": "とても肯定的",
+  "mindsetGrowth": "マインドセットと成長",
+  "mindsetShapesReality": "あなたのマインドセットがあなたの現実を形作ります。",
+  "growthStartsDecision": "成長は決意から始まります：勇気、開放性、そして前向きさ。",
+  "everyDayNewChance": "毎日が成長し、自分を超越する新しいチャンスです。",
+  "mindsetTips": "マインドセットのコツ",
+  "embraceChallenges": "チャレンジを機会として受け入れる",
+  "focusProgress": "完璧ではなく、進歩に焦点を当てる",
+  "celebrateSmallWins": "毎日の小さな勝利を祝う",
+  "learnSetbacks": "挫折から学ぶ",
+  "stayCurious": "好奇心旺盛で心を開いていく",
+  "motivationalQuote": "「明日の実現への唯一の限界は、今日の私たちの疑いになるでしょう。」",
+  "getNewMotivation": "新しいモチベーションを得る",
+  "allowExactAlarms": "正確なアラームを許可",
+  "exactAlarmsDescription": "正確なチャレンジタイマーを確保するため、デバイス設定で正確なアラームを許可してください。",
+  "goToSettings": "設定へ移動",
+  "importantNotificationHints": "重要な通知設定",
+  "notificationPermissionsDescription": "信頼性の高い通知のため、このアプリのバッテリー最適化を無効にし、自動起動/バックグラウンドアプリ設定を確認してください。",
+  "openBatteryOptimization": "バッテリー設定を開く",
+  "timeUpNotificationTitle": "時間切れ！",
+  "timeUpNotificationBody": "チャレンジ時間が終了しました！行動の時間です！💪",
+  "challengeConfirmTitle": "チャレンジを開始しますか？",
+  "challengeConfirmMessage": "準備はできましたか：{challengeTitle}？",
+  "@challengeConfirmMessage": {
+    "placeholders": {
+      "challengeTitle": {
+        "type": "String"
+      }
+    }
+  },
+  "preferAnotherChallenge": "別のチャレンジを希望します",
+  "letsGo": "さあ行こう！🚀",
+  "challengeTimerCompleteTitle": "🎉 タイマー完了！",
+  "challengeTimerCompleteBody": "あなたのチャレンジ「{challengeTitle}」が終了しました！🏆",
+  "@challengeTimerCompleteBody": {
+    "placeholders": {
+      "challengeTitle": {
+        "type": "String"
+      }
+    }
+  }
+}
+

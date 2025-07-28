@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import '../Challenge.dart';
 import '../database/challenge_database.dart';
+import '../generated/l10n.dart';
 
 class AddChallengeScreen extends StatefulWidget {
   const AddChallengeScreen({Key? key}) : super(key: key);
@@ -80,7 +81,7 @@ class _AddChallengeScreenState extends State<AddChallengeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Add Custom Challenge')),
+      appBar: AppBar(title: Text(S.of(context).addCustomChallengeTitle)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Card(
@@ -94,11 +95,9 @@ class _AddChallengeScreenState extends State<AddChallengeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    //Text('Add Challenge', style: Theme.of(context).textTheme.titleLarge),
-                    //Divider(height: 32),
                     // checkbox to toggle existing challenge select mode
                     CheckboxListTile(
-                      title: Text('Challenge already exists?'),
+                      title: Text(S.of(context).challengeAlreadyExists),
                       value: _exists,
                       onChanged: (v) => setState(() {
                         _exists = v!;
@@ -112,7 +111,7 @@ class _AddChallengeScreenState extends State<AddChallengeScreen> {
                     if (_exists) ...{
                       TextFormField(
                         controller: _searchController,
-                        decoration: InputDecoration(labelText: 'Search Challenge'),
+                        decoration: InputDecoration(labelText: S.of(context).searchChallenge),
                       ),
                       SizedBox(height: 8),
                       Container(
@@ -149,28 +148,28 @@ class _AddChallengeScreenState extends State<AddChallengeScreen> {
                     TextFormField(
                       controller: _titleController,
                       decoration: InputDecoration(
-                        labelText: 'Challenge Name',
+                        labelText: S.of(context).challengeName,
                         filled: true,
                         fillColor: Theme.of(context).dividerColor.withAlpha(30),
                       ),
                       enabled: !_exists,
-                      validator: (value) => value == null || value.isEmpty ? 'Enter a name' : null,
+                      validator: (value) => value == null || value.isEmpty ? S.of(context).enterName : null,
                     ),
                     SizedBox(height: 12),
                     TextFormField(
                       controller: _descriptionController,
                       decoration: InputDecoration(
-                        labelText: 'Description',
+                        labelText: S.of(context).description,
                         alignLabelWithHint: true,
                         filled: true,
                         fillColor: Theme.of(context).dividerColor.withAlpha(30),
                       ),
                       maxLines: 3,
                       enabled: !_exists,
-                      validator: (value) => value == null || value.isEmpty ? 'Enter a description' : null,
+                      validator: (value) => value == null || value.isEmpty ? S.of(context).enterDescription : null,
                     ),
                     SizedBox(height: 20),
-                    Text('How do you feel?', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    Text(S.of(context).howDoYouFeel, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: List.generate(
@@ -186,7 +185,7 @@ class _AddChallengeScreenState extends State<AddChallengeScreen> {
                       ),
                     ),
                     SizedBox(height: 20),
-                    Text('How do you think you will be perceived?', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    Text(S.of(context).howPerceivedThink, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: List.generate(
@@ -204,7 +203,7 @@ class _AddChallengeScreenState extends State<AddChallengeScreen> {
                     SizedBox(height: 20),
                     TextFormField(
                       controller: _notesController,
-                      decoration: InputDecoration(labelText: 'Notes'),
+                      decoration: InputDecoration(labelText: S.of(context).notes),
                       maxLines: 3,
                     ),],
                 ),
@@ -217,7 +216,7 @@ class _AddChallengeScreenState extends State<AddChallengeScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         child: ElevatedButton.icon(
           icon: Icon(Icons.save, size: 20, color: Colors.white),
-          label: Text('Save Entry', style: TextStyle(fontSize: 18, color: Colors.white)),
+          label: Text(S.of(context).saveEntry, style: TextStyle(fontSize: 18, color: Colors.white)),
           style: ElevatedButton.styleFrom(
             minimumSize: Size(double.infinity, 48),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
@@ -245,7 +244,7 @@ class _AddChallengeScreenState extends State<AddChallengeScreen> {
                 'notes': _notesController.text,
               });
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Logbook entry saved')),
+                SnackBar(content: Text(S.of(context).logbookEntrySaved)),
               );
               Navigator.of(context).pop();
             }

@@ -4,6 +4,7 @@ import '../Challenge.dart';
 import '../logic/DailyChallengeLogic.dart';
 import '../static.dart';
 import '../widgets/ChallengeCard.dart';
+import '../generated/l10n.dart';
 import 'ChallengeDoneScreen.dart';
 
 class DailyChallengeScreen extends StatefulWidget {
@@ -52,16 +53,16 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Challenge starten?'),
-        content: const Text('Möchtest du die heutige Challenge jetzt wirklich machen?'),
+        title: Text(S.of(context).challengeStartQuestion),
+        content: Text(S.of(context).startChallengeQuestion),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Abbrechen'),
+            child: Text(S.of(context).cancel),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Ja, Challenge starten'),
+            child: Text(S.of(context).yesChallengeStart),
           ),
         ],
       ),
@@ -115,7 +116,7 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'Daily Challenge',
+          S.of(context).dailyChallenge,
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: titleColor,
@@ -174,7 +175,7 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
                             ),
                             const SizedBox(height: 24),
                             Text(
-                              'Challenge completed!',
+                              S.of(context).challengeCompletedDaily,
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                     color: completedTextColor,
                                     fontWeight: FontWeight.bold,
@@ -183,7 +184,7 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
                             ),
                             const SizedBox(height: 12),
                             Text(
-                              'Great job! You have mastered today\'s challenge.',
+                              S.of(context).greatJobDaily,
                               style: TextStyle(
                                 fontSize: 18,
                                 color: isDark ? Colors.white70 : Colors.black87,
@@ -244,7 +245,7 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            child: const Text('Accept Challenge'),
+                            child: Text(S.of(context).acceptChallenge),
                           ),
                         ),
                       ],

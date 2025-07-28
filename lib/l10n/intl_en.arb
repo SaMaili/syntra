@@ -1,6 +1,165 @@
 {
   "@@locale": "en",
-  "title": "Syntra",
-  "welcome": "Welcome back!",
-  "login": "Login",
+  "settingsTitle": "Settings",
+  "notifications": "Notifications",
+  "notificationsSubtitle": "Get reminded about daily challenges",
+  "darkMode": "Dark Mode",
+  "darkModeSubtitle": "Switch to dark theme",
+  "soundEffects": "Sound Effects",
+  "soundEffectsSubtitle": "Play sounds for interactions",
+  "language": "Language",
+  "languageSubtitle": "Choose your preferred language",
+  "about": "About",
+  "aboutSubtitle": "App version and information",
+  "debugDeleteTooltip": "Debug Delete",
+  "nextMotivation1": "Next Motivation 1: {time}",
+  "@nextMotivation1": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "nextMotivation2": "Next Motivation 2: {time}",
+  "@nextMotivation2": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "languageEnglish": "English",
+  "languageGerman": "Deutsch",
+  "languageJapanese": "日本語",
+  "comingSoon": "Coming soon",
+  "navChallenge": "Challenge",
+  "navDaily": "Daily",
+  "navStats": "Stats",
+  "navSettings": "Settings",
+  "activeChallengeTitle": "SPOT! RUN! TALK!",
+  "timeRemaining": "Time Remaining",
+  "notSureWhatToSay": "Not sure what to say?",
+  "doneExcited": "DONE! 😎",
+  "stillSecondsLeft": "Still {seconds} seconds...",
+  "@stillSecondsLeft": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "notToday": "Not today 🙈",
+  "challengeCompleted": "Challenge completed!",
+  "challengeAborted": "Challenge aborted",
+  "congratulations": "Congratulations! You completed the challenge.",
+  "tooBad": "Too bad! You aborted the challenge.",
+  "auraPoints": "Aura",
+  "howDidYouFeel": "How did you feel?",
+  "howPerceivedQuestion": "How do you think you were perceived?",
+  "notes": "Notes:",
+  "notesPlaceholder": "Your thoughts, observations, ...",
+  "thankYouFeedback": "Thank you for your feedback!",
+  "backToHome": "Back to Home",
+  "challengeAbortedSnackbar": "Challenge aborted!",
+  "challengeCompletedSnackbar": "Challenge completed! Logbook entry saved.",
+  "wellDone": "Well done! Keep it up!",
+  "tryAgainNextTime": "Try again next time!",
+  "noChalllengesFound": "No challenges found",
+  "challengesShuffled": "Challenges shuffled!",
+  "challengeCompletedGeneric": "Challenge completed!",
+  "score": "Score:",
+  "shuffleTooltip": "shuffle challenges",
+  "solo": "Solo",
+  "group": "Group",
+  "dailyChallenge": "Daily Challenge",
+  "challengeStartQuestion": "Start challenge?",
+  "startChallengeQuestion": "Do you really want to do today's challenge now?",
+  "cancel": "Cancel",
+  "yesChallengeStart": "Yes, start challenge",
+  "acceptChallenge": "Accept Challenge",
+  "challengeCompletedDaily": "Challenge completed!",
+  "greatJobDaily": "Great job! You have mastered today's challenge.",
+  "yourStatistics": "Your Statistics",
+  "challengeLogbook": "Challenge Logbook",
+  "weeklyXpProgress": "Weekly XP Progress",
+  "weeklyChallenges": "Weekly Challenges (completed/failed)",
+  "dbDebugShow": "DB Debug: Show all logbook table",
+  "total": "Total",
+  "today": "Today",
+  "done": "Done",
+  "streak": "Streak",
+  "logbook": "Logbook",
+  "addCustomChallenge": "Add Custom Challenge",
+  "logbookEntry": "Logbook Entry",
+  "challenge": "Challenge",
+  "date": "Date",
+  "xp": "XP",
+  "status": "Status",
+  "feeling": "Feeling",
+  "perception": "Perception",
+  "challengeId": "Challenge ID",
+  "deleteEntry": "Delete Entry",
+  "deleteEntryQuestion": "Are you sure you want to delete this entry?",
+  "delete": "Delete",
+  "entryDeleted": "Entry deleted",
+  "addCustomChallengeTitle": "Add Custom Challenge",
+  "challengeAlreadyExists": "Challenge already exists?",
+  "searchChallenge": "Search Challenge",
+  "challengeName": "Challenge Name",
+  "description": "Description",
+  "enterName": "Enter a name",
+  "enterDescription": "Enter a description",
+  "howDoYouFeel": "How do you feel?",
+  "howPerceivedThink": "How do you think you will be perceived?",
+  "saveEntry": "Save Entry",
+  "logbookEntrySaved": "Logbook entry saved",
+  "veryBad": "Very bad",
+  "bad": "Bad",
+  "neutral": "Neutral",
+  "good": "Good",
+  "veryGood": "Very good",
+  "veryNegative": "Very negative",
+  "negative": "Negative",
+  "positive": "Positive",
+  "veryPositive": "Very positive",
+  "mindsetGrowth": "Mindset & Growth",
+  "mindsetShapesReality": "Your mindset shapes your reality.",
+  "growthStartsDecision": "Growth starts with a decision: courage, openness, and positivity.",
+  "everyDayNewChance": "Every day is a new chance to grow and surpass yourself.",
+  "mindsetTips": "Mindset Tips",
+  "embraceChallenges": "Embrace challenges as opportunities",
+  "focusProgress": "Focus on progress, not perfection",
+  "celebrateSmallWins": "Celebrate small wins daily",
+  "learnSetbacks": "Learn from setbacks",
+  "stayCurious": "Stay curious and open-minded",
+  "motivationalQuote": "\"The only limit to our realization of tomorrow will be our doubts of today.\"",
+  "getNewMotivation": "Get New Motivation",
+  "allowExactAlarms": "Allow Exact Alarms",
+  "exactAlarmsDescription": "To ensure accurate challenge timers, please allow exact alarms in your device settings.",
+  "goToSettings": "Go to Settings",
+  "importantNotificationHints": "Important Notification Settings",
+  "notificationPermissionsDescription": "For reliable notifications, please disable battery optimization for this app and check your autostart/background app settings.",
+  "openBatteryOptimization": "Open Battery Settings",
+  "timeUpNotificationTitle": "Time's up!",
+  "timeUpNotificationBody": "Your challenge time is over! Time for action! 💪",
+  "challengeConfirmTitle": "Start Challenge?",
+  "challengeConfirmMessage": "Ready to take on: {challengeTitle}?",
+  "@challengeConfirmMessage": {
+    "placeholders": {
+      "challengeTitle": {
+        "type": "String"
+      }
+    }
+  },
+  "preferAnotherChallenge": "I'd prefer another challenge",
+  "letsGo": "LET'S GO! 🚀",
+  "challengeTimerCompleteTitle": "🎉 Timer Complete!",
+  "challengeTimerCompleteBody": "Your challenge \"{challengeTitle}\" just finished! 🏆",
+  "@challengeTimerCompleteBody": {
+    "placeholders": {
+      "challengeTitle": {
+        "type": "String"
+      }
+    }
+  }
 }

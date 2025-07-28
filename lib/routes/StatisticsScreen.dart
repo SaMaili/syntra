@@ -9,6 +9,7 @@ import 'package:sqflite/sqflite.dart';
 
 import '../logic/StatisticsLogic.dart';
 import '../static.dart';
+import '../generated/l10n.dart';
 import 'LogbookPage.dart';
 
 // Main statistics screen widget
@@ -49,7 +50,7 @@ class StatisticsScreen extends StatelessWidget {
                   Icon(Icons.bar_chart, color: statTitleColor, size: 32),
                   const SizedBox(width: 10),
                   Text(
-                    'Your Statistics',
+                    S.of(context).yourStatistics,
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
@@ -72,7 +73,7 @@ class StatisticsScreen extends StatelessWidget {
               // Button to open the challenge logbook
               ElevatedButton.icon(
                 icon: Icon(Icons.history, size: 36),
-                label: Text('Challenge Logbook',
+                label: Text(S.of(context).challengeLogbook,
                     style: TextStyle(
                         fontSize: 22, fontWeight: FontWeight.bold)),
                 style: ElevatedButton.styleFrom(
@@ -132,7 +133,7 @@ class StatisticsScreen extends StatelessWidget {
                     return Column(
                       children: [
                         Text(
-                          'Weekly XP Progress',
+                          S.of(context).weeklyXpProgress,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -253,7 +254,7 @@ class StatisticsScreen extends StatelessWidget {
                     return Column(
                       children: [
                         Text(
-                          'Weekly Challenges (completed/failed)',
+                          S.of(context).weeklyChallenges,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -397,31 +398,31 @@ class StatsOverviewContainer extends StatelessWidget {
             children: [
               _StatTile(
                 icon: Icons.stars,
-                label: 'Total XP',
+                label: S.of(context).total,
                 value: totalXp.toString(),
                 color: AppStatic.grape,
               ),
               _StatTile(
                 icon: Icons.flash_on,
-                label: 'XP Today',
+                label: S.of(context).today,
                 value: todayXp.toString(),
                 color: AppStatic.marianBlue,
               ),
               _StatTile(
                 icon: Icons.check_circle,
-                label: 'Done',
+                label: S.of(context).done,
                 value: completedAllTime.toString(),
                 color: Colors.green,
               ),
               _StatTile(
                 icon: Icons.today,
-                label: 'Today',
+                label: S.of(context).today,
                 value: completedToday.toString(),
                 color: Colors.orange,
               ),
               _StatTile(
                 icon: Icons.local_fire_department,
-                label: 'Streak',
+                label: S.of(context).streak,
                 value: streak.toString(),
                 color: Colors.redAccent,
               ),
@@ -530,7 +531,7 @@ class _DebugDbButtonState extends State<DebugDbButton> {
         // Button to trigger DB print
         ElevatedButton(
           onPressed: _loading ? null : _printDbContent,
-          child: Text('DB Debug: Show all logbook table'),
+          child: Text(S.of(context).dbDebugShow),
         ),
         if (_loading)
           Padding(
