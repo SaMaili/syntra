@@ -183,69 +183,123 @@ class NotificationManager {
       print('Failed to send immediate notification: $e');
     }
 
-    // Send another test notification after 10 seconds
-    Timer(Duration(seconds: 10), () async {
-      try {
-        print('Sending delayed test notification');
-        await _notificationsPlugin.show(
-          124,
-          'Syntra Delayed Test',
-          'This notification came 10 seconds after app start',
-          NotificationDetails(
-            android: AndroidNotificationDetails(
-              'test_channel',
-              'Test Notifications',
-              channelDescription: 'Test notifications from Syntra',
-              importance: Importance.max,
-              priority: Priority.high,
-              playSound: true,
-              enableVibration: true,
-            ),
-          ),
-        );
-        print('Delayed test notification sent successfully');
-      } catch (e) {
-        print('Failed to send delayed notification: $e');
-      }
-    });
-
     print('Background service setup completed');
 
-    // Check for notifications every minute
-    Timer.periodic(const Duration(minutes: 1), (timer) async {
-      final now = DateTime.now();
-      print('Background service checking time: ${now.hour}:${now.minute}');
+    // Schedule daily motivation notifications immediately when service starts
+    await _scheduleDailyMotivationNotifications();
 
-      // Original motivation notifications at 9:00 and 15:00
-      if (now.hour == AppStatic.motivationFirstHourStart && now.minute == 0) {
-        await sendNotification(
-          channelId: 'motivation_channel',
-          channelName: 'Motivation Notifications',
-          channelDescription: 'Motivational reminders from Syntra',
-          title: 'Syntra Motivation',
-          body:
-              AppStatic.motivationMessages[Random().nextInt(
-                AppStatic.motivationMessages.length,
-              )],
-          vibration: true,
-          scheduledTime: now.add(const Duration(seconds: 5)),
-        );
-      }
-      if (now.hour == AppStatic.motivationSecondHourStart && now.minute == 0) {
-        await sendNotification(
-          channelId: 'motivation_channel',
-          channelName: 'Motivation Notifications',
-          channelDescription: 'Motivational reminders from Syntra',
-          title: 'Syntra Motivation',
-          body:
-              AppStatic.motivationMessages[Random().nextInt(
-                AppStatic.motivationMessages.length,
-              )],
-          vibration: true,
-          scheduledTime: now.add(const Duration(seconds: 5)),
-        );
+    // Check every hour to reschedule notifications if needed
+    Timer.periodic(const Duration(hours: 1), (timer) async {
+      final now = DateTime.now();
+      print('🕐 Hourly check at ${now.hour}:${now.minute.toString().padLeft(2, '0')} on ${now.day}/${now.month}/${now.year}');
+
+      // Reschedule notifications if it's a new day
+      if (now.hour == 0) {
+        print('🗓️ New day detected, rescheduling daily notifications');
+        await _scheduleDailyMotivationNotifications();
       }
     });
+  }
+
+  /// Calculates the daily motivation notification times for a given date
+  /// This should be the single source of truth for notification times
+  static List<DateTime> calculateDailyNotificationTimes([DateTime? targetDate]) {
+    final date = targetDate ?? DateTime.now();
+
+    print('🔍 DEBUG: calculateDailyNotificationTimes called for date: ${date.day}/${date.month}/${date.year}');
+
+    // Use deterministic random based on the target date - SINGLE SEED PER DAY
+    final random = Random(date.day + date.month + date.year);
+    print('🔍 DEBUG: Using seed: ${date.day + date.month + date.year}');
+
+    // First notification window (9 AM - 3 PM)
+    final firstHour = AppStatic.motivationFirstHourStart +
+        random.nextInt(AppStatic.motivationFirstHourRange);
+    final firstMinute = random.nextInt(60);
+    final firstScheduledTime = DateTime(date.year, date.month, date.day, firstHour, firstMinute);
+
+    print('🔍 DEBUG: First notification calculated: ${firstHour}:${firstMinute.toString().padLeft(2, '0')}');
+
+    // Second notification window (6 PM - 11 PM)
+    final secondHour = AppStatic.motivationSecondHourStart +
+        random.nextInt(AppStatic.motivationSecondHourRange);
+    final secondMinute = random.nextInt(60);
+    final secondScheduledTime = DateTime(date.year, date.month, date.day, secondHour, secondMinute);
+
+    print('🔍 DEBUG: Second notification calculated: ${secondHour}:${secondMinute.toString().padLeft(2, '0')}');
+    print('🔍 DEBUG: Returning times: [${firstScheduledTime}, ${secondScheduledTime}]');
+
+    return [firstScheduledTime, secondScheduledTime];
+  }
+
+  /// Schedules motivation notifications for today and tomorrow
+  static Future<void> _scheduleDailyMotivationNotifications() async {
+    final now = DateTime.now();
+    print('📋 Scheduling daily motivation notifications...');
+
+    // Schedule for today
+    await _scheduleMotivationNotificationsForDate(now);
+
+    // Schedule for tomorrow
+    final tomorrow = now.add(const Duration(days: 1));
+    await _scheduleMotivationNotificationsForDate(tomorrow);
+
+    print('✅ Daily motivation notifications scheduled for today and tomorrow');
+  }
+
+  /// Schedules motivation notifications for a specific date
+  static Future<void> _scheduleMotivationNotificationsForDate(DateTime date) async {
+    final now = DateTime.now();
+
+    // Use the centralized calculation method - SINGLE SOURCE OF TRUTH
+    final scheduledTimes = calculateDailyNotificationTimes(date);
+    final firstScheduledTime = scheduledTimes[0];
+    final secondScheduledTime = scheduledTimes[1];
+
+    // Only schedule if the time is in the future
+    if (firstScheduledTime.isAfter(now)) {
+      print('📅 SCHEDULING MOTIVATION NOTIFICATION 1:');
+      print('  - Date: ${date.day}/${date.month}/${date.year}');
+      print('  - Scheduled for: ${firstScheduledTime.hour}:${firstScheduledTime.minute.toString().padLeft(2, '0')}');
+      print('  - Window: ${AppStatic.motivationFirstHourStart}:00 - ${AppStatic.motivationFirstHourStart + AppStatic.motivationFirstHourRange - 1}:59');
+      print('  - Time until notification: ${firstScheduledTime.difference(now).inMinutes} minutes');
+
+      await sendNotification(
+        channelId: 'motivation_channel',
+        channelName: 'Motivation Notifications',
+        channelDescription: 'Motivational reminders from Syntra',
+        title: 'Syntra Motivation',
+        body: AppStatic.motivationMessages[Random().nextInt(
+          AppStatic.motivationMessages.length,
+        )],
+        vibration: true,
+        scheduledTime: firstScheduledTime,
+      );
+    } else {
+      print('⏭️ Skipping first notification for ${date.day}/${date.month} (time has passed)');
+    }
+
+    if (secondScheduledTime.isAfter(now)) {
+      print('📅 SCHEDULING MOTIVATION NOTIFICATION 2:');
+      print('  - Date: ${date.day}/${date.month}/${date.year}');
+      print('  - Scheduled for: ${secondScheduledTime.hour}:${secondScheduledTime.minute.toString().padLeft(2, '0')}');
+      print('  - Window: ${AppStatic.motivationSecondHourStart}:00 - ${AppStatic.motivationSecondHourStart + AppStatic.motivationSecondHourRange - 1}:59');
+      print('  - Time until notification: ${secondScheduledTime.difference(now).inMinutes} minutes');
+
+      await sendNotification(
+        channelId: 'motivation_channel',
+        channelName: 'Motivation Notifications',
+        channelDescription: 'Motivational reminders from Syntra',
+        title: 'Syntra Motivation',
+        body: AppStatic.motivationMessages[Random().nextInt(
+          AppStatic.motivationMessages.length,
+        )],
+        vibration: true,
+        scheduledTime: secondScheduledTime,
+      );
+    } else {
+      print('⏭️ Skipping second notification for ${date.day}/${date.month} (time has passed)');
+    }
   }
 
   static Future<int> sendNotification({
@@ -392,6 +446,33 @@ class NotificationManager {
     } catch (e) {
       print("❌ Failed to send immediate notification: $e");
     }
+  }
+
+  /// TEST FUNCTION - Call this to immediately test notification scheduling
+  static Future<void> testNotificationSystem() async {
+    print('🧪 TESTING NOTIFICATION SYSTEM...');
+    final now = DateTime.now();
+    print('🧪 Current time: ${now.hour}:${now.minute.toString().padLeft(2, '0')} on ${now.day}/${now.month}/${now.year}');
+
+    // Test the calculation function
+    final times = calculateDailyNotificationTimes();
+    print('🧪 Calculated times: ${times[0]} and ${times[1]}');
+
+    // Schedule a test notification 2 minutes from now
+    final testTime = now.add(const Duration(minutes: 2));
+    print('🧪 Scheduling test notification for: ${testTime.hour}:${testTime.minute.toString().padLeft(2, '0')}');
+
+    await sendNotification(
+      channelId: 'test_channel',
+      channelName: 'Test Notifications',
+      channelDescription: 'Test notifications from Syntra',
+      title: '🧪 Test Notification',
+      body: 'This notification was scheduled for 2 minutes after you called the test function!',
+      vibration: true,
+      scheduledTime: testTime,
+    );
+
+    print('🧪 Test notification scheduled! Should arrive in 2 minutes.');
   }
 
   /// Cancels all scheduled and active notifications.

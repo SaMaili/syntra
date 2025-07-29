@@ -302,18 +302,57 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   debugPrint('Debug delete button pressed');
                 },
               ),
-              // Debug: Zeige die nächsten beiden Motivation-Benachrichtigungszeiten
-              FutureBuilder<List<DateTime>>(
-                future: getNextMotivationNotificationTimes(),
+
+              // DEBUG BUTTON - Force calculate notification times
+              ElevatedButton(
+                onPressed: () async {
+                  print('🔧 MANUAL DEBUG: Button pressed to calculate times');
+                  final times = await getNextMotivationNotificationTimes();
+                  print('🔧 MANUAL DEBUG: Button got times: ${_formatTime(times[0])} and ${_formatTime(times[1])}');
+                  setState(() {}); // Force rebuild to refresh FutureBuilder
+                },
+                child: Text('DEBUG: Calculate Times'),
+              ),
+
+              // DEBUG: Show all 4 times (today + tomorrow)
+              FutureBuilder<Map<String, List<DateTime>>>(
+                future: getAllNotificationTimes(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) return const SizedBox();
-                  final times = snapshot.data!;
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Nächste Motivation 1: ${_formatTime(times[0])}'),
-                      Text('Nächste Motivation 2: ${_formatTime(times[1])}'),
-                    ],
+                  final data = snapshot.data!;
+                  final todayTimes = data['today']!;
+                  final tomorrowTimes = data['tomorrow']!;
+                  final now = DateTime.now();
+
+                  return Container(
+                    margin: EdgeInsets.only(top: 20),
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.grey),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('🐛 DEBUG: All Notification Times',
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.purple)),
+                        SizedBox(height: 8),
+                        Text('📅 TODAY (${todayTimes[0].day}/${todayTimes[0].month}):',
+                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                        Text('  • Morning: ${_formatTime(todayTimes[0])} ${todayTimes[0].isBefore(now) ? '(PASSED)' : '(UPCOMING)'}',
+                          style: TextStyle(fontSize: 12, color: todayTimes[0].isBefore(now) ? Colors.grey : Colors.green)),
+                        Text('  • Evening: ${_formatTime(todayTimes[1])} ${todayTimes[1].isBefore(now) ? '(PASSED)' : '(UPCOMING)'}',
+                          style: TextStyle(fontSize: 12, color: todayTimes[1].isBefore(now) ? Colors.grey : Colors.green)),
+                        SizedBox(height: 8),
+                        Text('📅 TOMORROW (${tomorrowTimes[0].day}/${tomorrowTimes[0].month}):',
+                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                        Text('  • Morning: ${_formatTime(tomorrowTimes[0])} (UPCOMING)',
+                          style: TextStyle(fontSize: 12, color: Colors.green)),
+                        Text('  • Evening: ${_formatTime(tomorrowTimes[1])} (UPCOMING)',
+                          style: TextStyle(fontSize: 12, color: Colors.green)),
+                      ],
+                    ),
                   );
                 },
               ),
@@ -371,31 +410,68 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<List<DateTime>> getNextMotivationNotificationTimes() async {
-    // Simuliere die gleiche Logik wie in NotificationManager
+    print('🔍 SETTINGS DEBUG: getNextMotivationNotificationTimes called');
+
     final now = DateTime.now();
-    final random = Random(
-      now.day + now.month + now.year,
-    ); // deterministisch für heute
-    final int firstHour =
-        AppStatic.motivationFirstHourStart +
-        random.nextInt(AppStatic.motivationFirstHourRange);
-    final int secondHour =
-        AppStatic.motivationSecondHourStart +
-        random.nextInt(AppStatic.motivationSecondHourRange);
-    final DateTime t1 = DateTime(
-      now.year,
-      now.month,
-      now.day,
-      firstHour,
-      random.nextInt(60),
-    );
-    final DateTime t2 = DateTime(
-      now.year,
-      now.month,
-      now.day,
-      secondHour,
-      random.nextInt(60),
-    );
-    return [t1, t2];
+    final today = DateTime(now.year, now.month, now.day);
+    final tomorrow = today.add(const Duration(days: 1));
+
+    // Get today's times
+    final todayTimes = NotificationManager.calculateDailyNotificationTimes(today);
+    print('🔍 SETTINGS DEBUG: Today times: ${todayTimes[0]} and ${todayTimes[1]}');
+
+    // Get tomorrow's times
+    final tomorrowTimes = NotificationManager.calculateDailyNotificationTimes(tomorrow);
+    print('🔍 SETTINGS DEBUG: Tomorrow times: ${tomorrowTimes[0]} and ${tomorrowTimes[1]}');
+
+    // Find the next upcoming notifications
+    List<DateTime> upcomingTimes = [];
+
+    // Check today's notifications
+    if (todayTimes[0].isAfter(now)) {
+      upcomingTimes.add(todayTimes[0]);
+      print('🔍 SETTINGS DEBUG: Added today first notification: ${todayTimes[0]}');
+    }
+    if (todayTimes[1].isAfter(now)) {
+      upcomingTimes.add(todayTimes[1]);
+      print('🔍 SETTINGS DEBUG: Added today second notification: ${todayTimes[1]}');
+    }
+
+    // Add tomorrow's notifications if we need more
+    if (upcomingTimes.length < 2) {
+      if (upcomingTimes.length == 0) {
+        // No more today, show both tomorrow
+        upcomingTimes.addAll(tomorrowTimes);
+        print('🔍 SETTINGS DEBUG: No more today, showing both tomorrow notifications');
+      } else {
+        // One today, one tomorrow
+        upcomingTimes.add(tomorrowTimes[0]);
+        print('🔍 SETTINGS DEBUG: Added tomorrow first notification: ${tomorrowTimes[0]}');
+      }
+    }
+
+    print('🔍 SETTINGS DEBUG: Final upcoming times: ${upcomingTimes[0]} and ${upcomingTimes[1]}');
+    return upcomingTimes;
+  }
+
+  Future<Map<String, List<DateTime>>> getAllNotificationTimes() async {
+    print('🔍 SETTINGS DEBUG: getAllNotificationTimes called');
+
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final tomorrow = today.add(const Duration(days: 1));
+
+    // Get today's times
+    final todayTimes = NotificationManager.calculateDailyNotificationTimes(today);
+    print('🔍 SETTINGS DEBUG: Today times: ${todayTimes[0]} and ${todayTimes[1]}');
+
+    // Get tomorrow's times
+    final tomorrowTimes = NotificationManager.calculateDailyNotificationTimes(tomorrow);
+    print('🔍 SETTINGS DEBUG: Tomorrow times: ${tomorrowTimes[0]} and ${tomorrowTimes[1]}');
+
+    return {
+      'today': todayTimes,
+      'tomorrow': tomorrowTimes,
+    };
   }
 }
