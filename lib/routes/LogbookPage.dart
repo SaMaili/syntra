@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
+import 'package:path/path.dart' as path;
 import 'package:sqflite/sqflite.dart';
 
 import '../generated/l10n.dart';
@@ -34,8 +34,8 @@ class _LogbookPageState extends State<LogbookPage> {
       _isLoadingMore = append;
     });
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'challenge_database.db');
-    final db = await openDatabase(path);
+    final dbFilePath = path.join(dbPath, 'challenge_database.db');
+    final db = await openDatabase(dbFilePath);
     try {
       await db.execute("ALTER TABLE logbook ADD COLUMN custom_title TEXT");
     } catch (_) {}
@@ -45,8 +45,16 @@ class _LogbookPageState extends State<LogbookPage> {
     );
     // Load all challenge titles
     if (_challengeTitles.isEmpty) {
+      // Get current locale
+      final locale = Localizations.localeOf(context).languageCode;
       final challengeRows = await db.rawQuery(
-        'SELECT id, title FROM challenges',
+        '''SELECT c.id, ct.title 
+           FROM challenges c 
+           LEFT JOIN challenge_translations ct ON c.id = ct.challenge_id 
+           WHERE ct.language_code = ? OR ct.language_code = 'en'
+           GROUP BY c.id
+           ORDER BY CASE WHEN ct.language_code = ? THEN 0 ELSE 1 END''',
+        [locale, locale],
       );
       _challengeTitles = {
         for (final row in challengeRows)

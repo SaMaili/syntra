@@ -5,6 +5,7 @@ import '../logic/DailyChallengeLogic.dart';
 import '../static.dart';
 import '../widgets/ChallengeCard.dart';
 import '../generated/l10n.dart';
+import '../main.dart';
 import 'ChallengeDoneScreen.dart';
 
 class DailyChallengeScreen extends StatefulWidget {
@@ -19,16 +20,39 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
   bool _accepted = false;
   bool _completed = false;
   bool _loading = true;
+  String _currentLanguage = 'en';
 
   @override
   void initState() {
     super.initState();
+    _currentLanguage = localeNotifier.value.languageCode;
     _loadState();
+
+    // Listen for language changes
+    localeNotifier.addListener(_onLanguageChanged);
+  }
+
+  @override
+  void dispose() {
+    localeNotifier.removeListener(_onLanguageChanged);
+    super.dispose();
+  }
+
+  void _onLanguageChanged() {
+    final newLanguage = localeNotifier.value.languageCode;
+    if (newLanguage != _currentLanguage) {
+      _currentLanguage = newLanguage;
+      _loadState(); // Reload the daily challenge in the new language
+    }
   }
 
   Future<void> _loadState() async {
+    setState(() {
+      _loading = true;
+    });
+
     final logic = DailyChallengeLogic();
-    final challenge = await logic.getTodayChallenge();
+    final challenge = await logic.getTodayChallenge(_currentLanguage);
     // Only allow solo challenges
     if (challenge != null && challenge.type != 'solo') {
       setState(() {

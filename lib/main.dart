@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,6 +24,14 @@ final themeModeNotifier = ValueNotifier<ThemeMode>(ThemeMode.system);
 final localeNotifier = ValueNotifier<Locale>(Locale('en'));
 final RouteObserver<ModalRoute<void>> routeObserver =
     RouteObserver<ModalRoute<void>>();
+
+// Function to reload challenges when language changes
+Future<void> reloadChallengesForLanguage(String languageCode) async {
+  print("Reloading challenges for language: $languageCode");
+  final challenges = await ChallengeDatabase.instance.readAllChallenges(languageCode);
+  AppStatic.CHALLENGES = challenges.toList();
+  print("Challenges reloaded successfully");
+}
 
 Future<void> copyDatabaseFromAssets() async {
   final dbPath = await getDatabasesPath();
@@ -59,6 +68,7 @@ Future<void> initializeSettings() async {
 }
 
 void main() async {
+  print("Starting Syntra App...");
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize timezone data
@@ -67,8 +77,30 @@ void main() async {
   await initializeSettings();
   await copyDatabaseFromAssets();
 
+  // Determine language code with proper priority:
+  // 1. User's saved language preference (from settings)
+  // 2. Device language as fallback
+  String languageCode;
 
-  final challenges = await ChallengeDatabase.instance.readAllChallenges();
+  if (localeNotifier.value.languageCode != 'en' ||
+      (localeNotifier.value.languageCode == 'en' &&
+          await _hasUserSetLanguageExplicitly())) {
+    // User has explicitly set a language preference
+    languageCode = localeNotifier.value.languageCode;
+    print("Using user's saved language preference: $languageCode");
+  } else {
+    // No user preference, use device language
+    final deviceLocale = ui.PlatformDispatcher.instance.locale;
+    languageCode = deviceLocale.languageCode;
+    print("Using device language: $languageCode");
+
+    // Update the locale notifier to match device language
+    localeNotifier.value = Locale(languageCode);
+  }
+
+  // Load challenges in the determined language
+  final challenges =
+      await ChallengeDatabase.instance.readAllChallenges(languageCode);
   AppStatic.CHALLENGES = challenges.toList();
 
   // Initialize notifications but only start background service if not already running
@@ -89,6 +121,20 @@ void main() async {
   }
 
   runApp(SyntraApp());
+}
+
+// Helper function to check if user has explicitly set a language
+Future<bool> _hasUserSetLanguageExplicitly() async {
+  try {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/settings.json');
+    if (await file.exists()) {
+      final contents = await file.readAsString();
+      final data = jsonDecode(contents);
+      return data['languageCode'] != null;
+    }
+  } catch (_) {}
+  return false;
 }
 
 class SyntraApp extends StatelessWidget {
@@ -113,7 +159,6 @@ class SyntraApp extends StatelessWidget {
               supportedLocales: const [
                 Locale('en'),
                 Locale('de'),
-                Locale('ja'),
               ],
               // locale is managed by localeNotifier
 

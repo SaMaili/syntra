@@ -39,10 +39,32 @@ class ChallengeDatabase {
     return await db.insert('challenges', challenge.toMap());
   }
 
-  Future<List<Challenge>> readAllChallenges() async {
+  Future<List<Challenge>> readAllChallenges([String? languageCode]) async {
     try {
       final db = await instance.database;
-      final result = await db.query('challenges');
+
+      // Default to English if no language code provided
+      final locale = languageCode ?? 'en';
+
+      final result = await db.rawQuery('''
+        SELECT 
+          c.id,
+          c.timer,
+          c.xp,
+          c.type,
+          c.flirt,
+          c.tags,
+          c.frequency,
+          ct.title,
+          ct.description,
+          ct.notSureWhatToSay
+        FROM challenges c
+        LEFT JOIN challenge_translations ct ON c.id = ct.challenge_id
+        WHERE ct.language_code = ? OR ct.language_code = 'en'
+        GROUP BY c.id
+        ORDER BY CASE WHEN ct.language_code = ? THEN 0 ELSE 1 END
+      ''', [locale, locale]);
+
       final challenges = result.map((json) => Challenge.fromMap(json)).toList();
       print(
         challenges.isEmpty

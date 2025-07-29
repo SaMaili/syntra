@@ -50,7 +50,9 @@ class _AddChallengeScreenState extends State<AddChallengeScreen> {
   }
 
   Future<void> _loadChallenges() async {
-    final list = await ChallengeDatabase.instance.readAllChallenges();
+    // Get current locale
+    final locale = Localizations.localeOf(context).languageCode;
+    final list = await ChallengeDatabase.instance.readAllChallenges(locale);
     setState(() {
       _allChallenges = list;
       _filteredChallenges = list;

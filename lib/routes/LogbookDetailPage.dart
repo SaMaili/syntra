@@ -16,9 +16,18 @@ class LogbookDetailPage extends StatelessWidget {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'challenge_database.db');
     final db = await openDatabase(path);
+    
+    // Get current locale
+    final locale = Localizations.localeOf(context).languageCode;
+
     final result = await db.rawQuery(
-      'SELECT title FROM challenges WHERE id = ?',
-      [challengeId],
+      '''SELECT ct.title 
+         FROM challenges c 
+         LEFT JOIN challenge_translations ct ON c.id = ct.challenge_id 
+         WHERE c.id = ? AND (ct.language_code = ? OR ct.language_code = 'en')
+         ORDER BY CASE WHEN ct.language_code = ? THEN 0 ELSE 1 END
+         LIMIT 1''',
+      [challengeId, locale, locale],
     );
     if (result.isNotEmpty) {
       return result.first['title']?.toString() ?? 'Unknown';

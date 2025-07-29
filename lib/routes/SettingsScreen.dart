@@ -249,12 +249,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             value: 'de',
                             child: Text(S.of(context).languageGerman),
                           ),
-                          DropdownMenuItem<String>(
-                            value: 'ja',
-                            child: Text(S.of(context).languageJapanese),
-                          ),
                         ],
-                        onChanged: (value) {
+                        onChanged: (value) async {
                           if (value != null) {
                             setState(() {
                               _selectedLanguageCode = value;
@@ -262,6 +258,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             // Update the app locale immediately
                             localeNotifier.value = Locale(value);
                             _saveSettings();
+
+                            // Reload challenges in the new language
+                            await reloadChallengesForLanguage(value);
                           }
                         },
                       ),

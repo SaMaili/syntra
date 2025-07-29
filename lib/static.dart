@@ -54,8 +54,8 @@ class AppStatic {
   static Color get textSecondaryLight => textPrimary.withOpacity(0.7);
 
   /// Holt die Challenges aus der Datenbank
-  static Future<List<Challenge>> getChallengesFromDB() async {
-    return await ChallengeDatabase.instance.readAllChallenges();
+  static Future<List<Challenge>> getChallengesFromDB([String? languageCode]) async {
+    return await ChallengeDatabase.instance.readAllChallenges(languageCode ?? 'en');
   }
 
   /// Konstante Liste aller Challenges, wird beim App-Start befüllt

@@ -24,16 +24,19 @@ class DailyChallengeLogic {
   static const String _challengeCompletedKey = 'daily_challenge_completed';
 
   // Get today's challenge, picking a new one if needed
-  Future<Challenge?> getTodayChallenge() async {
+  Future<Challenge?> getTodayChallenge([String? languageCode]) async {
     final prefs = await SharedPreferences.getInstance();
     final today = DateTime.now();
     final todayStr = '${today.year}-${today.month}-${today.day}';
     final storedDate = prefs.getString(_challengeDateKey);
     String? challengeId = prefs.getString(_challengeIdKey);
 
+    // Use provided language code or fall back to English
+    final locale = languageCode ?? 'en';
+
     if (storedDate != todayStr || challengeId == null) {
       // Pick a new random solo challenge
-      final allChallenges = await ChallengeDatabase.instance.readAllChallenges();
+      final allChallenges = await ChallengeDatabase.instance.readAllChallenges(locale);
       final soloChallenges = allChallenges.where((c) => c.type == 'solo').toList();
       if (soloChallenges.isEmpty) return null;
       final random = Random();
@@ -45,9 +48,9 @@ class DailyChallengeLogic {
       await prefs.setBool(_challengeCompletedKey, false);
       return challenge;
     } else {
-      // Load the challenge by ID
+      // Load the challenge by ID in the current language
       final allChallenges = await ChallengeDatabase.instance
-          .readAllChallenges();
+          .readAllChallenges(locale);
       final challenge = allChallenges.firstWhere(
         (c) => c.id == challengeId,
         orElse: () => allChallenges.first,
