@@ -12,13 +12,13 @@ import 'package:sqflite/sqflite.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
 import 'database/challenge_database.dart';
+import 'generated/l10n.dart';
 import 'logic/NotificationManager.dart';
 import 'routes/ChallengesScreen.dart';
 import 'routes/DailyChallengeScreen.dart';
 import 'routes/SettingsScreen.dart';
 import 'routes/StatisticsScreen.dart';
 import 'static.dart';
-import 'generated/l10n.dart';
 
 final themeModeNotifier = ValueNotifier<ThemeMode>(ThemeMode.system);
 final localeNotifier = ValueNotifier<Locale>(Locale('en'));
@@ -28,7 +28,9 @@ final RouteObserver<ModalRoute<void>> routeObserver =
 // Function to reload challenges when language changes
 Future<void> reloadChallengesForLanguage(String languageCode) async {
   print("Reloading challenges for language: $languageCode");
-  final challenges = await ChallengeDatabase.instance.readAllChallenges(languageCode);
+  final challenges = await ChallengeDatabase.instance.readAllChallenges(
+    languageCode,
+  );
   AppStatic.CHALLENGES = challenges.toList();
   print("Challenges reloaded successfully");
 }
@@ -99,8 +101,9 @@ void main() async {
   }
 
   // Load challenges in the determined language
-  final challenges =
-      await ChallengeDatabase.instance.readAllChallenges(languageCode);
+  final challenges = await ChallengeDatabase.instance.readAllChallenges(
+    languageCode,
+  );
   AppStatic.CHALLENGES = challenges.toList();
 
   // Initialize notifications but only start background service if not already running
@@ -156,12 +159,9 @@ class SyntraApp extends StatelessWidget {
                 GlobalCupertinoLocalizations.delegate,
                 S.delegate, // generated localization delegate
               ],
-              supportedLocales: const [
-                Locale('en'),
-                Locale('de'),
-              ],
-              // locale is managed by localeNotifier
+              supportedLocales: const [Locale('en'), Locale('de')],
 
+              // locale is managed by localeNotifier
               title: 'Syntra',
               theme: ThemeData(
                 scaffoldBackgroundColor: AppStatic.snow,

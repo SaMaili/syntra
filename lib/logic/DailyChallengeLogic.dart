@@ -36,8 +36,12 @@ class DailyChallengeLogic {
 
     if (storedDate != todayStr || challengeId == null) {
       // Pick a new random solo challenge
-      final allChallenges = await ChallengeDatabase.instance.readAllChallenges(locale);
-      final soloChallenges = allChallenges.where((c) => c.type == 'solo').toList();
+      final allChallenges = await ChallengeDatabase.instance.readAllChallenges(
+        locale,
+      );
+      final soloChallenges = allChallenges
+          .where((c) => c.type == 'solo')
+          .toList();
       if (soloChallenges.isEmpty) return null;
       final random = Random();
       final challenge = soloChallenges[random.nextInt(soloChallenges.length)];
@@ -49,8 +53,9 @@ class DailyChallengeLogic {
       return challenge;
     } else {
       // Load the challenge by ID in the current language
-      final allChallenges = await ChallengeDatabase.instance
-          .readAllChallenges(locale);
+      final allChallenges = await ChallengeDatabase.instance.readAllChallenges(
+        locale,
+      );
       final challenge = allChallenges.firstWhere(
         (c) => c.id == challengeId,
         orElse: () => allChallenges.first,

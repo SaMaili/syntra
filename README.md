@@ -26,31 +26,53 @@ storage, and more.
 
 Below is a summary of every file in the project, each explained in one sentence:
 
-- `lib/main.dart`: The main entry point of the app, responsible for initializing the app, setting up themes, and managing navigation.
-- `lib/static.dart`: Defines static constants for colors, text styles, and other design elements used throughout the app.
-- `lib/routes/AboutPage.dart`: Implements the About page, displaying app information and version details dynamically.
-- `lib/routes/ActiveChallengeScreen.dart`: Handles the workflow and UI for an active challenge, including timers and completion logic.
-- `lib/routes/ChallengeDoneScreen.dart`: Shows the results and feedback options after a challenge is completed or aborted.
-- `lib/routes/ChallengesScreen.dart`: Displays a list of available challenges and allows users to browse and select them.
-- `lib/routes/DailyChallengeScreen.dart`: Presents the daily challenge to the user and manages its acceptance and completion.
-- `lib/routes/LogbookDetailPage.dart`: Shows detailed information about a specific logbook entry, including challenge results and notes.
-- `lib/routes/LogbookPage.dart`: Lists all completed challenges, allowing users to review their progress in a logbook format.
-- `lib/routes/SettingsScreen.dart`: Provides a settings interface for configuring notifications, dark mode, language, and accessing app info.
-- `lib/routes/StatisticsScreen.dart`: Displays user statistics, such as XP, streaks, and activity charts.
-- `lib/database/database_helper.dart`: Contains helper functions for interacting with the SQLite database for persistent storage.
-- `lib/database/logbook_database.dart`: Manages the logbook database, including CRUD operations for challenge entries.
-- `lib/database/settings_database.dart`: Handles storage and retrieval of user settings in the database.
-- `lib/widgets/ChallengeCard.dart`: Defines the UI for displaying individual challenge cards with adaptive theming.
-- `lib/widgets/challenge_info_notification.dart`: Provides dialogs and notifications with information about challenges and user progress.
-- `lib/widgets/NotSureWhatToSayDialog.dart`: Implements a dialog to help users if they are unsure what to say during a challenge.
-- `lib/widgets/StatsOverviewContainer.dart`: Displays a summary of user statistics in a visually appealing container.
+- `lib/main.dart`: The main entry point of the app, responsible for initializing the app, setting up
+  themes, and managing navigation.
+- `lib/static.dart`: Defines static constants for colors, text styles, and other design elements
+  used throughout the app.
+- `lib/routes/AboutPage.dart`: Implements the About page, displaying app information and version
+  details dynamically.
+- `lib/routes/ActiveChallengeScreen.dart`: Handles the workflow and UI for an active challenge,
+  including timers and completion logic.
+- `lib/routes/ChallengeDoneScreen.dart`: Shows the results and feedback options after a challenge is
+  completed or aborted.
+- `lib/routes/ChallengesScreen.dart`: Displays a list of available challenges and allows users to
+  browse and select them.
+- `lib/routes/DailyChallengeScreen.dart`: Presents the daily challenge to the user and manages its
+  acceptance and completion.
+- `lib/routes/LogbookDetailPage.dart`: Shows detailed information about a specific logbook entry,
+  including challenge results and notes.
+- `lib/routes/LogbookPage.dart`: Lists all completed challenges, allowing users to review their
+  progress in a logbook format.
+- `lib/routes/SettingsScreen.dart`: Provides a settings interface for configuring notifications,
+  dark mode, language, and accessing app info.
+- `lib/routes/StatisticsScreen.dart`: Displays user statistics, such as XP, streaks, and activity
+  charts.
+- `lib/database/database_helper.dart`: Contains helper functions for interacting with the SQLite
+  database for persistent storage.
+- `lib/database/logbook_database.dart`: Manages the logbook database, including CRUD operations for
+  challenge entries.
+- `lib/database/settings_database.dart`: Handles storage and retrieval of user settings in the
+  database.
+- `lib/widgets/ChallengeCard.dart`: Defines the UI for displaying individual challenge cards with
+  adaptive theming.
+- `lib/widgets/challenge_info_notification.dart`: Provides dialogs and notifications with
+  information about challenges and user progress.
+- `lib/widgets/NotSureWhatToSayDialog.dart`: Implements a dialog to help users if they are unsure
+  what to say during a challenge.
+- `lib/widgets/StatsOverviewContainer.dart`: Displays a summary of user statistics in a visually
+  appealing container.
 - `lib/widgets/CardSwiper.dart`: Implements a swipeable card interface for browsing challenges.
-- `lib/widgets/DebugDbButton.dart`: Adds a debug button for developers to inspect or reset the database.
+- `lib/widgets/DebugDbButton.dart`: Adds a debug button for developers to inspect or reset the
+  database.
 - `lib/Challenge.dart`: Defines the Challenge model and logic for managing challenge data.
-- `lib/ChallengeLogic.dart`: Contains business logic for filtering, shuffling, and managing challenges.
-- `lib/DailyChallengeLogic.dart`: Manages the logic for daily challenges, including selection and completion tracking.
+- `lib/ChallengeLogic.dart`: Contains business logic for filtering, shuffling, and managing
+  challenges.
+- `lib/DailyChallengeLogic.dart`: Manages the logic for daily challenges, including selection and
+  completion tracking.
 - `lib/NotificationService.dart`: Handles scheduling and displaying local notifications to the user.
-- `lib/themeModeNotifier.dart`: Provides a notifier for managing and persisting the app's theme mode (light/dark).
+- `lib/themeModeNotifier.dart`: Provides a notifier for managing and persisting the app's theme
+  mode (light/dark).
 - `lib/assets/challenges.json`: Stores the database of available challenges in JSON format.
 - `lib/assets/sounds/`: Contains sound files used for interactive feedback and notifications.
 - `pubspec.yaml`: Specifies project dependencies, assets, and metadata for the Flutter app.
@@ -68,7 +90,11 @@ Below is a summary of every file in the project, each explained in one sentence:
   be accessible to a wide range of users.
 - **Extensibility:** The modular structure allows for easy addition of new features, such as more
   languages or challenge types.
-- **Simplicity in UI:** The user interface was intentionally kept simple and focused to reduce distractions and make the app approachable for everyone. In earlier versions of Syntra, there was a dedicated "Mindset" page where users could view encouraging quotes and mindset guidelines. However, after user feedback and design review, this feature was removed to streamline the experience and keep the main focus on actionable challenges and progress tracking.
+- **Simplicity in UI:** The user interface was intentionally kept simple and focused to reduce
+  distractions and make the app approachable for everyone. In earlier versions of Syntra, there was
+  a dedicated "Mindset" page where users could view encouraging quotes and mindset guidelines.
+  However, after user feedback and design review, this feature was removed to streamline the
+  experience and keep the main focus on actionable challenges and progress tracking.
 
 ## Notable Packages Used
 

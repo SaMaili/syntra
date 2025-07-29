@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../Challenge.dart';
+import '../generated/l10n.dart';
 import '../logic/DailyChallengeLogic.dart';
+import '../main.dart';
 import '../static.dart';
 import '../widgets/ChallengeCard.dart';
-import '../generated/l10n.dart';
-import '../main.dart';
 import 'ChallengeDoneScreen.dart';
 
 class DailyChallengeScreen extends StatefulWidget {
@@ -98,10 +98,8 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
       });
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => ChallengeDoneScreen(
-            challenge: _challenge!,
-            rewardFactor: 1.0,
-          ),
+          builder: (context) =>
+              ChallengeDoneScreen(challenge: _challenge!, rewardFactor: 1.0),
         ),
       );
     }
@@ -110,9 +108,7 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
   @override
   Widget build(BuildContext context) {
     if (_loading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bgGradient = isDark
@@ -131,8 +127,12 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
         : Colors.white.withOpacity(0.95);
     final titleColor = isDark ? Colors.pinkAccent : AppStatic.grape;
     final descColor = isDark ? Colors.pinkAccent[100] : AppStatic.marianBlue;
-    final completedTextColor = isDark ? Color(0xFF7ED957) : Color(0xFF4BB543); // sanftes Grün
-    final completedBgColor = isDark ? Color(0xFF232526) : Color(0xFFF0FFF4); // sanftes hellgrün
+    final completedTextColor = isDark
+        ? Color(0xFF7ED957)
+        : Color(0xFF4BB543); // sanftes Grün
+    final completedBgColor = isDark
+        ? Color(0xFF232526)
+        : Color(0xFFF0FFF4); // sanftes hellgrün
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -142,9 +142,9 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
         title: Text(
           S.of(context).dailyChallenge,
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: titleColor,
-              ),
+            fontWeight: FontWeight.bold,
+            color: titleColor,
+          ),
         ),
       ),
       backgroundColor: isDark ? Colors.black : AppStatic.grapeLight,
@@ -178,7 +178,10 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 gradient: LinearGradient(
-                                  colors: [completedTextColor, completedTextColor.withOpacity(0.7)],
+                                  colors: [
+                                    completedTextColor,
+                                    completedTextColor.withOpacity(0.7),
+                                  ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 ),
@@ -200,7 +203,8 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
                             const SizedBox(height: 24),
                             Text(
                               S.of(context).challengeCompletedDaily,
-                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                              style: Theme.of(context).textTheme.headlineSmall
+                                  ?.copyWith(
                                     color: completedTextColor,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -223,7 +227,10 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen> {
                   ),
                 )
               : Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 18,
+                  ),
                   child: Column(
                     children: [
                       if (_challenge != null)

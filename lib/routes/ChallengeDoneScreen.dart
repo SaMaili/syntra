@@ -34,7 +34,14 @@ class ChallengeDoneScreen extends StatelessWidget {
     final textColor = isDark ? Colors.white : Colors.black87;
     final encouragementColor = isDark ? Colors.greenAccent : Colors.green;
     return Scaffold(
-      appBar: AppBar(title: Text(isAborted ? S.of(context).challengeAborted : S.of(context).challengeCompleted), automaticallyImplyLeading: false),
+      appBar: AppBar(
+        title: Text(
+          isAborted
+              ? S.of(context).challengeAborted
+              : S.of(context).challengeCompleted,
+        ),
+        automaticallyImplyLeading: false,
+      ),
       backgroundColor: bgColor,
       body: Stack(
         children: [
@@ -47,7 +54,9 @@ class ChallengeDoneScreen extends StatelessWidget {
                   Icon(logic.icon, color: logic.iconColor, size: 80),
                   SizedBox(height: 24),
                   Text(
-                    isAborted ? S.of(context).tooBad : S.of(context).congratulations,
+                    isAborted
+                        ? S.of(context).tooBad
+                        : S.of(context).congratulations,
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -69,7 +78,9 @@ class ChallengeDoneScreen extends StatelessWidget {
                   // Feedback survey (only if not aborted)
                   if (!isAborted) _SurveyWidget(key: _surveyKey),
                   Text(
-                    isAborted ? S.of(context).tryAgainNextTime : S.of(context).wellDone,
+                    isAborted
+                        ? S.of(context).tryAgainNextTime
+                        : S.of(context).wellDone,
                     style: TextStyle(fontSize: 18, color: encouragementColor),
                     textAlign: TextAlign.center,
                   ),
@@ -131,9 +142,9 @@ class ChallengeDoneScreen extends StatelessWidget {
                   final snackMessage = logic.isAborted
                       ? S.of(context).challengeAbortedSnackbar
                       : S.of(context).challengeCompletedSnackbar;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(snackMessage)),
-                  );
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(snackMessage)));
                   if (onDone != null) {
                     onDone!(rewardFactor); // Score-Update Callback
                   }
@@ -293,7 +304,10 @@ class _SurveyWidgetState extends State<_SurveyWidget> {
           ),
         ),
         SizedBox(height: 20),
-        Text(S.of(context).notes, style: TextStyle(fontSize: 16, color: textColor)),
+        Text(
+          S.of(context).notes,
+          style: TextStyle(fontSize: 16, color: textColor),
+        ),
         SizedBox(height: 4),
         TextField(
           controller: _notesController,

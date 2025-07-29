@@ -8,10 +8,10 @@ import 'package:syntra/logic/StatisticsLogic.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 import '../../main.dart';
+import '../generated/l10n.dart';
 import '../logic/ChallengesScreenLogic.dart';
 import '../static.dart';
 import '../widgets/ChallengeCard.dart';
-import '../generated/l10n.dart';
 import 'ActiveChallengeScreen.dart';
 import 'ChallengeDoneScreen.dart';
 import 'StatisticsScreen.dart';
@@ -205,7 +205,9 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                               logic.shuffleChallenges();
                             });
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(S.of(context).challengesShuffled)),
+                              SnackBar(
+                                content: Text(S.of(context).challengesShuffled),
+                              ),
                             );
                           },
                         ),
@@ -299,7 +301,9 @@ class _ChallengesScreenState extends State<ChallengesScreen> with RouteAware {
                                 // Show snackbar when challenge is completed
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text(S.of(context).challengeCompletedGeneric),
+                                    content: Text(
+                                      S.of(context).challengeCompletedGeneric,
+                                    ),
                                   ),
                                 );
                               }

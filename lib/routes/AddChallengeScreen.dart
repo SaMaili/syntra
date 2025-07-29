@@ -1,5 +1,6 @@
 // filepath: lib/routes/AddChallengeScreen.dart
 import 'package:flutter/material.dart';
+
 import '../Challenge.dart';
 import '../database/challenge_database.dart';
 import '../generated/l10n.dart';
@@ -88,7 +89,9 @@ class _AddChallengeScreenState extends State<AddChallengeScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Card(
           elevation: 4,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Form(
@@ -113,7 +116,9 @@ class _AddChallengeScreenState extends State<AddChallengeScreen> {
                     if (_exists) ...{
                       TextFormField(
                         controller: _searchController,
-                        decoration: InputDecoration(labelText: S.of(context).searchChallenge),
+                        decoration: InputDecoration(
+                          labelText: S.of(context).searchChallenge,
+                        ),
                       ),
                       SizedBox(height: 8),
                       Container(
@@ -123,8 +128,12 @@ class _AddChallengeScreenState extends State<AddChallengeScreen> {
                           trackVisibility: true,
                           thickness: 8.0,
                           radius: Radius.circular(8.0),
-                          thumbColor: Theme.of(context).primaryColor.withAlpha((0.7 * 255).round()),
-                          trackColor: Theme.of(context).dividerColor.withAlpha((0.3 * 255).round()),
+                          thumbColor: Theme.of(
+                            context,
+                          ).primaryColor.withAlpha((0.7 * 255).round()),
+                          trackColor: Theme.of(
+                            context,
+                          ).dividerColor.withAlpha((0.3 * 255).round()),
                           controller: _listScrollController,
                           child: ListView.builder(
                             controller: _listScrollController,
@@ -137,7 +146,8 @@ class _AddChallengeScreenState extends State<AddChallengeScreen> {
                                   setState(() {
                                     _selectedChallenge = ch;
                                     _titleController.text = ch.title;
-                                    _descriptionController.text = ch.description;
+                                    _descriptionController.text =
+                                        ch.description;
                                   });
                                 },
                               );
@@ -155,7 +165,9 @@ class _AddChallengeScreenState extends State<AddChallengeScreen> {
                         fillColor: Theme.of(context).dividerColor.withAlpha(30),
                       ),
                       enabled: !_exists,
-                      validator: (value) => value == null || value.isEmpty ? S.of(context).enterName : null,
+                      validator: (value) => value == null || value.isEmpty
+                          ? S.of(context).enterName
+                          : null,
                     ),
                     SizedBox(height: 12),
                     TextFormField(
@@ -168,10 +180,18 @@ class _AddChallengeScreenState extends State<AddChallengeScreen> {
                       ),
                       maxLines: 3,
                       enabled: !_exists,
-                      validator: (value) => value == null || value.isEmpty ? S.of(context).enterDescription : null,
+                      validator: (value) => value == null || value.isEmpty
+                          ? S.of(context).enterDescription
+                          : null,
                     ),
                     SizedBox(height: 20),
-                    Text(S.of(context).howDoYouFeel, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    Text(
+                      S.of(context).howDoYouFeel,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: List.generate(
@@ -180,14 +200,22 @@ class _AddChallengeScreenState extends State<AddChallengeScreen> {
                           icon: Icon(
                             _smileys[i],
                             size: 36,
-                            color: _feeling == i ? _smileyColors[i] : Colors.grey,
+                            color: _feeling == i
+                                ? _smileyColors[i]
+                                : Colors.grey,
                           ),
                           onPressed: () => setState(() => _feeling = i),
                         ),
                       ),
                     ),
                     SizedBox(height: 20),
-                    Text(S.of(context).howPerceivedThink, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    Text(
+                      S.of(context).howPerceivedThink,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: List.generate(
@@ -196,7 +224,9 @@ class _AddChallengeScreenState extends State<AddChallengeScreen> {
                           icon: Icon(
                             _smileys[i],
                             size: 36,
-                            color: _perceived == i ? _smileyColors[i] : Colors.grey,
+                            color: _perceived == i
+                                ? _smileyColors[i]
+                                : Colors.grey,
                           ),
                           onPressed: () => setState(() => _perceived = i),
                         ),
@@ -205,9 +235,12 @@ class _AddChallengeScreenState extends State<AddChallengeScreen> {
                     SizedBox(height: 20),
                     TextFormField(
                       controller: _notesController,
-                      decoration: InputDecoration(labelText: S.of(context).notes),
+                      decoration: InputDecoration(
+                        labelText: S.of(context).notes,
+                      ),
                       maxLines: 3,
-                    ),],
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -218,10 +251,15 @@ class _AddChallengeScreenState extends State<AddChallengeScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         child: ElevatedButton.icon(
           icon: Icon(Icons.save, size: 20, color: Colors.white),
-          label: Text(S.of(context).saveEntry, style: TextStyle(fontSize: 18, color: Colors.white)),
+          label: Text(
+            S.of(context).saveEntry,
+            style: TextStyle(fontSize: 18, color: Colors.white),
+          ),
           style: ElevatedButton.styleFrom(
             minimumSize: Size(double.infinity, 48),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
             backgroundColor: Theme.of(context).colorScheme.primary,
             elevation: 4,
           ),

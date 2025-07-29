@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+
 import '../generated/l10n.dart';
 
 class ChallengeInfoNotification {
@@ -35,7 +36,8 @@ class ChallengeInfoNotification {
       }
     }
     if (notes.isNotEmpty) {
-      body = '📝 ${l10n.lastNote}\n"$notes"\n\n📅 ${l10n.lastCompleted} $formattedTime';
+      body =
+          '📝 ${l10n.lastNote}\n"$notes"\n\n📅 ${l10n.lastCompleted} $formattedTime';
       final isDark = Theme.of(context).brightness == Brightness.dark;
       showDialog(
         context: context,
@@ -130,18 +132,19 @@ class ChallengeInfoNotification {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(ctx).pop(),
-              child: Text(l10n.okayButton, style: TextStyle(color: Colors.blueAccent)),
+              child: Text(
+                l10n.okayButton,
+                style: TextStyle(color: Colors.blueAccent),
+              ),
             ),
           ],
         ),
       );
     } else {
       // Show snackbar if no notes found
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.noNotesYet),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.noNotesYet)));
     }
   }
 }

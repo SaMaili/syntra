@@ -16,7 +16,7 @@ class LogbookDetailPage extends StatelessWidget {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'challenge_database.db');
     final db = await openDatabase(path);
-    
+
     // Get current locale
     final locale = Localizations.localeOf(context).languageCode;
 

@@ -46,7 +46,8 @@ class ChallengeDatabase {
       // Default to English if no language code provided
       final locale = languageCode ?? 'en';
 
-      final result = await db.rawQuery('''
+      final result = await db.rawQuery(
+        '''
         SELECT 
           c.id,
           c.timer,
@@ -63,7 +64,9 @@ class ChallengeDatabase {
         WHERE ct.language_code = ? OR ct.language_code = 'en'
         GROUP BY c.id
         ORDER BY CASE WHEN ct.language_code = ? THEN 0 ELSE 1 END
-      ''', [locale, locale]);
+      ''',
+        [locale, locale],
+      );
 
       final challenges = result.map((json) => Challenge.fromMap(json)).toList();
       print(

@@ -117,7 +117,9 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
     print("Challenge: ${widget.challenge.title}");
     print("Timer duration: $mainTimer seconds");
     print("Current time: ${DateTime.now()}");
-    print("Notification scheduled for: ${DateTime.now().add(Duration(seconds: mainTimer))}");
+    print(
+      "Notification scheduled for: ${DateTime.now().add(Duration(seconds: mainTimer))}",
+    );
 
     // Schedule notification for when timer ends using the reliable NotificationManager
     try {
@@ -126,7 +128,8 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
         channelName: 'Challenge Timer',
         channelDescription: 'Notification for challenge timer',
         title: '🎉 Challenge Complete!',
-        body: 'Amazing! You completed "${widget.challenge.title}" - time to celebrate! 🏆',
+        body:
+            'Amazing! You completed "${widget.challenge.title}" - time to celebrate! 🏆',
         vibration: true,
         scheduledTime: DateTime.now().add(Duration(seconds: mainTimer)),
       );
@@ -159,7 +162,9 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
             channelName: 'Challenge Timer',
             channelDescription: 'Notification for challenge timer',
             title: S.of(context).challengeTimerCompleteTitle,
-            body: S.of(context).challengeTimerCompleteBody(widget.challenge.title),
+            body: S
+                .of(context)
+                .challengeTimerCompleteBody(widget.challenge.title),
             vibration: true,
           );
         } catch (e) {
@@ -291,7 +296,9 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                             ? () async {
                                 _isDone = true;
                                 if (_scheduledNotificationId != null) {
-                                  await NotificationManager.cancelNotification(_scheduledNotificationId!);
+                                  await NotificationManager.cancelNotification(
+                                    _scheduledNotificationId!,
+                                  );
                                 }
                                 final player = AudioPlayer();
                                 await player.play(
@@ -331,7 +338,9 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                           ? () async {
                               _isDone = true;
                               if (_scheduledNotificationId != null) {
-                                await NotificationManager.cancelNotification(_scheduledNotificationId!);
+                                await NotificationManager.cancelNotification(
+                                  _scheduledNotificationId!,
+                                );
                               }
                               final player = AudioPlayer();
                               await player.play(AssetSource('yipee-45360.mp3'));
@@ -359,7 +368,11 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [Text(S.of(context).doneExcited)],
                             )
-                          : Text(S.of(context).stillSecondsLeft(abortLockTimer.toString())),
+                          : Text(
+                              S
+                                  .of(context)
+                                  .stillSecondsLeft(abortLockTimer.toString()),
+                            ),
                     ),
             ),
             SizedBox(height: mainTimeOver ? 16 : 8),

@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../generated/l10n.dart';
 import '../logic/StatisticsLogic.dart';
 import '../static.dart';
-import '../generated/l10n.dart';
 import 'LogbookPage.dart';
 
 // Main statistics screen widget
@@ -73,9 +73,10 @@ class StatisticsScreen extends StatelessWidget {
               // Button to open the challenge logbook
               ElevatedButton.icon(
                 icon: Icon(Icons.history, size: 36),
-                label: Text(S.of(context).challengeLogbook,
-                    style: TextStyle(
-                        fontSize: 22, fontWeight: FontWeight.bold)),
+                label: Text(
+                  S.of(context).challengeLogbook,
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppStatic.grape,
                   foregroundColor: Colors.white,

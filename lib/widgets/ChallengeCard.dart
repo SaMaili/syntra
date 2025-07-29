@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:syntra/Challenge.dart';
 import 'package:syntra/static.dart';
 import 'package:syntra/widgets/challenge_info_notification.dart';
+
 import '../generated/l10n.dart';
 
 class ChallengeCard extends StatelessWidget {

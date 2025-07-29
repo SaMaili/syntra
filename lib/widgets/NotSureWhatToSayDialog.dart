@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../generated/l10n.dart';
 
 class NotSureWhatToSayDialog extends StatelessWidget {
@@ -46,7 +47,10 @@ class NotSureWhatToSayDialog extends StatelessWidget {
   Widget _buildAction(BuildContext context, S l10n) {
     return TextButton(
       onPressed: () => Navigator.of(context).pop(),
-      child: Text(l10n.okayButton, style: const TextStyle(fontWeight: FontWeight.bold)),
+      child: Text(
+        l10n.okayButton,
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      ),
     );
   }
 }

@@ -121,7 +121,7 @@ class _LogbookPageState extends State<LogbookPage> {
                   final displayTitle = isCustom && entry['custom_title'] != null
                       ? entry['custom_title']
                       : (_challengeTitles[entry['challenge_id']?.toString()] ??
-                          'Unknown');
+                            'Unknown');
                   return ListTile(
                     contentPadding: const EdgeInsets.symmetric(
                       vertical: 8,
@@ -193,9 +193,9 @@ class _LogbookPageState extends State<LogbookPage> {
         child: Icon(Icons.add),
         tooltip: S.of(context).addCustomChallenge,
         onPressed: () async {
-          await Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => AddChallengeScreen()),
-          );
+          await Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (_) => AddChallengeScreen()));
           _loadEntries();
         },
       ),

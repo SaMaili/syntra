@@ -115,7 +115,8 @@ class ActiveChallengeLogic {
     // TODO: Implement for iOS if needed (using appropriate iOS background APIs)
     if (Theme.of(context).platform == TargetPlatform.android) {
       final prefs = await SharedPreferences.getInstance();
-      final List<String> times = prefs.getStringList('flutter.scheduled_notifications') ?? [];
+      final List<String> times =
+          prefs.getStringList('flutter.scheduled_notifications') ?? [];
       times.add(scheduledTime.toIso8601String());
       await prefs.setStringList('flutter.scheduled_notifications', times);
     }
@@ -126,7 +127,9 @@ class ActiveChallengeLogic {
     if (Theme.of(context).platform != TargetPlatform.android) return true;
     const platform = MethodChannel('channel_battery_optimizations');
     try {
-      final bool result = await platform.invokeMethod('isIgnoringBatteryOptimizations');
+      final bool result = await platform.invokeMethod(
+        'isIgnoringBatteryOptimizations',
+      );
       return result;
     } catch (_) {
       return false;

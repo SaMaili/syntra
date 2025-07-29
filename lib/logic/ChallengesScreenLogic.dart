@@ -4,9 +4,9 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
+import '../generated/l10n.dart';
 import '../static.dart';
 import '../widgets/ChallengeCard.dart';
-import '../generated/l10n.dart';
 
 // IM SO SORRY FOR THE MESSY CODE, I KNOW IT'S NOT THE BEST PRACTICE TO HAVE ALL THIS IN ONE FILE, BUT I HAD TO DO IT FOR THE CHALLENGE SCREEN LOGIC. I'LL TRY TO IMPROVE IT LATER!
 // YOU KNOW THAT'S A LIE, I JUST WANTED TO GET IT DONE QUICKLY AND MOVE ON TO THE NEXT TASK. I'LL CLEAN IT UP WHEN I HAVE MORE TIME!
