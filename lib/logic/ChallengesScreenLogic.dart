@@ -53,6 +53,19 @@ class ChallengesScreenLogic {
     AppStatic.CHALLENGES.shuffle();
   }
 
+  /// Shuffles the cards and resets the swiper controller
+  void shuffleCards(dynamic cardSwiperController) {
+    shuffleChallenges();
+    // Reset the controller to show the shuffled cards
+    if (cardSwiperController != null) {
+      try {
+        cardSwiperController.moveTo(0);
+      } catch (e) {
+        // Handle any controller errors gracefully
+      }
+    }
+  }
+
   /// Plays a sound when a card is swiped right
   Future<void> playSwipeSound() async {
     final player = AudioPlayer();
@@ -108,5 +121,33 @@ class ChallengesScreenLogic {
         ],
       ),
     );
+  }
+
+  /// Handles card swipe events
+  bool onSwipe(int? previousIndex, int? currentIndex, dynamic direction,
+      BuildContext context, List<dynamic> filteredCards) {
+    // Handle swipe logic here
+    if (previousIndex != null && filteredCards.isNotEmpty && previousIndex < filteredCards.length) {
+      // Play sound effect for right swipe (challenge accepted)
+      if (direction.toString().contains('right')) {
+        playSwipeSound();
+
+        // You can add additional logic here for when a challenge is accepted
+        // For example, show a confirmation dialog or navigate to challenge screen
+
+        print('Challenge accepted: ${filteredCards[previousIndex]}');
+      } else if (direction.toString().contains('left')) {
+        // Handle left swipe (challenge rejected)
+        print('Challenge rejected: ${filteredCards[previousIndex]}');
+      }
+    }
+    return true; // Allow the swipe
+  }
+
+  /// Handles undo events
+  bool onUndo(int? previousIndex, int? currentIndex, dynamic direction) {
+    // Handle undo logic here
+    print('Undo swipe - Previous: $previousIndex, Current: $currentIndex, Direction: $direction');
+    return true; // Allow the undo
   }
 }

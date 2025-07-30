@@ -39,8 +39,8 @@
   "activeChallengeTitle": "SPOT! RUN! TALK!",
   "timeRemaining": "Verbleibende Zeit",
   "notSureWhatToSay": "Nicht sicher was du sagen sollst?",
-  "doneExcited": "FERTIG! 😎",
-  "stillSecondsLeft": "Noch {seconds} Sekunden...",
+  "doneExcited": "GESCHAFFT! 😎",
+  "stillSecondsLeft": "In {seconds} Sekunden verfügbar",
   "@stillSecondsLeft": {
     "placeholders": {
       "seconds": {
@@ -73,16 +73,16 @@
   "group": "Gruppe",
   "dailyChallenge": "Tägliche Challenge",
   "challengeStartQuestion": "Challenge starten?",
-  "startChallengeQuestion": "Möchtest du die heutige Challenge jetzt wirklich machen?",
+  "startChallengeQuestion": "Hast du die heutige Challenge geschafft?",
   "cancel": "Abbrechen",
-  "yesChallengeStart": "Ja, Challenge starten",
+  "yesChallengeStart": "Ja, ich habe sie gemacht",
   "acceptChallenge": "Challenge annehmen",
   "challengeCompletedDaily": "Challenge abgeschlossen!",
   "greatJobDaily": "Großartig! Du hast die heutige Challenge gemeistert.",
   "yourStatistics": "Deine Statistiken",
   "challengeLogbook": "Challenge-Logbuch",
   "weeklyXpProgress": "Wöchentlicher XP-Fortschritt",
-  "weeklyChallenges": "Wöchentliche Challenges (abgeschlossen/gescheitert)",
+  "weeklyChallenges": "Wöchentliche Challenges",
   "dbDebugShow": "DB Debug: Zeige gesamte Logbuch-Tabelle",
   "total": "Gesamt",
   "today": "Heute",
@@ -170,5 +170,13 @@
   "lastNote": "Letzte Notiz:",
   "lastCompleted": "Zuletzt abgeschlossen:",
   "repeatChallengeInfo": "Du kannst diese Challenge so oft wiederholen, wie du möchtest!",
-  "noNotesYet": "Du hast noch keine Notizen für diese Challenge."
+  "noNotesYet": "Du hast noch keine Notizen für diese Challenge.",
+  "completed": "Abgeschlossen",
+  "failed": "Gescheitert",
+  "challengeType": "Challenge-Typ",
+  "existingChallenge": "Bestehende Challenge",
+  "newChallenge": "Neue Challenge",
+  "searchForChallenge": "Nach einer Challenge suchen...",
+  "challengeDetails": "Challenge-Details",
+  "enterYourNotes": "Gib hier deine Notizen ein..."
 }

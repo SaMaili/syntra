@@ -40,7 +40,7 @@
   "timeRemaining": "Time Remaining",
   "notSureWhatToSay": "Not sure what to say?",
   "doneExcited": "DONE! 😎",
-  "stillSecondsLeft": "Still {seconds} seconds...",
+  "stillSecondsLeft": "Blocked {seconds} seconds",
   "@stillSecondsLeft": {
     "placeholders": {
       "seconds": {
@@ -75,14 +75,14 @@
   "challengeStartQuestion": "Start challenge?",
   "startChallengeQuestion": "Do you really want to do today's challenge now?",
   "cancel": "Cancel",
-  "yesChallengeStart": "Yes, start challenge",
+  "yesChallengeStart": "Yes, I completed it",
   "acceptChallenge": "Accept Challenge",
   "challengeCompletedDaily": "Challenge completed!",
   "greatJobDaily": "Great job! You have mastered today's challenge.",
   "yourStatistics": "Your Statistics",
   "challengeLogbook": "Challenge Logbook",
   "weeklyXpProgress": "Weekly XP Progress",
-  "weeklyChallenges": "Weekly Challenges (completed/failed)",
+  "weeklyChallenges": "Weekly Challenges",
   "dbDebugShow": "DB Debug: Show all logbook table",
   "total": "Total",
   "today": "Today",
@@ -170,5 +170,13 @@
   "lastNote": "Last note:",
   "lastCompleted": "Last completed:",
   "repeatChallengeInfo": "You can repeat this challenge as often as you like!",
-  "noNotesYet": "You don't have any notes for this challenge yet."
+  "noNotesYet": "You don't have any notes for this challenge yet.",
+  "completed": "Completed",
+  "failed": "Failed",
+  "challengeType": "Challenge Type",
+  "existingChallenge": "Existing Challenge",
+  "newChallenge": "New Challenge",
+  "searchForChallenge": "Search for a challenge...",
+  "challengeDetails": "Challenge Details",
+  "enterYourNotes": "Enter your notes here..."
 }

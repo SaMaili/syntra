@@ -18,6 +18,7 @@ import 'package:syntra/widgets/NotSureWhatToSayDialog.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
 import '../generated/l10n.dart';
+import '../static.dart';
 import 'ChallengeDoneScreen.dart';
 
 // The ActiveChallengeScreen widget manages the UI and logic for an active challenge session.
@@ -40,7 +41,7 @@ class ActiveChallengeScreen extends StatefulWidget {
 
 // State class for ActiveChallengeScreen, handles timers, notifications, and UI updates.
 class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
-    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   // Timer for abort lock (prevents aborting the challenge immediately).
   int abortLockTimer = 15;
 
@@ -61,6 +62,14 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
   // Animation controller for pulse effect.
   AnimationController? _pulseController;
   Animation<double>? _pulseAnimation;
+  
+  // Additional animation controllers for beautiful UI
+  late AnimationController _fadeController;
+  late AnimationController _scaleController;
+  late AnimationController _timerPulseController;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _timerPulseAnimation;
 
   int? _scheduledNotificationId;
 
@@ -77,6 +86,31 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
     tz.initializeTimeZones();
     _startMainTimer();
     _startAbortLockTimer();
+    
+    // Set up animations for beautiful UI
+    _fadeController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _scaleController = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+    _timerPulseController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+    
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _fadeController, curve: Curves.easeInOut),
+    );
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(parent: _scaleController, curve: Curves.elasticOut),
+    );
+    _timerPulseAnimation = Tween<double>(begin: 1.0, end: 1.02).animate(
+      CurvedAnimation(parent: _timerPulseController, curve: Curves.easeInOut),
+    );
+    
     // Set up pulse animation for the DONE button.
     _pulseController = AnimationController(
       vsync: this,
@@ -88,12 +122,20 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
       parent: _pulseController!,
       curve: Curves.easeInOut,
     );
+
+    // Start animations
+    _fadeController.forward();
+    _scaleController.forward();
+    _timerPulseController.repeat(reverse: true);
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _pulseController?.dispose();
+    _fadeController.dispose();
+    _scaleController.dispose();
+    _timerPulseController.dispose();
     super.dispose();
   }
 
@@ -220,196 +262,415 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
     // Whether main timer is over.
     final mainTimeOver = mainTimer <= 0;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bgColor = isDark ? Colors.black : null;
-    final helpBtnBg = isDark ? Colors.grey[800] : Colors.grey[300];
-    final helpBtnFg = isDark ? Colors.white : Colors.black;
-    final doneBtnBg = mainTimeOver
-        ? (isDark ? Colors.greenAccent[400] : const Color(0xFF39FF14))
-        : (over
-              ? (isDark ? Colors.green[700] : Colors.green)
-              : (isDark ? Colors.grey[700] : Colors.grey[400]));
-    final doneBtnFg = Colors.white;
-    final doneBtnShadow = mainTimeOver
-        ? (isDark ? Colors.greenAccent : const Color(0xFF39FF14))
-        : (isDark ? Colors.black54 : Colors.black26);
-    return WillPopScope(
-      onWillPop: () async => false,
+    
+    // Beautiful gradient backgrounds similar to StatisticsScreen
+    final bgGradient = isDark
+        ? const LinearGradient(
+            colors: [Color(0xFF1a1a2e), Color(0xFF16213e), Color(0xFF0f3460)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          )
+        : const LinearGradient(
+            colors: [Color(0xFFe0c3fc), Color(0xFF8ec5fc), Color(0xFF74b9ff)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          );
+    
+    final cardColor = isDark
+        ? Colors.grey[900]!.withValues(alpha: 0.95)
+        : Colors.white.withValues(alpha: 0.95);
+    final titleColor = isDark ? Colors.pinkAccent : AppStatic.grape;
+    final timerColor = isDark ? Colors.cyanAccent : AppStatic.marianBlue;
+    
+    return PopScope(
+      canPop: false,
       child: Scaffold(
+        extendBodyBehindAppBar: true,
         appBar: AppBar(
-          title: Text(S.of(context).activeChallengeTitle),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          centerTitle: true,
           automaticallyImplyLeading: false,
+          title: Container(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: isDark ? 0.1 : 0.2),
+              borderRadius: BorderRadius.circular(25),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.timer, color: titleColor, size: 24),
+                SizedBox(width: 8),
+                Text(
+                  S.of(context).activeChallengeTitle,
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: titleColor,
+                    fontSize: 20,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
-        backgroundColor: bgColor,
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            if (!mainTimeOver) ...[
-              const SizedBox(height: 16),
-              Text(
-                S.of(context).timeRemaining,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                _formatTime(mainTimer),
-                style: const TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 32),
-            ],
-            Expanded(
-              child: ChallengeCard(challenge: widget.challenge, showXP: false),
-            ),
-            const SizedBox(height: 32),
-            if (!mainTimeOver) ...[
-              ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => NotSureWhatToSayDialog(
-                      text: widget.challenge.notSureWhatToSay,
-                    ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: helpBtnBg,
-                  foregroundColor: helpBtnFg,
-                  minimumSize: const Size(double.infinity, 48),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: Text(S.of(context).notSureWhatToSay),
-              ),
-              const SizedBox(height: 24),
-            ],
-            SizedBox(
-              width: double.infinity,
-              height: mainTimeOver ? 80 : 64,
-              child: mainTimeOver
-                  ? ScaleTransition(
-                      scale: _pulseAnimation!,
-                      child: ElevatedButton(
-                        onPressed: over
-                            ? () async {
-                                _isDone = true;
-                                if (_scheduledNotificationId != null) {
-                                  await NotificationManager.cancelNotification(
-                                    _scheduledNotificationId!,
-                                  );
-                                }
-                                final player = AudioPlayer();
-                                await player.play(
-                                  AssetSource('yipee-45360.mp3'),
-                                );
-                                await Future.delayed(
-                                  const Duration(milliseconds: 600),
-                                );
-                                await _finishChallenge(0.8);
-                              }
-                            : null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: doneBtnBg,
-                          foregroundColor: doneBtnFg,
-                          textStyle: const TextStyle(
-                            fontSize: 26,
-                            fontWeight: FontWeight.bold,
+        backgroundColor: isDark ? Colors.black : AppStatic.grapeLight,
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(gradient: bgGradient),
+          child: SafeArea(
+            child: AnimatedBuilder(
+              animation: _fadeAnimation,
+              builder: (context, child) {
+                return Opacity(
+                  opacity: _fadeAnimation.value,
+                  child: AnimatedBuilder(
+                    animation: _scaleAnimation,
+                    builder: (context, child) {
+                      return Transform.scale(
+                        scale: _scaleAnimation.value,
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              // Timer section with beautiful card design
+                              if (!mainTimeOver) ...[
+                                AnimatedBuilder(
+                                  animation: _timerPulseAnimation,
+                                  builder: (context, child) {
+                                    return Transform.scale(
+                                      scale: _timerPulseAnimation.value,
+                                      child: Container(
+                                        width: double.infinity,
+                                        padding: EdgeInsets.all(28),
+                                        decoration: BoxDecoration(
+                                          color: cardColor,
+                                          borderRadius: BorderRadius.circular(28),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: timerColor.withValues(alpha: 0.3),
+                                              blurRadius: 25,
+                                              spreadRadius: 2,
+                                              offset: Offset(0, 12),
+                                            ),
+                                            BoxShadow(
+                                              color: Colors.black.withValues(alpha: 0.1),
+                                              blurRadius: 15,
+                                              offset: Offset(0, 8),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Icon(Icons.access_time, color: timerColor, size: 28),
+                                                SizedBox(width: 12),
+                                                Text(
+                                                  S.of(context).timeRemaining,
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: timerColor,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 16),
+                                            Container(
+                                              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                                              decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                  colors: [
+                                                    timerColor.withValues(alpha: 0.1),
+                                                    timerColor.withValues(alpha: 0.05),
+                                                  ],
+                                                ),
+                                                borderRadius: BorderRadius.circular(20),
+                                              ),
+                                              child: Text(
+                                                _formatTime(mainTimer),
+                                                style: TextStyle(
+                                                  fontSize: 42,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: timerColor,
+                                                  letterSpacing: 2,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                SizedBox(height: 24),
+                              ],
+                              
+                              // Challenge card with enhanced styling
+                              Expanded(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(28),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: titleColor.withValues(alpha: 0.2),
+                                        blurRadius: 25,
+                                        spreadRadius: 2,
+                                        offset: Offset(0, 12),
+                                      ),
+                                    ],
+                                  ),
+                                  child: ChallengeCard(challenge: widget.challenge, showXP: false),
+                                ),
+                              ),
+                              
+                              SizedBox(height: 24),
+                              
+                              // Help button with beautiful styling
+                              if (!mainTimeOver) ...[
+                                Container(
+                                  width: double.infinity,
+                                  height: 56,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Colors.orange.withValues(alpha: 0.8),
+                                        Colors.deepOrange.withValues(alpha: 0.8),
+                                      ],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.orange.withValues(alpha: 0.3),
+                                        blurRadius: 20,
+                                        spreadRadius: 1,
+                                        offset: Offset(0, 8),
+                                      ),
+                                    ],
+                                  ),
+                                  child: ElevatedButton.icon(
+                                    icon: Icon(Icons.help_outline, size: 24, color: Colors.white),
+                                    label: Text(
+                                      S.of(context).notSureWhatToSay,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                      shadowColor: Colors.transparent,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => NotSureWhatToSayDialog(
+                                          text: widget.challenge.notSureWhatToSay,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                                SizedBox(height: 24),
+                              ],
+                              
+                              // Done button with enhanced styling
+                              Container(
+                                width: double.infinity,
+                                height: mainTimeOver ? 80 : 64,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  gradient: LinearGradient(
+                                    colors: mainTimeOver
+                                        ? [
+                                            (isDark ? Colors.greenAccent[400]! : const Color(0xFF39FF14)),
+                                            (isDark ? Colors.green[600]! : Colors.green[700]!),
+                                          ]
+                                        : over
+                                            ? [
+                                                (isDark ? Colors.green[700]! : Colors.green),
+                                                (isDark ? Colors.green[800]! : Colors.green[800]!),
+                                              ]
+                                            : [
+                                                (isDark ? Colors.grey[700]! : Colors.grey[400]!),
+                                                (isDark ? Colors.grey[800]! : Colors.grey[500]!),
+                                              ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: mainTimeOver
+                                          ? (isDark ? Colors.greenAccent : const Color(0xFF39FF14)).withValues(alpha: 0.4)
+                                          : Colors.black.withValues(alpha: 0.2),
+                                      blurRadius: mainTimeOver ? 25 : 15,
+                                      spreadRadius: mainTimeOver ? 2 : 1,
+                                      offset: Offset(0, mainTimeOver ? 12 : 8),
+                                    ),
+                                  ],
+                                ),
+                                child: mainTimeOver
+                                    ? ScaleTransition(
+                                        scale: _pulseAnimation!,
+                                        child: ElevatedButton(
+                                          onPressed: over
+                                              ? () async {
+                                                  _isDone = true;
+                                                  if (_scheduledNotificationId != null) {
+                                                    await NotificationManager.cancelNotification(
+                                                      _scheduledNotificationId!,
+                                                    );
+                                                  }
+                                                  final player = AudioPlayer();
+                                                  await player.play(
+                                                    AssetSource('yipee-45360.mp3'),
+                                                  );
+                                                  await Future.delayed(
+                                                    const Duration(milliseconds: 600),
+                                                  );
+                                                  await _finishChallenge(0.8);
+                                                }
+                                              : null,
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.transparent,
+                                            shadowColor: Colors.transparent,
+                                            foregroundColor: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(20),
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(Icons.flash_on, color: Colors.white, size: 32),
+                                              SizedBox(width: 12),
+                                              Text(
+                                                S.of(context).doneExcited,
+                                                style: TextStyle(
+                                                  fontSize: 26,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                    : ElevatedButton(
+                                        onPressed: over
+                                            ? () async {
+                                                _isDone = true;
+                                                if (_scheduledNotificationId != null) {
+                                                  await NotificationManager.cancelNotification(
+                                                    _scheduledNotificationId!,
+                                                  );
+                                                }
+                                                final player = AudioPlayer();
+                                                await player.play(AssetSource('yipee-45360.mp3'));
+                                                await Future.delayed(
+                                                  const Duration(milliseconds: 600),
+                                                );
+                                                await _finishChallenge(1);
+                                              }
+                                            : null,
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.transparent,
+                                          shadowColor: Colors.transparent,
+                                          foregroundColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(20),
+                                          ),
+                                        ),
+                                        child: over
+                                            ? Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    S.of(context).doneExcited,
+                                                    style: TextStyle(
+                                                      fontSize: 22,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                            : Text(
+                                                S.of(context).stillSecondsLeft(abortLockTimer.toString()),
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                      ),
+                              ),
+                              
+                              SizedBox(height: 16),
+                              
+                              // Abort button with subtle styling
+                              if (over)
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.red.withValues(alpha: mainTimeOver ? 0.2 : 0.1),
+                                        blurRadius: 10,
+                                        offset: Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: TextButton(
+                                    onPressed: () async {
+                                      final player = AudioPlayer();
+                                      await player.play(
+                                        AssetSource('error-call-to-attention-129258.mp3'),
+                                      );
+                                      await Future.delayed(const Duration(milliseconds: 600));
+                                      await _finishChallenge(-0.5);
+                                    },
+                                    style: TextButton.styleFrom(
+                                      foregroundColor: mainTimeOver
+                                          ? Colors.amberAccent.shade700
+                                          : Colors.red.shade400,
+                                      backgroundColor: Colors.white.withValues(alpha: 0.1),
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: mainTimeOver ? 12 : 8,
+                                        horizontal: 24,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      S.of(context).notToday,
+                                      style: TextStyle(
+                                        fontSize: mainTimeOver ? 18 : 14,
+                                        fontWeight: mainTimeOver ? FontWeight.bold : FontWeight.normal,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              
+                              SizedBox(height: 8),
+                            ],
                           ),
-                          elevation: 12,
-                          shadowColor: doneBtnShadow,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.flash_on, color: Colors.white, size: 32),
-                            SizedBox(width: 12),
-                            Text(S.of(context).doneExcited),
-                          ],
-                        ),
-                      ),
-                    )
-                  : ElevatedButton(
-                      onPressed: over
-                          ? () async {
-                              _isDone = true;
-                              if (_scheduledNotificationId != null) {
-                                await NotificationManager.cancelNotification(
-                                  _scheduledNotificationId!,
-                                );
-                              }
-                              final player = AudioPlayer();
-                              await player.play(AssetSource('yipee-45360.mp3'));
-                              await Future.delayed(
-                                const Duration(milliseconds: 600),
-                              );
-                              await _finishChallenge(1);
-                            }
-                          : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: doneBtnBg,
-                        foregroundColor: doneBtnFg,
-                        textStyle: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        elevation: 2,
-                        shadowColor: doneBtnShadow,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-                      child: over
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [Text(S.of(context).doneExcited)],
-                            )
-                          : Text(
-                              S
-                                  .of(context)
-                                  .stillSecondsLeft(abortLockTimer.toString()),
-                            ),
-                    ),
+                      );
+                    },
+                  ),
+                );
+              },
             ),
-            SizedBox(height: mainTimeOver ? 16 : 8),
-            if (over)
-              TextButton(
-                onPressed: () async {
-                  final player = AudioPlayer();
-                  await player.play(
-                    AssetSource('error-call-to-attention-129258.mp3'),
-                  );
-                  await Future.delayed(const Duration(milliseconds: 600));
-                  await _finishChallenge(-0.5);
-                },
-                style: TextButton.styleFrom(
-                  foregroundColor: mainTimeOver
-                      ? Colors.amberAccent.shade700
-                      : Colors.black54,
-                  textStyle: TextStyle(
-                    fontSize: mainTimeOver ? 18 : 12,
-                    fontWeight: mainTimeOver
-                        ? FontWeight.bold
-                        : FontWeight.normal,
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    vertical: mainTimeOver ? 12 : 4,
-                    horizontal: 8,
-                  ),
-                ),
-                child: Text(
-                  S.of(context).notToday,
-                  style: TextStyle(
-                    color: isDark ? Colors.pink[200] : Colors.redAccent,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-          ],
+          ),
         ),
       ),
     );
