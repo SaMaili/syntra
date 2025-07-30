@@ -78,48 +78,225 @@ class ChallengesScreenLogic {
     BuildContext context,
     String challengeTitle,
   ) async {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = isDark ? Colors.pinkAccent : AppStatic.grape;
+    final accentColor = isDark ? Colors.cyanAccent : AppStatic.marianBlue;
+
     return showDialog<bool>(
       context: context,
       barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: Text(S.of(context).challengeConfirmTitle),
-        content: Text(S.of(context).challengeConfirmMessage(challengeTitle)),
-        actions: [
-          Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  style: TextButton.styleFrom(foregroundColor: Colors.grey),
-                  child: Text(S.of(context).preferAnotherChallenge),
+      barrierColor: Colors.black.withValues(alpha: 0.7),
+      builder: (context) => ScaleTransition(
+        scale: CurvedAnimation(
+          parent: ModalRoute.of(context)!.animation!,
+          curve: Curves.elasticOut,
+        ),
+        child: AlertDialog(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          content: Container(
+            width: 320,
+            decoration: BoxDecoration(
+              gradient: isDark
+                  ? LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.grey[900]!,
+                        Colors.grey[800]!,
+                        Colors.grey[900]!,
+                      ],
+                    )
+                  : LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white,
+                        Colors.grey[50]!,
+                        Colors.white,
+                      ],
+                    ),
+              borderRadius: BorderRadius.circular(28),
+              boxShadow: [
+                BoxShadow(
+                  color: primaryColor.withValues(alpha: 0.2),
+                  blurRadius: 30,
+                  spreadRadius: 2,
+                  offset: Offset(0, 15),
                 ),
-                SizedBox(height: 12),
-                ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop(true),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.lightBlueAccent,
-                    foregroundColor: Colors.white,
-                    elevation: 8,
-                    shadowColor: Colors.blueAccent.withOpacity(0.5),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      side: BorderSide(color: Colors.white, width: 2),
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 28, vertical: 16),
-                    textStyle: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-                  child: Text(S.of(context).letsGo),
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: isDark ? 0.5 : 0.1),
+                  blurRadius: 20,
+                  offset: Offset(0, 8),
                 ),
               ],
+              border: Border.all(
+                color: primaryColor.withValues(alpha: 0.2),
+                width: 1,
+              ),
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(32),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Header Icon
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          primaryColor.withValues(alpha: 0.2),
+                          primaryColor.withValues(alpha: 0.1),
+                        ],
+                      ),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.rocket_launch,
+                      color: primaryColor,
+                      size: 48,
+                    ),
+                  ),
+
+                  SizedBox(height: 24),
+
+                  // Title
+                  Text(
+                    S.of(context).challengeConfirmTitle,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: primaryColor,
+                      letterSpacing: 0.5,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+
+                  SizedBox(height: 16),
+
+                  // Challenge name in a styled container
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: accentColor.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: accentColor.withValues(alpha: 0.2),
+                        width: 1,
+                      ),
+                    ),
+                    child: Text(
+                      challengeTitle,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: isDark ? Colors.white.withValues(alpha: 0.9) : Colors.black87,
+                        height: 1.3,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+
+                  SizedBox(height: 24),
+
+                  // Action buttons
+                  Column(
+                    children: [
+                      // "Let's Go" button - primary action
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              primaryColor,
+                              primaryColor.withValues(alpha: 0.8),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: primaryColor.withValues(alpha: 0.4),
+                              blurRadius: 15,
+                              spreadRadius: 1,
+                              offset: Offset(0, 6),
+                            ),
+                          ],
+                        ),
+                        child: ElevatedButton.icon(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          icon: Icon(
+                            Icons.rocket_launch,
+                            color: Colors.white,
+                            size: 26,
+                          ),
+                          label: Text(
+                            S.of(context).letsGo,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 12),
+
+                      // "Prefer another" button - secondary action
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: Colors.grey.withValues(alpha: 0.3),
+                            width: 1,
+                          ),
+                        ),
+                        child: TextButton.icon(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          icon: Icon(
+                            Icons.shuffle,
+                            color: Colors.grey[600],
+                            size: 13,
+                          ),
+                          label: Text(
+                            S.of(context).preferAnotherChallenge,
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
-        ],
-      ),
+        ),
+      )
     );
   }
 

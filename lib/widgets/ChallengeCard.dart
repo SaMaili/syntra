@@ -5,7 +5,7 @@ import 'package:syntra/widgets/challenge_info_notification.dart';
 
 import '../generated/l10n.dart';
 
-class ChallengeCard extends StatelessWidget {
+class ChallengeCard extends StatefulWidget {
   final Challenge challenge;
   final VoidCallback? onInfoPressed;
   final double height;
@@ -40,116 +40,355 @@ class ChallengeCard extends StatelessWidget {
   });
 
   @override
+  State<ChallengeCard> createState() => _ChallengeCardState();
+}
+
+class _ChallengeCardState extends State<ChallengeCard>
+    with TickerProviderStateMixin {
+  late AnimationController _hoverController;
+  late AnimationController _pulseController;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _pulseAnimation;
+  bool _isHovered = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _hoverController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+
+    _pulseController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.02,
+    ).animate(CurvedAnimation(
+      parent: _hoverController,
+      curve: Curves.easeInOut,
+    ));
+
+    _pulseAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _pulseController,
+      curve: Curves.easeInOut,
+    ));
+
+    // Start subtle pulse animation
+    _pulseController.repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _hoverController.dispose();
+    _pulseController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Card(
-      color: isDark ? Colors.grey[900] : cardColor ?? Colors.white,
-      elevation: elevation,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(borderRadius),
-      ),
-      child: Container(
-        height: height,
-        padding: contentPadding ?? const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            // Top section with title and XP
-            Column(
-              children: [
-                Text(
-                  challenge.title,
-                  style: TextStyle(
-                    fontSize: titleFontSize ?? 40,
-                    fontWeight: FontWeight.bold,
-                    color: isDark
-                        ? Colors.pinkAccent
-                        : titleColor ?? AppStatic.textPrimary,
+
+    // Enhanced color scheme
+    final primaryColor = isDark ? Colors.pinkAccent : AppStatic.grape;
+    final accentColor = isDark ? Colors.cyanAccent : AppStatic.marianBlue;
+
+    // Improved gradient for better contrast in light mode
+    final cardGradient = isDark
+        ? LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.grey[900]!.withValues(alpha: 0.95),
+              Colors.grey[850]!.withValues(alpha: 0.9),
+              Colors.grey[900]!.withValues(alpha: 0.95),
+            ],
+          )
+        : LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.white,
+              Colors.grey[50]!,
+              Colors.white,
+            ],
+            stops: [0.0, 0.5, 1.0],
+          );
+
+    return AnimatedBuilder(
+      animation: Listenable.merge([_scaleAnimation, _pulseAnimation]),
+      builder: (context, child) {
+        return Transform.scale(
+          scale: _scaleAnimation.value,
+          child: MouseRegion(
+            onEnter: (_) {
+              setState(() => _isHovered = true);
+              _hoverController.forward();
+            },
+            onExit: (_) {
+              setState(() => _isHovered = false);
+              _hoverController.reverse();
+            },
+            child: Container(
+              height: widget.height,
+              decoration: BoxDecoration(
+                gradient: cardGradient,
+                borderRadius: BorderRadius.circular(widget.borderRadius),
+                boxShadow: [
+                  // Primary shadow
+                  BoxShadow(
+                    color: primaryColor.withValues(alpha: 0.2 + (_pulseAnimation.value * 0.1)),
+                    blurRadius: 20 + (_pulseAnimation.value * 5),
+                    spreadRadius: 2 + (_pulseAnimation.value * 1),
+                    offset: Offset(0, 8 + (_pulseAnimation.value * 2)),
                   ),
-                ),
-                SizedBox(height: 6),
-                if (showXP)
-                  Text(
-                    '+${challenge.xp} ${l10n.auraPoints}',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color:
-                          xpColor ??
-                          (isDark ? Colors.greenAccent : Colors.green[700]),
-                      fontWeight: FontWeight.w600,
+                  // Secondary shadow for depth
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.1),
+                    blurRadius: 15,
+                    offset: Offset(0, 4),
+                  ),
+                  // Subtle inner glow
+                  if (_isHovered)
+                    BoxShadow(
+                      color: primaryColor.withValues(alpha: 0.1),
+                      blurRadius: 30,
+                      spreadRadius: -5,
+                      offset: Offset(0, 0),
                     ),
-                  ),
-              ],
-            ),
-            // Center section with the main text
-            Expanded(
-              child: Center(
-                child: GestureDetector(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        backgroundColor: isDark ? Colors.grey[900] : null,
-                        title: Text(
-                          l10n.description,
-                          style: TextStyle(color: isDark ? Colors.white : null),
-                        ),
-                        content: Text(
-                          challenge.description,
-                          style: TextStyle(color: isDark ? Colors.white : null),
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: Text(
-                              l10n.closeDialog,
-                              style: TextStyle(
-                                color: isDark ? Colors.pinkAccent : null,
+                ],
+                border: Border.all(
+                  color: primaryColor.withValues(alpha: 0.1 + (_pulseAnimation.value * 0.1)),
+                  width: 1 + (_pulseAnimation.value * 0.5),
+                ),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(widget.borderRadius),
+                child: Container(
+                  padding: widget.contentPadding ?? const EdgeInsets.all(24.0),
+                  child: Column(
+                    children: [
+                      // Enhanced top section with title and XP
+                      Container(
+                        padding: EdgeInsets.symmetric(vertical: 8),
+                        child: Column(
+                          children: [
+                            // Challenge title with enhanced styling
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    primaryColor.withValues(alpha: 0.1),
+                                    primaryColor.withValues(alpha: 0.05),
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(20),
                               ),
+                              child: Text(
+                                widget.challenge.title,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: widget.titleFontSize ?? 32,
+                                  fontWeight: FontWeight.bold,
+                                  color: widget.titleColor ?? primaryColor,
+                                  letterSpacing: 0.5,
+                                  height: 1.2,
+                                ),
+                              ),
+                            ),
+
+                            SizedBox(height: 12),
+
+                            // Enhanced XP display
+                            if (widget.showXP)
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.amber.withValues(alpha: 0.2),
+                                      Colors.orange.withValues(alpha: 0.1),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color: Colors.amber.withValues(alpha: 0.3),
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.star,
+                                      color: Colors.amber[700],
+                                      size: 20,
+                                    ),
+                                    SizedBox(width: 6),
+                                    Text(
+                                      '+${widget.challenge.xp} ${l10n.auraPoints}',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: widget.xpColor ?? Colors.amber[700],
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(height: 16),
+
+                      // Enhanced center section with description
+                      Expanded(
+                        child: Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: accentColor.withValues(alpha: 0.05),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: accentColor.withValues(alpha: 0.1),
+                              width: 1,
+                            ),
+                          ),
+                          child: Center(
+                            child: GestureDetector(
+                              onTap: () => _showDescriptionDialog(context, l10n, isDark),
+                              child: Text(
+                                widget.challenge.description,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: widget.descriptionFontSize ?? 18,
+                                  color: widget.descriptionColor ?? (isDark ? Colors.white.withValues(alpha: 0.9) : AppStatic.textSecondary),
+                                  height: 1.4,
+                                  letterSpacing: 0.3,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 16),
+
+                      // Enhanced bottom section with info button
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  accentColor.withValues(alpha: 0.1),
+                                  accentColor.withValues(alpha: 0.05),
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: accentColor.withValues(alpha: 0.2),
+                                width: 1,
+                              ),
+                            ),
+                            child: IconButton(
+                              icon: widget.infoIcon ??
+                                  Icon(
+                                    Icons.info_outline,
+                                    color: accentColor,
+                                    size: 24,
+                                  ),
+                              onPressed: widget.onInfoPressed ?? () => _showChallengeInfo(context),
+                              tooltip: 'Challenge Information',
                             ),
                           ),
                         ],
                       ),
-                    );
-                  },
-                  child: Text(
-                    challenge.description,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: descriptionFontSize ?? 20,
-                      color: isDark
-                          ? Colors.pinkAccent
-                          : descriptionColor ?? AppStatic.textSecondary,
-                    ),
+                    ],
                   ),
                 ),
               ),
             ),
-            // Bottom section with info button
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                IconButton(
-                  icon:
-                      infoIcon ??
-                      Icon(
-                        Icons.info_outline,
-                        color: isDark ? Colors.pinkAccent : Colors.grey[700],
-                      ),
-                  onPressed:
-                      onInfoPressed ??
-                      () async {
-                        await ChallengeInfoNotification.showLastNotesNotification(
-                          context,
-                          challenge.id,
-                        );
-                      },
-                ),
-              ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showDescriptionDialog(BuildContext context, S l10n, bool isDark) {
+    final primaryColor = isDark ? Colors.pinkAccent : AppStatic.grape;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: isDark ? Colors.grey[900] : Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        title: Row(
+          children: [
+            Icon(Icons.description, color: primaryColor, size: 24),
+            SizedBox(width: 8),
+            Text(
+              l10n.description,
+              style: TextStyle(
+                color: primaryColor,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),
+        content: Container(
+          constraints: BoxConstraints(maxWidth: 400),
+          child: Text(
+            widget.challenge.description,
+            style: TextStyle(
+              color: isDark ? Colors.white.withValues(alpha: 0.9) : Colors.black87,
+              height: 1.5,
+              fontSize: 16,
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            style: TextButton.styleFrom(
+              backgroundColor: primaryColor.withValues(alpha: 0.1),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Text(
+                l10n.closeDialog,
+                style: TextStyle(
+                  color: primaryColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
+    );
+  }
+
+  Future<void> _showChallengeInfo(BuildContext context) async {
+    await ChallengeInfoNotification.showLastNotesNotification(
+      context,
+      widget.challenge.id,
     );
   }
 }

@@ -232,10 +232,17 @@ class _AddChallengeScreenState extends State<AddChallengeScreen>
                                   animation: _staggerAnimations[0],
                                   builder: (context, child) {
                                     return Transform.translate(
-                                      offset: Offset(0, 50 * (1 - _staggerAnimations[0].value)),
+                                      offset: Offset(
+                                        0,
+                                        50 * (1 - _staggerAnimations[0].value),
+                                      ),
                                       child: Opacity(
                                         opacity: _staggerAnimations[0].value,
-                                        child: _buildChallengeTypeCard(cardColor, titleColor, isDark),
+                                        child: _buildChallengeTypeCard(
+                                          cardColor,
+                                          titleColor,
+                                          isDark,
+                                        ),
                                       ),
                                     );
                                   },
@@ -249,10 +256,18 @@ class _AddChallengeScreenState extends State<AddChallengeScreen>
                                     animation: _staggerAnimations[1],
                                     builder: (context, child) {
                                       return Transform.translate(
-                                        offset: Offset(0, 50 * (1 - _staggerAnimations[1].value)),
+                                        offset: Offset(
+                                          0,
+                                          50 *
+                                              (1 - _staggerAnimations[1].value),
+                                        ),
                                         child: Opacity(
                                           opacity: _staggerAnimations[1].value,
-                                          child: _buildChallengeSearchCard(cardColor, accentColor, isDark),
+                                          child: _buildChallengeSearchCard(
+                                            cardColor,
+                                            accentColor,
+                                            isDark,
+                                          ),
                                         ),
                                       );
                                     },
@@ -265,10 +280,17 @@ class _AddChallengeScreenState extends State<AddChallengeScreen>
                                   animation: _staggerAnimations[2],
                                   builder: (context, child) {
                                     return Transform.translate(
-                                      offset: Offset(0, 50 * (1 - _staggerAnimations[2].value)),
+                                      offset: Offset(
+                                        0,
+                                        50 * (1 - _staggerAnimations[2].value),
+                                      ),
                                       child: Opacity(
                                         opacity: _staggerAnimations[2].value,
-                                        child: _buildChallengeDetailsCard(cardColor, accentColor, isDark),
+                                        child: _buildChallengeDetailsCard(
+                                          cardColor,
+                                          accentColor,
+                                          isDark,
+                                        ),
                                       ),
                                     );
                                   },
@@ -281,10 +303,17 @@ class _AddChallengeScreenState extends State<AddChallengeScreen>
                                   animation: _staggerAnimations[3],
                                   builder: (context, child) {
                                     return Transform.translate(
-                                      offset: Offset(0, 50 * (1 - _staggerAnimations[3].value)),
+                                      offset: Offset(
+                                        0,
+                                        50 * (1 - _staggerAnimations[3].value),
+                                      ),
                                       child: Opacity(
                                         opacity: _staggerAnimations[3].value,
-                                        child: _buildFeelingsCard(cardColor, titleColor, isDark),
+                                        child: _buildFeelingsCard(
+                                          cardColor,
+                                          titleColor,
+                                          isDark,
+                                        ),
                                       ),
                                     );
                                   },
@@ -297,10 +326,17 @@ class _AddChallengeScreenState extends State<AddChallengeScreen>
                                   animation: _staggerAnimations[4],
                                   builder: (context, child) {
                                     return Transform.translate(
-                                      offset: Offset(0, 50 * (1 - _staggerAnimations[4].value)),
+                                      offset: Offset(
+                                        0,
+                                        50 * (1 - _staggerAnimations[4].value),
+                                      ),
                                       child: Opacity(
                                         opacity: _staggerAnimations[4].value,
-                                        child: _buildPerceptionCard(cardColor, titleColor, isDark),
+                                        child: _buildPerceptionCard(
+                                          cardColor,
+                                          titleColor,
+                                          isDark,
+                                        ),
                                       ),
                                     );
                                   },
@@ -313,16 +349,24 @@ class _AddChallengeScreenState extends State<AddChallengeScreen>
                                   animation: _staggerAnimations[5],
                                   builder: (context, child) {
                                     return Transform.translate(
-                                      offset: Offset(0, 50 * (1 - _staggerAnimations[5].value)),
+                                      offset: Offset(
+                                        0,
+                                        50 * (1 - _staggerAnimations[5].value),
+                                      ),
                                       child: Opacity(
                                         opacity: _staggerAnimations[5].value,
-                                        child: _buildNotesCard(cardColor, accentColor, isDark),
+                                        child: _buildNotesCard(
+                                          cardColor,
+                                          accentColor,
+                                          isDark,
+                                        ),
                                       ),
                                     );
                                   },
                                 ),
 
-                                SizedBox(height: 100), // Space for floating button
+                                SizedBox(height: 100),
+                                // Space for floating button
                               ],
                             ),
                           ),
@@ -340,10 +384,7 @@ class _AddChallengeScreenState extends State<AddChallengeScreen>
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           gradient: LinearGradient(
-            colors: [
-              titleColor,
-              titleColor.withValues(alpha: 0.8),
-            ],
+            colors: [titleColor, titleColor.withValues(alpha: 0.8)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -383,7 +424,11 @@ class _AddChallengeScreenState extends State<AddChallengeScreen>
     );
   }
 
-  Widget _buildChallengeTypeCard(Color cardColor, Color titleColor, bool isDark) {
+  Widget _buildChallengeTypeCard(
+    Color cardColor,
+    Color titleColor,
+    bool isDark,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: cardColor,
@@ -456,10 +501,7 @@ class _AddChallengeScreenState extends State<AddChallengeScreen>
         decoration: BoxDecoration(
           color: isSelected ? color : Colors.transparent,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: color,
-            width: 2,
-          ),
+          border: Border.all(color: color, width: 2),
         ),
         child: Text(
           label,
@@ -472,7 +514,11 @@ class _AddChallengeScreenState extends State<AddChallengeScreen>
     );
   }
 
-  Widget _buildChallengeSearchCard(Color cardColor, Color accentColor, bool isDark) {
+  Widget _buildChallengeSearchCard(
+    Color cardColor,
+    Color accentColor,
+    bool isDark,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: cardColor,
@@ -543,8 +589,7 @@ class _AddChallengeScreenState extends State<AddChallengeScreen>
                         setState(() {
                           _selectedChallenge = ch;
                           _titleController.text = ch.title;
-                          _descriptionController.text =
-                              ch.description;
+                          _descriptionController.text = ch.description;
                         });
                       },
                     );
@@ -558,7 +603,11 @@ class _AddChallengeScreenState extends State<AddChallengeScreen>
     );
   }
 
-  Widget _buildChallengeDetailsCard(Color cardColor, Color accentColor, bool isDark) {
+  Widget _buildChallengeDetailsCard(
+    Color cardColor,
+    Color accentColor,
+    bool isDark,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: cardColor,
@@ -672,17 +721,13 @@ class _AddChallengeScreenState extends State<AddChallengeScreen>
                       Icon(
                         _smileys[i],
                         size: 36,
-                        color: _feeling == i
-                            ? _smileyColors[i]
-                            : Colors.grey,
+                        color: _feeling == i ? _smileyColors[i] : Colors.grey,
                       ),
                       SizedBox(height: 4),
                       Text(
                         _emotionLabels[i],
                         style: TextStyle(
-                          color: _feeling == i
-                              ? _smileyColors[i]
-                              : Colors.grey,
+                          color: _feeling == i ? _smileyColors[i] : Colors.grey,
                           fontWeight: FontWeight.w500,
                           fontSize: 14,
                         ),
@@ -736,9 +781,7 @@ class _AddChallengeScreenState extends State<AddChallengeScreen>
                       Icon(
                         _smileys[i],
                         size: 36,
-                        color: _perceived == i
-                            ? _smileyColors[i]
-                            : Colors.grey,
+                        color: _perceived == i ? _smileyColors[i] : Colors.grey,
                       ),
                       SizedBox(height: 4),
                       Text(
@@ -792,7 +835,9 @@ class _AddChallengeScreenState extends State<AddChallengeScreen>
             TextFormField(
               controller: _notesController,
               decoration: InputDecoration(
-                hintText: S.of(context).notesPlaceholder, // Use existing localization
+                hintText: S
+                    .of(context)
+                    .notesPlaceholder, // Use existing localization
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(color: Colors.grey),
@@ -833,9 +878,9 @@ class _AddChallengeScreenState extends State<AddChallengeScreen>
         'perception': _perceived,
         'notes': _notesController.text,
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(S.of(context).logbookEntrySaved)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(S.of(context).logbookEntrySaved)));
       Navigator.of(context).pop();
     }
     setState(() {
