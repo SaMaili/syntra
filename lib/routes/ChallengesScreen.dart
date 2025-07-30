@@ -8,13 +8,12 @@ import 'package:syntra/logic/StatisticsLogic.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 import '../../main.dart';
+import '../generated/l10n.dart';
 import '../logic/ChallengesScreenLogic.dart';
 import '../static.dart';
 import '../widgets/ChallengeCard.dart';
-import '../generated/l10n.dart';
 import 'ActiveChallengeScreen.dart';
 import 'ChallengeDoneScreen.dart';
-import 'StatisticsScreen.dart';
 
 // List of all challenge cards (used for initial display)
 final List<ChallengeCard> cards = AppStatic.CHALLENGES
@@ -24,7 +23,7 @@ final List<ChallengeCard> cards = AppStatic.CHALLENGES
 // Singleton for session state (current card index, toggle selection)
 class ChallengeSessionState {
   static final ChallengeSessionState _instance =
-  ChallengeSessionState._internal();
+      ChallengeSessionState._internal();
 
   factory ChallengeSessionState() => _instance;
 
@@ -87,12 +86,10 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
       CurvedAnimation(parent: _scaleController, curve: Curves.elasticOut),
     );
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.5),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
-    );
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero).animate(
+          CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
+        );
     _pulseAnimation = Tween<double>(begin: 1.0, end: 1.03).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
@@ -144,12 +141,18 @@ class _ChallengesScreenState extends State<ChallengesScreen>
 
   @override
   Widget build(BuildContext context) {
+    var isDark = Theme.of(context).brightness == Brightness.dark;
+
     if (_loading) {
       return Scaffold(
+        backgroundColor: isDark ? Color(0xFF1a1a2e) : Color(0xFFe0c3fc),
+        // Match gradient start color for both themes
         body: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Color(0xFFe0c3fc), Color(0xFF8ec5fc), Color(0xFF74b9ff)],
+              colors: isDark
+                  ? [Color(0xFF1a1a2e), Color(0xFF16213e), Color(0xFF0f3460)]
+                  : [Color(0xFFe0c3fc), Color(0xFF8ec5fc), Color(0xFF74b9ff)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -199,7 +202,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     }
 
     final filteredCards = logic.getFilteredCards();
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    isDark = Theme.of(context).brightness == Brightness.dark;
     final bgGradient = isDark
         ? const LinearGradient(
             colors: [Color(0xFF1a1a2e), Color(0xFF16213e), Color(0xFF0f3460)],
@@ -219,7 +222,6 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         ? Colors.grey[900]!.withValues(alpha: 0.95)
         : Colors.amber[50]!.withValues(alpha: 0.95);
     final scoreTextColor = isDark ? Colors.amber[200] : Colors.amber[800];
-    final scoreValueColor = isDark ? Colors.amberAccent : Colors.amber[900];
     final shuffleIconColor = isDark ? Colors.pinkAccent : AppStatic.grape;
 
     return Scaffold(
@@ -240,7 +242,10 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                     return Transform.scale(
                       scale: _scaleAnimation.value,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 20,
+                        ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
@@ -262,19 +267,33 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                                 child: ToggleSwitch(
                                   minWidth: 120.0,
                                   minHeight: 45.0,
-                                  initialLabelIndex: logic.session.selectedToggle,
+                                  initialLabelIndex:
+                                      logic.session.selectedToggle,
                                   cornerRadius: 25.0,
                                   activeFgColor: Colors.white,
-                                  inactiveBgColor: isDark ? Colors.grey[800] : Colors.grey[200],
-                                  inactiveFgColor: isDark ? Colors.white70 : Colors.grey[600],
+                                  inactiveBgColor: isDark
+                                      ? Colors.grey[800]
+                                      : Colors.grey[200],
+                                  inactiveFgColor: isDark
+                                      ? Colors.white70
+                                      : Colors.grey[600],
                                   totalSwitches: 2,
                                   icons: [Icons.person, Icons.group],
                                   iconSize: 24.0,
                                   borderWidth: 0.0,
-                                  labels: [S.of(context).solo, S.of(context).group],
+                                  labels: [
+                                    S.of(context).solo,
+                                    S.of(context).group,
+                                  ],
                                   activeBgColors: [
-                                    [titleColor, titleColor.withValues(alpha: 0.8)],
-                                    [Colors.pinkAccent, Colors.pinkAccent.withValues(alpha: 0.8)],
+                                    [
+                                      titleColor,
+                                      titleColor.withValues(alpha: 0.8),
+                                    ],
+                                    [
+                                      Colors.pinkAccent,
+                                      Colors.pinkAccent.withValues(alpha: 0.8),
+                                    ],
                                   ],
                                   onToggle: (index) {
                                     setState(() {
@@ -292,33 +311,43 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                                 return Transform.scale(
                                   scale: _pulseAnimation.value,
                                   child: Container(
-                                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 12,
+                                      horizontal: 16,
+                                    ),
                                     decoration: BoxDecoration(
                                       color: scoreBoxColor,
-                                      borderRadius: BorderRadius.circular(25),
+                                      borderRadius: BorderRadius.circular(20),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.amber.withValues(alpha: 0.3),
-                                          blurRadius: 20,
-                                          spreadRadius: 2,
-                                          offset: const Offset(0, 8),
+                                          color: Colors.amber.withValues(
+                                            alpha: 0.3,
+                                          ),
+                                          blurRadius: 15,
+                                          spreadRadius: 1,
+                                          offset: const Offset(0, 6),
                                         ),
                                         BoxShadow(
-                                          color: Colors.black.withValues(alpha: 0.1),
-                                          blurRadius: 15,
-                                          offset: const Offset(0, 6),
+                                          color: Colors.black.withValues(
+                                            alpha: 0.1,
+                                          ),
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 4),
                                         ),
                                       ],
                                     ),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Container(
                                           decoration: BoxDecoration(
                                             gradient: LinearGradient(
                                               colors: [
                                                 Colors.amber,
-                                                Colors.amber.withValues(alpha: 0.7),
+                                                Colors.amber.withValues(
+                                                  alpha: 0.7,
+                                                ),
                                               ],
                                               begin: Alignment.topLeft,
                                               end: Alignment.bottomRight,
@@ -326,21 +355,27 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                                             shape: BoxShape.circle,
                                             boxShadow: [
                                               BoxShadow(
-                                                color: Colors.amber.withValues(alpha: 0.4),
-                                                blurRadius: 12,
-                                                offset: Offset(0, 4),
+                                                color: Colors.amber.withValues(
+                                                  alpha: 0.4,
+                                                ),
+                                                blurRadius: 8,
+                                                offset: Offset(0, 3),
                                               ),
                                             ],
                                           ),
-                                          padding: EdgeInsets.all(8),
-                                          child: Icon(Icons.emoji_events, color: Colors.white, size: 28),
+                                          padding: EdgeInsets.all(6),
+                                          child: Icon(
+                                            Icons.emoji_events,
+                                            color: Colors.white,
+                                            size: 22,
+                                          ),
                                         ),
-                                        const SizedBox(width: 16),
+                                        const SizedBox(width: 12),
                                         Flexible(
                                           child: Text(
                                             S.of(context).score,
                                             style: TextStyle(
-                                              fontSize: 20,
+                                              fontSize: 17,
                                               fontWeight: FontWeight.bold,
                                               color: scoreTextColor,
                                               letterSpacing: 1.2,
@@ -349,11 +384,11 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                                             softWrap: false,
                                           ),
                                         ),
-                                        const SizedBox(width: 16),
+                                        const SizedBox(width: 12),
                                         Container(
                                           padding: const EdgeInsets.symmetric(
-                                            horizontal: 20,
-                                            vertical: 10,
+                                            horizontal: 16,
+                                            vertical: 8,
                                           ),
                                           decoration: BoxDecoration(
                                             gradient: LinearGradient(
@@ -364,10 +399,14 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                                               begin: Alignment.topLeft,
                                               end: Alignment.bottomRight,
                                             ),
-                                            borderRadius: BorderRadius.circular(20),
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
                                             boxShadow: [
                                               BoxShadow(
-                                                color: Colors.amber.withValues(alpha: 0.4),
+                                                color: Colors.amber.withValues(
+                                                  alpha: 0.4,
+                                                ),
                                                 blurRadius: 8,
                                                 offset: Offset(0, 4),
                                               ),
@@ -382,13 +421,15 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                                             ),
                                           ),
                                         ),
-                                        const SizedBox(width: 16),
+                                        const SizedBox(width: 12),
                                         Container(
                                           decoration: BoxDecoration(
                                             gradient: LinearGradient(
                                               colors: [
                                                 shuffleIconColor,
-                                                shuffleIconColor.withValues(alpha: 0.7),
+                                                shuffleIconColor.withValues(
+                                                  alpha: 0.7,
+                                                ),
                                               ],
                                               begin: Alignment.topLeft,
                                               end: Alignment.bottomRight,
@@ -396,7 +437,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                                             shape: BoxShape.circle,
                                             boxShadow: [
                                               BoxShadow(
-                                                color: shuffleIconColor.withValues(alpha: 0.4),
+                                                color: shuffleIconColor
+                                                    .withValues(alpha: 0.4),
                                                 blurRadius: 12,
                                                 offset: Offset(0, 4),
                                               ),
@@ -412,18 +454,30 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                                               setState(() {
                                                 logic.shuffleChallenges();
                                               });
-                                              ScaffoldMessenger.of(context).showSnackBar(
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
                                                 SnackBar(
-                                                  content: Text(S.of(context).challengesShuffled),
+                                                  content: Text(
+                                                    S
+                                                        .of(context)
+                                                        .challengesShuffled,
+                                                  ),
                                                   backgroundColor: titleColor,
-                                                  behavior: SnackBarBehavior.floating,
+                                                  behavior:
+                                                      SnackBarBehavior.floating,
                                                   shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(12),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          12,
+                                                        ),
                                                   ),
                                                 ),
                                               );
                                             },
-                                            tooltip: S.of(context).shuffleTooltip,
+                                            tooltip: S
+                                                .of(context)
+                                                .shuffleTooltip,
                                           ),
                                         ),
                                       ],
@@ -440,10 +494,14 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                                         padding: EdgeInsets.all(32),
                                         decoration: BoxDecoration(
                                           color: cardColor,
-                                          borderRadius: BorderRadius.circular(28),
+                                          borderRadius: BorderRadius.circular(
+                                            28,
+                                          ),
                                           boxShadow: [
                                             BoxShadow(
-                                              color: Colors.black.withValues(alpha: 0.1),
+                                              color: Colors.black.withValues(
+                                                alpha: 0.1,
+                                              ),
                                               blurRadius: 20,
                                               offset: Offset(0, 10),
                                             ),
@@ -455,7 +513,9 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                                             Icon(
                                               Icons.search_off,
                                               size: 64,
-                                              color: titleColor.withValues(alpha: 0.6),
+                                              color: titleColor.withValues(
+                                                alpha: 0.6,
+                                              ),
                                             ),
                                             SizedBox(height: 20),
                                             Text(
@@ -472,7 +532,9 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                                               'Try changing the filter or check back later!',
                                               style: TextStyle(
                                                 fontSize: 16,
-                                                color: isDark ? Colors.white70 : Colors.black54,
+                                                color: isDark
+                                                    ? Colors.white70
+                                                    : Colors.black54,
                                               ),
                                               textAlign: TextAlign.center,
                                             ),
@@ -484,77 +546,110 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                                       controller: _cardSwiperController,
                                       cardsCount: filteredCards.length,
                                       initialIndex: staticCardIndex,
-                                      allowedSwipeDirection: AllowedSwipeDirection.symmetric(
-                                        horizontal: true,
-                                      ),
-                                      cardBuilder: (
-                                        context,
-                                        index,
-                                        percentThresholdX,
-                                        percentThresholdY,
-                                      ) {
-                                        return Container(
-                                          margin: const EdgeInsets.symmetric(
-                                            vertical: 16,
-                                            horizontal: 8,
+                                      allowedSwipeDirection:
+                                          AllowedSwipeDirection.symmetric(
+                                            horizontal: true,
                                           ),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(28),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: titleColor.withValues(alpha: 0.2),
-                                                blurRadius: 25,
-                                                spreadRadius: 2,
-                                                offset: const Offset(0, 12),
+                                      cardBuilder:
+                                          (
+                                            context,
+                                            index,
+                                            percentThresholdX,
+                                            percentThresholdY,
+                                          ) {
+                                            return Container(
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                    vertical: 16,
+                                                    horizontal: 8,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(28),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: titleColor
+                                                        .withValues(alpha: 0.2),
+                                                    blurRadius: 25,
+                                                    spreadRadius: 2,
+                                                    offset: const Offset(0, 12),
+                                                  ),
+                                                  BoxShadow(
+                                                    color: Colors.black
+                                                        .withValues(alpha: 0.1),
+                                                    blurRadius: 15,
+                                                    offset: const Offset(0, 8),
+                                                  ),
+                                                ],
                                               ),
-                                              BoxShadow(
-                                                color: Colors.black.withValues(alpha: 0.1),
-                                                blurRadius: 15,
-                                                offset: const Offset(0, 8),
-                                              ),
-                                            ],
-                                          ),
-                                          child: filteredCards[index],
-                                        );
-                                      },
+                                              child: filteredCards[index],
+                                            );
+                                          },
                                       onSwipe: (previousIndex, newIndex, direction) async {
                                         // Called when a card is swiped.
                                         // If swiped right, play sound, show dialog, and possibly start challenge.
-                                        if (direction == CardSwiperDirection.right) {
+                                        if (direction ==
+                                            CardSwiperDirection.right) {
                                           await logic.playSwipeSound();
-                                          bool? completed = await logic.showChallengeDialog(
-                                            context,
-                                            filteredCards[previousIndex].challenge.title,
-                                          );
+                                          bool? completed = await logic
+                                              .showChallengeDialog(
+                                                context,
+                                                filteredCards[previousIndex]
+                                                    .challenge
+                                                    .title,
+                                              );
                                           if (completed == true) {
                                             // If user confirms, navigate to ActiveChallengeScreen.
-                                            final result = await Navigator.of(context).push<double>(
-                                              MaterialPageRoute(
-                                                builder: (context) => ActiveChallengeScreen(
-                                                  challenge: filteredCards[previousIndex].challenge,
-                                                ),
-                                              ),
-                                            );
+                                            final result =
+                                                await Navigator.of(
+                                                  context,
+                                                ).push<double>(
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ActiveChallengeScreen(
+                                                          challenge:
+                                                              filteredCards[previousIndex]
+                                                                  .challenge,
+                                                        ),
+                                                  ),
+                                                );
                                             if (result != null) {
                                               // After challenge, show ChallengeDoneScreen and update score.
                                               await Navigator.of(context).push(
                                                 MaterialPageRoute(
-                                                  builder: (context) => ChallengeDoneScreen(
-                                                    challenge: filteredCards[previousIndex].challenge,
-                                                    rewardFactor: result,
-                                                    onDone: (double rewardFactor) async {},
-                                                  ),
+                                                  builder: (context) =>
+                                                      ChallengeDoneScreen(
+                                                        challenge:
+                                                            filteredCards[previousIndex]
+                                                                .challenge,
+                                                        rewardFactor: result,
+                                                        onDone:
+                                                            (
+                                                              double
+                                                              rewardFactor,
+                                                            ) async {},
+                                                      ),
                                                 ),
                                               );
                                               await _initializeScore();
                                               // Show snackbar when challenge is completed
-                                              ScaffoldMessenger.of(context).showSnackBar(
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
                                                 SnackBar(
-                                                  content: Text(S.of(context).challengeCompletedGeneric),
+                                                  content: Text(
+                                                    S
+                                                        .of(context)
+                                                        .challengeCompletedGeneric,
+                                                  ),
                                                   backgroundColor: titleColor,
-                                                  behavior: SnackBarBehavior.floating,
+                                                  behavior:
+                                                      SnackBarBehavior.floating,
                                                   shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(12),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          12,
+                                                        ),
                                                   ),
                                                 ),
                                               );
@@ -566,7 +661,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                                         }
                                         // Update the static card index after swipe.
                                         setState(() {
-                                          if (newIndex != null) staticCardIndex = newIndex;
+                                          if (newIndex != null)
+                                            staticCardIndex = newIndex;
                                         });
                                         return true;
                                       },
@@ -586,4 +682,3 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     );
   }
 }
-

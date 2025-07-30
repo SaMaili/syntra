@@ -167,12 +167,17 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen>
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     if (_loading) {
       return Scaffold(
+        backgroundColor: isDark ? Color(0xFF1a1a2e) : Color(0xFFe0c3fc), // Match gradient start color for both themes
         body: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Color(0xFFe0c3fc), Color(0xFF8ec5fc)],
+              colors: isDark
+                ? [Color(0xFF1a1a2e), Color(0xFF16213e)]
+                : [Color(0xFFe0c3fc), Color(0xFF8ec5fc)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -221,7 +226,6 @@ class _DailyChallengeScreenState extends State<DailyChallengeScreen>
       );
     }
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final bgGradient = isDark
         ? const LinearGradient(
             colors: [Color(0xFF1a1a2e), Color(0xFF16213e), Color(0xFF0f3460)],

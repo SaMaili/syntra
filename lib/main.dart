@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' as ui;
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -18,6 +18,7 @@ import 'routes/ChallengesScreen.dart';
 import 'routes/DailyChallengeScreen.dart';
 import 'routes/SettingsScreen.dart';
 import 'routes/StatisticsScreen.dart';
+import 'services/syntra_notification_service.dart';
 import 'static.dart';
 
 final themeModeNotifier = ValueNotifier<ThemeMode>(ThemeMode.system);
@@ -71,73 +72,185 @@ Future<void> initializeSettings() async {
 
 void main() async {
   print("Starting Syntra App...");
-  WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize timezone data
-  tz.initializeTimeZones();
-
-  await initializeSettings();
-  await copyDatabaseFromAssets();
-
-  // Determine language code with proper priority:
-  // 1. User's saved language preference (from settings)
-  // 2. Device language as fallback
-  String languageCode;
-
-  if (localeNotifier.value.languageCode != 'en' ||
-      (localeNotifier.value.languageCode == 'en' &&
-          await _hasUserSetLanguageExplicitly())) {
-    // User has explicitly set a language preference
-    languageCode = localeNotifier.value.languageCode;
-    print("Using user's saved language preference: $languageCode");
-  } else {
-    // No user preference, use device language
-    final deviceLocale = ui.PlatformDispatcher.instance.locale;
-    languageCode = deviceLocale.languageCode;
-    print("Using device language: $languageCode");
-
-    // Update the locale notifier to match device language
-    localeNotifier.value = Locale(languageCode);
-  }
-
-  // Load challenges in the determined language
-  final challenges = await ChallengeDatabase.instance.readAllChallenges(
-    languageCode,
-  );
-  AppStatic.CHALLENGES = challenges.toList();
-
-  // Initialize notifications but only start background service if not already running
-  await NotificationManager.initialize();
-
-  // Check if service is already running before starting it
   try {
-    final isServiceRunning = await FlutterBackgroundService().isRunning();
-    if (!isServiceRunning) {
-      print('Starting background service...');
-      await NotificationManager.startBackgroundService();
-    } else {
-      print('Background service already running, skipping initialization');
-    }
-  } catch (e) {
-    print('Error checking/starting background service: $e');
-    // Continue app startup even if background service fails
-  }
+    WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(SyntraApp());
+    // Initialize timezone data with error handling
+    try {
+      tz.initializeTimeZones();
+      print("Timezone data initialized successfully");
+    } catch (e) {
+      print("Warning: Timezone initialization failed: $e");
+      // Continue anyway, app can work without timezone data
+    }
+
+    // Initialize settings with error handling
+    try {
+      await initializeSettings();
+      print("Settings initialized successfully");
+    } catch (e) {
+      print("Warning: Settings initialization failed: $e");
+      // Use default settings if loading fails
+      themeModeNotifier.value = ThemeMode.system;
+      localeNotifier.value = Locale('en');
+    }
+
+    // Copy database with proper error handling
+    try {
+      await copyDatabaseFromAssets();
+      print("Database copied successfully");
+    } catch (e) {
+      print("Error copying database: $e");
+      // This is critical, but let's continue and see if we can recover
+    }
+
+    // Determine language code with proper priority and error handling
+    String languageCode = 'en'; // Default fallback
+
+    try {
+      if (localeNotifier.value.languageCode != 'en' ||
+          (localeNotifier.value.languageCode == 'en' &&
+              await _hasUserSetLanguageExplicitly())) {
+        languageCode = localeNotifier.value.languageCode;
+        print("Using user's saved language preference: $languageCode");
+      } else {
+        final deviceLocale = ui.PlatformDispatcher.instance.locale;
+        languageCode = deviceLocale.languageCode;
+        print("Using device language: $languageCode");
+        localeNotifier.value = Locale(languageCode);
+      }
+    } catch (e) {
+      print("Error determining language: $e, using default 'en'");
+      languageCode = 'en';
+      localeNotifier.value = Locale('en');
+    }
+
+    // Load challenges with error handling
+    try {
+      final challenges = await ChallengeDatabase.instance.readAllChallenges(languageCode);
+      AppStatic.CHALLENGES = challenges.toList();
+      print("Challenges loaded successfully: ${AppStatic.CHALLENGES.length} challenges");
+    } catch (e) {
+      print("Error loading challenges: $e");
+      // Initialize with empty list to prevent null errors
+      AppStatic.CHALLENGES = [];
+    }
+
+    // Initialize notification systems with proper error handling
+    await _initializeNotificationSystems();
+
+    print("App initialization completed successfully");
+    runApp(SyntraApp());
+
+  } catch (e, stackTrace) {
+    print("Critical error during app initialization: $e");
+    print("Stack trace: $stackTrace");
+
+    // Create a minimal app that shows an error message
+    runApp(MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.error, size: 64, color: Colors.red),
+              SizedBox(height: 16),
+              Text(
+                'App Initialization Error',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  'Please restart the app. If the problem persists, clear app data.',
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ));
+  }
 }
 
-// Helper function to check if user has explicitly set a language
-Future<bool> _hasUserSetLanguageExplicitly() async {
+/// Initialize notification systems with proper error handling
+Future<void> _initializeNotificationSystems() async {
+  print('Initializing notification systems...');
+
   try {
-    final directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/settings.json');
-    if (await file.exists()) {
-      final contents = await file.readAsString();
-      final data = jsonDecode(contents);
-      return data['languageCode'] != null;
+    // Initialize the professional notification system
+    print('Initializing professional notification system...');
+    final notificationInitialized = await SyntraNotificationService.instance.initialize();
+
+    if (notificationInitialized) {
+      print('Professional notification system initialized successfully');
+
+      // Schedule test notification for 22:15 today (or tomorrow if past 22:15)
+      try {
+        await _scheduleTestNotification();
+        print('Test notification scheduled successfully');
+      } catch (e) {
+        print('Warning: Failed to schedule test notification: $e');
+      }
+
+      // Schedule daily reminders using the professional system (in main app thread)
+      try {
+        await NotificationManager.scheduleDailyReminders();
+        print('Daily reminders scheduled successfully with professional system');
+        
+        // Set up periodic reschedule to ensure notifications continue working
+        _setupPeriodicNotificationReschedule();
+      } catch (e) {
+        print('Warning: Failed to schedule daily reminders: $e');
+      }
+    } else {
+      print('Failed to initialize professional notification system');
     }
-  } catch (_) {}
-  return false;
+  } catch (e) {
+    print('Error initializing professional notification system: $e');
+  }
+
+  // Background service is no longer needed - native notifications handle everything!
+  print('✅ No background service needed - using native Android notifications');
+}
+
+/// Schedule a test notification for 1 minute from now
+/// This is used to verify that the professional notification system is working correctly
+Future<void> _scheduleTestNotification() async {
+  try {
+    final now = DateTime.now();
+    DateTime targetTime = DateTime(now.year, now.month, now.day, now.hour, now.minute + 1);
+
+    // If it's already past 22:15 today, schedule for tomorrow
+    if (now.isAfter(targetTime)) {
+      targetTime = targetTime.add(const Duration(days: 1));
+    }
+
+    final success = await SyntraNotificationService.instance.scheduleExactNotification(
+      id: 9999, // Use unique ID for test notification
+      title: '🎯 Syntra Test Notification',
+      body: 'Professional notification system is working perfectly! Time: ${targetTime.hour}:${targetTime.minute.toString().padLeft(2, '0')}',
+      scheduledTime: targetTime,
+      data: {
+        'type': 'test_notification',
+        'scheduled_for': '22:15',
+        'source': 'professional_system',
+      },
+      channel: NotificationChannel.reminders,
+    );
+
+    if (success) {
+      print('✅ Test notification scheduled for ${targetTime.day}/${targetTime.month} at ${targetTime.hour}:${targetTime.minute.toString().padLeft(2, '0')}');
+      print('   Professional exact timing system active!');
+    } else {
+      print('❌ Failed to schedule test notification');
+    }
+  } catch (e) {
+    print('Error scheduling test notification: $e');
+  }
 }
 
 class SyntraApp extends StatelessWidget {
@@ -272,4 +385,46 @@ class _HomeBarState extends State<HomeBar> {
       ),
     );
   }
+}
+
+// Helper function to check if user has explicitly set a language
+Future<bool> _hasUserSetLanguageExplicitly() async {
+  try {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/settings.json');
+    if (await file.exists()) {
+      final contents = await file.readAsString();
+      final data = jsonDecode(contents);
+      return data['languageCode'] != null;
+    }
+  } catch (_) {}
+  return false;
+}
+
+/// Set up periodic notification reschedule to ensure notifications continue working
+/// even if the app isn't opened frequently
+void _setupPeriodicNotificationReschedule() {
+  print('Setting up periodic notification reschedule every 6 hours');
+  
+  Timer.periodic(const Duration(hours: 6), (timer) async {
+    try {
+      print('⏰ Periodic reschedule: Checking and rescheduling daily reminders');
+      
+      // Only reschedule if the app is in the foreground (method channels available)
+      // This prevents issues when the timer fires while app is in background
+      final binding = WidgetsBinding.instance;
+      if (binding.lifecycleState == AppLifecycleState.resumed || 
+          binding.lifecycleState == AppLifecycleState.inactive) {
+        
+        await NotificationManager.scheduleDailyReminders();
+        print('✅ Periodic reschedule completed successfully');
+      } else {
+        print('📱 App in background, skipping reschedule (will retry in 6 hours)');
+      }
+    } catch (e) {
+      print('⚠️ Error during periodic reschedule: $e');
+    }
+  });
+  
+  print('✅ Periodic notification reschedule setup complete');
 }

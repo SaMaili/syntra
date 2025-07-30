@@ -60,9 +60,9 @@ class _SettingsScreenState extends State<SettingsScreen>
         }
         // Initialize or cancel notifications based on setting
         if (_notificationsEnabled) {
-          NotificationManager.startBackgroundService();
+          await NotificationManager.scheduleDailyReminders();
         } else {
-          NotificationManager.stopBackgroundService();
+          await NotificationManager.cancelAllNotifications();
         }
       }
     } catch (_) {}
@@ -147,15 +147,15 @@ class _SettingsScreenState extends State<SettingsScreen>
     // Beautiful gradient backgrounds similar to other screens
     final bgGradient = isDark
         ? const LinearGradient(
-            colors: [Color(0xFF1a1a2e), Color(0xFF16213e), Color(0xFF0f3460)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          )
+      colors: [Color(0xFF1a1a2e), Color(0xFF16213e), Color(0xFF0f3460)],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    )
         : const LinearGradient(
-            colors: [Color(0xFFe0c3fc), Color(0xFF8ec5fc), Color(0xFF74b9ff)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          );
+      colors: [Color(0xFFe0c3fc), Color(0xFF8ec5fc), Color(0xFF74b9ff)],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    );
 
     final cardColor = isDark
         ? Colors.grey[900]!.withValues(alpha: 0.95)
@@ -239,15 +239,29 @@ class _SettingsScreenState extends State<SettingsScreen>
                                           Icons.notifications_active,
                                           Switch(
                                             value: _notificationsEnabled,
-                                            onChanged: (value) {
+                                            onChanged: (value) async {
                                               setState(() {
                                                 _notificationsEnabled = value;
                                               });
-                                              _saveSettings();
+                                              await _saveSettings();
                                               if (value) {
-                                                NotificationManager.startBackgroundService();
+                                                await NotificationManager.scheduleDailyReminders();
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  SnackBar(
+                                                    content: Text('✅ Notifications enabled'),
+                                                    backgroundColor: titleColor,
+                                                    duration: Duration(seconds: 2),
+                                                  ),
+                                                );
                                               } else {
-                                                NotificationManager.stopBackgroundService();
+                                                await NotificationManager.cancelAllNotifications();
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  SnackBar(
+                                                    content: Text('🔕 Notifications disabled'),
+                                                    backgroundColor: Colors.grey,
+                                                    duration: Duration(seconds: 2),
+                                                  ),
+                                                );
                                               }
                                             },
                                             activeColor: titleColor,
@@ -592,15 +606,15 @@ class _SettingsScreenState extends State<SettingsScreen>
   }
 
   Widget _buildEnhancedSettingItem(
-    String title,
-    String subtitle,
-    IconData icon,
-    Widget trailing, {
-    required bool isDark,
-    bool useAccentColor = false,
-    bool isDisabled = false,
-    VoidCallback? onTap,
-  }) {
+      String title,
+      String subtitle,
+      IconData icon,
+      Widget trailing, {
+        required bool isDark,
+        bool useAccentColor = false,
+        bool isDisabled = false,
+        VoidCallback? onTap,
+      }) {
     final iconColor = useAccentColor
         ? (isDark ? Colors.cyanAccent : AppStatic.marianBlue)
         : (isDark ? Colors.pinkAccent : AppStatic.grape);
@@ -680,12 +694,12 @@ class _SettingsScreenState extends State<SettingsScreen>
   }
 
   Widget _buildDebugTimeSection(
-    String title,
-    List<DateTime> times,
-    DateTime now,
-    bool isDark, {
-    bool isTomorrow = false,
-  }) {
+      String title,
+      List<DateTime> times,
+      DateTime now,
+      bool isDark, {
+        bool isTomorrow = false,
+      }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

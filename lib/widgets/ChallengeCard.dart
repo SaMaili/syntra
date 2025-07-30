@@ -95,7 +95,9 @@ class _ChallengeCardState extends State<ChallengeCard>
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = Theme
+        .of(context)
+        .brightness == Brightness.dark;
 
     // Enhanced color scheme
     final primaryColor = isDark ? Colors.pinkAccent : AppStatic.grape;
@@ -104,24 +106,24 @@ class _ChallengeCardState extends State<ChallengeCard>
     // Improved gradient for better contrast in light mode
     final cardGradient = isDark
         ? LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.grey[900]!.withValues(alpha: 0.95),
-              Colors.grey[850]!.withValues(alpha: 0.9),
-              Colors.grey[900]!.withValues(alpha: 0.95),
-            ],
-          )
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        Colors.grey[900]!.withValues(alpha: 0.95),
+        Colors.grey[850]!.withValues(alpha: 0.9),
+        Colors.grey[900]!.withValues(alpha: 0.95),
+      ],
+    )
         : LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.white,
-              Colors.grey[50]!,
-              Colors.white,
-            ],
-            stops: [0.0, 0.5, 1.0],
-          );
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        Colors.white,
+        Colors.grey[50]!,
+        Colors.white,
+      ],
+      stops: [0.0, 0.5, 1.0],
+    );
 
     return AnimatedBuilder(
       animation: Listenable.merge([_scaleAnimation, _pulseAnimation]),
@@ -145,7 +147,8 @@ class _ChallengeCardState extends State<ChallengeCard>
                 boxShadow: [
                   // Primary shadow
                   BoxShadow(
-                    color: primaryColor.withValues(alpha: 0.2 + (_pulseAnimation.value * 0.1)),
+                    color: primaryColor.withValues(
+                        alpha: 0.2 + (_pulseAnimation.value * 0.1)),
                     blurRadius: 20 + (_pulseAnimation.value * 5),
                     spreadRadius: 2 + (_pulseAnimation.value * 1),
                     offset: Offset(0, 8 + (_pulseAnimation.value * 2)),
@@ -166,7 +169,8 @@ class _ChallengeCardState extends State<ChallengeCard>
                     ),
                 ],
                 border: Border.all(
-                  color: primaryColor.withValues(alpha: 0.1 + (_pulseAnimation.value * 0.1)),
+                  color: primaryColor.withValues(
+                      alpha: 0.1 + (_pulseAnimation.value * 0.1)),
                   width: 1 + (_pulseAnimation.value * 0.5),
                 ),
               ),
@@ -183,7 +187,8 @@ class _ChallengeCardState extends State<ChallengeCard>
                           children: [
                             // Challenge title with enhanced styling
                             Container(
-                              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
@@ -211,7 +216,8 @@ class _ChallengeCardState extends State<ChallengeCard>
                             // Enhanced XP display
                             if (widget.showXP)
                               Container(
-                                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                     colors: [
@@ -235,10 +241,12 @@ class _ChallengeCardState extends State<ChallengeCard>
                                     ),
                                     SizedBox(width: 6),
                                     Text(
-                                      '+${widget.challenge.xp} ${l10n.auraPoints}',
+                                      '+${widget.challenge.xp} ${l10n
+                                          .auraPoints}',
                                       style: TextStyle(
                                         fontSize: 16,
-                                        color: widget.xpColor ?? Colors.amber[700],
+                                        color: widget.xpColor ??
+                                            Colors.amber[700],
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -266,13 +274,17 @@ class _ChallengeCardState extends State<ChallengeCard>
                           ),
                           child: Center(
                             child: GestureDetector(
-                              onTap: () => _showDescriptionDialog(context, l10n, isDark),
+                              onTap: () =>
+                                  _showDescriptionDialog(context, l10n, isDark),
                               child: Text(
                                 widget.challenge.description,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: widget.descriptionFontSize ?? 18,
-                                  color: widget.descriptionColor ?? (isDark ? Colors.white.withValues(alpha: 0.9) : AppStatic.textSecondary),
+                                  color: widget.descriptionColor ??
+                                      (isDark ? Colors.white.withValues(
+                                          alpha: 0.9) : AppStatic
+                                          .textSecondary),
                                   height: 1.4,
                                   letterSpacing: 0.3,
                                 ),
@@ -309,7 +321,8 @@ class _ChallengeCardState extends State<ChallengeCard>
                                     color: accentColor,
                                     size: 24,
                                   ),
-                              onPressed: widget.onInfoPressed ?? () => _showChallengeInfo(context),
+                              onPressed: widget.onInfoPressed ??
+                                      () => _showChallengeInfo(context),
                               tooltip: 'Challenge Information',
                             ),
                           ),
@@ -331,57 +344,59 @@ class _ChallengeCardState extends State<ChallengeCard>
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: isDark ? Colors.grey[900] : Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        title: Row(
-          children: [
-            Icon(Icons.description, color: primaryColor, size: 24),
-            SizedBox(width: 8),
-            Text(
-              l10n.description,
-              style: TextStyle(
-                color: primaryColor,
-                fontWeight: FontWeight.bold,
-              ),
+      builder: (context) =>
+          AlertDialog(
+            backgroundColor: isDark ? Colors.grey[900] : Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
             ),
-          ],
-        ),
-        content: Container(
-          constraints: BoxConstraints(maxWidth: 400),
-          child: Text(
-            widget.challenge.description,
-            style: TextStyle(
-              color: isDark ? Colors.white.withValues(alpha: 0.9) : Colors.black87,
-              height: 1.5,
-              fontSize: 16,
+            title: Row(
+              children: [
+                Icon(Icons.description, color: primaryColor, size: 24),
+                SizedBox(width: 8),
+                Text(
+                  l10n.description,
+                  style: TextStyle(
+                    color: primaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            style: TextButton.styleFrom(
-              backgroundColor: primaryColor.withValues(alpha: 0.1),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            content: Container(
+              constraints: BoxConstraints(maxWidth: 400),
               child: Text(
-                l10n.closeDialog,
+                widget.challenge.description,
                 style: TextStyle(
-                  color: primaryColor,
-                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white.withValues(alpha: 0.9) : Colors
+                      .black87,
+                  height: 1.5,
+                  fontSize: 16,
                 ),
               ),
             ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                style: TextButton.styleFrom(
+                  backgroundColor: primaryColor.withValues(alpha: 0.1),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Text(
+                    l10n.closeDialog,
+                    style: TextStyle(
+                      color: primaryColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
