@@ -85,6 +85,7 @@ class ActiveChallengeLogic {
       importance: Importance.max,
       priority: Priority.high,
       playSound: true,
+      icon: '@drawable/syntrabird_notification',
     );
     const details = NotificationDetails(android: androidDetails);
     final canSchedule = await canScheduleExactAlarms();

@@ -51,7 +51,7 @@ class SyntraNotificationService {
       _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
       const AndroidInitializationSettings initializationSettingsAndroid =
-          AndroidInitializationSettings('@drawable/ic_notification');
+          AndroidInitializationSettings('@drawable/syntrabird_notification');
 
       const InitializationSettings initializationSettings =
           InitializationSettings(
@@ -476,6 +476,7 @@ class SyntraNotificationService {
               _getChannelName(channel),
               importance: Importance.high,
               priority: Priority.high,
+              icon: '@drawable/syntrabird_notification',
             ),
           ),
         );
@@ -531,6 +532,7 @@ class SyntraNotificationService {
             _getChannelName(channel),
             importance: Importance.high,
             priority: Priority.high,
+            icon: '@drawable/syntrabird_notification',
           ),
         ),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,

@@ -202,6 +202,15 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     }
 
     final filteredCards = logic.getFilteredCards();
+
+    // Ensure staticCardIndex is always valid for the current filtered cards
+    if (staticCardIndex >= filteredCards.length) {
+      staticCardIndex = 0;
+    }
+
+    // Create a unique key based on filtered cards to force CardSwiper rebuild when needed
+    final cardSwiperKey = Key('cardswiper_${filteredCards.length}_${logic.session.selectedToggle}');
+
     isDark = Theme.of(context).brightness == Brightness.dark;
     final bgGradient = isDark
         ? const LinearGradient(
@@ -543,9 +552,12 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                                       ),
                                     )
                                   : CardSwiper(
+                                      key: cardSwiperKey,
                                       controller: _cardSwiperController,
                                       cardsCount: filteredCards.length,
-                                      initialIndex: staticCardIndex,
+                                      initialIndex: staticCardIndex >= filteredCards.length
+                                          ? 0
+                                          : staticCardIndex.clamp(0, filteredCards.length - 1),
                                       allowedSwipeDirection:
                                           AllowedSwipeDirection.symmetric(
                                             horizontal: true,

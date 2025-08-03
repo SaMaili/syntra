@@ -54,7 +54,7 @@ class NotificationManager {
 
     // Initialization settings for Android
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@drawable/syntrabird_notification');
     // iOS settings to request permissions during initialization
     const DarwinInitializationSettings initializationSettingsIos =
         DarwinInitializationSettings(
@@ -208,10 +208,67 @@ class NotificationManager {
     return [firstScheduledTime, secondScheduledTime];
   }
 
+  /// **NEW**: Calculates user-controlled notification times for a given date
+  static Future<List<DateTime>> calculateUserControlledNotificationTimes([
+    DateTime? targetDate,
+  ]) async {
+    final date = targetDate ?? DateTime.now();
+    final prefs = await SharedPreferences.getInstance();
+    final List<DateTime> scheduledTimes = [];
+
+    // Get user notification settings
+    final morningEnabled = prefs.getBool('morningEnabled') ?? false;
+    final afternoonEnabled = prefs.getBool('afternoonEnabled') ?? false;
+    final eveningEnabled = prefs.getBool('eveningEnabled') ?? false;
+
+    final morningTime = prefs.getString('morningTime') ?? AppStatic.defaultMorningTime;
+    final afternoonTime = prefs.getString('afternoonTime') ?? AppStatic.defaultAfternoonTime;
+    final eveningTime = prefs.getString('eveningTime') ?? AppStatic.defaultEveningTime;
+
+    // Parse and create DateTime objects for enabled notifications
+    if (morningEnabled) {
+      final timeParts = morningTime.split(':');
+      final scheduledTime = DateTime(
+        date.year,
+        date.month,
+        date.day,
+        int.parse(timeParts[0]),
+        int.parse(timeParts[1]),
+      );
+      scheduledTimes.add(scheduledTime);
+    }
+
+    if (afternoonEnabled) {
+      final timeParts = afternoonTime.split(':');
+      final scheduledTime = DateTime(
+        date.year,
+        date.month,
+        date.day,
+        int.parse(timeParts[0]),
+        int.parse(timeParts[1]),
+      );
+      scheduledTimes.add(scheduledTime);
+    }
+
+    if (eveningEnabled) {
+      final timeParts = eveningTime.split(':');
+      final scheduledTime = DateTime(
+        date.year,
+        date.month,
+        date.day,
+        int.parse(timeParts[0]),
+        int.parse(timeParts[1]),
+      );
+      scheduledTimes.add(scheduledTime);
+    }
+
+    return scheduledTimes;
+  }
+
   /// **NEW PROFESSIONAL SYSTEM**: Schedules daily reminders using SyntraNotificationService
   static Future<void> scheduleDailyReminders() async {
     final now = DateTime.now();
-    print('📋 Scheduling daily reminders with professional notification system...');
+    print('📋 Scheduling user-controlled daily reminders with professional notification system...');
 
     // Initialize the professional notification service
     final notificationService = SyntraNotificationService.instance;
@@ -234,12 +291,13 @@ class NotificationManager {
     // Prepare notifications for today and the next 7 days for maximum resilience
     final notifications = <NotificationRequest>[];
 
-    // Get today's notification times
-    final todayTimes = calculateDailyNotificationTimes(now);
+    // Get today's user-controlled notification times
+    final todayTimes = await calculateUserControlledNotificationTimes(now);
     for (int i = 0; i < todayTimes.length; i++) {
       final scheduledTime = todayTimes[i];
       if (scheduledTime.isAfter(now)) {
         final notificationId = (scheduledTime.millisecondsSinceEpoch % 2147483647).toInt();
+        final timeSlot = _getTimeSlot(scheduledTime.hour);
         notifications.add(NotificationRequest(
           id: notificationId,
           title: 'Syntra Motivation',
@@ -251,21 +309,22 @@ class NotificationManager {
             'day': now.day.toString(),
             'month': now.month.toString(),
             'year': now.year.toString(),
-            'time_slot': i == 0 ? 'morning' : 'evening',
+            'time_slot': timeSlot,
           },
         ));
-        print('📅 Added today\'s ${i == 0 ? 'morning' : 'evening'} notification for ${scheduledTime.hour}:${scheduledTime.minute.toString().padLeft(2, '0')}');
+        print('📅 Added today\'s $timeSlot notification for ${scheduledTime.hour}:${scheduledTime.minute.toString().padLeft(2, '0')}');
       }
     }
 
     // Schedule notifications for the next 7 days (massive resilience improvement)
     for (int dayOffset = 1; dayOffset <= 7; dayOffset++) {
       final targetDate = now.add(Duration(days: dayOffset));
-      final dayTimes = calculateDailyNotificationTimes(targetDate);
-      
+      final dayTimes = await calculateUserControlledNotificationTimes(targetDate);
+
       for (int i = 0; i < dayTimes.length; i++) {
         final scheduledTime = dayTimes[i];
         final notificationId = (scheduledTime.millisecondsSinceEpoch % 2147483647).toInt();
+        final timeSlot = _getTimeSlot(scheduledTime.hour);
         notifications.add(NotificationRequest(
           id: notificationId,
           title: 'Syntra Motivation',
@@ -277,17 +336,20 @@ class NotificationManager {
             'day': targetDate.day.toString(),
             'month': targetDate.month.toString(),
             'year': targetDate.year.toString(),
-            'time_slot': i == 0 ? 'morning' : 'evening',
+            'time_slot': timeSlot,
           },
         ));
       }
-      
-      print('📅 Added day +${dayOffset} notifications: ${dayTimes[0].hour}:${dayTimes[0].minute.toString().padLeft(2, '0')}, ${dayTimes[1].hour}:${dayTimes[1].minute.toString().padLeft(2, '0')}');
+
+      if (dayTimes.isNotEmpty) {
+        final timeStrings = dayTimes.map((t) => '${t.hour}:${t.minute.toString().padLeft(2, '0')}').join(', ');
+        print('📅 Added day +${dayOffset} notifications: $timeStrings');
+      }
     }
 
     // Use professional batch scheduling for efficiency
     if (notifications.isNotEmpty) {
-      print('🚀 Batch scheduling ${notifications.length} notifications with professional system...');
+      print('🚀 Batch scheduling ${notifications.length} user-controlled notifications with professional system...');
       final result = await notificationService.batchScheduleNotifications(notifications);
       print('✅ Professional batch scheduling completed: ${result.successCount}/${notifications.length} successful');
 
@@ -301,10 +363,21 @@ class NotificationManager {
         }
       }
     } else {
-      print('ℹ️ No notifications to schedule (all times have passed)');
+      print('ℹ️ No notifications to schedule (no times enabled or all times have passed)');
     }
 
-    print('✅ Daily motivation notifications scheduled with professional system');
+    print('✅ User-controlled daily motivation notifications scheduled with professional system');
+  }
+
+  /// Helper method to determine time slot based on hour
+  static String _getTimeSlot(int hour) {
+    if (hour < 12) {
+      return 'morning';
+    } else if (hour < 17) {
+      return 'afternoon';
+    } else {
+      return 'evening';
+    }
   }
 
   /// Schedule a single notification using the professional system
@@ -437,10 +510,77 @@ class NotificationManager {
     await testProfessionalNotificationSystem();
   }
 
-  /// Cancel a notification using the professional system
+  /// Schedule a single daily reminder at specific time
+  static Future<void> scheduleDailyReminder({
+    required int hour,
+    required int minute,
+    required int id,
+  }) async {
+    print('📋 Scheduling single daily reminder at $hour:$minute with ID $id');
+
+    // Initialize the professional notification service
+    final notificationService = SyntraNotificationService.instance;
+    if (!await notificationService.initialize()) {
+      print('❌ Failed to initialize professional notification service');
+      return;
+    }
+
+    // Request permissions
+    final permissions = await notificationService.requestPermissions();
+    if (!permissions.hasBasicPermission) {
+      print('❌ No notification permissions granted');
+      return;
+    }
+
+    // Calculate the next occurrence of this time
+    final now = DateTime.now();
+    DateTime scheduledTime = DateTime(now.year, now.month, now.day, hour, minute);
+
+    // If the time has already passed today, schedule for tomorrow
+    if (scheduledTime.isBefore(now)) {
+      scheduledTime = scheduledTime.add(const Duration(days: 1));
+    }
+
+    // Create notification request
+    final notification = NotificationRequest(
+      id: id,
+      title: 'Syntra Erinnerung',
+      body: AppStatic.motivationMessages[Random().nextInt(AppStatic.motivationMessages.length)],
+      scheduledTime: scheduledTime,
+      channel: NotificationChannel.reminders,
+      data: {
+        'type': 'custom_reminder',
+        'custom_id': id.toString(),
+      },
+    );
+
+    // Schedule the notification
+    final success = await notificationService.scheduleExactNotification(
+      id: id,
+      title: 'Syntra Erinnerung',
+      body: AppStatic.motivationMessages[Random().nextInt(AppStatic.motivationMessages.length)],
+      scheduledTime: scheduledTime,
+      data: {
+        'type': 'custom_reminder',
+        'custom_id': id.toString(),
+      },
+      channel: NotificationChannel.reminders,
+    );
+    if (success) {
+      print('✅ Successfully scheduled custom reminder for ${scheduledTime.toString()}');
+    } else {
+      print('❌ Failed to schedule custom reminder');
+    }
+  }
+
+  /// Cancel a specific notification by ID
   static Future<void> cancelNotification(int id) async {
+    print('🗑️ Cancelling notification with ID $id');
+
     final notificationService = SyntraNotificationService.instance;
     await notificationService.cancelNotification(id);
+
+    print('✅ Notification $id cancelled');
   }
 
   static Future<void> cancelAllNotifications() async {

@@ -178,5 +178,26 @@
   "newChallenge": "New Challenge",
   "searchForChallenge": "Search for a challenge...",
   "challengeDetails": "Challenge Details",
-  "enterYourNotes": "Enter your notes here..."
+  "enterYourNotes": "Enter your notes here...",
+  "dailyReminders": "Daily Reminders",
+  "dailyRemindersSubtitle": "Get reminded to complete your daily challenges",
+  "morningMotivation": "Morning",
+  "afternoonBoost": "Afternoon",
+  "eveningReflection": "Evening",
+  "reminderUpdated": "⏰ {period} reminder updated to {time}",
+  "@reminderUpdated": {
+    "placeholders": {
+      "period": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationsEnabled": "✅ Notifications enabled",
+  "notificationsDisabled": "🔕 Notifications disabled",
+  "morning": "Morning",
+  "afternoon": "Afternoon",
+  "evening": "Evening"
 }

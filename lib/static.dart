@@ -71,6 +71,21 @@ class AppStatic {
   static const int motivationSecondHourStart = 18;
   static const int motivationSecondHourRange = 5; // 16-20
 
+  /// User-controlled notification settings
+  static const String defaultMorningTime = '09:00';
+  static const String defaultAfternoonTime = '14:00';
+  static const String defaultEveningTime = '19:00';
+
+  /// Default notification schedule settings
+  static const Map<String, dynamic> defaultNotificationSettings = {
+    'morningEnabled': false,
+    'morningTime': defaultMorningTime,
+    'afternoonEnabled': false,
+    'afternoonTime': defaultAfternoonTime,
+    'eveningEnabled': false,
+    'eveningTime': defaultEveningTime,
+  };
+
   /// Motivational notification messages
   static const List<String> motivationMessages = [
     "Ready for a new challenge? Let's go!",

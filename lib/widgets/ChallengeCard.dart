@@ -99,19 +99,19 @@ class _ChallengeCardState extends State<ChallengeCard>
         .of(context)
         .brightness == Brightness.dark;
 
-    // Enhanced color scheme
+    // Enhanced color scheme with solid backgrounds
     final primaryColor = isDark ? Colors.pinkAccent : AppStatic.grape;
     final accentColor = isDark ? Colors.cyanAccent : AppStatic.marianBlue;
 
-    // Improved gradient for better contrast in light mode
+    // Solid gradient backgrounds instead of transparent ones
     final cardGradient = isDark
         ? LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
       colors: [
-        Colors.grey[900]!.withValues(alpha: 0.95),
-        Colors.grey[850]!.withValues(alpha: 0.9),
-        Colors.grey[900]!.withValues(alpha: 0.95),
+        Colors.grey[850]!,
+        Colors.grey[800]!,
+        Colors.grey[850]!,
       ],
     )
         : LinearGradient(
@@ -119,7 +119,7 @@ class _ChallengeCardState extends State<ChallengeCard>
       end: Alignment.bottomRight,
       colors: [
         Colors.white,
-        Colors.grey[50]!,
+        Colors.grey[100]!,
         Colors.white,
       ],
       stops: [0.0, 0.5, 1.0],
@@ -185,10 +185,10 @@ class _ChallengeCardState extends State<ChallengeCard>
                         padding: EdgeInsets.symmetric(vertical: 8),
                         child: Column(
                           children: [
-                            // Challenge title with enhanced styling
+                            // Challenge title with enhanced styling and adaptive sizing
                             Container(
                               padding: EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 8),
+                                  horizontal: 16, vertical: 12),
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
@@ -198,16 +198,43 @@ class _ChallengeCardState extends State<ChallengeCard>
                                 ),
                                 borderRadius: BorderRadius.circular(20),
                               ),
-                              child: Text(
-                                widget.challenge.title,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: widget.titleFontSize ?? 32,
-                                  fontWeight: FontWeight.bold,
-                                  color: widget.titleColor ?? primaryColor,
-                                  letterSpacing: 0.5,
-                                  height: 1.2,
-                                ),
+                              child: LayoutBuilder(
+                                builder: (context, constraints) {
+                                  // Calculate adaptive font size based on title length and available width
+                                  final titleLength = widget.challenge.title.length;
+                                  double adaptiveFontSize;
+
+                                  if (titleLength <= 15) {
+                                    adaptiveFontSize = widget.titleFontSize ?? 28;
+                                  } else if (titleLength <= 25) {
+                                    adaptiveFontSize = widget.titleFontSize ?? 24;
+                                  } else if (titleLength <= 40) {
+                                    adaptiveFontSize = widget.titleFontSize ?? 20;
+                                  } else {
+                                    adaptiveFontSize = widget.titleFontSize ?? 18;
+                                  }
+
+                                  // Further adjust based on available width
+                                  if (constraints.maxWidth < 200) {
+                                    adaptiveFontSize *= 0.8;
+                                  } else if (constraints.maxWidth < 300) {
+                                    adaptiveFontSize *= 0.9;
+                                  }
+
+                                  return Text(
+                                    widget.challenge.title,
+                                    textAlign: TextAlign.center,
+                                    maxLines: 3, // Allow up to 3 lines for longer titles
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: adaptiveFontSize,
+                                      fontWeight: FontWeight.bold,
+                                      color: widget.titleColor ?? primaryColor,
+                                      letterSpacing: 0.5,
+                                      height: 1.3, // Slightly increased line height for better readability
+                                    ),
+                                  );
+                                },
                               ),
                             ),
 

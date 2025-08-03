@@ -3,6 +3,27 @@
   "settingsTitle": "Einstellungen",
   "notifications": "Benachrichtigungen",
   "notificationsSubtitle": "Lass dich an tägliche Herausforderungen erinnern",
+  "dailyReminders": "Tägliche Erinnerungen",
+  "dailyRemindersSubtitle": "Lass dich daran erinnern, deine täglichen Herausforderungen zu meistern",
+  "morningMotivation": "Morgen-Motivation",
+  "afternoonBoost": "Nachmittags-Boost",
+  "eveningReflection": "Abend-Reflexion",
+  "reminderUpdated": "⏰ {period} Erinnerung aktualisiert auf {time}",
+  "@reminderUpdated": {
+    "placeholders": {
+      "period": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationsEnabled": "✅ Benachrichtigungen aktiviert",
+  "notificationsDisabled": "🔕 Benachrichtigungen deaktiviert",
+  "morning": "Morgen",
+  "afternoon": "Nachmittag",
+  "evening": "Abend",
   "darkMode": "Dunkler Modus",
   "darkModeSubtitle": "In den dunklen Modus wechseln",
   "soundEffects": "Soundeffekte",
@@ -11,7 +32,7 @@
   "languageSubtitle": "Wähle deine bevorzugte Sprache",
   "about": "Über",
   "aboutSubtitle": "App-Version und Informationen",
-  "debugDeleteTooltip": "Debug Löschen",
+  "debugDeleteTooltip": "Debug L��schen",
   "nextMotivation1": "Nächste Motivation 1: {time}",
   "@nextMotivation1": {
     "placeholders": {
@@ -48,7 +69,7 @@
       }
     }
   },
-  "notToday": "Heute nicht 🙈",
+  "notToday": "Heute nicht ���",
   "challengeCompleted": "Challenge abgeschlossen!",
   "challengeAborted": "Challenge abgebrochen",
   "congratulations": "Glückwunsch! Du hast die Challenge abgeschlossen.",
@@ -81,7 +102,7 @@
   "greatJobDaily": "Großartig! Du hast die heutige Challenge gemeistert.",
   "yourStatistics": "Deine Statistiken",
   "challengeLogbook": "Challenge-Logbuch",
-  "weeklyXpProgress": "Wöchentlicher XP-Fortschritt",
+  "weeklyXpProgress": "Wöchentliche Aura",
   "weeklyChallenges": "Wöchentliche Challenges",
   "dbDebugShow": "DB Debug: Zeige gesamte Logbuch-Tabelle",
   "total": "Gesamt",
@@ -89,7 +110,7 @@
   "done": "Erledigt",
   "streak": "Serie",
   "logbook": "Logbuch",
-  "addCustomChallenge": "Eigene Challenge hinzufügen",
+  "addCustomChallenge": "Challenge hinzufügen",
   "logbookEntry": "Logbuch-Eintrag",
   "challenge": "Challenge",
   "date": "Datum",
@@ -102,7 +123,7 @@
   "deleteEntryQuestion": "Bist du sicher, dass du diesen Eintrag löschen möchtest?",
   "delete": "Löschen",
   "entryDeleted": "Eintrag gelöscht",
-  "addCustomChallengeTitle": "Eigene Challenge hinzufügen",
+  "addCustomChallengeTitle": "Challenge hinzufügen",
   "challengeAlreadyExists": "Challenge existiert bereits?",
   "searchChallenge": "Challenge suchen",
   "challengeName": "Challenge-Name",
@@ -174,8 +195,8 @@
   "completed": "Abgeschlossen",
   "failed": "Gescheitert",
   "challengeType": "Challenge-Typ",
-  "existingChallenge": "Bestehende Challenge",
-  "newChallenge": "Neue Challenge",
+  "existingChallenge": "Bestehend",
+  "newChallenge": "Neu",
   "searchForChallenge": "Nach einer Challenge suchen...",
   "challengeDetails": "Challenge-Details",
   "enterYourNotes": "Gib hier deine Notizen ein..."

@@ -188,14 +188,6 @@ Future<void> _initializeNotificationSystems() async {
     if (notificationInitialized) {
       print('Professional notification system initialized successfully');
 
-      // Schedule test notification for 22:15 today (or tomorrow if past 22:15)
-      try {
-        await _scheduleTestNotification();
-        print('Test notification scheduled successfully');
-      } catch (e) {
-        print('Warning: Failed to schedule test notification: $e');
-      }
-
       // Schedule daily reminders using the professional system (in main app thread)
       try {
         await NotificationManager.scheduleDailyReminders();
@@ -215,42 +207,6 @@ Future<void> _initializeNotificationSystems() async {
 
   // Background service is no longer needed - native notifications handle everything!
   print('✅ No background service needed - using native Android notifications');
-}
-
-/// Schedule a test notification for 1 minute from now
-/// This is used to verify that the professional notification system is working correctly
-Future<void> _scheduleTestNotification() async {
-  try {
-    final now = DateTime.now();
-    DateTime targetTime = DateTime(now.year, now.month, now.day, now.hour, now.minute + 1);
-
-    // If it's already past 22:15 today, schedule for tomorrow
-    if (now.isAfter(targetTime)) {
-      targetTime = targetTime.add(const Duration(days: 1));
-    }
-
-    final success = await SyntraNotificationService.instance.scheduleExactNotification(
-      id: 9999, // Use unique ID for test notification
-      title: '🎯 Syntra Test Notification',
-      body: 'Professional notification system is working perfectly! Time: ${targetTime.hour}:${targetTime.minute.toString().padLeft(2, '0')}',
-      scheduledTime: targetTime,
-      data: {
-        'type': 'test_notification',
-        'scheduled_for': '22:15',
-        'source': 'professional_system',
-      },
-      channel: NotificationChannel.reminders,
-    );
-
-    if (success) {
-      print('✅ Test notification scheduled for ${targetTime.day}/${targetTime.month} at ${targetTime.hour}:${targetTime.minute.toString().padLeft(2, '0')}');
-      print('   Professional exact timing system active!');
-    } else {
-      print('❌ Failed to schedule test notification');
-    }
-  } catch (e) {
-    print('Error scheduling test notification: $e');
-  }
 }
 
 class SyntraApp extends StatelessWidget {

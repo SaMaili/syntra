@@ -266,7 +266,7 @@ class SyntraNotificationManager(private val context: Context) {
 
             // Build professional notification
             val notification = NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(R.drawable.ic_notification) // Use custom Syntra logo
+                .setSmallIcon(R.drawable.syntrabird_notification) // Use custom Syntra bird logo
                 .setContentTitle(title)
                 .setContentText(body)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(body))

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syntra/logic/NotificationManager.dart';
 
 import '../generated/l10n.dart';
@@ -22,6 +23,14 @@ class _SettingsScreenState extends State<SettingsScreen>
   bool _notificationsEnabled = true;
   bool _darkModeEnabled = false;
   String _selectedLanguageCode = 'en';
+
+  // New notification control settings
+  bool _morningEnabled = false;
+  bool _afternoonEnabled = false;
+  bool _eveningEnabled = false;
+  TimeOfDay _morningTime = const TimeOfDay(hour: 9, minute: 0);
+  TimeOfDay _afternoonTime = const TimeOfDay(hour: 14, minute: 0);
+  TimeOfDay _eveningTime = const TimeOfDay(hour: 19, minute: 0);
 
   // Animation controllers for beautiful UI
   late AnimationController _fadeController;
@@ -52,7 +61,32 @@ class _SettingsScreenState extends State<SettingsScreen>
           _notificationsEnabled =
               data['notificationsEnabled'] ?? _notificationsEnabled;
           _selectedLanguageCode = data['languageCode'] ?? _selectedLanguageCode;
+          _morningEnabled = data['morningEnabled'] ?? _morningEnabled;
+          _afternoonEnabled = data['afternoonEnabled'] ?? _afternoonEnabled;
+          _eveningEnabled = data['eveningEnabled'] ?? _eveningEnabled;
+          _morningTime = TimeOfDay(
+            hour: data['morningTimeHour'] ?? _morningTime.hour,
+            minute: data['morningTimeMinute'] ?? _morningTime.minute,
+          );
+          _afternoonTime = TimeOfDay(
+            hour: data['afternoonTimeHour'] ?? _afternoonTime.hour,
+            minute: data['afternoonTimeMinute'] ?? _afternoonTime.minute,
+          );
+          _eveningTime = TimeOfDay(
+            hour: data['eveningTimeHour'] ?? _eveningTime.hour,
+            minute: data['eveningTimeMinute'] ?? _eveningTime.minute,
+          );
         });
+
+        // Also sync the notification settings to SharedPreferences for consistency
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('morningEnabled', _morningEnabled);
+        await prefs.setBool('afternoonEnabled', _afternoonEnabled);
+        await prefs.setBool('eveningEnabled', _eveningEnabled);
+        await prefs.setString('morningTime', _formatTimeOfDay(_morningTime));
+        await prefs.setString('afternoonTime', _formatTimeOfDay(_afternoonTime));
+        await prefs.setString('eveningTime', _formatTimeOfDay(_eveningTime));
+
         if (_darkModeEnabled) {
           themeModeNotifier.value = ThemeMode.dark;
         } else {
@@ -69,6 +103,7 @@ class _SettingsScreenState extends State<SettingsScreen>
   }
 
   Future<void> _saveSettings() async {
+    // Save to file (for backward compatibility)
     final file = await _settingsFile;
     final dir = file.parent;
     // Check if the directory path is not empty and not root
@@ -81,8 +116,28 @@ class _SettingsScreenState extends State<SettingsScreen>
       'darkMode': _darkModeEnabled,
       'notificationsEnabled': _notificationsEnabled,
       'languageCode': _selectedLanguageCode,
+      'morningEnabled': _morningEnabled,
+      'afternoonEnabled': _afternoonEnabled,
+      'eveningEnabled': _eveningEnabled,
+      'morningTimeHour': _morningTime.hour,
+      'morningTimeMinute': _morningTime.minute,
+      'afternoonTimeHour': _afternoonTime.hour,
+      'afternoonTimeMinute': _afternoonTime.minute,
+      'eveningTimeHour': _eveningTime.hour,
+      'eveningTimeMinute': _eveningTime.minute,
     };
     await file.writeAsString(jsonEncode(data));
+
+    // Also save notification settings to SharedPreferences for NotificationManager access
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('morningEnabled', _morningEnabled);
+    await prefs.setBool('afternoonEnabled', _afternoonEnabled);
+    await prefs.setBool('eveningEnabled', _eveningEnabled);
+    await prefs.setString('morningTime', _formatTimeOfDay(_morningTime));
+    await prefs.setString('afternoonTime', _formatTimeOfDay(_afternoonTime));
+    await prefs.setString('eveningTime', _formatTimeOfDay(_eveningTime));
+
+    print('💾 Settings saved to both file and SharedPreferences');
   }
 
   @override
@@ -248,7 +303,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                 await NotificationManager.scheduleDailyReminders();
                                                 ScaffoldMessenger.of(context).showSnackBar(
                                                   SnackBar(
-                                                    content: Text('✅ Notifications enabled'),
+                                                    content: Text(S.of(context).notificationsEnabled),
                                                     backgroundColor: titleColor,
                                                     duration: Duration(seconds: 2),
                                                   ),
@@ -257,7 +312,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                 await NotificationManager.cancelAllNotifications();
                                                 ScaffoldMessenger.of(context).showSnackBar(
                                                   SnackBar(
-                                                    content: Text('🔕 Notifications disabled'),
+                                                    content: Text(S.of(context).notificationsDisabled),
                                                     backgroundColor: Colors.grey,
                                                     duration: Duration(seconds: 2),
                                                   ),
@@ -317,10 +372,31 @@ class _SettingsScreenState extends State<SettingsScreen>
                                         ),
                                       ],
                                     ),
-                                  ),
+                                  )
                                 );
                               },
                             ),
+
+                            SizedBox(height: 24),
+
+                            // Notification Schedule Settings Card (only show if notifications are enabled)
+                            if (_notificationsEnabled)
+                              AnimatedBuilder(
+                                animation: _staggerAnimations[1],
+                                builder: (context, child) {
+                                  return Transform.translate(
+                                    offset: Offset(0, 50 * (1 - _staggerAnimations[1].value)),
+                                    child: Opacity(
+                                      opacity: _staggerAnimations[1].value,
+                                      child: _buildNotificationScheduleCard(
+                                        titleColor: Colors.amber,
+                                        cardColor: card2Color,
+                                        isDark: isDark,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
 
                             SizedBox(height: 24),
 
@@ -411,15 +487,67 @@ class _SettingsScreenState extends State<SettingsScreen>
                                         ),
                                       ],
                                     ),
-                                  ),
+                                  )
                                 );
                               },
                             ),
 
+
                             SizedBox(height: 32),
 
-                            // Debug Section
-                            _buildDebugSection(isDark),
+                            // Debug Section - Test Notifications Only
+                            Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.orange.withValues(alpha: 0.8),
+                                    Colors.deepOrange.withValues(alpha: 0.8),
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.orange.withValues(alpha: 0.3),
+                                    blurRadius: 20,
+                                    spreadRadius: 1,
+                                    offset: Offset(0, 8),
+                                  ),
+                                ],
+                              ),
+                              child: ElevatedButton.icon(
+                                icon: Icon(Icons.bug_report, size: 24, color: Colors.white),
+                                label: Text(
+                                  '🧪 TEST NOTIFICATIONS',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  shadowColor: Colors.transparent,
+                                  padding: EdgeInsets.symmetric(vertical: 16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  print('🧪 MANUAL TEST: Testing notification system...');
+                                  await NotificationManager.testNotificationSystem();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('🧪 Notification test started! Check console and wait for notifications.'),
+                                      duration: Duration(seconds: 3),
+                                      backgroundColor: Colors.orange,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
 
                             SizedBox(height: 20),
                           ],
@@ -488,120 +616,229 @@ class _SettingsScreenState extends State<SettingsScreen>
     );
   }
 
-  Widget _buildDebugSection(bool isDark) {
-    return Column(
-      children: [
-        Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            gradient: LinearGradient(
-              colors: [
-                Colors.orange.withValues(alpha: 0.8),
-                Colors.deepOrange.withValues(alpha: 0.8),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.orange.withValues(alpha: 0.3),
-                blurRadius: 20,
-                spreadRadius: 1,
-                offset: Offset(0, 8),
+  Widget _buildNotificationScheduleCard({
+    required Color titleColor,
+    required Color cardColor,
+    required bool isDark,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: BorderRadius.circular(28),
+        boxShadow: [
+          BoxShadow(
+            color: titleColor.withValues(alpha: 0.2),
+            blurRadius: 25,
+            spreadRadius: 2,
+            offset: Offset(0, 12),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 15,
+            offset: Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header Section
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: titleColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Icon(Icons.notifications_active, color: titleColor, size: 28),
+              ),
+              SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      S.of(context).dailyReminders,
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: titleColor,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      S.of(context).dailyRemindersSubtitle,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
-          child: ElevatedButton.icon(
-            icon: Icon(Icons.bug_report, size: 24, color: Colors.white),
-            label: Text(
-              '🧪 TEST NOTIFICATIONS',
+
+          SizedBox(height: 24),
+
+          // Notification Time Slots
+          Column(
+            children: [
+              _buildModernTimeSlot(
+                S.of(context).morningMotivation,
+                Icons.wb_sunny,
+                _morningTime,
+                _morningEnabled,
+                Colors.orange,
+                (value) {
+                  setState(() {
+                    _morningEnabled = value;
+                  });
+                  _saveSettings();
+                },
+                () => _selectTime(context, S.of(context).morning, _morningTime),
+                isDark: isDark,
+              ),
+
+              SizedBox(height: 16),
+
+              _buildModernTimeSlot(
+                S.of(context).afternoonBoost,
+                Icons.wb_cloudy,
+                _afternoonTime,
+                _afternoonEnabled,
+                Colors.blue,
+                (value) {
+                  setState(() {
+                    _afternoonEnabled = value;
+                  });
+                  _saveSettings();
+                },
+                () => _selectTime(context, S.of(context).afternoon, _afternoonTime),
+                isDark: isDark,
+              ),
+
+              SizedBox(height: 16),
+
+              _buildModernTimeSlot(
+                S.of(context).eveningReflection,
+                Icons.nightlight_round,
+                _eveningTime,
+                _eveningEnabled,
+                Colors.purple,
+                (value) {
+                  setState(() {
+                    _eveningEnabled = value;
+                  });
+                  _saveSettings();
+                },
+                () => _selectTime(context, S.of(context).evening, _eveningTime),
+                isDark: isDark,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildModernTimeSlot(
+    String title,
+    IconData icon,
+    TimeOfDay time,
+    bool enabled,
+    Color accentColor,
+    ValueChanged<bool> onToggle,
+    VoidCallback onTimeTap, {
+    required bool isDark,
+  }) {
+    return Container(
+      padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: enabled
+          ? accentColor.withValues(alpha: 0.1)
+          : (isDark ? Colors.grey[850] : Colors.grey[100]),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: enabled ? accentColor : Colors.transparent,
+          width: 2,
+        ),
+      ),
+      child: Row(
+        children: [
+          // Icon Section
+          Container(
+            padding: EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: enabled
+                ? accentColor.withValues(alpha: 0.15)
+                : Colors.grey.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Icon(
+              icon,
+              color: enabled ? accentColor : Colors.grey,
+              size: 24,
+            ),
+          ),
+
+          SizedBox(width: 16),
+
+          // Text Section
+          Expanded(
+            child: Text(
+              title,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: enabled
+                  ? (isDark ? Colors.white : Colors.black87)
+                  : Colors.grey,
               ),
             ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.transparent,
-              shadowColor: Colors.transparent,
-              padding: EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-            ),
-            onPressed: () async {
-              print('🧪 MANUAL TEST: Testing notification system...');
-              await NotificationManager.testNotificationSystem();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('🧪 Notification test started! Check console and wait for notifications.'),
-                  duration: Duration(seconds: 3),
-                  backgroundColor: Colors.orange,
-                ),
-              );
-            },
           ),
-        ),
-        SizedBox(height: 20),
-        FutureBuilder<Map<String, List<DateTime>>>(
-          future: getAllNotificationTimes(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) return const SizedBox();
-            final data = snapshot.data!;
-            final todayTimes = data['today']!;
-            final tomorrowTimes = data['tomorrow']!;
-            final now = DateTime.now();
 
-            return Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(20),
+          // Time Display
+          GestureDetector(
+            onTap: enabled ? onTimeTap : null,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: Colors.purple.withValues(alpha: 0.3),
-                  width: 1,
+                color: enabled
+                  ? accentColor.withValues(alpha: 0.2)
+                  : Colors.grey.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                _formatTimeOfDay(time),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: enabled ? accentColor : Colors.grey,
                 ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.info, color: Colors.purple, size: 20),
-                      SizedBox(width: 8),
-                      Text(
-                        'Debug: Notification Times',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.purple,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 16),
-                  _buildDebugTimeSection(
-                    'TODAY (${todayTimes[0].day}/${todayTimes[0].month})',
-                    todayTimes,
-                    now,
-                    isDark,
-                  ),
-                  SizedBox(height: 12),
-                  _buildDebugTimeSection(
-                    'TOMORROW (${tomorrowTimes[0].day}/${tomorrowTimes[0].month})',
-                    tomorrowTimes,
-                    now,
-                    isDark,
-                    isTomorrow: true,
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
-      ],
+            ),
+          ),
+
+          SizedBox(width: 12),
+
+          // Toggle Switch
+          Transform.scale(
+            scale: 0.9,
+            child: Switch(
+              value: enabled,
+              onChanged: onToggle,
+              activeColor: accentColor,
+              activeTrackColor: accentColor.withValues(alpha: 0.3),
+              inactiveThumbColor: Colors.grey,
+              inactiveTrackColor: Colors.grey.withValues(alpha: 0.2),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -693,77 +930,62 @@ class _SettingsScreenState extends State<SettingsScreen>
     );
   }
 
-  Widget _buildDebugTimeSection(
-      String title,
-      List<DateTime> times,
-      DateTime now,
-      bool isDark, {
-        bool isTomorrow = false,
-      }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: isDark ? Colors.white70 : Colors.black87,
-          ),
-        ),
-        SizedBox(height: 8),
-        ...times.asMap().entries.map((entry) {
-          final index = entry.key;
-          final time = entry.value;
-          final label = index == 0 ? 'Morning' : 'Evening';
-          final isPassed = !isTomorrow && time.isBefore(now);
-          final statusColor = isPassed ? Colors.grey : Colors.green;
-          final statusText = isTomorrow ? 'UPCOMING' : (isPassed ? 'PASSED' : 'UPCOMING');
 
-          return Padding(
-            padding: EdgeInsets.only(left: 16, bottom: 4),
-            child: Row(
-              children: [
-                Container(
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: statusColor,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                SizedBox(width: 8),
-                Text(
-                  '$label: ${_formatTime(time)} ($statusText)',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: statusColor,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
+  String _formatTimeOfDay(TimeOfDay tod) {
+    final hour = tod.hour.toString().padLeft(2, '0');
+    final minute = tod.minute.toString().padLeft(2, '0');
+    return '$hour:$minute';
+  }
+
+  Future<void> _selectTime(BuildContext context, String label, TimeOfDay currentTime) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: currentTime,
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+              primary: label == 'Morning'
+                  ? Colors.orange
+                  : label == 'Afternoon'
+                      ? Colors.blue
+                      : Colors.purple,
             ),
-          );
-        }).toList(),
-      ],
+          ),
+          child: child!,
+        );
+      },
     );
-  }
 
-  String _formatTime(DateTime dt) {
-    return '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
-  }
+    if (picked != null && picked != currentTime) {
+      setState(() {
+        if (label == 'Morning') {
+          _morningTime = picked;
+        } else if (label == 'Afternoon') {
+          _afternoonTime = picked;
+        } else if (label == 'Evening') {
+          _eveningTime = picked;
+        }
+      });
 
-  Future<Map<String, List<DateTime>>> getAllNotificationTimes() async {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final tomorrow = today.add(const Duration(days: 1));
+      await _saveSettings();
 
-    final todayTimes = NotificationManager.calculateDailyNotificationTimes(today);
-    final tomorrowTimes = NotificationManager.calculateDailyNotificationTimes(tomorrow);
+      // Reschedule notifications with new times
+      if (_notificationsEnabled) {
+        await NotificationManager.scheduleDailyReminders();
 
-    return {
-      'today': todayTimes,
-      'tomorrow': tomorrowTimes,
-    };
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(S.of(context).reminderUpdated(label, _formatTimeOfDay(picked))),
+            backgroundColor: label == S.of(context).morning
+                ? Colors.orange
+                : label == S.of(context).afternoon
+                    ? Colors.blue
+                    : Colors.purple,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    }
   }
 }
