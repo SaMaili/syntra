@@ -36,7 +36,6 @@
   "navDaily": "Daily",
   "navStats": "Stats",
   "navSettings": "Settings",
-  "activeChallengeTitle": "SPOT! RUN! TALK!",
   "timeRemaining": "Time Remaining",
   "notSureWhatToSay": "Not sure what to say?",
   "doneExcited": "DONE! 😎",
@@ -81,7 +80,7 @@
   "greatJobDaily": "Great job! You have mastered today's challenge.",
   "yourStatistics": "Your Statistics",
   "challengeLogbook": "Challenge Logbook",
-  "weeklyXpProgress": "Weekly XP Progress",
+  "weeklyXpProgress": "Weekly Aura",
   "weeklyChallenges": "Weekly Challenges",
   "dbDebugShow": "DB Debug: Show all logbook table",
   "total": "Total",
@@ -152,7 +151,7 @@
     }
   },
   "preferAnotherChallenge": "I'd prefer another challenge",
-  "letsGo": "LET'S GO! 🚀",
+  "letsGo": "LET'S GO!",
   "challengeTimerCompleteTitle": "🎉 Timer Complete!",
   "challengeTimerCompleteBody": "Your challenge \"{challengeTitle}\" just finished! 🏆",
   "@challengeTimerCompleteBody": {
@@ -180,10 +179,9 @@
   "challengeDetails": "Challenge Details",
   "enterYourNotes": "Enter your notes here...",
   "dailyReminders": "Daily Reminders",
-  "dailyRemindersSubtitle": "Get reminded to complete your daily challenges",
-  "morningMotivation": "Morning",
-  "afternoonBoost": "Afternoon",
-  "eveningReflection": "Evening",
+  "dailyRemindersSubtitle": "Get reminded to complete challenges",
+  "notificationsEnabled": "✅ Notifications enabled",
+  "notificationsDisabled": "🔕 Notifications disabled",
   "reminderUpdated": "⏰ {period} reminder updated to {time}",
   "@reminderUpdated": {
     "placeholders": {
@@ -195,8 +193,6 @@
       }
     }
   },
-  "notificationsEnabled": "✅ Notifications enabled",
-  "notificationsDisabled": "🔕 Notifications disabled",
   "morning": "Morning",
   "afternoon": "Afternoon",
   "evening": "Evening"

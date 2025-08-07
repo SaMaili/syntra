@@ -216,18 +216,18 @@ class NotificationManager {
     final prefs = await SharedPreferences.getInstance();
     final List<DateTime> scheduledTimes = [];
 
-    // Get user notification settings
-    final morningEnabled = prefs.getBool('morningEnabled') ?? false;
-    final afternoonEnabled = prefs.getBool('afternoonEnabled') ?? false;
-    final eveningEnabled = prefs.getBool('eveningEnabled') ?? false;
+    // Get user notification settings - updated to use new generic notification system
+    final notification1Enabled = prefs.getBool('notification1Enabled') ?? false;
+    final notification2Enabled = prefs.getBool('notification2Enabled') ?? false;
+    final notification3Enabled = prefs.getBool('notification3Enabled') ?? false;
 
-    final morningTime = prefs.getString('morningTime') ?? AppStatic.defaultMorningTime;
-    final afternoonTime = prefs.getString('afternoonTime') ?? AppStatic.defaultAfternoonTime;
-    final eveningTime = prefs.getString('eveningTime') ?? AppStatic.defaultEveningTime;
+    final notification1Time = prefs.getString('notification1Time') ?? '09:00';
+    final notification2Time = prefs.getString('notification2Time') ?? '14:00';
+    final notification3Time = prefs.getString('notification3Time') ?? '19:00';
 
     // Parse and create DateTime objects for enabled notifications
-    if (morningEnabled) {
-      final timeParts = morningTime.split(':');
+    if (notification1Enabled) {
+      final timeParts = notification1Time.split(':');
       final scheduledTime = DateTime(
         date.year,
         date.month,
@@ -238,8 +238,8 @@ class NotificationManager {
       scheduledTimes.add(scheduledTime);
     }
 
-    if (afternoonEnabled) {
-      final timeParts = afternoonTime.split(':');
+    if (notification2Enabled) {
+      final timeParts = notification2Time.split(':');
       final scheduledTime = DateTime(
         date.year,
         date.month,
@@ -250,8 +250,8 @@ class NotificationManager {
       scheduledTimes.add(scheduledTime);
     }
 
-    if (eveningEnabled) {
-      final timeParts = eveningTime.split(':');
+    if (notification3Enabled) {
+      final timeParts = notification3Time.split(':');
       final scheduledTime = DateTime(
         date.year,
         date.month,

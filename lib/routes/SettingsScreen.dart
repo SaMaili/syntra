@@ -25,12 +25,12 @@ class _SettingsScreenState extends State<SettingsScreen>
   String _selectedLanguageCode = 'en';
 
   // New notification control settings
-  bool _morningEnabled = false;
-  bool _afternoonEnabled = false;
-  bool _eveningEnabled = false;
-  TimeOfDay _morningTime = const TimeOfDay(hour: 9, minute: 0);
-  TimeOfDay _afternoonTime = const TimeOfDay(hour: 14, minute: 0);
-  TimeOfDay _eveningTime = const TimeOfDay(hour: 19, minute: 0);
+  bool _notification1Enabled = false;
+  bool _notification2Enabled = false;
+  bool _notification3Enabled = false;
+  TimeOfDay _notification1Time = const TimeOfDay(hour: 9, minute: 0);
+  TimeOfDay _notification2Time = const TimeOfDay(hour: 14, minute: 0);
+  TimeOfDay _notification3Time = const TimeOfDay(hour: 19, minute: 0);
 
   // Animation controllers for beautiful UI
   late AnimationController _fadeController;
@@ -61,31 +61,31 @@ class _SettingsScreenState extends State<SettingsScreen>
           _notificationsEnabled =
               data['notificationsEnabled'] ?? _notificationsEnabled;
           _selectedLanguageCode = data['languageCode'] ?? _selectedLanguageCode;
-          _morningEnabled = data['morningEnabled'] ?? _morningEnabled;
-          _afternoonEnabled = data['afternoonEnabled'] ?? _afternoonEnabled;
-          _eveningEnabled = data['eveningEnabled'] ?? _eveningEnabled;
-          _morningTime = TimeOfDay(
-            hour: data['morningTimeHour'] ?? _morningTime.hour,
-            minute: data['morningTimeMinute'] ?? _morningTime.minute,
+          _notification1Enabled = data['notification1Enabled'] ?? _notification1Enabled;
+          _notification2Enabled = data['notification2Enabled'] ?? _notification2Enabled;
+          _notification3Enabled = data['notification3Enabled'] ?? _notification3Enabled;
+          _notification1Time = TimeOfDay(
+            hour: data['notification1TimeHour'] ?? _notification1Time.hour,
+            minute: data['notification1TimeMinute'] ?? _notification1Time.minute,
           );
-          _afternoonTime = TimeOfDay(
-            hour: data['afternoonTimeHour'] ?? _afternoonTime.hour,
-            minute: data['afternoonTimeMinute'] ?? _afternoonTime.minute,
+          _notification2Time = TimeOfDay(
+            hour: data['notification2TimeHour'] ?? _notification2Time.hour,
+            minute: data['notification2TimeMinute'] ?? _notification2Time.minute,
           );
-          _eveningTime = TimeOfDay(
-            hour: data['eveningTimeHour'] ?? _eveningTime.hour,
-            minute: data['eveningTimeMinute'] ?? _eveningTime.minute,
+          _notification3Time = TimeOfDay(
+            hour: data['notification3TimeHour'] ?? _notification3Time.hour,
+            minute: data['notification3TimeMinute'] ?? _notification3Time.minute,
           );
         });
 
         // Also sync the notification settings to SharedPreferences for consistency
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('morningEnabled', _morningEnabled);
-        await prefs.setBool('afternoonEnabled', _afternoonEnabled);
-        await prefs.setBool('eveningEnabled', _eveningEnabled);
-        await prefs.setString('morningTime', _formatTimeOfDay(_morningTime));
-        await prefs.setString('afternoonTime', _formatTimeOfDay(_afternoonTime));
-        await prefs.setString('eveningTime', _formatTimeOfDay(_eveningTime));
+        await prefs.setBool('notification1Enabled', _notification1Enabled);
+        await prefs.setBool('notification2Enabled', _notification2Enabled);
+        await prefs.setBool('notification3Enabled', _notification3Enabled);
+        await prefs.setString('notification1Time', _formatTimeOfDay(_notification1Time));
+        await prefs.setString('notification2Time', _formatTimeOfDay(_notification2Time));
+        await prefs.setString('notification3Time', _formatTimeOfDay(_notification3Time));
 
         if (_darkModeEnabled) {
           themeModeNotifier.value = ThemeMode.dark;
@@ -116,26 +116,26 @@ class _SettingsScreenState extends State<SettingsScreen>
       'darkMode': _darkModeEnabled,
       'notificationsEnabled': _notificationsEnabled,
       'languageCode': _selectedLanguageCode,
-      'morningEnabled': _morningEnabled,
-      'afternoonEnabled': _afternoonEnabled,
-      'eveningEnabled': _eveningEnabled,
-      'morningTimeHour': _morningTime.hour,
-      'morningTimeMinute': _morningTime.minute,
-      'afternoonTimeHour': _afternoonTime.hour,
-      'afternoonTimeMinute': _afternoonTime.minute,
-      'eveningTimeHour': _eveningTime.hour,
-      'eveningTimeMinute': _eveningTime.minute,
+      'notification1Enabled': _notification1Enabled,
+      'notification2Enabled': _notification2Enabled,
+      'notification3Enabled': _notification3Enabled,
+      'notification1TimeHour': _notification1Time.hour,
+      'notification1TimeMinute': _notification1Time.minute,
+      'notification2TimeHour': _notification2Time.hour,
+      'notification2TimeMinute': _notification2Time.minute,
+      'notification3TimeHour': _notification3Time.hour,
+      'notification3TimeMinute': _notification3Time.minute,
     };
     await file.writeAsString(jsonEncode(data));
 
     // Also save notification settings to SharedPreferences for NotificationManager access
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('morningEnabled', _morningEnabled);
-    await prefs.setBool('afternoonEnabled', _afternoonEnabled);
-    await prefs.setBool('eveningEnabled', _eveningEnabled);
-    await prefs.setString('morningTime', _formatTimeOfDay(_morningTime));
-    await prefs.setString('afternoonTime', _formatTimeOfDay(_afternoonTime));
-    await prefs.setString('eveningTime', _formatTimeOfDay(_eveningTime));
+    await prefs.setBool('notification1Enabled', _notification1Enabled);
+    await prefs.setBool('notification2Enabled', _notification2Enabled);
+    await prefs.setBool('notification3Enabled', _notification3Enabled);
+    await prefs.setString('notification1Time', _formatTimeOfDay(_notification1Time));
+    await prefs.setString('notification2Time', _formatTimeOfDay(_notification2Time));
+    await prefs.setString('notification3Time', _formatTimeOfDay(_notification3Time));
 
     print('💾 Settings saved to both file and SharedPreferences');
   }
@@ -688,54 +688,66 @@ class _SettingsScreenState extends State<SettingsScreen>
           Column(
             children: [
               _buildModernTimeSlot(
-                S.of(context).morningMotivation,
-                Icons.wb_sunny,
-                _morningTime,
-                _morningEnabled,
+                Icons.looks_one,
+                _notification1Time,
+                _notification1Enabled,
                 Colors.orange,
-                (value) {
+                (value) async {
                   setState(() {
-                    _morningEnabled = value;
+                    _notification1Enabled = value;
                   });
-                  _saveSettings();
+                  await _saveSettings();
+                  // Cancel all existing notifications and reschedule based on current settings
+                  await NotificationManager.cancelAllNotifications();
+                  if (_notificationsEnabled) {
+                    await NotificationManager.scheduleDailyReminders();
+                  }
                 },
-                () => _selectTime(context, S.of(context).morning, _morningTime),
+                () => _selectTime(context, 'Notification 1', _notification1Time),
                 isDark: isDark,
               ),
 
               SizedBox(height: 16),
 
               _buildModernTimeSlot(
-                S.of(context).afternoonBoost,
-                Icons.wb_cloudy,
-                _afternoonTime,
-                _afternoonEnabled,
+                Icons.looks_two,
+                _notification2Time,
+                _notification2Enabled,
                 Colors.blue,
-                (value) {
+                (value) async {
                   setState(() {
-                    _afternoonEnabled = value;
+                    _notification2Enabled = value;
                   });
-                  _saveSettings();
+                  await _saveSettings();
+                  // Cancel all existing notifications and reschedule based on current settings
+                  await NotificationManager.cancelAllNotifications();
+                  if (_notificationsEnabled) {
+                    await NotificationManager.scheduleDailyReminders();
+                  }
                 },
-                () => _selectTime(context, S.of(context).afternoon, _afternoonTime),
+                () => _selectTime(context, 'Notification 2', _notification2Time),
                 isDark: isDark,
               ),
 
               SizedBox(height: 16),
 
               _buildModernTimeSlot(
-                S.of(context).eveningReflection,
-                Icons.nightlight_round,
-                _eveningTime,
-                _eveningEnabled,
+                Icons.looks_3,
+                _notification3Time,
+                _notification3Enabled,
                 Colors.purple,
-                (value) {
+                (value) async {
                   setState(() {
-                    _eveningEnabled = value;
+                    _notification3Enabled = value;
                   });
-                  _saveSettings();
+                  await _saveSettings();
+                  // Cancel all existing notifications and reschedule based on current settings
+                  await NotificationManager.cancelAllNotifications();
+                  if (_notificationsEnabled) {
+                    await NotificationManager.scheduleDailyReminders();
+                  }
                 },
-                () => _selectTime(context, S.of(context).evening, _eveningTime),
+                () => _selectTime(context, 'Notification 3', _notification3Time),
                 isDark: isDark,
               ),
             ],
@@ -746,7 +758,6 @@ class _SettingsScreenState extends State<SettingsScreen>
   }
 
   Widget _buildModernTimeSlot(
-    String title,
     IconData icon,
     TimeOfDay time,
     bool enabled,
@@ -756,7 +767,7 @@ class _SettingsScreenState extends State<SettingsScreen>
     required bool isDark,
   }) {
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: enabled
           ? accentColor.withValues(alpha: 0.1)
@@ -790,7 +801,7 @@ class _SettingsScreenState extends State<SettingsScreen>
           // Text Section
           Expanded(
             child: Text(
-              title,
+              '',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -945,9 +956,9 @@ class _SettingsScreenState extends State<SettingsScreen>
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: Theme.of(context).colorScheme.copyWith(
-              primary: label == 'Morning'
+              primary: label == 'Notification 1'
                   ? Colors.orange
-                  : label == 'Afternoon'
+                  : label == 'Notification 2'
                       ? Colors.blue
                       : Colors.purple,
             ),
@@ -959,12 +970,12 @@ class _SettingsScreenState extends State<SettingsScreen>
 
     if (picked != null && picked != currentTime) {
       setState(() {
-        if (label == 'Morning') {
-          _morningTime = picked;
-        } else if (label == 'Afternoon') {
-          _afternoonTime = picked;
-        } else if (label == 'Evening') {
-          _eveningTime = picked;
+        if (label == 'Notification 1') {
+          _notification1Time = picked;
+        } else if (label == 'Notification 2') {
+          _notification2Time = picked;
+        } else if (label == 'Notification 3') {
+          _notification3Time = picked;
         }
       });
 
@@ -976,10 +987,10 @@ class _SettingsScreenState extends State<SettingsScreen>
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(S.of(context).reminderUpdated(label, _formatTimeOfDay(picked))),
-            backgroundColor: label == S.of(context).morning
+            content: Text('Notification time updated to ${_formatTimeOfDay(picked)}'),
+            backgroundColor: label == 'Notification 1'
                 ? Colors.orange
-                : label == S.of(context).afternoon
+                : label == 'Notification 2'
                     ? Colors.blue
                     : Colors.purple,
             duration: Duration(seconds: 2),

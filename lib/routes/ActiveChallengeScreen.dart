@@ -291,28 +291,6 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
           elevation: 0,
           centerTitle: true,
           automaticallyImplyLeading: false,
-          title: Container(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: isDark ? 0.1 : 0.2),
-              borderRadius: BorderRadius.circular(25),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.timer, color: titleColor, size: 24),
-                SizedBox(width: 8),
-                Text(
-                  S.of(context).activeChallengeTitle,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: titleColor,
-                    fontSize: 20,
-                  ),
-                ),
-              ],
-            ),
-          ),
         ),
         backgroundColor: isDark ? Colors.black : AppStatic.grapeLight,
         body: Container(
@@ -320,6 +298,7 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
           height: double.infinity,
           decoration: BoxDecoration(gradient: bgGradient),
           child: SafeArea(
+            top: false, // Allow content to go behind the AppBar
             child: AnimatedBuilder(
               animation: _fadeAnimation,
               builder: (context, child) {
@@ -331,11 +310,11 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                       return Transform.scale(
                         scale: _scaleAnimation.value,
                         child: Padding(
-                          padding: const EdgeInsets.all(20.0),
+                          padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0, top: 60.0), // Reduced top padding
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              // Timer section with beautiful card design
+                              // Timer section with compact design
                               if (!mainTimeOver) ...[
                                 AnimatedBuilder(
                                   animation: _timerPulseAnimation,
@@ -344,44 +323,40 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                                       scale: _timerPulseAnimation.value,
                                       child: Container(
                                         width: double.infinity,
-                                        padding: EdgeInsets.all(28),
+                                        padding: EdgeInsets.all(16), // Reduced from 28
                                         decoration: BoxDecoration(
                                           color: cardColor,
-                                          borderRadius: BorderRadius.circular(28),
+                                          borderRadius: BorderRadius.circular(20), // Reduced from 28
                                           boxShadow: [
                                             BoxShadow(
-                                              color: timerColor.withValues(alpha: 0.3),
-                                              blurRadius: 25,
-                                              spreadRadius: 2,
-                                              offset: Offset(0, 12),
+                                              color: timerColor.withValues(alpha: 0.2), // Reduced shadow
+                                              blurRadius: 15, // Reduced from 25
+                                              spreadRadius: 1, // Reduced from 2
+                                              offset: Offset(0, 6), // Reduced from 12
                                             ),
                                             BoxShadow(
                                               color: Colors.black.withValues(alpha: 0.1),
-                                              blurRadius: 15,
-                                              offset: Offset(0, 8),
+                                              blurRadius: 10, // Reduced from 15
+                                              offset: Offset(0, 4), // Reduced from 8
                                             ),
                                           ],
                                         ),
-                                        child: Column(
+                                        child: Row( // Changed from Column to Row for more compact layout
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Icon(Icons.access_time, color: timerColor, size: 28),
-                                                SizedBox(width: 12),
-                                                Text(
-                                                  S.of(context).timeRemaining,
-                                                  style: TextStyle(
-                                                    fontSize: 20,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: timerColor,
-                                                  ),
-                                                ),
-                                              ],
+                                            Icon(Icons.access_time, color: timerColor, size: 24), // Reduced from 28
+                                            SizedBox(width: 12),
+                                            Text(
+                                              S.of(context).timeRemaining,
+                                              style: TextStyle(
+                                                fontSize: 16, // Reduced from 20
+                                                fontWeight: FontWeight.bold,
+                                                color: timerColor,
+                                              ),
                                             ),
-                                            SizedBox(height: 16),
+                                            SizedBox(width: 16),
                                             Container(
-                                              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                                              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8), // Reduced padding
                                               decoration: BoxDecoration(
                                                 gradient: LinearGradient(
                                                   colors: [
@@ -389,15 +364,15 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                                                     timerColor.withValues(alpha: 0.05),
                                                   ],
                                                 ),
-                                                borderRadius: BorderRadius.circular(20),
+                                                borderRadius: BorderRadius.circular(15), // Reduced from 20
                                               ),
                                               child: Text(
                                                 _formatTime(mainTimer),
                                                 style: TextStyle(
-                                                  fontSize: 42,
+                                                  fontSize: 28, // Reduced from 42
                                                   fontWeight: FontWeight.bold,
                                                   color: timerColor,
-                                                  letterSpacing: 2,
+                                                  letterSpacing: 1, // Reduced from 2
                                                 ),
                                               ),
                                             ),
@@ -407,7 +382,7 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                                     );
                                   },
                                 ),
-                                SizedBox(height: 24),
+                                SizedBox(height: 16), // Reduced from 24
                               ],
                               
                               // Challenge card with enhanced styling

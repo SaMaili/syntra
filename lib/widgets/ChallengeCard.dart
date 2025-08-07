@@ -46,9 +46,7 @@ class ChallengeCard extends StatefulWidget {
 class _ChallengeCardState extends State<ChallengeCard>
     with TickerProviderStateMixin {
   late AnimationController _hoverController;
-  late AnimationController _pulseController;
   late Animation<double> _scaleAnimation;
-  late Animation<double> _pulseAnimation;
   bool _isHovered = false;
 
   @override
@@ -60,11 +58,6 @@ class _ChallengeCardState extends State<ChallengeCard>
       vsync: this,
     );
 
-    _pulseController = AnimationController(
-      duration: const Duration(milliseconds: 1500),
-      vsync: this,
-    );
-
     _scaleAnimation = Tween<double>(
       begin: 1.0,
       end: 1.02,
@@ -72,23 +65,11 @@ class _ChallengeCardState extends State<ChallengeCard>
       parent: _hoverController,
       curve: Curves.easeInOut,
     ));
-
-    _pulseAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _pulseController,
-      curve: Curves.easeInOut,
-    ));
-
-    // Start subtle pulse animation
-    _pulseController.repeat(reverse: true);
   }
 
   @override
   void dispose() {
     _hoverController.dispose();
-    _pulseController.dispose();
     super.dispose();
   }
 
@@ -126,7 +107,7 @@ class _ChallengeCardState extends State<ChallengeCard>
     );
 
     return AnimatedBuilder(
-      animation: Listenable.merge([_scaleAnimation, _pulseAnimation]),
+      animation: _scaleAnimation,
       builder: (context, child) {
         return Transform.scale(
           scale: _scaleAnimation.value,
@@ -148,10 +129,10 @@ class _ChallengeCardState extends State<ChallengeCard>
                   // Primary shadow
                   BoxShadow(
                     color: primaryColor.withValues(
-                        alpha: 0.2 + (_pulseAnimation.value * 0.1)),
-                    blurRadius: 20 + (_pulseAnimation.value * 5),
-                    spreadRadius: 2 + (_pulseAnimation.value * 1),
-                    offset: Offset(0, 8 + (_pulseAnimation.value * 2)),
+                        alpha: 0.2),
+                    blurRadius: 20,
+                    spreadRadius: 2,
+                    offset: Offset(0, 8),
                   ),
                   // Secondary shadow for depth
                   BoxShadow(
@@ -170,8 +151,8 @@ class _ChallengeCardState extends State<ChallengeCard>
                 ],
                 border: Border.all(
                   color: primaryColor.withValues(
-                      alpha: 0.1 + (_pulseAnimation.value * 0.1)),
-                  width: 1 + (_pulseAnimation.value * 0.5),
+                      alpha: 0.1),
+                  width: 1,
                 ),
               ),
               child: ClipRRect(

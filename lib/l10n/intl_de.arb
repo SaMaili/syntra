@@ -4,10 +4,9 @@
   "notifications": "Benachrichtigungen",
   "notificationsSubtitle": "Lass dich an tägliche Herausforderungen erinnern",
   "dailyReminders": "Tägliche Erinnerungen",
-  "dailyRemindersSubtitle": "Lass dich daran erinnern, deine täglichen Herausforderungen zu meistern",
-  "morningMotivation": "Morgen-Motivation",
-  "afternoonBoost": "Nachmittags-Boost",
-  "eveningReflection": "Abend-Reflexion",
+  "dailyRemindersSubtitle": "Lass dich daran erinnern, Herausforderungen zu meistern",
+  "notificationsEnabled": "✅ Benachrichtigungen aktiviert",
+  "notificationsDisabled": "🔕 Benachrichtigungen deaktiviert",
   "reminderUpdated": "⏰ {period} Erinnerung aktualisiert auf {time}",
   "@reminderUpdated": {
     "placeholders": {
@@ -19,8 +18,6 @@
       }
     }
   },
-  "notificationsEnabled": "✅ Benachrichtigungen aktiviert",
-  "notificationsDisabled": "🔕 Benachrichtigungen deaktiviert",
   "morning": "Morgen",
   "afternoon": "Nachmittag",
   "evening": "Abend",
@@ -57,7 +54,6 @@
   "navDaily": "Täglich",
   "navStats": "Statistik",
   "navSettings": "Einstellungen",
-  "activeChallengeTitle": "SPOT! RUN! TALK!",
   "timeRemaining": "Verbleibende Zeit",
   "notSureWhatToSay": "Nicht sicher was du sagen sollst?",
   "doneExcited": "GESCHAFFT! 😎",
@@ -173,7 +169,7 @@
     }
   },
   "preferAnotherChallenge": "Ich hätte lieber eine andere Challenge",
-  "letsGo": "LOS GEHT'S! 🚀",
+  "letsGo": "LOS GEHT'S!",
   "challengeTimerCompleteTitle": "🎉 Timer abgelaufen!",
   "challengeTimerCompleteBody": "Deine Challenge \"{challengeTitle}\" ist gerade beendet! 🏆",
   "@challengeTimerCompleteBody": {
