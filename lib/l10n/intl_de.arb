@@ -65,7 +65,7 @@
       }
     }
   },
-  "notToday": "Heute nicht ���",
+  "notToday": "Heute nicht 🙈",
   "challengeCompleted": "Challenge abgeschlossen!",
   "challengeAborted": "Challenge abgebrochen",
   "congratulations": "Glückwunsch! Du hast die Challenge abgeschlossen.",
@@ -150,6 +150,14 @@
   "learnSetbacks": "Lerne aus Rückschlägen",
   "stayCurious": "Bleibe neugierig und aufgeschlossen",
   "motivationalQuote": "\"Die einzige Grenze für die Verwirklichung von morgen werden unsere Zweifel von heute sein.\"",
+  "motivationMessage1": "Bereit für eine neue Herausforderung? Los geht's!",
+  "motivationMessage2": "Weiter so! Probiere heute eine Challenge aus!",
+  "motivationMessage3": "Dein nächster Erfolg wartet. Nimm eine Challenge an!",
+  "motivationMessage4": "Kleine Schritte, große Ergebnisse. Mach eine Challenge!",
+  "motivationMessage5": "Bleib motiviert! Absolviere jetzt eine Challenge!",
+  "motivationMessage6": "Du bist die Sonne! Aber was ist die Sonne, wenn sie nicht scheinen kann?\nMach eine Challenge!",
+  "motivationMessage7": "Bist du draußen? Dann solltest du eine Challenge machen!",
+  "motivationMessage8": "Es dauert nur 5 Minuten, eine Challenge zu machen!\nWorauf wartest du?",
   "getNewMotivation": "Neue Motivation erhalten",
   "allowExactAlarms": "Genaue Alarme zulassen",
   "exactAlarmsDescription": "Um genaue Challenge-Timer zu gewährleisten, erlaube bitte genaue Alarme in deinen Geräteeinstellungen.",
