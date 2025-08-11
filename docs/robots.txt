@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://samaili.github.io/syntra/sitemap.xml
