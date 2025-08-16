@@ -46,9 +46,15 @@ class ChallengeDatabase {
       // Default to English if no language code provided
       final locale = languageCode ?? 'en';
 
+      // Fetch translations in the desired locale with a proper fallback to English.
+      // The previous implementation used GROUP BY with an ORDER BY clause which
+      // could return arbitrary translations for a challenge when multiple
+      // language rows existed. By joining the translations table twice and
+      // using COALESCE we ensure that the requested locale is chosen when
+      // available and English is used as a reliable fallback.
       final result = await db.rawQuery(
         '''
-        SELECT 
+        SELECT
           c.id,
           c.timer,
           c.xp,
@@ -56,16 +62,16 @@ class ChallengeDatabase {
           c.flirt,
           c.tags,
           c.frequency,
-          ct.title,
-          ct.description,
-          ct.notSureWhatToSay
+          COALESCE(ct_user.title, ct_en.title) AS title,
+          COALESCE(ct_user.description, ct_en.description) AS description,
+          COALESCE(ct_user.notSureWhatToSay, ct_en.notSureWhatToSay) AS notSureWhatToSay
         FROM challenges c
-        LEFT JOIN challenge_translations ct ON c.id = ct.challenge_id
-        WHERE ct.language_code = ? OR ct.language_code = 'en'
-        GROUP BY c.id
-        ORDER BY CASE WHEN ct.language_code = ? THEN 0 ELSE 1 END
+        LEFT JOIN challenge_translations ct_user
+          ON c.id = ct_user.challenge_id AND ct_user.language_code = ?
+        LEFT JOIN challenge_translations ct_en
+          ON c.id = ct_en.challenge_id AND ct_en.language_code = 'en'
       ''',
-        [locale, locale],
+        [locale],
       );
 
       final challenges = result.map((json) => Challenge.fromMap(json)).toList();
