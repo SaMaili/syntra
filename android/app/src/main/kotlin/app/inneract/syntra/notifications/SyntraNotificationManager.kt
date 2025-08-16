@@ -379,6 +379,51 @@ class SyntraNotificationManager(private val context: Context) {
     }
 
     /**
+     * Cancel all scheduled notifications and clear storage
+     */
+    fun cancelAllNotifications(): Boolean {
+        return try {
+            // Cancel all scheduled alarms
+            val scheduled = getScheduledNotifications()
+            scheduled.forEach { notif ->
+                cancelAlarm(notif.id)
+            }
+
+            // Dismiss any currently shown notifications
+            try {
+                NotificationManagerCompat.from(context).cancelAll()
+            } catch (e: Exception) {
+                logError("Error cancelling active notifications", e)
+            }
+
+            // Clear stored notifications list
+            try {
+                prefs.edit().remove(KEY_SCHEDULED_NOTIFICATIONS).apply()
+            } catch (e: Exception) {
+                logError("Error clearing stored notifications", e)
+            }
+
+            logInfo("Cancelled all notifications and cleared storage")
+            true
+        } catch (e: Exception) {
+            logError("Failed to cancel all notifications", e)
+            false
+        }
+    }
+
+    /**
+     * Persist global notifications enabled flag for native boot handling
+     */
+    fun setNotificationsEnabled(enabled: Boolean) {
+        try {
+            prefs.edit().putBoolean("notifications_enabled", enabled).apply()
+            logInfo("Set native notifications_enabled = $enabled")
+        } catch (e: Exception) {
+            logError("Failed to set notifications_enabled", e)
+        }
+    }
+
+    /**
      * Data classes for batch operations
      */
     data class NotificationRequest(

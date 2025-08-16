@@ -5,6 +5,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
+import 'package:syntra/logic/NotificationManager.dart';
 
 import '../generated/l10n.dart';
 
@@ -78,6 +79,17 @@ class ActiveChallengeLogic {
   /// Schedules a timer notification with the main timer value
   Future<void> scheduleTimerNotification() async {
     if (flutterLocalNotificationsPlugin == null) return;
+
+    // Respect global notifications toggle
+    try {
+      final enabled = await NotificationManager.areNotificationsEnabled();
+      if (!enabled) {
+        // If disabled, ensure any previous timer notification is canceled
+        await cancelTimerNotification();
+        return;
+      }
+    } catch (_) {}
+
     const androidDetails = AndroidNotificationDetails(
       'challenge_timer',
       'Challenge Timer',

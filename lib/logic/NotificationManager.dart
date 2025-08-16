@@ -39,27 +39,12 @@ class NotificationManager {
       await notificationService.cancelAllNotifications();
       print('✅ Professional service notifications cancelled');
 
-      // IMPORTANT: Do NOT set notifications_enabled to false here
-      // That should only be done by the calling code (Settings.dart)
-
-      final prefs = await SharedPreferences.getInstance();
-
-      // Clear individual notification slot settings
-      await prefs.setBool('notification1Enabled', false);
-      await prefs.setBool('notification2Enabled', false);
-      await prefs.setBool('notification3Enabled', false);
-      print('✅ Individual notification slots disabled');
-
-      // Clear any other notification-related settings
-      await prefs.remove('notification1Time');
-      await prefs.remove('notification2Time');
-      await prefs.remove('notification3Time');
-      print('✅ Notification time settings cleared');
+      // IMPORTANT: Do NOT modify user preference flags or times here
+      // We only cancel scheduled notifications. The UI owns preference states.
 
       // Cancel any system-level scheduled notifications (but handle the missing implementation gracefully)
       if (Platform.isAndroid) {
         try {
-          // Cancel via Android's AlarmManager if available
           const platform = MethodChannel('app.inneract.syntra/notifications');
           await platform.invokeMethod('cancelAllNotifications');
           print('✅ Android system notifications cancelled');
@@ -74,6 +59,7 @@ class NotificationManager {
 
       // Additional cleanup: Clear any stored notification data
       try {
+        final prefs = await SharedPreferences.getInstance();
         await prefs.remove('syntra_scheduled_notifications');
         print('✅ Stored notification data cleared');
       } catch (e) {
@@ -236,45 +222,6 @@ class NotificationManager {
     }
   }
 
-  /// Calculates the daily motivation notification times for a given date
-  /// This should be the single source of truth for notification times
-  static List<DateTime> calculateDailyNotificationTimes([
-    DateTime? targetDate,
-  ]) {
-    final date = targetDate ?? DateTime.now();
-
-    // Use deterministic random based on the target date - SINGLE SEED PER DAY
-    final random = Random(date.day + date.month + date.year);
-
-    // First notification window (9 AM - 3 PM)
-    final firstHour =
-        AppStatic.motivationFirstHourStart +
-        random.nextInt(AppStatic.motivationFirstHourRange);
-    final firstMinute = random.nextInt(60);
-    final firstScheduledTime = DateTime(
-      date.year,
-      date.month,
-      date.day,
-      firstHour,
-      firstMinute,
-    );
-
-    // Second notification window (6 PM - 11 PM)
-    final secondHour =
-        AppStatic.motivationSecondHourStart +
-        random.nextInt(AppStatic.motivationSecondHourRange);
-    final secondMinute = random.nextInt(60);
-    final secondScheduledTime = DateTime(
-      date.year,
-      date.month,
-      date.day,
-      secondHour,
-      secondMinute,
-    );
-
-    return [firstScheduledTime, secondScheduledTime];
-  }
-
   /// **NEW**: Calculates user-controlled notification times for a given date
   static Future<List<DateTime>> calculateUserControlledNotificationTimes([
     DateTime? targetDate,
@@ -300,6 +247,8 @@ class NotificationManager {
     final notification1Enabled = prefs.getBool('notification1Enabled') ?? false;
     final notification2Enabled = prefs.getBool('notification2Enabled') ?? false;
     final notification3Enabled = prefs.getBool('notification3Enabled') ?? false;
+
+    print('🔎 Slot state @${date.toIso8601String()} | hasSlots=$hasSlotSettings, n1=$notification1Enabled, n2=$notification2Enabled, n3=$notification3Enabled');
 
     // If no specific time slots are configured at all, use default schedule
     if (!hasSlotSettings) {
@@ -390,6 +339,9 @@ class NotificationManager {
     final now = DateTime.now();
     print('📋 Scheduling user-controlled daily reminders with professional notification system...');
 
+    // Determine locale for localized title/body
+    final localeCode = WidgetsBinding.instance.platformDispatcher.locale.languageCode;
+
     // Initialize the professional notification service
     final notificationService = SyntraNotificationService.instance;
     if (!await notificationService.initialize()) {
@@ -420,8 +372,8 @@ class NotificationManager {
         final timeSlot = _getTimeSlot(scheduledTime.hour);
         notifications.add(NotificationRequest(
           id: notificationId,
-          title: 'Syntra Motivation',
-          body: AppStatic.motivationMessages[Random().nextInt(AppStatic.motivationMessages.length)],
+          title: AppStatic.localizedMotivationTitle(localeCode),
+          body: AppStatic.randomMotivationMessage(localeCode),
           scheduledTime: scheduledTime,
           channel: NotificationChannel.reminders,
           data: {
@@ -447,8 +399,8 @@ class NotificationManager {
         final timeSlot = _getTimeSlot(scheduledTime.hour);
         notifications.add(NotificationRequest(
           id: notificationId,
-          title: 'Syntra Motivation',
-          body: AppStatic.motivationMessages[Random().nextInt(AppStatic.motivationMessages.length)],
+          title: AppStatic.localizedMotivationTitle(localeCode),
+          body: AppStatic.randomMotivationMessage(localeCode),
           scheduledTime: scheduledTime,
           channel: NotificationChannel.reminders,
           data: {
@@ -637,8 +589,6 @@ class NotificationManager {
     }
 
     // Test the daily reminder calculation
-    final times = calculateDailyNotificationTimes();
-    print('🧪 Calculated daily reminder times: ${times[0]} and ${times[1]}');
 
     print('🧪 Professional notification system test completed!');
   }
@@ -670,6 +620,9 @@ class NotificationManager {
       return;
     }
 
+    // Determine locale for localized title/body
+    final localeCode = WidgetsBinding.instance.platformDispatcher.locale.languageCode;
+
     // Calculate the next occurrence of this time
     final now = DateTime.now();
     DateTime scheduledTime = DateTime(now.year, now.month, now.day, hour, minute);
@@ -679,24 +632,11 @@ class NotificationManager {
       scheduledTime = scheduledTime.add(const Duration(days: 1));
     }
 
-    // Create notification request
-    final notification = NotificationRequest(
-      id: id,
-      title: 'Syntra Erinnerung',
-      body: AppStatic.motivationMessages[Random().nextInt(AppStatic.motivationMessages.length)],
-      scheduledTime: scheduledTime,
-      channel: NotificationChannel.reminders,
-      data: {
-        'type': 'custom_reminder',
-        'custom_id': id.toString(),
-      },
-    );
-
     // Schedule the notification
     final success = await notificationService.scheduleExactNotification(
       id: id,
-      title: 'Syntra Erinnerung',
-      body: AppStatic.motivationMessages[Random().nextInt(AppStatic.motivationMessages.length)],
+      title: AppStatic.localizedMotivationTitle(localeCode),
+      body: AppStatic.randomMotivationMessage(localeCode),
       scheduledTime: scheduledTime,
       data: {
         'type': 'custom_reminder',

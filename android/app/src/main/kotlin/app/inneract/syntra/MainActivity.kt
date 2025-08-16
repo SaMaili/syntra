@@ -103,6 +103,15 @@ class MainActivity: FlutterActivity() {
                 val success = notificationManager.cancelNotification(id)
                 result.success(success)
             }
+            "cancelAllNotifications" -> {
+                val success = notificationManager.cancelAllNotifications()
+                result.success(success)
+            }
+            "setNotificationsEnabled" -> {
+                val enabled = call.argument<Boolean>("enabled") ?: true
+                notificationManager.setNotificationsEnabled(enabled)
+                result.success(null)
+            }
             "showNotificationNow" -> {
                 val id = call.argument<Int>("id") ?: 0
                 val title = call.argument<String>("title") ?: ""

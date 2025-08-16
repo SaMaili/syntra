@@ -558,6 +558,20 @@ class SyntraNotificationService {
     }
   }
 
+  /**
+   * Sync global notifications enabled to native layer (Android BootReceiver)
+   */
+  Future<void> setNativeNotificationsEnabled(bool enabled) async {
+    try {
+      await _channel.invokeMethod('setNotificationsEnabled', {
+        'enabled': enabled,
+      });
+      _log('Synced native notifications_enabled = $enabled');
+    } catch (e) {
+      _logError('Failed to sync native notifications_enabled', e);
+    }
+  }
+
   // Helper methods and internal implementation
 
   String _getChannelId(NotificationChannel channel) {

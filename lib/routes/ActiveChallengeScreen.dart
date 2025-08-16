@@ -169,9 +169,8 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
         channelId: 'challenge_timer',
         channelName: 'Challenge Timer',
         channelDescription: 'Notification for challenge timer',
-        title: '🎉 Challenge Complete!',
-        body:
-            'Amazing! You completed "${widget.challenge.title}" - time to celebrate! 🏆',
+        title: S.of(context).challengeTimerCompleteTitle,
+        body: S.of(context).challengeTimerCompleteBody(widget.challenge.title),
         vibration: true,
         scheduledTime: DateTime.now().add(Duration(seconds: mainTimer)),
       );
@@ -195,24 +194,7 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
         if (mounted) setState(() => mainTimer = 0);
         print("🏁 Challenge timer finished at: ${DateTime.now()}");
 
-        // Send an immediate notification as backup
-        try {
-          print("🚨 Sending immediate notification as timer finished");
-          // Try immediate notification first
-          await NotificationManager.sendImmediateNotification(
-            channelId: 'challenge_timer',
-            channelName: 'Challenge Timer',
-            channelDescription: 'Notification for challenge timer',
-            title: S.of(context).challengeTimerCompleteTitle,
-            body: S
-                .of(context)
-                .challengeTimerCompleteBody(widget.challenge.title),
-            vibration: true,
-          );
-        } catch (e) {
-          print("❌ Failed to send immediate notification: $e");
-        }
-
+        // Remove legacy immediate backup notification to avoid duplicates
         return false; // Exit the timer loop
       }
     });

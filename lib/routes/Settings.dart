@@ -44,14 +44,21 @@ class _SettingsState extends State<Settings> {
     await prefs.setBool('notifications_enabled', value);
     print('💾 Saved notifications_enabled = $value to SharedPreferences');
 
+    // Sync native flag for Android boot receiver
+    try {
+      await SyntraNotificationService.instance.setNativeNotificationsEnabled(value);
+    } catch (e) {
+      print('⚠️ Failed to sync native notifications_enabled: $e');
+    }
+
     if (value) {
       // When enabling notifications, ensure we have default times set up
       print('✅ Notifications enabled - setting up default schedule');
 
-      // Clear any conflicting individual notification settings first
-      await prefs.setBool('notification1Enabled', false);
-      await prefs.setBool('notification2Enabled', false);
-      await prefs.setBool('notification3Enabled', false);
+      // Remove individual notification slot settings to force default schedule
+      await prefs.remove('notification1Enabled');
+      await prefs.remove('notification2Enabled');
+      await prefs.remove('notification3Enabled');
 
       // Remove any specific time settings to force default schedule
       await prefs.remove('notification1Time');
@@ -113,7 +120,7 @@ class _SettingsState extends State<Settings> {
           Container(
             padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.yellow.withOpacity(0.1),
+              color: Colors.yellow.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: Colors.orange),
             ),
@@ -126,6 +133,13 @@ class _SettingsState extends State<Settings> {
                     print('🔧 DEBUG: Force enabling notifications...');
                     final prefs = await SharedPreferences.getInstance();
                     await prefs.setBool('notifications_enabled', true);
+
+                    // Sync native flag for Android boot receiver
+                    try {
+                      await SyntraNotificationService.instance.setNativeNotificationsEnabled(true);
+                    } catch (e) {
+                      print('⚠️ Failed to sync native notifications_enabled in debug: $e');
+                    }
 
                     setState(() {
                       _notificationsEnabled = true;
@@ -223,7 +237,7 @@ class _SettingsState extends State<Settings> {
                     },
                   ),
                 ),
-                Divider(color: AppStatic.marianBlue.withOpacity(0.3)),
+                Divider(color: AppStatic.marianBlue.withValues(alpha: 0.3)),
                 _buildSettingItem(
                   'About',
                   'App version and information',
@@ -234,7 +248,7 @@ class _SettingsState extends State<Settings> {
                     size: 16,
                   ),
                 ),
-                Divider(color: AppStatic.marianBlue.withOpacity(0.3)),
+                Divider(color: AppStatic.marianBlue.withValues(alpha: 0.3)),
                 _buildSettingItem(
                   'Privacy Policy',
                   'Read our privacy policy',

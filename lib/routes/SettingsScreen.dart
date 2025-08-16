@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syntra/logic/NotificationManager.dart';
+import '../services/syntra_notification_service.dart';
 
 import '../generated/l10n.dart';
 import '../main.dart';
@@ -88,6 +89,13 @@ class _SettingsScreenState extends State<SettingsScreen>
         await prefs.setString('notification2Time', _formatTimeOfDay(_notification2Time));
         await prefs.setString('notification3Time', _formatTimeOfDay(_notification3Time));
 
+        // If all slots are disabled, remove the flags so default schedule applies
+        if (!_notification1Enabled && !_notification2Enabled && !_notification3Enabled) {
+          await prefs.remove('notification1Enabled');
+          await prefs.remove('notification2Enabled');
+          await prefs.remove('notification3Enabled');
+        }
+
         if (_darkModeEnabled) {
           themeModeNotifier.value = ThemeMode.dark;
         } else {
@@ -95,8 +103,11 @@ class _SettingsScreenState extends State<SettingsScreen>
         }
         // Initialize or cancel notifications based on setting
         if (_notificationsEnabled) {
+          // Sync native flag
+          try { await SyntraNotificationService.instance.setNativeNotificationsEnabled(true); } catch (_) {}
           await NotificationManager.scheduleDailyReminders();
         } else {
+          try { await SyntraNotificationService.instance.setNativeNotificationsEnabled(false); } catch (_) {}
           await NotificationManager.cancelAllNotifications();
         }
       }
@@ -138,6 +149,13 @@ class _SettingsScreenState extends State<SettingsScreen>
     await prefs.setString('notification1Time', _formatTimeOfDay(_notification1Time));
     await prefs.setString('notification2Time', _formatTimeOfDay(_notification2Time));
     await prefs.setString('notification3Time', _formatTimeOfDay(_notification3Time));
+
+    // If all slots are disabled, remove the flags so default schedule applies
+    if (!_notification1Enabled && !_notification2Enabled && !_notification3Enabled) {
+      await prefs.remove('notification1Enabled');
+      await prefs.remove('notification2Enabled');
+      await prefs.remove('notification3Enabled');
+    }
 
     print('💾 Settings saved to both file and SharedPreferences');
   }
@@ -304,6 +322,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                                               await _saveSettings();
                                               final prefs = await SharedPreferences.getInstance();
                                               await prefs.setBool('notifications_enabled', value);
+                                              // Sync native flag
+                                              try { await SyntraNotificationService.instance.setNativeNotificationsEnabled(value); } catch (_) {}
                                               if (value) {
                                                 await NotificationManager.scheduleDailyReminders();
                                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -456,6 +476,11 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                   localeNotifier.value = Locale(value);
                                                   _saveSettings();
                                                   await reloadChallengesForLanguage(value);
+                                                  // Reschedule notifications in the new language
+                                                  if (_notificationsEnabled) {
+                                                    await NotificationManager.cancelAllNotifications();
+                                                    await NotificationManager.scheduleDailyReminders();
+                                                  }
                                                 }
                                               },
                                             ),
@@ -988,6 +1013,8 @@ class _SettingsScreenState extends State<SettingsScreen>
 
       // Reschedule notifications with new times
       if (_notificationsEnabled) {
+        // Cancel existing before rescheduling to avoid duplicates
+        await NotificationManager.cancelAllNotifications();
         await NotificationManager.scheduleDailyReminders();
 
         ScaffoldMessenger.of(context).showSnackBar(
