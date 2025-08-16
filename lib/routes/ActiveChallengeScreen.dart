@@ -18,6 +18,7 @@ import 'package:syntra/widgets/NotSureWhatToSayDialog.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
 import '../generated/l10n.dart';
+import '../services/syntra_notification_service.dart';
 import '../static.dart';
 import 'ChallengeDoneScreen.dart';
 
@@ -72,6 +73,7 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
   late Animation<double> _timerPulseAnimation;
 
   int? _scheduledNotificationId;
+  int? _bgScheduledNotificationId;
 
   bool _isDone = false;
 
@@ -140,7 +142,7 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.resumed) {
       // Recalculate the remaining time when app resumes
       final now = DateTime.now();
@@ -148,6 +150,38 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
       setState(() {
         mainTimer = secondsLeft > 0 ? secondsLeft : 0;
       });
+
+      // If we had scheduled a background notification and we're back in foreground before it fired, cancel it
+      if (_bgScheduledNotificationId != null && DateTime.now().isBefore(_endTime)) {
+        NotificationManager.cancelNotification(_bgScheduledNotificationId!);
+        _bgScheduledNotificationId = null;
+      }
+    } else if (state == AppLifecycleState.paused) {
+      // App goes to background: schedule a notification for the challenge end if not scheduled yet
+      if (_bgScheduledNotificationId == null && DateTime.now().isBefore(_endTime)) {
+        final scheduledTime = _endTime;
+        try {
+          NotificationManager
+              .sendNotification(
+                channelId: 'challenge_timer',
+                channelName: 'Challenge Timer',
+                channelDescription: 'Notification for challenge timer',
+                title: S.of(context).challengeTimerCompleteTitle,
+                body: S.of(context).challengeTimerCompleteBody(widget.challenge.title),
+                vibration: true,
+                scheduledTime: scheduledTime,
+              )
+              .then((id) {
+                _bgScheduledNotificationId = id;
+                print('📲 Scheduled background challenge-end notification: ID=$id at $scheduledTime');
+              })
+              .catchError((e) {
+                print('❌ Failed to schedule background challenge-end notification: $e');
+              });
+        } catch (e) {
+          print('❌ Failed to schedule background challenge-end notification: $e');
+        }
+      }
     }
   }
 
@@ -160,25 +194,10 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
     print("Timer duration: $mainTimer seconds");
     print("Current time: ${DateTime.now()}");
     print(
-      "Notification scheduled for: ${DateTime.now().add(Duration(seconds: mainTimer))}",
+      "Notification target time: ${_endTime}",
     );
 
-    // Schedule notification for when timer ends using the reliable NotificationManager
-    try {
-      final id = await NotificationManager.sendNotification(
-        channelId: 'challenge_timer',
-        channelName: 'Challenge Timer',
-        channelDescription: 'Notification for challenge timer',
-        title: S.of(context).challengeTimerCompleteTitle,
-        body: S.of(context).challengeTimerCompleteBody(widget.challenge.title),
-        vibration: true,
-        scheduledTime: DateTime.now().add(Duration(seconds: mainTimer)),
-      );
-      print("✅ Challenge notification scheduled successfully! ID: $id");
-      _scheduledNotificationId = id;
-    } catch (e) {
-      print("❌ Failed to schedule challenge notification: $e");
-    }
+    // Do NOT schedule here to avoid duplicates; we schedule only when app goes to background.
 
     mainTicker = Future.doWhile(() async {
       await Future.delayed(const Duration(seconds: 1));
@@ -194,7 +213,22 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
         if (mounted) setState(() => mainTimer = 0);
         print("🏁 Challenge timer finished at: ${DateTime.now()}");
 
-        // Remove legacy immediate backup notification to avoid duplicates
+        // Foreground finish: show immediate notification and cancel any background schedule
+        try {
+          if (_bgScheduledNotificationId != null) {
+            await NotificationManager.cancelNotification(_bgScheduledNotificationId!);
+            _bgScheduledNotificationId = null;
+          }
+          await NotificationManager.sendImmediateNotification(
+            title: S.of(context).challengeTimerCompleteTitle,
+            body: S.of(context).challengeTimerCompleteBody(widget.challenge.title),
+            data: {'type': 'challenge_timer_complete'},
+          );
+          print('📣 Immediate challenge-end notification shown');
+        } catch (e) {
+          print('❌ Failed to show immediate challenge-end notification: $e');
+        }
+
         return false; // Exit the timer loop
       }
     });
@@ -231,6 +265,11 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
       ),
     );
     if (result != null && mounted) {
+      // Cancel any pending background challenge-end notification on manual finish
+      if (_bgScheduledNotificationId != null) {
+        await NotificationManager.cancelNotification(_bgScheduledNotificationId!);
+        _bgScheduledNotificationId = null;
+      }
       Navigator.of(context).popUntil((route) => route.isFirst);
     }
   }
