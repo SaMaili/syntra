@@ -10,6 +10,7 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'database/challenge_database.dart';
 import 'generated/l10n.dart';
@@ -65,6 +66,17 @@ Future<void> initializeSettings() async {
       }
       if (data['languageCode'] != null) {
         localeNotifier.value = Locale(data['languageCode']);
+      }
+
+      // NEW: Mirror notificationsEnabled into SharedPreferences for NotificationManager
+      try {
+        if (data.containsKey('notificationsEnabled')) {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('notifications_enabled', data['notificationsEnabled'] == true);
+          print("initializeSettings: notifications_enabled set to ${data['notificationsEnabled']}");
+        }
+      } catch (e) {
+        print('Warning: Failed to sync notificationsEnabled to SharedPreferences: $e');
       }
     }
   } catch (_) {}

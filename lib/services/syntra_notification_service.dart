@@ -226,6 +226,18 @@ class SyntraNotificationService {
       return false;
     }
 
+    // Respect global notifications toggle
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final enabled = prefs.getBool('notifications_enabled') ?? true;
+      if (!enabled) {
+        _log('Global notifications disabled - skipping scheduleExactNotification');
+        return false;
+      }
+    } catch (e) {
+      // If prefs fails, continue; NotificationManager guards should handle
+    }
+
     try {
       final triggerTime = scheduledTime.millisecondsSinceEpoch;
 
@@ -289,6 +301,16 @@ class SyntraNotificationService {
       _logError('Service not initialized');
       return BatchScheduleResult([], 0, notifications.length);
     }
+
+    // Respect global notifications toggle
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final enabled = prefs.getBool('notifications_enabled') ?? true;
+      if (!enabled) {
+        _log('Global notifications disabled - skipping batchScheduleNotifications');
+        return BatchScheduleResult([], 0, notifications.length);
+      }
+    } catch (_) {}
 
     try {
       _log('Batch scheduling ${notifications.length} notifications...');
@@ -393,6 +415,33 @@ class SyntraNotificationService {
   }
 
   /**
+   * Cancel all scheduled notifications
+   */
+  Future<bool> cancelAllNotifications() async {
+    try {
+      _log('Cancelling all notifications...');
+      
+      if (Platform.isAndroid) {
+        final result = await _channel.invokeMethod<bool>('cancelAllNotifications');
+        if (result == true) {
+          await _clearAllStoredNotifications();
+          _log('All notifications cancelled via Android native');
+          return true;
+        }
+      }
+      
+      // Fallback to Flutter Local Notifications
+      await _flutterLocalNotificationsPlugin?.cancelAll();
+      await _clearAllStoredNotifications();
+      _log('All notifications cancelled via Flutter fallback');
+      return true;
+    } catch (e) {
+      _logError('Error cancelling all notifications', e);
+      return false;
+    }
+  }
+
+  /**
    * Get all scheduled notifications
    */
   Future<List<ScheduledNotificationInfo>> getScheduledNotifications() async {
@@ -417,6 +466,17 @@ class SyntraNotificationService {
   Future<bool> rescheduleAllNotifications() async {
     try {
       _log('Rescheduling all notifications...');
+
+      // Respect global notifications toggle
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        final enabled = prefs.getBool('notifications_enabled') ?? true;
+        if (!enabled) {
+          _log('Global notifications disabled - skipping rescheduleAllNotifications');
+          await cancelAllNotifications();
+          return true;
+        }
+      } catch (_) {}
 
       final scheduledNotifications = await getScheduledNotifications();
       if (scheduledNotifications.isEmpty) {
@@ -457,6 +517,16 @@ class SyntraNotificationService {
     NotificationChannel channel = NotificationChannel.reminders,
   }) async {
     try {
+      // Respect global notifications toggle
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        final enabled = prefs.getBool('notifications_enabled') ?? true;
+        if (!enabled) {
+          _log('Global notifications disabled - skipping showNotificationNow');
+          return;
+        }
+      } catch (_) {}
+
       if (Platform.isAndroid) {
         await _channel.invokeMethod('showNotificationNow', {
           'id': id,
@@ -601,6 +671,16 @@ class SyntraNotificationService {
     }
   }
 
+  Future<void> _clearAllStoredNotifications() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('syntra_scheduled_notifications');
+      _log('Cleared all stored notifications');
+    } catch (e) {
+      _logError('Error clearing stored notifications', e);
+    }
+  }
+
   Future<void> _handleNotificationReceived(Map<String, dynamic> arguments) async {
     _log('Notification received: $arguments');
     // Handle custom notification logic here
@@ -608,6 +688,15 @@ class SyntraNotificationService {
 
   Future<void> _handleBootCompleted() async {
     _log('Boot completed - triggering notification reschedule');
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final enabled = prefs.getBool('notifications_enabled') ?? true;
+      if (!enabled) {
+        _log('Global notifications disabled at boot - skipping reschedule');
+        await cancelAllNotifications();
+        return;
+      }
+    } catch (_) {}
     await rescheduleAllNotifications();
   }
 

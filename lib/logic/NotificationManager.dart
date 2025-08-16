@@ -19,6 +19,73 @@ class NotificationManager {
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
+  /// Check if notifications are enabled in settings
+  static Future<bool> areNotificationsEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('notifications_enabled') ?? true;
+  }
+
+  /// Cancel all scheduled notifications
+  static Future<void> cancelAllNotifications() async {
+    try {
+      print('🚫 Cancelling all notifications comprehensively...');
+
+      // Cancel Flutter local notifications first
+      await _notificationsPlugin.cancelAll();
+      print('✅ Flutter local notifications cancelled');
+
+      // Cancel notifications via professional service
+      final notificationService = SyntraNotificationService.instance;
+      await notificationService.cancelAllNotifications();
+      print('✅ Professional service notifications cancelled');
+
+      // IMPORTANT: Do NOT set notifications_enabled to false here
+      // That should only be done by the calling code (Settings.dart)
+
+      final prefs = await SharedPreferences.getInstance();
+
+      // Clear individual notification slot settings
+      await prefs.setBool('notification1Enabled', false);
+      await prefs.setBool('notification2Enabled', false);
+      await prefs.setBool('notification3Enabled', false);
+      print('✅ Individual notification slots disabled');
+
+      // Clear any other notification-related settings
+      await prefs.remove('notification1Time');
+      await prefs.remove('notification2Time');
+      await prefs.remove('notification3Time');
+      print('✅ Notification time settings cleared');
+
+      // Cancel any system-level scheduled notifications (but handle the missing implementation gracefully)
+      if (Platform.isAndroid) {
+        try {
+          // Cancel via Android's AlarmManager if available
+          const platform = MethodChannel('app.inneract.syntra/notifications');
+          await platform.invokeMethod('cancelAllNotifications');
+          print('✅ Android system notifications cancelled');
+        } catch (e) {
+          if (e.toString().contains('MissingPluginException')) {
+            print('ℹ️ Native cancelAllNotifications method not implemented (using Flutter fallback)');
+          } else {
+            print('⚠️ Could not cancel Android system notifications: $e');
+          }
+        }
+      }
+
+      // Additional cleanup: Clear any stored notification data
+      try {
+        await prefs.remove('syntra_scheduled_notifications');
+        print('✅ Stored notification data cleared');
+      } catch (e) {
+        print('⚠️ Could not clear stored notification data: $e');
+      }
+
+      print('✅ All notifications cancelled comprehensively');
+    } catch (e) {
+      print('❌ Error cancelling notifications: $e');
+    }
+  }
+
   static Future<void> initialize() async {
     // Initialize timezone data in the main app isolate too
     tz.initializeTimeZones();
@@ -216,11 +283,58 @@ class NotificationManager {
     final prefs = await SharedPreferences.getInstance();
     final List<DateTime> scheduledTimes = [];
 
-    // Get user notification settings - updated to use new generic notification system
+    // Check if notifications are enabled globally
+    final notificationsEnabled = prefs.getBool('notifications_enabled') ?? true;
+    if (!notificationsEnabled) {
+      print('🚫 Global notifications disabled - returning empty schedule');
+      return scheduledTimes;
+    }
+
+    // Detect if user has configured any slot settings previously
+    final hasSlotSettings =
+        prefs.containsKey('notification1Enabled') ||
+        prefs.containsKey('notification2Enabled') ||
+        prefs.containsKey('notification3Enabled');
+
+    // Get user notification settings - check for specific time slot settings
     final notification1Enabled = prefs.getBool('notification1Enabled') ?? false;
     final notification2Enabled = prefs.getBool('notification2Enabled') ?? false;
     final notification3Enabled = prefs.getBool('notification3Enabled') ?? false;
 
+    // If no specific time slots are configured at all, use default schedule
+    if (!hasSlotSettings) {
+      print('📅 No slot settings found - using default schedule');
+
+      // Default notification times: morning, afternoon, evening
+      final defaultTimes = [
+        '09:00', // Morning
+        '14:00', // Afternoon
+        '19:00', // Evening
+      ];
+
+      for (final timeString in defaultTimes) {
+        final timeParts = timeString.split(':');
+        final scheduledTime = DateTime(
+          date.year,
+          date.month,
+          date.day,
+          int.parse(timeParts[0]),
+          int.parse(timeParts[1]),
+        );
+        scheduledTimes.add(scheduledTime);
+        print('📅 Added default notification time: ${timeString}');
+      }
+
+      return scheduledTimes;
+    }
+
+    // If user has slot settings but all are disabled, schedule none
+    if (!notification1Enabled && !notification2Enabled && !notification3Enabled) {
+      print('🚫 All individual notification slots are disabled - no reminders scheduled');
+      return scheduledTimes; // empty
+    }
+
+    // Use user-configured specific time slots
     final notification1Time = prefs.getString('notification1Time') ?? '09:00';
     final notification2Time = prefs.getString('notification2Time') ?? '14:00';
     final notification3Time = prefs.getString('notification3Time') ?? '19:00';
@@ -267,6 +381,12 @@ class NotificationManager {
 
   /// **NEW PROFESSIONAL SYSTEM**: Schedules daily reminders using SyntraNotificationService
   static Future<void> scheduleDailyReminders() async {
+    // Check if notifications are enabled in settings
+    if (!await areNotificationsEnabled()) {
+      print('🚫 Notifications disabled in settings - skipping scheduling');
+      return;
+    }
+
     final now = DateTime.now();
     print('📋 Scheduling user-controlled daily reminders with professional notification system...');
 
@@ -388,6 +508,12 @@ class NotificationManager {
     Map<String, String> data = const {},
     NotificationChannel channel = NotificationChannel.reminders,
   }) async {
+    // Respect global notifications toggle
+    if (!await areNotificationsEnabled()) {
+      print('🚫 Notifications disabled - skipping scheduleNotification for $scheduledTime');
+      return false;
+    }
+
     final notificationService = SyntraNotificationService.instance;
 
     // Generate unique ID
@@ -415,6 +541,12 @@ class NotificationManager {
     String? channelDescription,
     bool? vibration,
   }) async {
+    // Respect global notifications toggle
+    if (!await areNotificationsEnabled()) {
+      print('🚫 Notifications disabled - skipping sendImmediateNotification');
+      return;
+    }
+
     final notificationService = SyntraNotificationService.instance;
 
     // Generate unique ID
@@ -439,6 +571,12 @@ class NotificationManager {
     required bool vibration,
     required DateTime scheduledTime,
   }) async {
+    // Respect global notifications toggle
+    if (!await areNotificationsEnabled()) {
+      print('🚫 Notifications disabled - skipping legacy sendNotification for $scheduledTime');
+      return -1;
+    }
+
     print("📅 Legacy NotificationManager.sendNotification called, using professional system:");
     print("  - Title: $title");
     print("  - Body: $body");
@@ -581,11 +719,5 @@ class NotificationManager {
     await notificationService.cancelNotification(id);
 
     print('✅ Notification $id cancelled');
-  }
-
-  static Future<void> cancelAllNotifications() async {
-    await _notificationsPlugin.cancelAll();
-    // Note: Professional system doesn't have cancelAll, but individual cancellations
-    // could be implemented if needed
   }
 }

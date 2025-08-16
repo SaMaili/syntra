@@ -28,14 +28,22 @@
         <activity
             android:name=".MainActivity"
             android:configChanges="keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
-            android:exported="true"
-            android:hardwareAccelerated="true"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:taskAffinity=""
             android:theme="@style/LaunchTheme"
             android:windowSoftInputMode="adjustResize">
+            android:exported="true"
+            android:foregroundServiceType="dataSync"
+            tools:replace="android:exported,android:foregroundServiceType" />
 
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+
+        <!-- Disable ProfileInstaller for faster builds -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
                 android:resource="@style/NormalTheme" />
@@ -78,19 +86,11 @@
         <!-- Flutter Background Service -->
         <service
             android:name="id.flutter.flutter_background_service.BackgroundService"
-            android:exported="true"
-            android:foregroundServiceType="dataSync"
-            tools:replace="android:exported,android:foregroundServiceType" />
-
-        <meta-data
-            android:name="flutterEmbedding"
-            android:value="2" />
-
-        <!-- Disable ProfileInstaller for faster builds -->
-        <provider
-            android:name="androidx.startup.InitializationProvider"
-            android:authorities="${applicationId}.androidx-startup"
             android:exported="false"
+            android:exported="false"
+            android:exported="false"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
             tools:node="merge">
             <meta-data
                 android:name="androidx.profileinstaller.ProfileInstallerInitializer"

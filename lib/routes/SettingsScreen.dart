@@ -80,6 +80,7 @@ class _SettingsScreenState extends State<SettingsScreen>
 
         // Also sync the notification settings to SharedPreferences for consistency
         final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('notifications_enabled', _notificationsEnabled);
         await prefs.setBool('notification1Enabled', _notification1Enabled);
         await prefs.setBool('notification2Enabled', _notification2Enabled);
         await prefs.setBool('notification3Enabled', _notification3Enabled);
@@ -130,6 +131,7 @@ class _SettingsScreenState extends State<SettingsScreen>
 
     // Also save notification settings to SharedPreferences for NotificationManager access
     final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('notifications_enabled', _notificationsEnabled);
     await prefs.setBool('notification1Enabled', _notification1Enabled);
     await prefs.setBool('notification2Enabled', _notification2Enabled);
     await prefs.setBool('notification3Enabled', _notification3Enabled);
@@ -298,7 +300,10 @@ class _SettingsScreenState extends State<SettingsScreen>
                                               setState(() {
                                                 _notificationsEnabled = value;
                                               });
+                                              // Persist to file and SharedPreferences
                                               await _saveSettings();
+                                              final prefs = await SharedPreferences.getInstance();
+                                              await prefs.setBool('notifications_enabled', value);
                                               if (value) {
                                                 await NotificationManager.scheduleDailyReminders();
                                                 ScaffoldMessenger.of(context).showSnackBar(
