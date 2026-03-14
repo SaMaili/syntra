@@ -29,8 +29,10 @@ class ActiveChallengeLogic {
     const androidSettings = AndroidInitializationSettings(
       '@mipmap/ic_launcher',
     );
-    final settings = InitializationSettings(android: androidSettings);
-    await flutterLocalNotificationsPlugin!.initialize(settings);
+    final settings = InitializationSettings(
+      android: androidSettings,
+    );
+    await flutterLocalNotificationsPlugin!.initialize(settings: settings);
     // Request notification permission if running on Android
     if (Theme.of(context).platform == TargetPlatform.android) {
       await Permission.notification.request();
@@ -104,11 +106,11 @@ class ActiveChallengeLogic {
     final scheduledTime = DateTime.now().add(Duration(seconds: mainTimer));
 
     await flutterLocalNotificationsPlugin!.zonedSchedule(
-      0,
-      S.of(context).timeUpNotificationTitle,
-      S.of(context).timeUpNotificationBody,
-      tz.TZDateTime.now(tz.local).add(Duration(seconds: mainTimer)),
-      details,
+      id: 0,
+      title: S.of(context).timeUpNotificationTitle,
+      body: S.of(context).timeUpNotificationBody,
+      scheduledDate: tz.TZDateTime.now(tz.local).add(Duration(seconds: mainTimer)),
+      notificationDetails: details,
       androidScheduleMode: canSchedule
           ? AndroidScheduleMode.exactAllowWhileIdle
           : AndroidScheduleMode.inexact,
@@ -120,7 +122,7 @@ class ActiveChallengeLogic {
 
   /// Cancels the scheduled timer notification
   Future<void> cancelTimerNotification() async {
-    await flutterLocalNotificationsPlugin?.cancel(0);
+    await flutterLocalNotificationsPlugin?.cancel(id: 0);
   }
 
   /// Stores a scheduled notification time in persistent storage (Android only)

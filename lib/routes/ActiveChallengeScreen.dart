@@ -18,7 +18,6 @@ import 'package:syntra/widgets/NotSureWhatToSayDialog.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
 import '../generated/l10n.dart';
-import '../services/syntra_notification_service.dart';
 import '../static.dart';
 import 'ChallengeDoneScreen.dart';
 
@@ -63,7 +62,7 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
   // Animation controller for pulse effect.
   AnimationController? _pulseController;
   Animation<double>? _pulseAnimation;
-  
+
   // Additional animation controllers for beautiful UI
   late AnimationController _fadeController;
   late AnimationController _scaleController;
@@ -88,7 +87,7 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
     tz.initializeTimeZones();
     _startMainTimer();
     _startAbortLockTimer();
-    
+
     // Set up animations for beautiful UI
     _fadeController = AnimationController(
       duration: const Duration(milliseconds: 800),
@@ -102,7 +101,7 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-    
+
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _fadeController, curve: Curves.easeInOut),
     );
@@ -112,7 +111,7 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
     _timerPulseAnimation = Tween<double>(begin: 1.0, end: 1.02).animate(
       CurvedAnimation(parent: _timerPulseController, curve: Curves.easeInOut),
     );
-    
+
     // Set up pulse animation for the DONE button.
     _pulseController = AnimationController(
       vsync: this,
@@ -152,34 +151,43 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
       });
 
       // If we had scheduled a background notification and we're back in foreground before it fired, cancel it
-      if (_bgScheduledNotificationId != null && DateTime.now().isBefore(_endTime)) {
+      if (_bgScheduledNotificationId != null &&
+          DateTime.now().isBefore(_endTime)) {
         NotificationManager.cancelNotification(_bgScheduledNotificationId!);
         _bgScheduledNotificationId = null;
       }
     } else if (state == AppLifecycleState.paused) {
       // App goes to background: schedule a notification for the challenge end if not scheduled yet
-      if (_bgScheduledNotificationId == null && DateTime.now().isBefore(_endTime)) {
+      if (_bgScheduledNotificationId == null &&
+          DateTime.now().isBefore(_endTime)) {
         final scheduledTime = _endTime;
         try {
-          NotificationManager
-              .sendNotification(
+          NotificationManager.sendNotification(
                 channelId: 'challenge_timer',
                 channelName: 'Challenge Timer',
                 channelDescription: 'Notification for challenge timer',
                 title: S.of(context).challengeTimerCompleteTitle,
-                body: S.of(context).challengeTimerCompleteBody(widget.challenge.title),
+                body: S
+                    .of(context)
+                    .challengeTimerCompleteBody(widget.challenge.title),
                 vibration: true,
                 scheduledTime: scheduledTime,
               )
               .then((id) {
                 _bgScheduledNotificationId = id;
-                print('📲 Scheduled background challenge-end notification: ID=$id at $scheduledTime');
+                print(
+                  '📲 Scheduled background challenge-end notification: ID=$id at $scheduledTime',
+                );
               })
               .catchError((e) {
-                print('❌ Failed to schedule background challenge-end notification: $e');
+                print(
+                  '❌ Failed to schedule background challenge-end notification: $e',
+                );
               });
         } catch (e) {
-          print('❌ Failed to schedule background challenge-end notification: $e');
+          print(
+            '❌ Failed to schedule background challenge-end notification: $e',
+          );
         }
       }
     }
@@ -193,9 +201,7 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
     print("Challenge: ${widget.challenge.title}");
     print("Timer duration: $mainTimer seconds");
     print("Current time: ${DateTime.now()}");
-    print(
-      "Notification target time: ${_endTime}",
-    );
+    print("Notification target time: ${_endTime}");
 
     // Do NOT schedule here to avoid duplicates; we schedule only when app goes to background.
 
@@ -216,12 +222,16 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
         // Foreground finish: show immediate notification and cancel any background schedule
         try {
           if (_bgScheduledNotificationId != null) {
-            await NotificationManager.cancelNotification(_bgScheduledNotificationId!);
+            await NotificationManager.cancelNotification(
+              _bgScheduledNotificationId!,
+            );
             _bgScheduledNotificationId = null;
           }
           await NotificationManager.sendImmediateNotification(
             title: S.of(context).challengeTimerCompleteTitle,
-            body: S.of(context).challengeTimerCompleteBody(widget.challenge.title),
+            body: S
+                .of(context)
+                .challengeTimerCompleteBody(widget.challenge.title),
             data: {'type': 'challenge_timer_complete'},
           );
           print('📣 Immediate challenge-end notification shown');
@@ -267,7 +277,9 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
     if (result != null && mounted) {
       // Cancel any pending background challenge-end notification on manual finish
       if (_bgScheduledNotificationId != null) {
-        await NotificationManager.cancelNotification(_bgScheduledNotificationId!);
+        await NotificationManager.cancelNotification(
+          _bgScheduledNotificationId!,
+        );
         _bgScheduledNotificationId = null;
       }
       Navigator.of(context).popUntil((route) => route.isFirst);
@@ -283,7 +295,7 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
     // Whether main timer is over.
     final mainTimeOver = mainTimer <= 0;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     // Beautiful gradient backgrounds similar to StatisticsScreen
     final bgGradient = isDark
         ? const LinearGradient(
@@ -296,13 +308,13 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           );
-    
+
     final cardColor = isDark
         ? Colors.grey[900]!.withValues(alpha: 0.95)
         : Colors.white.withValues(alpha: 0.95);
     final titleColor = isDark ? Colors.pinkAccent : AppStatic.grape;
     final timerColor = isDark ? Colors.cyanAccent : AppStatic.marianBlue;
-    
+
     return PopScope(
       canPop: false,
       child: Scaffold(
@@ -331,7 +343,13 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                       return Transform.scale(
                         scale: _scaleAnimation.value,
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0, top: 60.0), // Reduced top padding
+                          padding: const EdgeInsets.only(
+                            left: 20.0,
+                            right: 20.0,
+                            bottom: 20.0,
+                            top: 60.0,
+                          ),
+                          // Reduced top padding
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
@@ -344,28 +362,48 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                                       scale: _timerPulseAnimation.value,
                                       child: Container(
                                         width: double.infinity,
-                                        padding: EdgeInsets.all(16), // Reduced from 28
+                                        padding: EdgeInsets.all(16),
+                                        // Reduced from 28
                                         decoration: BoxDecoration(
                                           color: cardColor,
-                                          borderRadius: BorderRadius.circular(20), // Reduced from 28
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ), // Reduced from 28
                                           boxShadow: [
                                             BoxShadow(
-                                              color: timerColor.withValues(alpha: 0.2), // Reduced shadow
+                                              color: timerColor.withValues(
+                                                alpha: 0.2,
+                                              ), // Reduced shadow
                                               blurRadius: 15, // Reduced from 25
                                               spreadRadius: 1, // Reduced from 2
-                                              offset: Offset(0, 6), // Reduced from 12
+                                              offset: Offset(
+                                                0,
+                                                6,
+                                              ), // Reduced from 12
                                             ),
                                             BoxShadow(
-                                              color: Colors.black.withValues(alpha: 0.1),
+                                              color: Colors.black.withValues(
+                                                alpha: 0.1,
+                                              ),
                                               blurRadius: 10, // Reduced from 15
-                                              offset: Offset(0, 4), // Reduced from 8
+                                              offset: Offset(
+                                                0,
+                                                4,
+                                              ), // Reduced from 8
                                             ),
                                           ],
                                         ),
-                                        child: Row( // Changed from Column to Row for more compact layout
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                        child: Row(
+                                          // Changed from Column to Row for more compact layout
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
                                           children: [
-                                            Icon(Icons.access_time, color: timerColor, size: 24), // Reduced from 28
+                                            Icon(
+                                              Icons.access_time,
+                                              color: timerColor,
+                                              size: 24,
+                                            ),
+                                            // Reduced from 28
                                             SizedBox(width: 12),
                                             Text(
                                               S.of(context).timeRemaining,
@@ -377,23 +415,36 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                                             ),
                                             SizedBox(width: 16),
                                             Container(
-                                              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8), // Reduced padding
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 16,
+                                                vertical: 8,
+                                              ),
+                                              // Reduced padding
                                               decoration: BoxDecoration(
                                                 gradient: LinearGradient(
                                                   colors: [
-                                                    timerColor.withValues(alpha: 0.1),
-                                                    timerColor.withValues(alpha: 0.05),
+                                                    timerColor.withValues(
+                                                      alpha: 0.1,
+                                                    ),
+                                                    timerColor.withValues(
+                                                      alpha: 0.05,
+                                                    ),
                                                   ],
                                                 ),
-                                                borderRadius: BorderRadius.circular(15), // Reduced from 20
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                      15,
+                                                    ), // Reduced from 20
                                               ),
                                               child: Text(
                                                 _formatTime(mainTimer),
                                                 style: TextStyle(
-                                                  fontSize: 28, // Reduced from 42
+                                                  fontSize: 28,
+                                                  // Reduced from 42
                                                   fontWeight: FontWeight.bold,
                                                   color: timerColor,
-                                                  letterSpacing: 1, // Reduced from 2
+                                                  letterSpacing:
+                                                      1, // Reduced from 2
                                                 ),
                                               ),
                                             ),
@@ -405,7 +456,7 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                                 ),
                                 SizedBox(height: 16), // Reduced from 24
                               ],
-                              
+
                               // Challenge card with enhanced styling
                               Expanded(
                                 child: Container(
@@ -413,19 +464,24 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                                     borderRadius: BorderRadius.circular(28),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: titleColor.withValues(alpha: 0.2),
+                                        color: titleColor.withValues(
+                                          alpha: 0.2,
+                                        ),
                                         blurRadius: 25,
                                         spreadRadius: 2,
                                         offset: Offset(0, 12),
                                       ),
                                     ],
                                   ),
-                                  child: ChallengeCard(challenge: widget.challenge, showXP: false),
+                                  child: ChallengeCard(
+                                    challenge: widget.challenge,
+                                    showXP: false,
+                                  ),
                                 ),
                               ),
-                              
+
                               SizedBox(height: 24),
-                              
+
                               // Help button with beautiful styling
                               if (!mainTimeOver) ...[
                                 Container(
@@ -436,14 +492,18 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                                     gradient: LinearGradient(
                                       colors: [
                                         Colors.orange.withValues(alpha: 0.8),
-                                        Colors.deepOrange.withValues(alpha: 0.8),
+                                        Colors.deepOrange.withValues(
+                                          alpha: 0.8,
+                                        ),
                                       ],
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.orange.withValues(alpha: 0.3),
+                                        color: Colors.orange.withValues(
+                                          alpha: 0.3,
+                                        ),
                                         blurRadius: 20,
                                         spreadRadius: 1,
                                         offset: Offset(0, 8),
@@ -451,7 +511,11 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                                     ],
                                   ),
                                   child: ElevatedButton.icon(
-                                    icon: Icon(Icons.help_outline, size: 24, color: Colors.white),
+                                    icon: Icon(
+                                      Icons.help_outline,
+                                      size: 24,
+                                      color: Colors.white,
+                                    ),
                                     label: Text(
                                       S.of(context).notSureWhatToSay,
                                       style: TextStyle(
@@ -470,16 +534,19 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                                     onPressed: () {
                                       showDialog(
                                         context: context,
-                                        builder: (context) => NotSureWhatToSayDialog(
-                                          text: widget.challenge.notSureWhatToSay,
-                                        ),
+                                        builder: (context) =>
+                                            NotSureWhatToSayDialog(
+                                              text: widget
+                                                  .challenge
+                                                  .notSureWhatToSay,
+                                            ),
                                       );
                                     },
                                   ),
                                 ),
                                 SizedBox(height: 24),
                               ],
-                              
+
                               // Done button with enhanced styling
                               Container(
                                 width: double.infinity,
@@ -489,25 +556,40 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                                   gradient: LinearGradient(
                                     colors: mainTimeOver
                                         ? [
-                                            (isDark ? Colors.greenAccent[400]! : const Color(0xFF39FF14)),
-                                            (isDark ? Colors.green[600]! : Colors.green[700]!),
+                                            (isDark
+                                                ? Colors.greenAccent[400]!
+                                                : const Color(0xFF39FF14)),
+                                            (isDark
+                                                ? Colors.green[600]!
+                                                : Colors.green[700]!),
                                           ]
                                         : over
-                                            ? [
-                                                (isDark ? Colors.green[700]! : Colors.green),
-                                                (isDark ? Colors.green[800]! : Colors.green[800]!),
-                                              ]
-                                            : [
-                                                (isDark ? Colors.grey[700]! : Colors.grey[400]!),
-                                                (isDark ? Colors.grey[800]! : Colors.grey[500]!),
-                                              ],
+                                        ? [
+                                            (isDark
+                                                ? Colors.green[700]!
+                                                : Colors.green),
+                                            (isDark
+                                                ? Colors.green[800]!
+                                                : Colors.green[800]!),
+                                          ]
+                                        : [
+                                            (isDark
+                                                ? Colors.grey[700]!
+                                                : Colors.grey[400]!),
+                                            (isDark
+                                                ? Colors.grey[800]!
+                                                : Colors.grey[500]!),
+                                          ],
                                     begin: Alignment.topLeft,
                                     end: Alignment.bottomRight,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
                                       color: mainTimeOver
-                                          ? (isDark ? Colors.greenAccent : const Color(0xFF39FF14)).withValues(alpha: 0.4)
+                                          ? (isDark
+                                                    ? Colors.greenAccent
+                                                    : const Color(0xFF39FF14))
+                                                .withValues(alpha: 0.4)
                                           : Colors.black.withValues(alpha: 0.2),
                                       blurRadius: mainTimeOver ? 25 : 15,
                                       spreadRadius: mainTimeOver ? 2 : 1,
@@ -522,17 +604,22 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                                           onPressed: over
                                               ? () async {
                                                   _isDone = true;
-                                                  if (_scheduledNotificationId != null) {
+                                                  if (_scheduledNotificationId !=
+                                                      null) {
                                                     await NotificationManager.cancelNotification(
                                                       _scheduledNotificationId!,
                                                     );
                                                   }
                                                   final player = AudioPlayer();
                                                   await player.play(
-                                                    AssetSource('yipee-45360.mp3'),
+                                                    AssetSource(
+                                                      'yipee-45360.mp3',
+                                                    ),
                                                   );
                                                   await Future.delayed(
-                                                    const Duration(milliseconds: 600),
+                                                    const Duration(
+                                                      milliseconds: 600,
+                                                    ),
                                                   );
                                                   await _finishChallenge(0.8);
                                                 }
@@ -542,13 +629,19 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                                             shadowColor: Colors.transparent,
                                             foregroundColor: Colors.white,
                                             shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(20),
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
                                             ),
                                           ),
                                           child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
-                                              Icon(Icons.flash_on, color: Colors.white, size: 32),
+                                              Icon(
+                                                Icons.flash_on,
+                                                color: Colors.white,
+                                                size: 32,
+                                              ),
                                               SizedBox(width: 12),
                                               Text(
                                                 S.of(context).doneExcited,
@@ -565,15 +658,22 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                                         onPressed: over
                                             ? () async {
                                                 _isDone = true;
-                                                if (_scheduledNotificationId != null) {
+                                                if (_scheduledNotificationId !=
+                                                    null) {
                                                   await NotificationManager.cancelNotification(
                                                     _scheduledNotificationId!,
                                                   );
                                                 }
                                                 final player = AudioPlayer();
-                                                await player.play(AssetSource('yipee-45360.mp3'));
+                                                await player.play(
+                                                  AssetSource(
+                                                    'yipee-45360.mp3',
+                                                  ),
+                                                );
                                                 await Future.delayed(
-                                                  const Duration(milliseconds: 600),
+                                                  const Duration(
+                                                    milliseconds: 600,
+                                                  ),
                                                 );
                                                 await _finishChallenge(1);
                                               }
@@ -583,24 +683,32 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                                           shadowColor: Colors.transparent,
                                           foregroundColor: Colors.white,
                                           shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(20),
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
                                           ),
                                         ),
                                         child: over
                                             ? Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
                                                 children: [
                                                   Text(
                                                     S.of(context).doneExcited,
                                                     style: TextStyle(
                                                       fontSize: 22,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
                                                   ),
                                                 ],
                                               )
                                             : Text(
-                                                S.of(context).stillSecondsLeft(abortLockTimer.toString()),
+                                                S
+                                                    .of(context)
+                                                    .stillSecondsLeft(
+                                                      abortLockTimer.toString(),
+                                                    ),
                                                 style: TextStyle(
                                                   fontSize: 18,
                                                   fontWeight: FontWeight.bold,
@@ -608,9 +716,9 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                                               ),
                                       ),
                               ),
-                              
+
                               SizedBox(height: 16),
-                              
+
                               // Abort button with subtle styling
                               if (over)
                                 Container(
@@ -618,7 +726,9 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                                     borderRadius: BorderRadius.circular(15),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.red.withValues(alpha: mainTimeOver ? 0.2 : 0.1),
+                                        color: Colors.red.withValues(
+                                          alpha: mainTimeOver ? 0.2 : 0.1,
+                                        ),
                                         blurRadius: 10,
                                         offset: Offset(0, 4),
                                       ),
@@ -628,16 +738,22 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                                     onPressed: () async {
                                       final player = AudioPlayer();
                                       await player.play(
-                                        AssetSource('error-call-to-attention-129258.mp3'),
+                                        AssetSource(
+                                          'error-call-to-attention-129258.mp3',
+                                        ),
                                       );
-                                      await Future.delayed(const Duration(milliseconds: 600));
+                                      await Future.delayed(
+                                        const Duration(milliseconds: 600),
+                                      );
                                       await _finishChallenge(-0.5);
                                     },
                                     style: TextButton.styleFrom(
                                       foregroundColor: mainTimeOver
                                           ? Colors.amberAccent.shade700
                                           : Colors.red.shade400,
-                                      backgroundColor: Colors.white.withValues(alpha: 0.1),
+                                      backgroundColor: Colors.white.withValues(
+                                        alpha: 0.1,
+                                      ),
                                       padding: EdgeInsets.symmetric(
                                         vertical: mainTimeOver ? 12 : 8,
                                         horizontal: 24,
@@ -650,12 +766,14 @@ class _ActiveChallengeScreenState extends State<ActiveChallengeScreen>
                                       S.of(context).notToday,
                                       style: TextStyle(
                                         fontSize: mainTimeOver ? 18 : 14,
-                                        fontWeight: mainTimeOver ? FontWeight.bold : FontWeight.normal,
+                                        fontWeight: mainTimeOver
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
                                       ),
                                     ),
                                   ),
                                 ),
-                              
+
                               SizedBox(height: 8),
                             ],
                           ),

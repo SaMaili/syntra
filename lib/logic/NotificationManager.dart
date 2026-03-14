@@ -1,8 +1,5 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -121,7 +118,7 @@ class NotificationManager {
           iOS: initializationSettingsIos,
           macOS: initializationSettingsIos,
         );
-    await _notificationsPlugin.initialize(initializationSettings);
+    await _notificationsPlugin.initialize(settings: initializationSettings);
 
     // Create notification channels for Android
     await _createNotificationChannels();
@@ -271,7 +268,7 @@ class NotificationManager {
           int.parse(timeParts[1]),
         );
         scheduledTimes.add(scheduledTime);
-        print('📅 Added default notification time: ${timeString}');
+        print('📅 Added default notification time: $timeString');
       }
 
       return scheduledTimes;
@@ -415,7 +412,7 @@ class NotificationManager {
 
       if (dayTimes.isNotEmpty) {
         final timeStrings = dayTimes.map((t) => '${t.hour}:${t.minute.toString().padLeft(2, '0')}').join(', ');
-        print('📅 Added day +${dayOffset} notifications: $timeStrings');
+        print('📅 Added day +$dayOffset notifications: $timeStrings');
       }
     }
 
