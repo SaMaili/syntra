@@ -29,7 +29,7 @@
   "languageSubtitle": "Wähle deine bevorzugte Sprache",
   "about": "Über",
   "aboutSubtitle": "App-Version und Informationen",
-  "debugDeleteTooltip": "Debug L��schen",
+  "debugDeleteTooltip": "Debug Löschen",
   "nextMotivation1": "Nächste Motivation 1: {time}",
   "@nextMotivation1": {
     "placeholders": {
@@ -71,6 +71,7 @@
   "congratulations": "Glückwunsch! Du hast die Challenge abgeschlossen.",
   "tooBad": "Schade! Du hast die Challenge abgebrochen.",
   "auraPoints": "Aura",
+  "dailyBonus": "Tages-Bonus",
   "howDidYouFeel": "Wie hast du dich gefühlt?",
   "howPerceivedQuestion": "Wie denkst du, wurdest du wahrgenommen?",
   "notes": "Notizen:",
@@ -159,6 +160,14 @@
   "motivationMessage7": "Bist du draußen? Dann solltest du eine Challenge machen!",
   "motivationMessage8": "Es dauert nur 5 Minuten, eine Challenge zu machen!\nWorauf wartest du?",
   "getNewMotivation": "Neue Motivation erhalten",
+  "quote1": "\"Die einzige Grenze für die Verwirklichung von morgen werden unsere Zweifel von heute sein.\"",
+  "quote2": "\"Mut ist nicht die Abwesenheit von Angst, sondern der Triumph darüber.\"",
+  "quote3": "\"Tu jeden Tag eine Sache, die dir Angst macht.\"",
+  "quote4": "\"Das Leben beginnt am Ende deiner Komfortzone.\"",
+  "quote5": "\"Die Höhle, die du fürchtest zu betreten, birgt den Schatz, den du suchst.\"",
+  "quote6": "\"Was würdest du versuchen, wenn du wüsstest, dass du nicht scheitern kannst?\"",
+  "quote7": "\"Alles, was du dir je gewünscht hast, ist auf der anderen Seite der Angst.\"",
+  "quote8": "\"Du gewinnst Stärke, Mut und Selbstvertrauen durch jede Erfahrung, in der du wirklich innehältst und der Angst ins Gesicht schaust.\"",
   "allowExactAlarms": "Genaue Alarme zulassen",
   "exactAlarmsDescription": "Um genaue Challenge-Timer zu gewährleisten, erlaube bitte genaue Alarme in deinen Geräteeinstellungen.",
   "goToSettings": "Zu den Einstellungen",
@@ -203,5 +212,230 @@
   "newChallenge": "Neu",
   "searchForChallenge": "Nach einer Challenge suchen...",
   "challengeDetails": "Challenge-Details",
-  "enterYourNotes": "Gib hier deine Notizen ein..."
+  "enterYourNotes": "Gib hier deine Notizen ein...",
+  "exploreAllChallenges": "Alle Challenges erkunden",
+  "noEntriesYet": "Noch keine Einträge",
+  "completeChallengesToSee": "Schließe ein paar Challenges ab, um sie hier zu sehen!",
+  "challengeNumber": "Challenge #{id}",
+  "@challengeNumber": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "details": "Details",
+  "rewardFactor": "Belohnungsfaktor",
+  "howDidYouFeelQuestion": "Wie hast du dich gefühlt?",
+  "howPerceivedByOthers": "Wie wurdest du wahrgenommen?",
+  "deleteEntryConfirm": "Möchtest du diesen Logbuch-Eintrag wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+  "statusSuccess": "Geschafft",
+  "statusTried": "Versucht",
+  "unknown": "Unbekannt",
+  "yourProgress": "Dein Fortschritt",
+  "storyFirstChallenge": "Deine Geschichte beginnt mit der ersten Challenge, die du abschließt.",
+  "storyOnce": "Du bist einmal aus deiner Komfortzone herausgetreten. Das erfordert Mut.",
+  "storyNTimes": "Du bist {count} Mal aus deiner Komfortzone herausgetreten.",
+  "@storyNTimes": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "storyStreakMany": "Du bist auf einem {days}-Tage-Streak. Bleib dran!",
+  "@storyStreakMany": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+  "storyStreakOne": "Tag 1 eines neuen Streaks. Jeder große Streak hat hier angefangen.",
+  "storyXpKilo": "{kilo}k XP verdient — du baust etwas Echtes auf.",
+  "@storyXpKilo": {
+    "placeholders": { "kilo": { "type": "String" } }
+  },
+  "storyXpSmall": "{xp} XP durch echtes Handeln verdient.",
+  "@storyXpSmall": {
+    "placeholders": { "xp": { "type": "int" } }
+  },
+  "challengesThisWeek": "Challenges diese Woche",
+  "chartExplanation": "Jeder Balken ist ein Tag. Grün = geschafft, orange = versucht.",
+  "legendCompleted": "Geschafft",
+  "legendTried": "Versucht",
+  "xpEarnedThisWeek": "XP diese Woche",
+  "activity": "Aktivität",
+  "activitySubtitle": "12 Wochen — jedes Quadrat ist ein Tag",
+  "less": "Weniger",
+  "more": "Mehr",
+  "totalXp": "Gesamt-XP",
+  "dayStreak": "Tage-Streak",
+  "timesTried": "Mal versucht",
+  "minutesBrave": "Min. mutig",
+  "doneToday": "Heute geschafft",
+  "storyMinutesBrave": "{minutes} Minuten mutig gewesen.",
+  "@storyMinutesBrave": {
+    "placeholders": { "minutes": { "type": "int" } }
+  },
+  "mon": "Mo",
+  "tue": "Di",
+  "wed": "Mi",
+  "thu": "Do",
+  "fri": "Fr",
+  "sat": "Sa",
+  "sun": "So",
+  "greetingLongTime": "Lange nicht gesehen. Keine Sorge — dein Fortschritt ist noch da.",
+  "greetingFresh": "Willkommen zurück. Bereit für einen neuen Start?",
+  "greetingStreak": "Tag {streak} — bleib dran.",
+  "@greetingStreak": {
+    "placeholders": { "streak": { "type": "int" } }
+  },
+  "todaysMissions": "Heutige Missionen",
+  "threeChallengesTodo": "Drei Challenges. Beliebige Reihenfolge. Alle zählen.",
+  "start": "Start",
+  "keepGoing": "Weiter so",
+  "letsGoButton": "Los geht's",
+  "aboutTheApp": "Über die App",
+  "aboutDescription": "Syntra ist eine innovative App, die Nutzern hilft, soziale Herausforderungen zu meistern und ihre Ziele zu erreichen.",
+  "developerLabel": "Entwickler: SaMaili",
+  "githubLabel": "GitHub: ",
+  "couldNotOpenLink": "Link konnte nicht geöffnet werden",
+  "allRightsReserved": "© 2025 Syntra. Alle Rechte vorbehalten.",
+  "filterAll": "Alle",
+  "enableNotifications": "Benachrichtigungen aktivieren",
+  "forBestExperience": "Für das beste Erlebnis",
+  "notificationPermissionDesc": "Syntra benötigt Benachrichtigungsrechte, um dich an deine Challenges zu erinnern und wichtige Updates zu liefern.",
+  "basicNotifications": "Basis-Benachrichtigungen",
+  "showReminderNotifications": "Erinnerungsbenachrichtigungen anzeigen",
+  "exactTiming": "Genaue Zeitplanung",
+  "deliverAtPreciseTimes": "Benachrichtigungen zur genauen Zeit zustellen",
+  "required": "Erforderlich",
+  "allSet": "Alles bereit!",
+  "skipForNow": "Erstmal überspringen",
+  "wantReminders": "Sollen wir dich erinnern?",
+  "reminderExplanation": "Wir senden dir einen Impuls am Tag — du wählst wann. Kein Spam. Du kannst es jederzeit in den Einstellungen abschalten.",
+  "enableReminders": "Erinnerungen aktivieren",
+  "rememberOnMyOwn": "Ich erinnere mich selbst →",
+  "heresYourFirst": "Hier ist deine erste.",
+  "firstChallengeDesc": "Dauert etwa 2 Minuten. Oder heb sie für später auf.",
+  "startNow": "Jetzt starten",
+  "doItLater": "Später machen",
+
+  "streakMilestoneTitle": "{days}-Tage-Serie!",
+  "@streakMilestoneTitle": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "streakMilestone3": "Drei Tage am Stück. Du baust eine Gewohnheit auf.",
+  "streakMilestone7": "Eine ganze Woche! Deine Komfortzone ist gerade gewachsen.",
+  "streakMilestone14": "Zwei Wochen durchgezogen. Du bist nicht mehr die gleiche Person wie vor 14 Tagen.",
+  "streakMilestone30": "30 Tage. Ein ganzer Monat dranbleiben. Das ist selten. Das ist stark.",
+  "streakMilestone60": "60 Tage. Die meisten geben nach einer Woche auf. Du nicht.",
+  "streakMilestone100": "100 Tage. Du hast etwas Außergewöhnliches aufgebaut. Respekt.",
+  "streakMilestoneGeneric": "Du bist seit {days} Tagen dabei. Weiter so.",
+  "@streakMilestoneGeneric": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "keepItUp": "Weiter so",
+
+  "skip": "Überspringen",
+
+  "onboarding1Headline": "Soziale Sicherheit ist eine Fähigkeit.\nFähigkeiten kann man trainieren.",
+  "onboarding1Subtext": "Syntra gibt dir jeden Tag kleine, reale Herausforderungen zum Üben. Keine Kurse. Keine Skripte. Nur du, draußen in der Welt.",
+  "onboarding1Button": "So funktioniert's →",
+
+  "onboarding2Headline": "Eine Challenge nach der anderen.",
+  "onboarding2Subtext": "Jede ist so gestaltet, dass sie dich leicht aus deiner Komfortzone schiebt. Du entscheidest, wie weit.",
+  "onboarding2Step1": "Wähle eine Challenge",
+  "onboarding2Step2": "Mach sie — der Timer hilft",
+  "onboarding2Step3": "Protokolliere dein Ergebnis",
+  "onboarding2Button": "Verstanden →",
+
+  "onboarding3Headline": "Es ist okay, nervös zu sein.\nDarum geht es ja.",
+  "onboarding3Subtext": "Jede Challenge in dieser App ist sicher. Nichts Extremes, nichts Peinliches. Das unangenehme Gefühl ist genau das, was mit der Zeit Selbstvertrauen aufbaut.\n\nDie meisten fühlen es. Keiner stirbt daran.",
+  "onboarding3Button": "Ich bin dabei →",
+
+  "onboarding4Headline": "Wo stehst du gerade?",
+  "onboarding4Subtext": "Wir zeigen dir Challenges, die zu deinem aktuellen Stand passen.",
+  "onboarding4Level1Title": "Ganz am Anfang",
+  "onboarding4Level1Subtitle": "Soziale Situationen fühlen sich oft unangenehm an",
+  "onboarding4Level2Title": "Etwas Erfahrung",
+  "onboarding4Level2Subtitle": "Ich versuche es, aber manchmal blockiere ich",
+  "onboarding4Level3Title": "Bereit für mehr",
+  "onboarding4Level3Subtitle": "Ich will mich steigern, nicht bei null anfangen",
+
+  "onboarding5Headline": "5 Minuten am Tag reichen.",
+  "onboarding5Subtext": "Die Wissenschaft zur Gewohnheitsbildung sagt: Regelmäßigkeit ist wichtiger als Intensität. Eine kleine Sache, jeden Tag, verändert dein Gehirn. Wortwörtlich.",
+  "onboarding5Button": "Erinnerung einstellen →",
+
+  "coachMsg1": "Du hast gerade etwas getan, was die meisten nie versuchen. Das erfordert Mut.",
+  "coachMsg2": "Jedes Mal wird es 1% leichter. Wirklich.",
+  "coachMsg3": "Dein Nervensystem hat gerade gelernt, dass du überlebt hast. Das zählt.",
+  "coachMsg4": "Wachstum passiert außerhalb der Komfortzone. Du warst gerade dort.",
+  "coachMsg5": "Unbeholfenheit ist nur Mut in den falschen Schuhen. Du warst da.",
+  "coachMsg6": "Eine Aktion nach der anderen. Du baust etwas Echtes auf.",
+  "coachMsg7": "Die Version von dir vor sechs Monaten wäre stolz.",
+
+  "failureCopy": "Die war schwer. Aufzutauchen und es zu versuchen — darum geht's.",
+  "failureNotesHint": "Was ist passiert? Was würdest du anders machen? (Auch ein einziges Wort ist ein Gewinn.)",
+
+  "levelUnlocked": "Level {level} freigeschaltet!",
+  "@levelUnlocked": {
+    "placeholders": {
+      "level": {"type": "int"}
+    }
+  },
+  "newChallengesAvailable": "Neue Challenges sind jetzt in deinem Katalog verfügbar.",
+
+  "primingHeadlineFlirt": "Selbstbewusstsein ist attraktiv.",
+  "primingHeadlineGroup": "Du bist dabei, dich mit jemandem echtem zu verbinden.",
+  "primingHeadlineQuick": "Ein kleiner Schritt. Mehr nicht.",
+  "primingHeadlineHard": "Das hier erfordert Mut.\nDu hast ihn.",
+  "primingHeadlineDefault": "Atme durch.\nDu schaffst das.",
+  "primingSubFlirt": "Flirten ist einfach spielerische Kommunikation. Das Ergebnis ist egal — Auftauchen zählt.",
+  "primingSubGroup": "Die meisten Menschen sind freundlicher als du erwartest. Eine Begegnung kann deinen ganzen Tag verändern.",
+  "primingSubQuick": "Unter einer Minute Aktion. Das Unbehagen verfliegt schneller als du denkst.",
+  "primingSubHard": "Die Challenges, die dich am meisten einschüchtern, lassen dich am meisten wachsen. Das hier ist eine davon.",
+  "primingSubDefault": "Jedes Mal wird es ein bisschen leichter. Dein zukünftiges Ich ist dir schon dankbar.",
+  "imReady": "Ich bin bereit",
+  "notNow": "Nicht jetzt",
+
+  "comfortZone": "Komfortzone",
+  "growthZone": "Wachstumszone",
+  "boldMove": "Mutiger Schritt",
+  "detailsLabel": "Details",
+  "lessLabel": "Weniger",
+
+  "comfortZoneLevel": "Komfortzonen-Level",
+  "levelN": "Level {level}",
+  "@levelN": {
+    "placeholders": { "level": { "type": "int" } }
+  },
+  "completionsToLevel": "{done} / {needed} Abschlüsse bis Level {next}",
+  "@completionsToLevel": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "needed": { "type": "int" },
+      "next": { "type": "int" }
+    }
+  },
+  "reachedTheTop": "Du hast die Spitze erreicht. Mach weiter.",
+  "setDifficultyManually": "Schwierigkeit manuell setzen",
+  "levelDownTitle": "Einen Schritt zurück?",
+  "levelDownBody": "Du kannst nur manuell runterleveln — wieder hochzukommen erfordert erneut Abschlüsse zu sammeln.",
+  "levelDownConfirm": "Ja, Schritt zurück",
+  "levelDownCancel": "Bleibe wo ich bin",
+
+  "challengeInformation": "Challenge-Information",
+  "allPermissionsGranted": "Alle Berechtigungen erfolgreich erteilt!",
+  "somePermissionsMissing": "Einige Berechtigungen fehlen noch. Bitte aktiviere sie manuell.",
+  "flirtTagExplanation": "💘 Flirt-Challenges konzentrieren sich auf spielerische, soziale Interaktionen, um romantisches Selbstvertrauen aufzubauen.",
+
+  "filterTitle": "Filter",
+  "filterReset": "Zurücksetzen",
+  "filterFlirtLabel": "Flirt-Challenges",
+  "filterFlirtOnly": "Nur Flirt",
+  "filterFlirtExclude": "Kein Flirt",
+  "filterNewOnly": "Nur neue Challenges",
+  "filterNewOnlySubtitle": "Bereits abgeschlossene Challenges ausblenden",
+  "filterSortBy": "Sortieren nach",
+  "filterSortPopular": "Beliebt",
+  "filterSortEasiest": "Einfachste zuerst",
+  "giveMeOneTooltip": "Gib mir eine!"
 }

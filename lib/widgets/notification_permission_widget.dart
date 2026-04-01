@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import '../theme/app_theme.dart';
+import 'syntra_button.dart';
+import '../generated/l10n.dart';
 import '../services/syntra_notification_service.dart';
 
-/**
- * Professional-grade Permission UI Widget
- * Provides seamless permission requests like MyFitnessPal, Todoist, Samsung Health
- */
+/// Professional-grade Permission UI Widget.
 class NotificationPermissionWidget extends StatefulWidget {
   final Function(bool hasAllPermissions)? onPermissionResult;
   final bool showAsDialog;
@@ -13,15 +12,15 @@ class NotificationPermissionWidget extends StatefulWidget {
   final String? customDescription;
 
   const NotificationPermissionWidget({
-    Key? key,
+    super.key,
     this.onPermissionResult,
     this.showAsDialog = false,
     this.customTitle,
     this.customDescription,
-  }) : super(key: key);
+  });
 
   @override
-  _NotificationPermissionWidgetState createState() => _NotificationPermissionWidgetState();
+  State<NotificationPermissionWidget> createState() => _NotificationPermissionWidgetState();
 
   /// Static method to show permission dialog like professional apps
   static Future<bool> showPermissionDialog(BuildContext context) async {
@@ -74,7 +73,7 @@ class _NotificationPermissionWidgetState extends State<NotificationPermissionWid
 
       if (status.hasAllPermissions) {
         widget.onPermissionResult?.call(true);
-        if (widget.showAsDialog) {
+        if (widget.showAsDialog && mounted) {
           Navigator.of(context).pop(true);
         }
       }
@@ -91,6 +90,7 @@ class _NotificationPermissionWidgetState extends State<NotificationPermissionWid
 
     try {
       final status = await SyntraNotificationService.instance.requestPermissions();
+      if (!mounted) return;
       setState(() {
         _permissionStatus = status;
         _isRequestingPermission = false;
@@ -99,16 +99,16 @@ class _NotificationPermissionWidgetState extends State<NotificationPermissionWid
       widget.onPermissionResult?.call(status.hasAllPermissions);
 
       if (status.hasAllPermissions) {
-        _showSuccessSnackBar('All permissions granted successfully!');
+        _showSuccessSnackBar(S.of(context).allPermissionsGranted);
         if (widget.showAsDialog) {
           await Future.delayed(const Duration(milliseconds: 500));
-          Navigator.of(context).pop(true);
+          if (mounted) Navigator.of(context).pop(true);
         }
       } else {
-        _showWarningSnackBar('Some permissions are still missing. Please enable them manually.');
+        _showWarningSnackBar(S.of(context).somePermissionsMissing);
       }
     } catch (e) {
-      setState(() => _isRequestingPermission = false);
+      if (mounted) setState(() => _isRequestingPermission = false);
       _showErrorSnackBar('Failed to request permissions: $e');
     }
   }
@@ -172,7 +172,7 @@ class _NotificationPermissionWidgetState extends State<NotificationPermissionWid
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor.withOpacity(0.1),
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
@@ -187,14 +187,14 @@ class _NotificationPermissionWidgetState extends State<NotificationPermissionWid
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.customTitle ?? 'Enable Notifications',
+                    widget.customTitle ?? S.of(context).enableNotifications,
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'For the best experience',
+                    S.of(context).forBestExperience,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Colors.grey[600],
                     ),
@@ -207,7 +207,7 @@ class _NotificationPermissionWidgetState extends State<NotificationPermissionWid
         const SizedBox(height: 16),
         Text(
           widget.customDescription ??
-          'Syntra needs notification permissions to remind you about your challenges and deliver important updates.',
+          S.of(context).notificationPermissionDesc,
           style: Theme.of(context).textTheme.bodyLarge,
         ),
       ],
@@ -229,16 +229,16 @@ class _NotificationPermissionWidgetState extends State<NotificationPermissionWid
       children: [
         _buildPermissionItem(
           icon: Icons.notifications,
-          title: 'Basic Notifications',
-          description: 'Show reminder notifications',
+          title: S.of(context).basicNotifications,
+          description: S.of(context).showReminderNotifications,
           isGranted: _permissionStatus!.hasBasicPermission,
           isRequired: true,
         ),
         const SizedBox(height: 12),
         _buildPermissionItem(
           icon: Icons.schedule,
-          title: 'Exact Timing',
-          description: 'Deliver notifications at precise times',
+          title: S.of(context).exactTiming,
+          description: S.of(context).deliverAtPreciseTimes,
           isGranted: _permissionStatus!.hasExactAlarmPermission,
           isRequired: true,
         ),
@@ -257,19 +257,19 @@ class _NotificationPermissionWidgetState extends State<NotificationPermissionWid
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         border: Border.all(
-          color: isGranted ? Colors.green.withOpacity(0.3) : Colors.grey.withOpacity(0.3),
+          color: isGranted ? Colors.green.withValues(alpha: 0.3) : Colors.grey.withValues(alpha: 0.3),
         ),
         borderRadius: BorderRadius.circular(12),
         color: isGranted
-            ? Colors.green.withOpacity(0.05)
-            : Colors.grey.withOpacity(0.05),
+            ? Colors.green.withValues(alpha: 0.05)
+            : Colors.grey.withValues(alpha: 0.05),
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: isGranted ? Colors.green.withOpacity(0.1) : Colors.grey.withOpacity(0.1),
+              color: isGranted ? Colors.green.withValues(alpha: 0.1) : Colors.grey.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
@@ -296,11 +296,11 @@ class _NotificationPermissionWidgetState extends State<NotificationPermissionWid
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
-                          color: Colors.red.withOpacity(0.1),
+                          color: Colors.red.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
-                          'Required',
+                          S.of(context).required,
                           style: TextStyle(
                             color: Colors.red[700],
                             fontSize: 10,
@@ -336,53 +336,32 @@ class _NotificationPermissionWidgetState extends State<NotificationPermissionWid
 
     return Column(
       children: [
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: hasAllPermissions ? null : (_isRequestingPermission ? null : _requestPermissions),
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              backgroundColor: hasAllPermissions ? Colors.green : Theme.of(context).primaryColor,
-            ),
-            child: _isRequestingPermission
-                ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  )
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        hasAllPermissions ? Icons.check_circle : Icons.notifications_active,
-                        size: 20,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        hasAllPermissions ? 'All Set!' : 'Enable Notifications',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
+        SyntraButton.icon(
+          onPressed: hasAllPermissions ? null : (_isRequestingPermission ? null : _requestPermissions),
+          color: hasAllPermissions ? Colors.green : Theme.of(context).primaryColor,
+          icon: hasAllPermissions ? Icons.check_circle : Icons.notifications_active,
+          label: _isRequestingPermission
+              ? const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   ),
-          ),
+                )
+              : Text(
+                  hasAllPermissions ? S.of(context).allSet : S.of(context).enableNotifications,
+                ),
         ),
         if (widget.showAsDialog) ...[
           const SizedBox(height: 12),
-          TextButton(
+          SyntraButton(
             onPressed: () => Navigator.of(context).pop(false),
+            color: Theme.of(context).colorScheme.surfaceContainerHigh,
             child: Text(
-              'Skip for now',
+              S.of(context).skipForNow,
               style: TextStyle(
-                color: Colors.grey[600],
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 fontSize: 14,
               ),
             ),

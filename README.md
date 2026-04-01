@@ -30,23 +30,23 @@ Below is a summary of every file in the project, each explained in one sentence:
   themes, and managing navigation.
 - `lib/static.dart`: Defines static constants for colors, text styles, and other design elements
   used throughout the app.
-- `lib/routes/AboutPage.dart`: Implements the About page, displaying app information and version
+- `lib/routes/about_page.dart`: Implements the About page, displaying app information and version
   details dynamically.
-- `lib/routes/ActiveChallengeScreen.dart`: Handles the workflow and UI for an active challenge,
+- `lib/routes/active_challenge_screen.dart`: Handles the workflow and UI for an active challenge,
   including timers and completion logic.
-- `lib/routes/ChallengeDoneScreen.dart`: Shows the results and feedback options after a challenge is
+- `lib/routes/challenge_done_screen.dart`: Shows the results and feedback options after a challenge is
   completed or aborted.
-- `lib/routes/ChallengesScreen.dart`: Displays a list of available challenges and allows users to
+- `lib/routes/challenges_screen.dart`: Displays a list of available challenges and allows users to
   browse and select them.
-- `lib/routes/DailyChallengeScreen.dart`: Presents the daily challenge to the user and manages its
+- `lib/routes/daily_challenge_screen.dart`: Presents the daily challenge to the user and manages its
   acceptance and completion.
-- `lib/routes/LogbookDetailPage.dart`: Shows detailed information about a specific logbook entry,
+- `lib/routes/logbook_detail_page.dart`: Shows detailed information about a specific logbook entry,
   including challenge results and notes.
-- `lib/routes/LogbookPage.dart`: Lists all completed challenges, allowing users to review their
+- `lib/routes/logbook_page.dart`: Lists all completed challenges, allowing users to review their
   progress in a logbook format.
-- `lib/routes/SettingsScreen.dart`: Provides a settings interface for configuring notifications,
+- `lib/routes/settings_screen.dart`: Provides a settings interface for configuring notifications,
   dark mode, language, and accessing app info.
-- `lib/routes/StatisticsScreen.dart`: Displays user statistics, such as XP, streaks, and activity
+- `lib/routes/statistics_screen.dart`: Displays user statistics, such as XP, streaks, and activity
   charts.
 - `lib/database/database_helper.dart`: Contains helper functions for interacting with the SQLite
   database for persistent storage.
@@ -54,18 +54,18 @@ Below is a summary of every file in the project, each explained in one sentence:
   challenge entries.
 - `lib/database/settings_database.dart`: Handles storage and retrieval of user settings in the
   database.
-- `lib/widgets/ChallengeCard.dart`: Defines the UI for displaying individual challenge cards with
+- `lib/widgets/challenge_card.dart`: Defines the UI for displaying individual challenge cards with
   adaptive theming.
 - `lib/widgets/challenge_info_notification.dart`: Provides dialogs and notifications with
   information about challenges and user progress.
-- `lib/widgets/NotSureWhatToSayDialog.dart`: Implements a dialog to help users if they are unsure
+- `lib/widgets/not_sure_what_to_say_dialog.dart`: Implements a dialog to help users if they are unsure
   what to say during a challenge.
 - `lib/widgets/StatsOverviewContainer.dart`: Displays a summary of user statistics in a visually
   appealing container.
 - `lib/widgets/CardSwiper.dart`: Implements a swipeable card interface for browsing challenges.
 - `lib/widgets/DebugDbButton.dart`: Adds a debug button for developers to inspect or reset the
   database.
-- `lib/Challenge.dart`: Defines the Challenge model and logic for managing challenge data.
+- `lib/challenge.dart`: Defines the Challenge model and logic for managing challenge data.
 - `lib/ChallengeLogic.dart`: Contains business logic for filtering, shuffling, and managing
   challenges.
 - `lib/DailyChallengeLogic.dart`: Manages the logic for daily challenges, including selection and

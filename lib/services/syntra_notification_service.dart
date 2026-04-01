@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -8,11 +9,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 
-/**
- * Enterprise-level Notification Service for Flutter
- * Provides professional-grade notification management with exact timing
- * and boot recovery like MyFitnessPal, Todoist, Samsung Health
- */
+/// Enterprise-level Notification Service for Flutter
+/// Provides professional-grade notification management with exact timing
+/// and boot recovery like MyFitnessPal, Todoist, Samsung Health
 class SyntraNotificationService {
   static const String _channelName = 'app.inneract.syntra/notifications';
   static const MethodChannel _channel = MethodChannel(_channelName);
@@ -30,16 +29,14 @@ class SyntraNotificationService {
 
   // Professional logging
   void _log(String message) {
-    print('[SyntraNotificationService] $message');
+    debugPrint('[SyntraNotificationService] $message');
   }
 
   void _logError(String message, [Object? error]) {
-    print('[SyntraNotificationService] ERROR: $message ${error ?? ''}');
+    debugPrint('[SyntraNotificationService] ERROR: $message ${error ?? ''}');
   }
 
-  /**
-   * Initialize the notification service with professional configuration
-   */
+  /// Initialize the notification service with professional configuration
   Future<bool> initialize() async {
     if (_isInitialized) return true;
 
@@ -53,13 +50,21 @@ class SyntraNotificationService {
       const AndroidInitializationSettings initializationSettingsAndroid =
           AndroidInitializationSettings('@drawable/syntrabird_notification');
 
+      const DarwinInitializationSettings initializationSettingsDarwin =
+          DarwinInitializationSettings(
+        requestAlertPermission: false,
+        requestBadgePermission: false,
+        requestSoundPermission: false,
+      );
+
       const InitializationSettings initializationSettings =
           InitializationSettings(
         android: initializationSettingsAndroid,
+        iOS: initializationSettingsDarwin,
       );
 
       await _flutterLocalNotificationsPlugin!.initialize(
-        initializationSettings,
+        settings: initializationSettings,
         onDidReceiveNotificationResponse: _onNotificationTapped,
       );
 
@@ -83,10 +88,9 @@ class SyntraNotificationService {
     }
   }
 
-  /**
-   * Setup method channel for Flutter-Native communication
-   */
+  /// Setup method channel for Flutter-Native communication (Android only)
   void _setupMethodChannel() {
+    if (!Platform.isAndroid) return;
     _channel.setMethodCallHandler((MethodCall call) async {
       switch (call.method) {
         case 'onNotificationReceived':
@@ -101,9 +105,7 @@ class SyntraNotificationService {
     });
   }
 
-  /**
-   * Professional permission request flow like enterprise apps
-   */
+  /// Professional permission request flow like enterprise apps
   Future<NotificationPermissionStatus> requestPermissions() async {
     try {
       _log('Requesting notification permissions...');
@@ -210,9 +212,7 @@ class SyntraNotificationService {
     }
   }
 
-  /**
-   * Schedule exact notification with enterprise-level reliability
-   */
+  /// Schedule exact notification with enterprise-level reliability
   Future<bool> scheduleExactNotification({
     required int id,
     required String title,
@@ -291,9 +291,7 @@ class SyntraNotificationService {
     }
   }
 
-  /**
-   * Batch schedule notifications for efficiency (like professional apps)
-   */
+  /// Batch schedule notifications for efficiency (like professional apps)
   Future<BatchScheduleResult> batchScheduleNotifications(
     List<NotificationRequest> notifications,
   ) async {
@@ -390,9 +388,7 @@ class SyntraNotificationService {
     }
   }
 
-  /**
-   * Cancel scheduled notification
-   */
+  /// Cancel scheduled notification
   Future<bool> cancelNotification(int id) async {
     try {
       if (Platform.isAndroid) {
@@ -403,7 +399,7 @@ class SyntraNotificationService {
           return true;
         }
       } else {
-        await _flutterLocalNotificationsPlugin?.cancel(id);
+        await _flutterLocalNotificationsPlugin?.cancel(id: id);
         await _removeStoredNotification(id);
         return true;
       }
@@ -414,9 +410,7 @@ class SyntraNotificationService {
     }
   }
 
-  /**
-   * Cancel all scheduled notifications
-   */
+  /// Cancel all scheduled notifications
   Future<bool> cancelAllNotifications() async {
     try {
       _log('Cancelling all notifications...');
@@ -441,9 +435,7 @@ class SyntraNotificationService {
     }
   }
 
-  /**
-   * Get all scheduled notifications
-   */
+  /// Get all scheduled notifications
   Future<List<ScheduledNotificationInfo>> getScheduledNotifications() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -460,9 +452,7 @@ class SyntraNotificationService {
     }
   }
 
-  /**
-   * Professional method to reschedule all notifications (used after boot/update)
-   */
+  /// Professional method to reschedule all notifications (used after boot/update)
   Future<bool> rescheduleAllNotifications() async {
     try {
       _log('Rescheduling all notifications...');
@@ -506,9 +496,7 @@ class SyntraNotificationService {
     }
   }
 
-  /**
-   * Show notification immediately (for testing and debugging)
-   */
+  /// Show notification immediately (for testing and debugging)
   Future<void> showNotificationNow({
     required int id,
     required String title,
@@ -537,10 +525,10 @@ class SyntraNotificationService {
         });
       } else {
         await _flutterLocalNotificationsPlugin?.show(
-          id,
-          title,
-          body,
-          NotificationDetails(
+          id: id,
+          title: title,
+          body: body,
+          notificationDetails: NotificationDetails(
             android: AndroidNotificationDetails(
               _getChannelId(channel),
               _getChannelName(channel),
@@ -558,10 +546,9 @@ class SyntraNotificationService {
     }
   }
 
-  /**
-   * Sync global notifications enabled to native layer (Android BootReceiver)
-   */
+  /// Sync global notifications enabled to native layer (Android BootReceiver)
   Future<void> setNativeNotificationsEnabled(bool enabled) async {
+    if (!Platform.isAndroid) return;
     try {
       await _channel.invokeMethod('setNotificationsEnabled', {
         'enabled': enabled,
@@ -606,17 +593,22 @@ class SyntraNotificationService {
   }) async {
     try {
       await _flutterLocalNotificationsPlugin?.zonedSchedule(
-        id,
-        title,
-        body,
-        tz.TZDateTime.from(scheduledTime, tz.local),
-        NotificationDetails(
+        id: id,
+        title: title,
+        body: body,
+        scheduledDate: tz.TZDateTime.from(scheduledTime, tz.local),
+        notificationDetails: NotificationDetails(
           android: AndroidNotificationDetails(
             _getChannelId(channel),
             _getChannelName(channel),
             importance: Importance.high,
             priority: Priority.high,
             icon: '@drawable/syntrabird_notification',
+          ),
+          iOS: const DarwinNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: true,
           ),
         ),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
@@ -757,12 +749,12 @@ class NotificationRequest {
 
   const NotificationRequest({
     required this.id,
-    required this.title,
-    required this.body,
+    required String title,
+    required String body,
     required this.scheduledTime,
     this.data = const {},
     this.channel = NotificationChannel.reminders,
-  });
+  }) : title = title, body = body;
 }
 
 class NotificationResult {
