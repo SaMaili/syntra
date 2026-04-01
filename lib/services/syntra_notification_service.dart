@@ -186,8 +186,32 @@ class SyntraNotificationService {
           hasExactAlarmPermission = true; // Assume exact alarms work
           canScheduleExactAlarms = true;
         }
+      } else if (Platform.isIOS) {
+        try {
+          final iosPlugin = _flutterLocalNotificationsPlugin
+              ?.resolvePlatformSpecificImplementation<
+                  IOSFlutterLocalNotificationsPlugin>();
+          if (iosPlugin != null) {
+            final result = await iosPlugin.requestPermissions(
+              alert: true,
+              badge: true,
+              sound: true,
+            );
+            hasBasicPermission = result ?? false;
+            _log('iOS notification permission request result: $hasBasicPermission');
+          } else {
+            // Fallback if plugin is not available yet
+            final status = await Permission.notification.request();
+            hasBasicPermission = status == PermissionStatus.granted;
+            _log('iOS notification permission fallback result: $hasBasicPermission');
+          }
+        } catch (e) {
+          _logError('Error requesting iOS permissions', e);
+          final status = await Permission.notification.request();
+          hasBasicPermission = status == PermissionStatus.granted;
+        }
       } else {
-        // For non-Android platforms, assume permissions are handled differently
+        // For non-Android and non-iOS platforms
         hasBasicPermission = true;
       }
 

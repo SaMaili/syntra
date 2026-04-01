@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
 import 'syntra_button.dart';
 import '../generated/l10n.dart';
 import '../services/syntra_notification_service.dart';
