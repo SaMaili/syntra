@@ -299,6 +299,11 @@ class S {
     return Intl.message('Aura', name: 'auraPoints', desc: '', args: []);
   }
 
+  /// `Daily Bonus`
+  String get dailyBonus {
+    return Intl.message('Daily Bonus', name: 'dailyBonus', desc: '', args: []);
+  }
+
   /// `How did you feel?`
   String get howDidYouFeel {
     return Intl.message(
@@ -1039,6 +1044,86 @@ class S {
     );
   }
 
+  /// `"The only limit to our realization of tomorrow will be our doubts of today."`
+  String get quote1 {
+    return Intl.message(
+      '"The only limit to our realization of tomorrow will be our doubts of today."',
+      name: 'quote1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `"Courage is not the absence of fear, but the triumph over it."`
+  String get quote2 {
+    return Intl.message(
+      '"Courage is not the absence of fear, but the triumph over it."',
+      name: 'quote2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `"Do one thing every day that scares you."`
+  String get quote3 {
+    return Intl.message(
+      '"Do one thing every day that scares you."',
+      name: 'quote3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `"Life begins at the end of your comfort zone."`
+  String get quote4 {
+    return Intl.message(
+      '"Life begins at the end of your comfort zone."',
+      name: 'quote4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `"The cave you fear to enter holds the treasure you seek."`
+  String get quote5 {
+    return Intl.message(
+      '"The cave you fear to enter holds the treasure you seek."',
+      name: 'quote5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `"What would you attempt to do if you knew you could not fail?"`
+  String get quote6 {
+    return Intl.message(
+      '"What would you attempt to do if you knew you could not fail?"',
+      name: 'quote6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `"Everything you've ever wanted is on the other side of fear."`
+  String get quote7 {
+    return Intl.message(
+      '"Everything you\'ve ever wanted is on the other side of fear."',
+      name: 'quote7',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `"You gain strength, courage, and confidence by every experience in which you really stop to look fear in the face."`
+  String get quote8 {
+    return Intl.message(
+      '"You gain strength, courage, and confidence by every experience in which you really stop to look fear in the face."',
+      name: 'quote8',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Allow Exact Alarms`
   String get allowExactAlarms {
     return Intl.message(
@@ -1382,6 +1467,1406 @@ class S {
   /// `Evening`
   String get evening {
     return Intl.message('Evening', name: 'evening', desc: '', args: []);
+  }
+
+  /// `Explore all challenges`
+  String get exploreAllChallenges {
+    return Intl.message(
+      'Explore all challenges',
+      name: 'exploreAllChallenges',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Entries Yet`
+  String get noEntriesYet {
+    return Intl.message(
+      'No Entries Yet',
+      name: 'noEntriesYet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Complete some challenges to see them here!`
+  String get completeChallengesToSee {
+    return Intl.message(
+      'Complete some challenges to see them here!',
+      name: 'completeChallengesToSee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Challenge #{id}`
+  String challengeNumber(String id) {
+    return Intl.message(
+      'Challenge #$id',
+      name: 'challengeNumber',
+      desc: '',
+      args: [id],
+    );
+  }
+
+  /// `Details`
+  String get details {
+    return Intl.message('Details', name: 'details', desc: '', args: []);
+  }
+
+  /// `Reward Factor`
+  String get rewardFactor {
+    return Intl.message(
+      'Reward Factor',
+      name: 'rewardFactor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How did you feel?`
+  String get howDidYouFeelQuestion {
+    return Intl.message(
+      'How did you feel?',
+      name: 'howDidYouFeelQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How were you perceived?`
+  String get howPerceivedByOthers {
+    return Intl.message(
+      'How were you perceived?',
+      name: 'howPerceivedByOthers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to delete this logbook entry? This action cannot be undone.`
+  String get deleteEntryConfirm {
+    return Intl.message(
+      'Are you sure you want to delete this logbook entry? This action cannot be undone.',
+      name: 'deleteEntryConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Completed`
+  String get statusSuccess {
+    return Intl.message('Completed', name: 'statusSuccess', desc: '', args: []);
+  }
+
+  /// `Gave it a try`
+  String get statusTried {
+    return Intl.message(
+      'Gave it a try',
+      name: 'statusTried',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unknown`
+  String get unknown {
+    return Intl.message('Unknown', name: 'unknown', desc: '', args: []);
+  }
+
+  /// `Your Progress`
+  String get yourProgress {
+    return Intl.message(
+      'Your Progress',
+      name: 'yourProgress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your story starts with the first challenge you complete.`
+  String get storyFirstChallenge {
+    return Intl.message(
+      'Your story starts with the first challenge you complete.',
+      name: 'storyFirstChallenge',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You have stepped outside your comfort zone once. That takes courage.`
+  String get storyOnce {
+    return Intl.message(
+      'You have stepped outside your comfort zone once. That takes courage.',
+      name: 'storyOnce',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You have stepped outside your comfort zone {count} times.`
+  String storyNTimes(int count) {
+    return Intl.message(
+      'You have stepped outside your comfort zone $count times.',
+      name: 'storyNTimes',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `You are on a {days}-day streak. Keep the momentum going.`
+  String storyStreakMany(int days) {
+    return Intl.message(
+      'You are on a $days-day streak. Keep the momentum going.',
+      name: 'storyStreakMany',
+      desc: '',
+      args: [days],
+    );
+  }
+
+  /// `Day 1 of a new streak. Every big streak started here.`
+  String get storyStreakOne {
+    return Intl.message(
+      'Day 1 of a new streak. Every big streak started here.',
+      name: 'storyStreakOne',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{kilo}k XP earned — you are building something real.`
+  String storyXpKilo(String kilo) {
+    return Intl.message(
+      '${kilo}k XP earned — you are building something real.',
+      name: 'storyXpKilo',
+      desc: '',
+      args: [kilo],
+    );
+  }
+
+  /// `{xp} XP earned through genuine action.`
+  String storyXpSmall(int xp) {
+    return Intl.message(
+      '$xp XP earned through genuine action.',
+      name: 'storyXpSmall',
+      desc: '',
+      args: [xp],
+    );
+  }
+
+  /// `Challenges This Week`
+  String get challengesThisWeek {
+    return Intl.message(
+      'Challenges This Week',
+      name: 'challengesThisWeek',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Each bar is a day. Green = completed, orange = gave it a try.`
+  String get chartExplanation {
+    return Intl.message(
+      'Each bar is a day. Green = completed, orange = gave it a try.',
+      name: 'chartExplanation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Completed`
+  String get legendCompleted {
+    return Intl.message(
+      'Completed',
+      name: 'legendCompleted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tried`
+  String get legendTried {
+    return Intl.message('Tried', name: 'legendTried', desc: '', args: []);
+  }
+
+  /// `XP Earned This Week`
+  String get xpEarnedThisWeek {
+    return Intl.message(
+      'XP Earned This Week',
+      name: 'xpEarnedThisWeek',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Activity`
+  String get activity {
+    return Intl.message('Activity', name: 'activity', desc: '', args: []);
+  }
+
+  /// `12 weeks — each square is one day`
+  String get activitySubtitle {
+    return Intl.message(
+      '12 weeks — each square is one day',
+      name: 'activitySubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Less`
+  String get less {
+    return Intl.message('Less', name: 'less', desc: '', args: []);
+  }
+
+  /// `More`
+  String get more {
+    return Intl.message('More', name: 'more', desc: '', args: []);
+  }
+
+  /// `Total XP`
+  String get totalXp {
+    return Intl.message('Total XP', name: 'totalXp', desc: '', args: []);
+  }
+
+  /// `Day Streak`
+  String get dayStreak {
+    return Intl.message('Day Streak', name: 'dayStreak', desc: '', args: []);
+  }
+
+  /// `Times Tried`
+  String get timesTried {
+    return Intl.message('Times Tried', name: 'timesTried', desc: '', args: []);
+  }
+
+  /// `Min. Brave`
+  String get minutesBrave {
+    return Intl.message('Min. Brave', name: 'minutesBrave', desc: '', args: []);
+  }
+
+  /// `Done Today`
+  String get doneToday {
+    return Intl.message('Done Today', name: 'doneToday', desc: '', args: []);
+  }
+
+  /// `{minutes} minutes spent being brave.`
+  String storyMinutesBrave(int minutes) {
+    return Intl.message(
+      '$minutes minutes spent being brave.',
+      name: 'storyMinutesBrave',
+      desc: '',
+      args: [minutes],
+    );
+  }
+
+  /// `M`
+  String get mon {
+    return Intl.message('M', name: 'mon', desc: '', args: []);
+  }
+
+  /// `T`
+  String get tue {
+    return Intl.message('T', name: 'tue', desc: '', args: []);
+  }
+
+  /// `W`
+  String get wed {
+    return Intl.message('W', name: 'wed', desc: '', args: []);
+  }
+
+  /// `T`
+  String get thu {
+    return Intl.message('T', name: 'thu', desc: '', args: []);
+  }
+
+  /// `F`
+  String get fri {
+    return Intl.message('F', name: 'fri', desc: '', args: []);
+  }
+
+  /// `S`
+  String get sat {
+    return Intl.message('S', name: 'sat', desc: '', args: []);
+  }
+
+  /// `S`
+  String get sun {
+    return Intl.message('S', name: 'sun', desc: '', args: []);
+  }
+
+  /// `Long time. No worries — your progress is still here.`
+  String get greetingLongTime {
+    return Intl.message(
+      'Long time. No worries — your progress is still here.',
+      name: 'greetingLongTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Welcome back. Ready to start fresh today?`
+  String get greetingFresh {
+    return Intl.message(
+      'Welcome back. Ready to start fresh today?',
+      name: 'greetingFresh',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Day {streak} — keep it going.`
+  String greetingStreak(int streak) {
+    return Intl.message(
+      'Day $streak — keep it going.',
+      name: 'greetingStreak',
+      desc: '',
+      args: [streak],
+    );
+  }
+
+  /// `Today's Missions`
+  String get todaysMissions {
+    return Intl.message(
+      'Today\'s Missions',
+      name: 'todaysMissions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Three challenges. Any order. All count.`
+  String get threeChallengesTodo {
+    return Intl.message(
+      'Three challenges. Any order. All count.',
+      name: 'threeChallengesTodo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start`
+  String get start {
+    return Intl.message('Start', name: 'start', desc: '', args: []);
+  }
+
+  /// `Keep going`
+  String get keepGoing {
+    return Intl.message('Keep going', name: 'keepGoing', desc: '', args: []);
+  }
+
+  /// `Let's go`
+  String get letsGoButton {
+    return Intl.message('Let\'s go', name: 'letsGoButton', desc: '', args: []);
+  }
+
+  /// `About the App`
+  String get aboutTheApp {
+    return Intl.message(
+      'About the App',
+      name: 'aboutTheApp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Syntra is an innovative app that helps users overcome social challenges and achieve their goals.`
+  String get aboutDescription {
+    return Intl.message(
+      'Syntra is an innovative app that helps users overcome social challenges and achieve their goals.',
+      name: 'aboutDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Developer: SaMaili`
+  String get developerLabel {
+    return Intl.message(
+      'Developer: SaMaili',
+      name: 'developerLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GitHub: `
+  String get githubLabel {
+    return Intl.message('GitHub: ', name: 'githubLabel', desc: '', args: []);
+  }
+
+  /// `Could not open link`
+  String get couldNotOpenLink {
+    return Intl.message(
+      'Could not open link',
+      name: 'couldNotOpenLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `© 2025 Syntra. All rights reserved.`
+  String get allRightsReserved {
+    return Intl.message(
+      '© 2025 Syntra. All rights reserved.',
+      name: 'allRightsReserved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All`
+  String get filterAll {
+    return Intl.message('All', name: 'filterAll', desc: '', args: []);
+  }
+
+  /// `Enable Notifications`
+  String get enableNotifications {
+    return Intl.message(
+      'Enable Notifications',
+      name: 'enableNotifications',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `For the best experience`
+  String get forBestExperience {
+    return Intl.message(
+      'For the best experience',
+      name: 'forBestExperience',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Syntra needs notification permissions to remind you about your challenges and deliver important updates.`
+  String get notificationPermissionDesc {
+    return Intl.message(
+      'Syntra needs notification permissions to remind you about your challenges and deliver important updates.',
+      name: 'notificationPermissionDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Basic Notifications`
+  String get basicNotifications {
+    return Intl.message(
+      'Basic Notifications',
+      name: 'basicNotifications',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show reminder notifications`
+  String get showReminderNotifications {
+    return Intl.message(
+      'Show reminder notifications',
+      name: 'showReminderNotifications',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Exact Timing`
+  String get exactTiming {
+    return Intl.message(
+      'Exact Timing',
+      name: 'exactTiming',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Deliver notifications at precise times`
+  String get deliverAtPreciseTimes {
+    return Intl.message(
+      'Deliver notifications at precise times',
+      name: 'deliverAtPreciseTimes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Required`
+  String get required {
+    return Intl.message('Required', name: 'required', desc: '', args: []);
+  }
+
+  /// `All Set!`
+  String get allSet {
+    return Intl.message('All Set!', name: 'allSet', desc: '', args: []);
+  }
+
+  /// `Skip for now`
+  String get skipForNow {
+    return Intl.message('Skip for now', name: 'skipForNow', desc: '', args: []);
+  }
+
+  /// `Want us to remind you?`
+  String get wantReminders {
+    return Intl.message(
+      'Want us to remind you?',
+      name: 'wantReminders',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We'll send you one nudge a day — your choice when. No spam. You can turn it off any time in Settings.`
+  String get reminderExplanation {
+    return Intl.message(
+      'We\'ll send you one nudge a day — your choice when. No spam. You can turn it off any time in Settings.',
+      name: 'reminderExplanation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable reminders`
+  String get enableReminders {
+    return Intl.message(
+      'Enable reminders',
+      name: 'enableReminders',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I'll remember on my own →`
+  String get rememberOnMyOwn {
+    return Intl.message(
+      'I\'ll remember on my own →',
+      name: 'rememberOnMyOwn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Here's your first one.`
+  String get heresYourFirst {
+    return Intl.message(
+      'Here\'s your first one.',
+      name: 'heresYourFirst',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `It'll take about 2 minutes. Or save it for later.`
+  String get firstChallengeDesc {
+    return Intl.message(
+      'It\'ll take about 2 minutes. Or save it for later.',
+      name: 'firstChallengeDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start Now`
+  String get startNow {
+    return Intl.message('Start Now', name: 'startNow', desc: '', args: []);
+  }
+
+  /// `Do it later`
+  String get doItLater {
+    return Intl.message('Do it later', name: 'doItLater', desc: '', args: []);
+  }
+
+  /// `{days}-Day Streak!`
+  String streakMilestoneTitle(int days) {
+    return Intl.message(
+      '$days-Day Streak!',
+      name: 'streakMilestoneTitle',
+      desc: '',
+      args: [days],
+    );
+  }
+
+  /// `Three days in a row. You're building a habit.`
+  String get streakMilestone3 {
+    return Intl.message(
+      'Three days in a row. You\'re building a habit.',
+      name: 'streakMilestone3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A full week! Your comfort zone just got bigger.`
+  String get streakMilestone7 {
+    return Intl.message(
+      'A full week! Your comfort zone just got bigger.',
+      name: 'streakMilestone7',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Two weeks straight. You're not the same person you were 14 days ago.`
+  String get streakMilestone14 {
+    return Intl.message(
+      'Two weeks straight. You\'re not the same person you were 14 days ago.',
+      name: 'streakMilestone14',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `30 days. A whole month of showing up. That's rare. That's powerful.`
+  String get streakMilestone30 {
+    return Intl.message(
+      '30 days. A whole month of showing up. That\'s rare. That\'s powerful.',
+      name: 'streakMilestone30',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `60 days. Most people quit after a week. You didn't.`
+  String get streakMilestone60 {
+    return Intl.message(
+      '60 days. Most people quit after a week. You didn\'t.',
+      name: 'streakMilestone60',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `100 days. You've built something extraordinary. Respect.`
+  String get streakMilestone100 {
+    return Intl.message(
+      '100 days. You\'ve built something extraordinary. Respect.',
+      name: 'streakMilestone100',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You've been showing up for {days} days. Keep going.`
+  String streakMilestoneGeneric(int days) {
+    return Intl.message(
+      'You\'ve been showing up for $days days. Keep going.',
+      name: 'streakMilestoneGeneric',
+      desc: '',
+      args: [days],
+    );
+  }
+
+  /// `Keep it up`
+  String get keepItUp {
+    return Intl.message('Keep it up', name: 'keepItUp', desc: '', args: []);
+  }
+
+  /// `Skip`
+  String get skip {
+    return Intl.message('Skip', name: 'skip', desc: '', args: []);
+  }
+
+  /// `Social confidence is a skill.\nSkills can be trained.`
+  String get onboarding1Headline {
+    return Intl.message(
+      'Social confidence is a skill.\nSkills can be trained.',
+      name: 'onboarding1Headline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Syntra gives you small, real-world challenges to practice every day. No classes. No scripts. Just you, out in the world.`
+  String get onboarding1Subtext {
+    return Intl.message(
+      'Syntra gives you small, real-world challenges to practice every day. No classes. No scripts. Just you, out in the world.',
+      name: 'onboarding1Subtext',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Let's see how it works →`
+  String get onboarding1Button {
+    return Intl.message(
+      'Let\'s see how it works →',
+      name: 'onboarding1Button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `One challenge at a time.`
+  String get onboarding2Headline {
+    return Intl.message(
+      'One challenge at a time.',
+      name: 'onboarding2Headline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Each one is designed to push you just slightly past your comfort zone. You choose how hard to go.`
+  String get onboarding2Subtext {
+    return Intl.message(
+      'Each one is designed to push you just slightly past your comfort zone. You choose how hard to go.',
+      name: 'onboarding2Subtext',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pick a challenge`
+  String get onboarding2Step1 {
+    return Intl.message(
+      'Pick a challenge',
+      name: 'onboarding2Step1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Go do it — timer helps`
+  String get onboarding2Step2 {
+    return Intl.message(
+      'Go do it — timer helps',
+      name: 'onboarding2Step2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Log your result`
+  String get onboarding2Step3 {
+    return Intl.message(
+      'Log your result',
+      name: 'onboarding2Step3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Got it →`
+  String get onboarding2Button {
+    return Intl.message(
+      'Got it →',
+      name: 'onboarding2Button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `It's okay to feel nervous.\nThat's kind of the point.`
+  String get onboarding3Headline {
+    return Intl.message(
+      'It\'s okay to feel nervous.\nThat\'s kind of the point.',
+      name: 'onboarding3Headline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Every challenge in this app is designed to be safe. Nothing extreme, nothing embarrassing. The awkward feeling you get is exactly what builds confidence over time.\n\nMost people feel it. Nobody dies from it.`
+  String get onboarding3Subtext {
+    return Intl.message(
+      'Every challenge in this app is designed to be safe. Nothing extreme, nothing embarrassing. The awkward feeling you get is exactly what builds confidence over time.\n\nMost people feel it. Nobody dies from it.',
+      name: 'onboarding3Subtext',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I'm in →`
+  String get onboarding3Button {
+    return Intl.message(
+      'I\'m in →',
+      name: 'onboarding3Button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Where are you starting from?`
+  String get onboarding4Headline {
+    return Intl.message(
+      'Where are you starting from?',
+      name: 'onboarding4Headline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We'll show you challenges that fit where you are right now.`
+  String get onboarding4Subtext {
+    return Intl.message(
+      'We\'ll show you challenges that fit where you are right now.',
+      name: 'onboarding4Subtext',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Just getting started`
+  String get onboarding4Level1Title {
+    return Intl.message(
+      'Just getting started',
+      name: 'onboarding4Level1Title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Social situations often feel uncomfortable`
+  String get onboarding4Level1Subtitle {
+    return Intl.message(
+      'Social situations often feel uncomfortable',
+      name: 'onboarding4Level1Subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Some experience`
+  String get onboarding4Level2Title {
+    return Intl.message(
+      'Some experience',
+      name: 'onboarding4Level2Title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I try, but sometimes freeze up`
+  String get onboarding4Level2Subtitle {
+    return Intl.message(
+      'I try, but sometimes freeze up',
+      name: 'onboarding4Level2Subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ready to push harder`
+  String get onboarding4Level3Title {
+    return Intl.message(
+      'Ready to push harder',
+      name: 'onboarding4Level3Title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I want to level up, not start from scratch`
+  String get onboarding4Level3Subtitle {
+    return Intl.message(
+      'I want to level up, not start from scratch',
+      name: 'onboarding4Level3Subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `5 minutes a day is enough.`
+  String get onboarding5Headline {
+    return Intl.message(
+      '5 minutes a day is enough.',
+      name: 'onboarding5Headline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The science on habit formation says consistency matters more than intensity. One small thing, every day, changes your brain. Literally.`
+  String get onboarding5Subtext {
+    return Intl.message(
+      'The science on habit formation says consistency matters more than intensity. One small thing, every day, changes your brain. Literally.',
+      name: 'onboarding5Subtext',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set my reminder →`
+  String get onboarding5Button {
+    return Intl.message(
+      'Set my reminder →',
+      name: 'onboarding5Button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You just did something most people never try. That took guts.`
+  String get coachMsg1 {
+    return Intl.message(
+      'You just did something most people never try. That took guts.',
+      name: 'coachMsg1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Every time you do this it gets 1% easier. Seriously.`
+  String get coachMsg2 {
+    return Intl.message(
+      'Every time you do this it gets 1% easier. Seriously.',
+      name: 'coachMsg2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your nervous system just learned you survived. That matters.`
+  String get coachMsg3 {
+    return Intl.message(
+      'Your nervous system just learned you survived. That matters.',
+      name: 'coachMsg3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Growth happens outside the comfort zone. You were just there.`
+  String get coachMsg4 {
+    return Intl.message(
+      'Growth happens outside the comfort zone. You were just there.',
+      name: 'coachMsg4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Awkward is just bravery wearing the wrong shoes. You showed up.`
+  String get coachMsg5 {
+    return Intl.message(
+      'Awkward is just bravery wearing the wrong shoes. You showed up.',
+      name: 'coachMsg5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `One action at a time. You're building something real.`
+  String get coachMsg6 {
+    return Intl.message(
+      'One action at a time. You\'re building something real.',
+      name: 'coachMsg6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The version of you from six months ago would be proud.`
+  String get coachMsg7 {
+    return Intl.message(
+      'The version of you from six months ago would be proud.',
+      name: 'coachMsg7',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `That one was hard. Showing up and trying is the whole game.`
+  String get failureCopy {
+    return Intl.message(
+      'That one was hard. Showing up and trying is the whole game.',
+      name: 'failureCopy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What happened? What would you do differently? (Even writing one word is a win.)`
+  String get failureNotesHint {
+    return Intl.message(
+      'What happened? What would you do differently? (Even writing one word is a win.)',
+      name: 'failureNotesHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Level {level} Unlocked!`
+  String levelUnlocked(int level) {
+    return Intl.message(
+      'Level $level Unlocked!',
+      name: 'levelUnlocked',
+      desc: '',
+      args: [level],
+    );
+  }
+
+  /// `New challenges are now available in your catalog.`
+  String get newChallengesAvailable {
+    return Intl.message(
+      'New challenges are now available in your catalog.',
+      name: 'newChallengesAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confidence is attractive.`
+  String get primingHeadlineFlirt {
+    return Intl.message(
+      'Confidence is attractive.',
+      name: 'primingHeadlineFlirt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You're about to connect with someone real.`
+  String get primingHeadlineGroup {
+    return Intl.message(
+      'You\'re about to connect with someone real.',
+      name: 'primingHeadlineGroup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `One small step. That's all this is.`
+  String get primingHeadlineQuick {
+    return Intl.message(
+      'One small step. That\'s all this is.',
+      name: 'primingHeadlineQuick',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This one takes courage.\nYou have it.`
+  String get primingHeadlineHard {
+    return Intl.message(
+      'This one takes courage.\nYou have it.',
+      name: 'primingHeadlineHard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Take a breath.\nYou've got this.`
+  String get primingHeadlineDefault {
+    return Intl.message(
+      'Take a breath.\nYou\'ve got this.',
+      name: 'primingHeadlineDefault',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Flirting is just playful communication. The outcome doesn't matter — showing up does.`
+  String get primingSubFlirt {
+    return Intl.message(
+      'Flirting is just playful communication. The outcome doesn\'t matter — showing up does.',
+      name: 'primingSubFlirt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Most people are friendlier than you expect. One interaction can shift your whole day.`
+  String get primingSubGroup {
+    return Intl.message(
+      'Most people are friendlier than you expect. One interaction can shift your whole day.',
+      name: 'primingSubGroup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Under a minute of action. The discomfort fades faster than you think.`
+  String get primingSubQuick {
+    return Intl.message(
+      'Under a minute of action. The discomfort fades faster than you think.',
+      name: 'primingSubQuick',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The challenges that scare you most are the ones that grow you the most. This is one of those.`
+  String get primingSubHard {
+    return Intl.message(
+      'The challenges that scare you most are the ones that grow you the most. This is one of those.',
+      name: 'primingSubHard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Every time you do this, it gets a little easier. Your future self is already grateful.`
+  String get primingSubDefault {
+    return Intl.message(
+      'Every time you do this, it gets a little easier. Your future self is already grateful.',
+      name: 'primingSubDefault',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I'm Ready`
+  String get imReady {
+    return Intl.message('I\'m Ready', name: 'imReady', desc: '', args: []);
+  }
+
+  /// `Not now`
+  String get notNow {
+    return Intl.message('Not now', name: 'notNow', desc: '', args: []);
+  }
+
+  /// `Comfort Zone`
+  String get comfortZone {
+    return Intl.message(
+      'Comfort Zone',
+      name: 'comfortZone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Growth Zone`
+  String get growthZone {
+    return Intl.message('Growth Zone', name: 'growthZone', desc: '', args: []);
+  }
+
+  /// `Bold Move`
+  String get boldMove {
+    return Intl.message('Bold Move', name: 'boldMove', desc: '', args: []);
+  }
+
+  /// `Details`
+  String get detailsLabel {
+    return Intl.message('Details', name: 'detailsLabel', desc: '', args: []);
+  }
+
+  /// `Less`
+  String get lessLabel {
+    return Intl.message('Less', name: 'lessLabel', desc: '', args: []);
+  }
+
+  /// `Comfort Zone Level`
+  String get comfortZoneLevel {
+    return Intl.message(
+      'Comfort Zone Level',
+      name: 'comfortZoneLevel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Level {level}`
+  String levelN(int level) {
+    return Intl.message(
+      'Level $level',
+      name: 'levelN',
+      desc: '',
+      args: [level],
+    );
+  }
+
+  /// `{done} / {needed} completions to Level {next}`
+  String completionsToLevel(int done, int needed, int next) {
+    return Intl.message(
+      '$done / $needed completions to Level $next',
+      name: 'completionsToLevel',
+      desc: '',
+      args: [done, needed, next],
+    );
+  }
+
+  /// `You've reached the top. Keep going.`
+  String get reachedTheTop {
+    return Intl.message(
+      'You\'ve reached the top. Keep going.',
+      name: 'reachedTheTop',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set difficulty manually`
+  String get setDifficultyManually {
+    return Intl.message(
+      'Set difficulty manually',
+      name: 'setDifficultyManually',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Take a step back?`
+  String get levelDownTitle {
+    return Intl.message(
+      'Take a step back?',
+      name: 'levelDownTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You can only level down manually — going back up requires grinding through completions again.`
+  String get levelDownBody {
+    return Intl.message(
+      'You can only level down manually — going back up requires grinding through completions again.',
+      name: 'levelDownBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes, step back`
+  String get levelDownConfirm {
+    return Intl.message(
+      'Yes, step back',
+      name: 'levelDownConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stay where I am`
+  String get levelDownCancel {
+    return Intl.message(
+      'Stay where I am',
+      name: 'levelDownCancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Challenge Information`
+  String get challengeInformation {
+    return Intl.message(
+      'Challenge Information',
+      name: 'challengeInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All permissions granted successfully!`
+  String get allPermissionsGranted {
+    return Intl.message(
+      'All permissions granted successfully!',
+      name: 'allPermissionsGranted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Some permissions are still missing. Please enable them manually.`
+  String get somePermissionsMissing {
+    return Intl.message(
+      'Some permissions are still missing. Please enable them manually.',
+      name: 'somePermissionsMissing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `💘 Flirt challenges focus on playful, social interactions to build romantic confidence.`
+  String get flirtTagExplanation {
+    return Intl.message(
+      '💘 Flirt challenges focus on playful, social interactions to build romantic confidence.',
+      name: 'flirtTagExplanation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Filters`
+  String get filterTitle {
+    return Intl.message('Filters', name: 'filterTitle', desc: '', args: []);
+  }
+
+  /// `Reset`
+  String get filterReset {
+    return Intl.message('Reset', name: 'filterReset', desc: '', args: []);
+  }
+
+  /// `Flirt challenges`
+  String get filterFlirtLabel {
+    return Intl.message(
+      'Flirt challenges',
+      name: 'filterFlirtLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Flirt only`
+  String get filterFlirtOnly {
+    return Intl.message(
+      'Flirt only',
+      name: 'filterFlirtOnly',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No flirt`
+  String get filterFlirtExclude {
+    return Intl.message(
+      'No flirt',
+      name: 'filterFlirtExclude',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Only show new challenges`
+  String get filterNewOnly {
+    return Intl.message(
+      'Only show new challenges',
+      name: 'filterNewOnly',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hide challenges you've already completed`
+  String get filterNewOnlySubtitle {
+    return Intl.message(
+      'Hide challenges you\'ve already completed',
+      name: 'filterNewOnlySubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sort by`
+  String get filterSortBy {
+    return Intl.message('Sort by', name: 'filterSortBy', desc: '', args: []);
+  }
+
+  /// `Popular`
+  String get filterSortPopular {
+    return Intl.message(
+      'Popular',
+      name: 'filterSortPopular',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Easiest first`
+  String get filterSortEasiest {
+    return Intl.message(
+      'Easiest first',
+      name: 'filterSortEasiest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Give me one!`
+  String get giveMeOneTooltip {
+    return Intl.message(
+      'Give me one!',
+      name: 'giveMeOneTooltip',
+      desc: '',
+      args: [],
+    );
   }
 }
 

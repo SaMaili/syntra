@@ -1,0 +1,1145 @@
+[
+  {
+    "id": 0,
+    "timer": 240,
+    "xp": 100,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 1,
+    "timer": 45,
+    "xp": 50,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 3,
+    "timer": 240,
+    "xp": 100,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 4,
+    "timer": 210,
+    "xp": 80,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 5,
+    "timer": 270,
+    "xp": 120,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 6,
+    "timer": 200,
+    "xp": 150,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 7,
+    "timer": 210,
+    "xp": 80,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 8,
+    "timer": 225,
+    "xp": 200,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 9,
+    "timer": 225,
+    "xp": 250,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 11,
+    "timer": 240,
+    "xp": 100,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 12,
+    "timer": 270,
+    "xp": 300,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 13,
+    "timer": 220,
+    "xp": 150,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 16,
+    "timer": 210,
+    "xp": 120,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 17,
+    "timer": 210,
+    "xp": 80,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 18,
+    "timer": 200,
+    "xp": 400,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 20,
+    "timer": 210,
+    "xp": 200,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 21,
+    "timer": 230,
+    "xp": 850,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 22,
+    "timer": 270,
+    "xp": 500,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 25,
+    "timer": 270,
+    "xp": 700,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 26,
+    "timer": 260,
+    "xp": 650,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 27,
+    "timer": 230,
+    "xp": 550,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 28,
+    "timer": 250,
+    "xp": 500,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 29,
+    "timer": 230,
+    "xp": 750,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 30,
+    "timer": 270,
+    "xp": 600,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 31,
+    "timer": 240,
+    "xp": 500,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 32,
+    "timer": 270,
+    "xp": 850,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 33,
+    "timer": 250,
+    "xp": 700,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 34,
+    "timer": 260,
+    "xp": 600,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 35,
+    "timer": 240,
+    "xp": 550,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 36,
+    "timer": 250,
+    "xp": 700,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 37,
+    "timer": 230,
+    "xp": 750,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 38,
+    "timer": 240,
+    "xp": 500,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 39,
+    "timer": 270,
+    "xp": 950,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 40,
+    "timer": 250,
+    "xp": 800,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 42,
+    "timer": 220,
+    "xp": 150,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 44,
+    "timer": 240,
+    "xp": 350,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 45,
+    "timer": 230,
+    "xp": 320,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 46,
+    "timer": 230,
+    "xp": 250,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 47,
+    "timer": 250,
+    "xp": 300,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 48,
+    "timer": 210,
+    "xp": 400,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 49,
+    "timer": 270,
+    "xp": 600,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 52,
+    "timer": 230,
+    "xp": 300,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 54,
+    "timer": 240,
+    "xp": 700,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 56,
+    "timer": 240,
+    "xp": 900,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 57,
+    "timer": 230,
+    "xp": 800,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 58,
+    "timer": 260,
+    "xp": 1000,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 60,
+    "timer": 250,
+    "xp": 600,
+    "type": "either",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 61,
+    "timer": 260,
+    "xp": 500,
+    "type": "either",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 62,
+    "timer": 250,
+    "xp": 600,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 63,
+    "timer": 240,
+    "xp": 500,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 64,
+    "timer": 230,
+    "xp": 650,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 65,
+    "timer": 260,
+    "xp": 850,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 66,
+    "timer": 240,
+    "xp": 700,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 67,
+    "timer": 270,
+    "xp": 900,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 68,
+    "timer": 250,
+    "xp": 750,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 69,
+    "timer": 270,
+    "xp": 1000,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 70,
+    "timer": 250,
+    "xp": 600,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 71,
+    "timer": 260,
+    "xp": 700,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 72,
+    "timer": 250,
+    "xp": 800,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 73,
+    "timer": 270,
+    "xp": 300,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 74,
+    "timer": 260,
+    "xp": 250,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 75,
+    "timer": 280,
+    "xp": 200,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 76,
+    "timer": 270,
+    "xp": 350,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 77,
+    "timer": 480,
+    "xp": 200,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 78,
+    "timer": 270,
+    "xp": 300,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 79,
+    "timer": 250,
+    "xp": 250,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 80,
+    "timer": 260,
+    "xp": 400,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 81,
+    "timer": 260,
+    "xp": 350,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 82,
+    "timer": 240,
+    "xp": 300,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 83,
+    "timer": 270,
+    "xp": 400,
+    "type": "group",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 84,
+    "timer": 270,
+    "xp": 250,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 91,
+    "timer": 270,
+    "xp": 1000,
+    "type": "group",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 122,
+    "timer": 30,
+    "xp": 150,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 123,
+    "timer": 45,
+    "xp": 180,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 124,
+    "timer": 60,
+    "xp": 200,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 125,
+    "timer": 60,
+    "xp": 170,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 126,
+    "timer": 50,
+    "xp": 140,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 127,
+    "timer": 45,
+    "xp": 130,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 128,
+    "timer": 50,
+    "xp": 150,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 129,
+    "timer": 50,
+    "xp": 160,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 130,
+    "timer": 40,
+    "xp": 140,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 131,
+    "timer": 30,
+    "xp": 130,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 132,
+    "timer": 40,
+    "xp": 160,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 133,
+    "timer": 40,
+    "xp": 150,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 134,
+    "timer": 50,
+    "xp": 140,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 135,
+    "timer": 60,
+    "xp": 170,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 136,
+    "timer": 40,
+    "xp": 130,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 137,
+    "timer": 40,
+    "xp": 140,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 138,
+    "timer": 50,
+    "xp": 180,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 139,
+    "timer": 40,
+    "xp": 140,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 140,
+    "timer": 40,
+    "xp": 150,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 141,
+    "timer": 50,
+    "xp": 130,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 142,
+    "timer": 40,
+    "xp": 150,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 143,
+    "timer": 40,
+    "xp": 130,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 144,
+    "timer": 40,
+    "xp": 150,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 145,
+    "timer": 40,
+    "xp": 160,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 148,
+    "timer": 40,
+    "xp": 150,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 149,
+    "timer": 50,
+    "xp": 170,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 150,
+    "timer": 40,
+    "xp": 140,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 151,
+    "timer": 40,
+    "xp": 160,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 152,
+    "timer": 480,
+    "xp": 160,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 153,
+    "timer": 480,
+    "xp": 150,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 155,
+    "timer": 480,
+    "xp": 150,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 156,
+    "timer": 210,
+    "xp": 140,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 157,
+    "timer": 480,
+    "xp": 130,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 159,
+    "timer": 480,
+    "xp": 150,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 160,
+    "timer": 210,
+    "xp": 140,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 161,
+    "timer": 480,
+    "xp": 130,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 162,
+    "timer": 210,
+    "xp": 150,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 163,
+    "timer": 480,
+    "xp": 140,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 164,
+    "timer": 480,
+    "xp": 150,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 165,
+    "timer": 480,
+    "xp": 160,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 166,
+    "timer": 480,
+    "xp": 140,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 167,
+    "timer": 210,
+    "xp": 170,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 168,
+    "timer": 480,
+    "xp": 130,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 169,
+    "timer": 480,
+    "xp": 140,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 170,
+    "timer": 480,
+    "xp": 150,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 171,
+    "timer": 480,
+    "xp": 140,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 172,
+    "timer": 480,
+    "xp": 160,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 173,
+    "timer": 480,
+    "xp": 160,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 175,
+    "timer": 480,
+    "xp": 130,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 176,
+    "timer": 480,
+    "xp": 150,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 177,
+    "timer": 480,
+    "xp": 140,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 178,
+    "timer": 480,
+    "xp": 130,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 179,
+    "timer": 210,
+    "xp": 150,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 180,
+    "timer": 480,
+    "xp": 160,
+    "type": "solo",
+    "flirt": true,
+    "frequency": 1.0,
+    "environment": "all"
+  },
+  {
+    "id": 181,
+    "timer": 480,
+    "xp": 130,
+    "type": "solo",
+    "flirt": false,
+    "frequency": 1.0,
+    "environment": "all"
+  }
+]

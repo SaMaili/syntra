@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 
+import '../data/logbook_repository.dart';
 import '../generated/l10n.dart';
+import '../theme/app_spacing.dart';
 
 class ChallengeInfoNotification {
   static Future<void> showLastNotesNotification(
@@ -10,141 +10,148 @@ class ChallengeInfoNotification {
     String challengeId,
   ) async {
     final l10n = S.of(context);
-    // Open DB and get last logbook entry for this challenge
-    final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'challenge_database.db');
-    final db = await openDatabase(path);
-    final result = await db.rawQuery(
-      'SELECT notes, timestamp FROM logbook WHERE challenge_id = ? AND notes IS NOT NULL AND notes != "" ORDER BY timestamp DESC LIMIT 1',
-      [challengeId],
-    );
+    final messenger = ScaffoldMessenger.of(context);
+
+    final result = await LogbookRepository.instance
+        .lastNotesForChallenge(challengeId);
+
     String notes = '';
     String time = '';
-    if (result.isNotEmpty) {
-      notes = result.first['notes']?.toString() ?? '';
-      time = result.first['timestamp']?.toString() ?? '';
+    if (result != null) {
+      notes = result['notes']?.toString() ?? '';
+      time = result['timestamp']?.toString() ?? '';
     }
-    String body;
+
     String formattedTime = '';
     if (time.isNotEmpty) {
       try {
         final dt = DateTime.parse(time);
         formattedTime =
-            '${dt.day.toString().padLeft(2, '0')}.${dt.month.toString().padLeft(2, '0')}.${dt.year}';
+            '${dt.day.toString().padLeft(2, '0')}.'
+            '${dt.month.toString().padLeft(2, '0')}.'
+            '${dt.year}';
       } catch (_) {
         formattedTime = time;
       }
     }
-    if (notes.isNotEmpty) {
-      body =
-          '📝 ${l10n.lastNote}\n"$notes"\n\n📅 ${l10n.lastCompleted} $formattedTime';
-      final isDark = Theme.of(context).brightness == Brightness.dark;
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          backgroundColor: isDark ? Colors.grey[900] : null,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          title: Row(
-            children: [
-              Icon(Icons.check_circle_outline, color: Colors.green, size: 28),
-              SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  l10n.challengeAlreadyCompleted,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 17,
-                    color: Colors.green,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                ),
-              ),
-            ],
-          ),
-          content: Column(
+
+    if (!context.mounted) return;
+
+    if (notes.isEmpty) {
+      messenger.showSnackBar(SnackBar(content: Text(l10n.noNotesYet)));
+      return;
+    }
+
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
+
+    showDialog(
+      context: context,
+      builder: (ctx) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSpacing.cardRadius * 2),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: isDark ? Colors.blueGrey[900] : Colors.blue[50],
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.blueAccent.withOpacity(0.2)),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('📝', style: TextStyle(fontSize: 22)),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        notes,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontStyle: FontStyle.italic,
-                          color: isDark ? Colors.white : Colors.black87,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              // ── Title ────────────────────────────────────────────────
               Row(
                 children: [
-                  const Icon(
-                    Icons.calendar_today,
-                    color: Colors.blueGrey,
-                    size: 20,
+                  Container(
+                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    decoration: BoxDecoration(
+                      color: cs.primaryContainer,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.check_rounded,
+                      color: cs.onPrimaryContainer,
+                      size: 20,
+                    ),
                   ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: Text(
+                      l10n.challengeAlreadyCompleted,
+                      style: tt.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: cs.onSurface,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.md),
+
+              // ── Notes block ──────────────────────────────────────────
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(AppSpacing.md),
+                decoration: BoxDecoration(
+                  color: cs.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
+                ),
+                child: Text(
+                  '"$notes"',
+                  style: tt.bodyMedium?.copyWith(
+                    color: cs.onSurface,
+                    fontStyle: FontStyle.italic,
+                    height: 1.5,
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+
+              // ── Date row ─────────────────────────────────────────────
+              Row(
+                children: [
+                  Icon(Icons.calendar_today_outlined,
+                      size: 14, color: cs.onSurfaceVariant),
                   const SizedBox(width: 6),
                   Text(
                     '${l10n.lastCompleted} $formattedTime',
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: isDark ? Colors.white : null,
-                    ),
+                    style: tt.bodySmall?.copyWith(
+                        color: cs.onSurfaceVariant),
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.xs),
+
+              // ── Repeat note ──────────────────────────────────────────
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.info_outline, color: Colors.blueAccent, size: 20),
-                  SizedBox(width: 6),
+                  Icon(Icons.info_outline,
+                      size: 14, color: cs.onSurfaceVariant),
+                  const SizedBox(width: 6),
                   Expanded(
                     child: Text(
                       l10n.repeatChallengeInfo,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: isDark ? Colors.grey[300] : Colors.blueGrey,
-                      ),
+                      style: tt.bodySmall?.copyWith(
+                          color: cs.onSurfaceVariant),
                     ),
                   ),
                 ],
               ),
+              const SizedBox(height: AppSpacing.lg),
+
+              // ── Action ───────────────────────────────────────────────
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  child: Text(l10n.okayButton),
+                ),
+              ),
             ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: Text(
-                l10n.okayButton,
-                style: TextStyle(color: Colors.blueAccent),
-              ),
-            ),
-          ],
         ),
-      );
-    } else {
-      // Show snackbar if no notes found
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.noNotesYet)));
-    }
+      ),
+    );
   }
 }

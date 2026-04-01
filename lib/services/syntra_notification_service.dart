@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -28,11 +29,11 @@ class SyntraNotificationService {
 
   // Professional logging
   void _log(String message) {
-    print('[SyntraNotificationService] $message');
+    debugPrint('[SyntraNotificationService] $message');
   }
 
   void _logError(String message, [Object? error]) {
-    print('[SyntraNotificationService] ERROR: $message ${error ?? ''}');
+    debugPrint('[SyntraNotificationService] ERROR: $message ${error ?? ''}');
   }
 
   /// Initialize the notification service with professional configuration
@@ -49,9 +50,17 @@ class SyntraNotificationService {
       const AndroidInitializationSettings initializationSettingsAndroid =
           AndroidInitializationSettings('@drawable/syntrabird_notification');
 
+      const DarwinInitializationSettings initializationSettingsDarwin =
+          DarwinInitializationSettings(
+        requestAlertPermission: false,
+        requestBadgePermission: false,
+        requestSoundPermission: false,
+      );
+
       const InitializationSettings initializationSettings =
           InitializationSettings(
         android: initializationSettingsAndroid,
+        iOS: initializationSettingsDarwin,
       );
 
       await _flutterLocalNotificationsPlugin!.initialize(
@@ -79,8 +88,9 @@ class SyntraNotificationService {
     }
   }
 
-  /// Setup method channel for Flutter-Native communication
+  /// Setup method channel for Flutter-Native communication (Android only)
   void _setupMethodChannel() {
+    if (!Platform.isAndroid) return;
     _channel.setMethodCallHandler((MethodCall call) async {
       switch (call.method) {
         case 'onNotificationReceived':
@@ -538,6 +548,7 @@ class SyntraNotificationService {
 
   /// Sync global notifications enabled to native layer (Android BootReceiver)
   Future<void> setNativeNotificationsEnabled(bool enabled) async {
+    if (!Platform.isAndroid) return;
     try {
       await _channel.invokeMethod('setNotificationsEnabled', {
         'enabled': enabled,
@@ -593,6 +604,11 @@ class SyntraNotificationService {
             importance: Importance.high,
             priority: Priority.high,
             icon: '@drawable/syntrabird_notification',
+          ),
+          iOS: const DarwinNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: true,
           ),
         ),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
@@ -738,7 +754,7 @@ class NotificationRequest {
     required this.scheduledTime,
     this.data = const {},
     this.channel = NotificationChannel.reminders,
-  }) : this.title = title, this.body = body;
+  }) : title = title, body = body;
 }
 
 class NotificationResult {

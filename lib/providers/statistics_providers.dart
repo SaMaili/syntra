@@ -1,0 +1,41 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../data/logbook_repository.dart';
+
+/// Invalidate this to force all statistics providers to reload.
+final statisticsRefreshProvider = StateProvider<int>((ref) => 0);
+
+/// Controls which bottom-nav tab is active. Write to navigate programmatically.
+final homeTabIndexProvider = StateProvider<int>((ref) => 0);
+
+final overviewStatsProvider = FutureProvider<Map<String, int>>((ref) {
+  ref.watch(statisticsRefreshProvider);
+  return LogbookRepository.instance.overviewStats();
+});
+
+final weeklyXpProvider = FutureProvider<List<int>>((ref) {
+  ref.watch(statisticsRefreshProvider);
+  return LogbookRepository.instance.weeklyXp();
+});
+
+final weeklyCountsProvider =
+    FutureProvider<List<List<int>>>((ref) {
+  ref.watch(statisticsRefreshProvider);
+  return LogbookRepository.instance.weeklyChallengeCounts();
+});
+
+final activityHeatmapProvider =
+    FutureProvider<Map<String, int>>((ref) {
+  ref.watch(statisticsRefreshProvider);
+  return LogbookRepository.instance.activityHeatmap();
+});
+
+final completedChallengeIdsProvider = FutureProvider<Set<String>>((ref) {
+  ref.watch(statisticsRefreshProvider);
+  return LogbookRepository.instance.completedChallengeIds();
+});
+
+/// Convenience helper to bump the refresh counter from anywhere.
+void refreshStatistics(WidgetRef ref) {
+  ref.read(statisticsRefreshProvider.notifier).state++;
+}
