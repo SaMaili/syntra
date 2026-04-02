@@ -58,6 +58,7 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
     final async = ref.watch(dailyMissionsProvider);
     final stats = ref.watch(overviewStatsProvider);
     final streak = stats.whenOrNull(data: (s) => s['streak']) ?? 0;
+    final completedToday = stats.whenOrNull(data: (s) => s['completedToday']) ?? 0;
 
     return Scaffold(
       body: SafeArea(
@@ -67,6 +68,7 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
           data: (missions) => _MissionBoard(
             missions: missions,
             streak: streak,
+            completedToday: completedToday,
           ),
         ),
       ),
@@ -79,8 +81,13 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
 class _MissionBoard extends ConsumerWidget {
   final List<DailyMission> missions;
   final int streak;
+  final int completedToday;
 
-  const _MissionBoard({required this.missions, required this.streak});
+  const _MissionBoard({
+    required this.missions,
+    required this.streak,
+    required this.completedToday,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -116,7 +123,10 @@ class _MissionBoard extends ConsumerWidget {
                 ),
               ),
               if (streak > 0)
-                _StreakBadge(streak: streak),
+                _StreakBadge(
+                  streak: streak,
+                  isActiveToday: completedToday > 0,
+                ),
             ],
           ),
         ),
@@ -186,30 +196,39 @@ class _MissionBoard extends ConsumerWidget {
 
 class _StreakBadge extends StatelessWidget {
   final int streak;
-  const _StreakBadge({required this.streak});
+  final bool isActiveToday;
+
+  const _StreakBadge({required this.streak, this.isActiveToday = true});
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final color = isActiveToday ? cs.tertiary : cs.outline;
+    final bgColor = isActiveToday
+        ? cs.tertiary.withValues(alpha: 0.1)
+        : cs.surfaceContainerHighest;
+    final borderColor = isActiveToday
+        ? cs.tertiary.withValues(alpha: 0.3)
+        : cs.outlineVariant;
+
     return Container(
       padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md, vertical: AppSpacing.sm),
       decoration: BoxDecoration(
-        color: cs.tertiary.withValues(alpha: 0.1),
+        color: bgColor,
         borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
-        border: Border.all(color: cs.tertiary.withValues(alpha: 0.3)),
+        border: Border.all(color: borderColor),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.local_fire_department,
-              size: 16, color: cs.tertiary),
+          Icon(Icons.local_fire_department, size: 16, color: color),
           const SizedBox(width: 4),
           Text(
             '$streak day${streak == 1 ? '' : 's'}',
             style: Theme.of(context).textTheme.labelMedium?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: cs.tertiary,
+                  color: color,
                 ),
           ),
         ],

@@ -33,10 +33,18 @@ void main() {
       expect(LogbookRepository.countStreak(dates, today), 2);
     });
 
-    test('returns 0 when today has no success (streak broken)', () {
+    test('returns past streak when today has no success (streak pending)', () {
       // Only yesterday and the day before
       final dates = [
         DateTime(2026, 3, 29),
+        DateTime(2026, 3, 28),
+      ];
+      expect(LogbookRepository.countStreak(dates, today), 2);
+    });
+
+    test('returns 0 when both today and yesterday have no success (streak broken)', () {
+      // Only day before yesterday
+      final dates = [
         DateTime(2026, 3, 28),
       ];
       expect(LogbookRepository.countStreak(dates, today), 0);

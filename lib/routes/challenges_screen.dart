@@ -212,6 +212,8 @@ class _Header extends ConsumerWidget {
     final stats = ref.watch(overviewStatsProvider);
     final totalXp = stats.whenOrNull(data: (s) => s['totalXp']) ?? 0;
     final streak = stats.whenOrNull(data: (s) => s['streak']) ?? 0;
+    final completedToday = stats.whenOrNull(data: (s) => s['completedToday']) ?? 0;
+    final isStreakActiveToday = completedToday > 0;
     final cs = Theme.of(context).colorScheme;
 
     return Padding(
@@ -232,7 +234,7 @@ class _Header extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.sm, vertical: AppSpacing.sm),
             decoration: BoxDecoration(
-              color: streak > 0
+              color: streak > 0 && isStreakActiveToday
                   ? cs.tertiary.withValues(alpha: 0.12)
                   : cs.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
@@ -243,14 +245,14 @@ class _Header extends ConsumerWidget {
                 Icon(
                   Icons.local_fire_department_rounded,
                   size: 16,
-                  color: streak > 0 ? cs.tertiary : cs.outline,
+                  color: streak > 0 && isStreakActiveToday ? cs.tertiary : cs.outline,
                 ),
                 const SizedBox(width: 4),
                 Text(
                   '$streak',
                   style: Theme.of(context).textTheme.labelMedium?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: streak > 0 ? cs.tertiary : cs.outline,
+                        color: streak > 0 && isStreakActiveToday ? cs.tertiary : cs.outline,
                       ),
                 ),
               ],
