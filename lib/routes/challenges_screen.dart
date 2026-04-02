@@ -7,12 +7,11 @@ import 'package:syntra/generated/l10n.dart';
 import 'package:syntra/providers/challenge_providers.dart';
 import 'package:syntra/providers/settings_providers.dart';
 import 'package:syntra/providers/statistics_providers.dart';
-import 'package:syntra/services/sound_service.dart';
-import 'package:syntra/theme/app_spacing.dart';
-import 'package:syntra/theme/app_theme.dart';
-import 'package:syntra/widgets/syntra_button.dart';
 import 'package:syntra/routes/challenge_done_screen.dart' show socialProofCount;
 import 'package:syntra/routes/priming_screen.dart';
+import 'package:syntra/services/sound_service.dart';
+import 'package:syntra/theme/app_spacing.dart';
+import 'package:syntra/widgets/syntra_button.dart';
 
 class ChallengesScreen extends ConsumerStatefulWidget {
   const ChallengesScreen({super.key});

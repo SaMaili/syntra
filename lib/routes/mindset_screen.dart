@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../generated/l10n.dart';
 import '../theme/app_spacing.dart';
-import '../theme/app_theme.dart';
 import '../widgets/syntra_button.dart';
 
 class MindsetScreen extends StatelessWidget {

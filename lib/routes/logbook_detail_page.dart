@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../theme/app_theme.dart';
-import '../widgets/syntra_button.dart';
 import '../data/challenge_repository.dart';
 import '../data/logbook_repository.dart';
 import '../generated/l10n.dart';
 import '../providers/statistics_providers.dart' show refreshStatistics;
 import '../theme/app_spacing.dart';
+import '../widgets/syntra_button.dart';
 
 class LogbookDetailPage extends ConsumerStatefulWidget {
   final Map<String, dynamic> entry;

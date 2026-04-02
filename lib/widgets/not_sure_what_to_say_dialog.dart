@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
-import 'syntra_button.dart';
+
 import '../generated/l10n.dart';
+import 'syntra_button.dart';
 
 class NotSureWhatToSayDialog extends StatelessWidget {
   final String text;

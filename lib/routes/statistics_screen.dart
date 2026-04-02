@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../generated/l10n.dart';
 import '../providers/statistics_providers.dart';
-import '../widgets/syntra_button.dart';
 import '../theme/app_spacing.dart';
+import '../widgets/syntra_button.dart';
 import 'logbook_page.dart';
 
 class StatisticsScreen extends ConsumerStatefulWidget {

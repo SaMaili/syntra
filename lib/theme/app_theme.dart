@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'app_spacing.dart';
 
 /// Material 3 theme built from a single seed color.

@@ -6,9 +6,8 @@ import '../logic/daily_missions_logic.dart';
 import '../providers/settings_providers.dart';
 import '../providers/statistics_providers.dart';
 import '../theme/app_spacing.dart';
-import '../theme/app_theme.dart';
-import '../widgets/syntra_progress_bar.dart';
 import '../widgets/syntra_button.dart';
+import '../widgets/syntra_progress_bar.dart';
 import 'priming_screen.dart';
 
 // ─── Provider ─────────────────────────────────────────────────────────────────

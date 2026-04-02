@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'syntra_button.dart';
+
 import '../generated/l10n.dart';
 import '../services/syntra_notification_service.dart';
+import 'syntra_button.dart';
 
 /// Professional-grade Permission UI Widget.
 class NotificationPermissionWidget extends StatefulWidget {

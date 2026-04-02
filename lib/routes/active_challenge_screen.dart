@@ -4,19 +4,18 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:syntra/challenge.dart';
+import 'package:syntra/generated/l10n.dart';
 import 'package:syntra/logic/notification_manager.dart';
+import 'package:syntra/providers/settings_providers.dart';
+import 'package:syntra/services/sound_service.dart';
 import 'package:syntra/services/vibration_service.dart';
+import 'package:syntra/theme/app_spacing.dart';
 import 'package:syntra/widgets/challenge_card.dart';
 import 'package:syntra/widgets/not_sure_what_to_say_dialog.dart';
-import 'package:syntra/theme/app_theme.dart';
-import 'package:syntra/widgets/syntra_progress_bar.dart';
 import 'package:syntra/widgets/syntra_button.dart';
-import 'package:syntra/theme/app_spacing.dart';
-import 'package:syntra/services/sound_service.dart';
-import 'package:syntra/providers/settings_providers.dart';
+import 'package:syntra/widgets/syntra_progress_bar.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
-import 'package:syntra/generated/l10n.dart';
 import 'challenge_done_screen.dart';
 
 class ActiveChallengeScreen extends ConsumerStatefulWidget {
