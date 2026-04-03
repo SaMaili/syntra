@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../challenge.dart';
-import '../data/challenge_repository.dart';
 import '../data/settings_repository.dart';
 import '../logic/comfort_zone_logic.dart';
 
@@ -131,12 +130,9 @@ class ComfortZoneNotifier extends StateNotifier<int> {
 
   /// Records a successful completion and levels up if threshold is reached.
   /// Returns the new level if a level-up occurred, null otherwise.
-  Future<int?> recordSuccessAndCheckLevelUp(
-      Challenge completed, String languageCode) async {
-    final catalog =
-        await ChallengeRepository.instance.loadChallenges(languageCode);
-    final newLevel = await ComfortZoneLogic()
-        .recordSuccessAndCheckLevelUp(state, completed, catalog);
+  Future<int?> recordSuccessAndCheckLevelUp(Challenge completed) async {
+    final newLevel =
+        await ComfortZoneLogic().recordSuccessAndCheckLevelUp(state, completed);
     if (newLevel != null) {
       await setLevel(newLevel);
       return newLevel;

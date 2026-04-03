@@ -831,7 +831,7 @@ class _ChallengeDetailSheet extends ConsumerWidget {
                 challenge.description,
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
-              if (challenge.notSureWhatToSay.trim().isNotEmpty) ...[
+              if (challenge.hints.isNotEmpty) ...[
                 const SizedBox(height: AppSpacing.lg),
                 Text(
                   S.of(context).notSureWhatToSay,
@@ -848,11 +848,20 @@ class _ChallengeDetailSheet extends ConsumerWidget {
                     borderRadius:
                         BorderRadius.circular(AppSpacing.cardRadius),
                   ),
-                  child: Text(
-                    challenge.notSureWhatToSay,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: cs.onSecondaryContainer,
-                        ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: challenge.hints
+                        .map((h) => Padding(
+                              padding: const EdgeInsets.only(bottom: 4),
+                              child: Text(
+                                '• $h',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(color: cs.onSecondaryContainer),
+                              ),
+                            ))
+                        .toList(),
                   ),
                 ),
               ],
