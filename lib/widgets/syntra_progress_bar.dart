@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../providers/settings_providers.dart';
 import '../services/sound_service.dart';
 import '../services/vibration_service.dart';
-import '../providers/settings_providers.dart';
 
 /// An animated progress bar with XP sounds and haptic feedback.
 ///

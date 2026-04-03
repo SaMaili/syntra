@@ -147,7 +147,12 @@ class LogbookRepository {
       if (dateStrings.contains(ymd(check))) {
         streak++;
       } else {
-        break;
+        if (i == 0) {
+          // It's okay if today is missed, but yesterday must be present.
+          continue;
+        } else {
+          break;
+        }
       }
     }
     return streak;

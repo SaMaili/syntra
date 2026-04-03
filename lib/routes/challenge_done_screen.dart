@@ -15,10 +15,8 @@ import '../services/sound_service.dart';
 import '../services/vibration_service.dart';
 import '../static.dart';
 import '../theme/app_spacing.dart';
-import '../theme/app_theme.dart';
-import '../widgets/syntra_progress_bar.dart';
 import '../widgets/syntra_button.dart';
-import '../router.dart';
+import '../widgets/syntra_progress_bar.dart';
 
 int socialProofCount(String challengeId) {
   var hash = 0;

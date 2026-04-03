@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../generated/l10n.dart';
-import '../theme/app_theme.dart';
+import '../services/vibration_service.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/syntra_button.dart';
-import '../services/vibration_service.dart';
 
 class StreakCelebrationScreen extends ConsumerStatefulWidget {
   final int streak;

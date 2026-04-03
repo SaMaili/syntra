@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,14 +8,13 @@ import 'generated/l10n.dart';
 import 'logic/notification_manager.dart';
 import 'providers/settings_providers.dart';
 import 'providers/statistics_providers.dart' show homeTabIndexProvider;
-import 'services/sound_service.dart';
-import 'services/vibration_service.dart';
-import 'static.dart';
 import 'routes/challenges_screen.dart';
 import 'routes/daily_challenge_screen.dart';
 import 'routes/settings_screen.dart';
 import 'routes/statistics_screen.dart';
 import 'routes/streak_celebration_screen.dart';
+import 'services/sound_service.dart';
+import 'static.dart';
 
 // ─── Shell ────────────────────────────────────────────────────────────────────
 

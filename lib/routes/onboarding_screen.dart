@@ -6,15 +6,14 @@ import 'package:go_router/go_router.dart';
 
 import '../challenge.dart';
 import '../data/challenge_repository.dart';
-import '../generated/l10n.dart';
 import '../data/settings_repository.dart';
+import '../generated/l10n.dart';
 import '../providers/router_notifier.dart';
 import '../providers/settings_providers.dart';
 import '../routes/active_challenge_screen.dart';
-import '../theme/app_theme.dart';
-import '../widgets/syntra_button.dart';
 import '../services/syntra_notification_service.dart';
 import '../theme/app_spacing.dart';
+import '../widgets/syntra_button.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});

@@ -4,11 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'challenge.dart';
 import 'home_bar.dart';
 import 'providers/router_notifier.dart';
+import 'routes/about_page.dart';
 import 'routes/active_challenge_screen.dart';
 import 'routes/challenge_done_screen.dart';
 import 'routes/logbook_detail_page.dart';
 import 'routes/logbook_page.dart';
-import 'routes/about_page.dart';
 import 'routes/onboarding_screen.dart';
 import 'routes/streak_celebration_screen.dart';
 

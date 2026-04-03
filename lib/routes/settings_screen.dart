@@ -4,16 +4,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/challenge_repository.dart';
 import '../data/settings_repository.dart';
 import '../generated/l10n.dart';
-import '../logic/notification_manager.dart';
 import '../logic/comfort_zone_logic.dart';
+import '../logic/notification_manager.dart';
 import '../providers/challenge_providers.dart';
 import '../providers/settings_providers.dart';
 import '../providers/statistics_providers.dart' show statisticsRefreshProvider;
 import '../services/syntra_notification_service.dart';
 import '../theme/app_spacing.dart';
-import '../theme/app_theme.dart';
-import '../widgets/syntra_progress_bar.dart';
 import '../widgets/syntra_button.dart';
+import '../widgets/syntra_progress_bar.dart';
 import 'about_page.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -388,7 +387,7 @@ class _ComfortZoneLevelCardState extends ConsumerState<_ComfortZoneLevelCard> {
       if (prev != next) _loadCompletions();
     });
     // Refresh after every challenge completion (even without a level-up).
-    ref.listenManual(statisticsRefreshProvider, (_, __) => _loadCompletions());
+    ref.listenManual(statisticsRefreshProvider, (_, _) => _loadCompletions());
   }
 
   Future<void> _loadCompletions() async {

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../services/sound_service.dart';
+
 import '../providers/settings_providers.dart';
+import '../services/sound_service.dart';
 import '../theme/app_spacing.dart';
 
 /// A 3D-styled tactile button that aligns with Syntra's "Experience" design.
