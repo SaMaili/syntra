@@ -1,0 +1,1274 @@
+================================================================================
+SYNTRA — CODEBASE CONCEPTUAL ANALYSIS (UPDATED)
+================================================================================
+Written: 2026-04-03
+Replaces: 2026-03-29 version
+Purpose: Full architectural audit reflecting the current state of the codebase
+         after all major refactors and feature additions.
+================================================================================
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 1 — WHAT THE APP IS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Syntra is an offline-first Flutter app for building social confidence through
+deliberate social challenges. Users are presented with real-world social tasks
+(e.g. "start a conversation with a stranger", "give someone a compliment"),
+accept them with a countdown timer, and log whether they succeeded or not.
+XP ("Aura Points") is awarded on success, streaks are tracked, and every
+attempt is stored in a logbook.
+
+The app is structured around a progression system: a five-level Comfort Zone
+Level (CZL) which gates which challenges are visible, unlocking harder content
+as the user completes enough challenges at their current level.
+
+Each day a Mission Board offers three tailored challenges (Comfort / Growth /
+Bold tier), with a 10% XP bonus for completing daily missions. The app reminds
+users via local notifications and celebrates streaks with an animated screen.
+
+There is no backend, no account system, and no cloud sync. All data lives on
+the device.
+
+TECH STACK:
+  Flutter (Dart) · Riverpod 2.x · go_router · SQLite (sqflite) ·
+  SharedPreferences · flutter_local_notifications · fl_chart ·
+  audioplayers · vibration · intl (flutter_intl)
+
+PLATFORM SUPPORT:
+  Android — fully supported, including exact-alarm scheduling via AlarmManager
+  iOS — supported with flutter_local_notifications (UNUserNotificationCenter);
+        no native scheduling layer equivalent to Android exists
+
+APP VERSION: 1.0.0+1 (pre-release)
+DART SDK: ^3.8.1
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 2 — PROJECT STRUCTURE (CURRENT)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+lib/
+├── main.dart                          Boot: copy DB, migrate settings, init router
+├── static.dart                        Notification message pools + streak milestones
+├── challenge.dart                     Challenge data model
+├── home_bar.dart                      Bottom-nav shell (PageView + NavigationBar)
+├── router.dart                        GoRouter config + AppNavigation extensions
+│
+├── theme/
+│   ├── app_theme.dart                 Material 3 ColorScheme from seed + ThemeData
+│   └── app_spacing.dart               8-point grid constants (xs/sm/md/lg/xl/xxl)
+│
+├── data/
+│   ├── challenge_repository.dart      Loads JSON assets → List<Challenge> (cached)
+│   ├── logbook_repository.dart        SQLite CRUD + stat queries on logbook table
+│   └── settings_repository.dart      All settings via SharedPreferences (single source)
+│
+├── providers/
+│   ├── challenge_providers.dart       Catalog, CZL filter, challenge filters, sorted list
+│   ├── settings_providers.dart        Theme, locale, notifications, CZL, sound effects
+│   ├── statistics_providers.dart      Stats/charts FutureProviders + refresh signal
+│   └── router_notifier.dart           ChangeNotifier for GoRouter onboarding guard
+│
+├── logic/
+│   ├── comfort_zone_logic.dart        CZL progression: level assignment, unlock logic
+│   ├── daily_missions_logic.dart      Three-tier daily mission selection + persistence
+│   └── notification_manager.dart      High-level Dart scheduling + sendNotification
+│
+├── routes/                            One file per screen
+│   ├── onboarding_screen.dart         7-page onboarding flow (864 lines)
+│   ├── challenges_screen.dart         Browse + filter + CZL card list (965 lines)
+│   ├── active_challenge_screen.dart   Live countdown timer + abort logic (499 lines)
+│   ├── challenge_done_screen.dart     Post-challenge survey + XP display (537 lines)
+│   ├── daily_challenge_screen.dart    Mission Board (three-tier daily missions) (494 lines)
+│   ├── statistics_screen.dart         XP, streak, charts, heatmap (659 lines)
+│   ├── logbook_page.dart              Paginated history list (271 lines)
+│   ├── logbook_detail_page.dart       Single entry detail view (417 lines)
+│   ├── settings_screen.dart           All app preferences (518 lines)
+│   ├── streak_celebration_screen.dart Animated streak/milestone celebration (225 lines)
+│   ├── priming_screen.dart            Motivational pre-challenge priming (243 lines)
+│   ├── mindset_screen.dart            Static mindset / theory content (287 lines)
+│   └── about_page.dart                App info, version, links (103 lines)
+│
+├── services/
+│   ├── syntra_notification_service.dart  Enterprise notification bridge (~850 lines)
+│   ├── sound_service.dart                audioplayers wrapper (static methods)
+│   └── vibration_service.dart            vibration wrapper (static methods)
+│
+├── widgets/
+│   ├── challenge_card.dart               Reusable card (title, XP badge, description)
+│   ├── syntra_button.dart                Custom FilledButton with icon variant
+│   ├── syntra_progress_bar.dart          Animated XP bar
+│   ├── challenge_info_notification.dart  In-app info banner
+│   ├── notification_permission_widget.dart Permission prompt UI
+│   └── not_sure_what_to_say_dialog.dart  Hint dialog during active challenge
+│
+└── generated/                         Auto-generated by flutter_intl — do not edit
+    ├── l10n.dart
+    └── intl/messages_en.dart, messages_de.dart
+
+android/app/src/main/kotlin/app/inneract/syntra/
+├── MainActivity.kt                    Flutter entry + MethodChannel registration
+└── notifications/
+    ├── SyntraNotificationManager.kt   AlarmManager.setExactAndAllowWhileIdle()
+    ├── SyntraNotificationReceiver.kt  BroadcastReceiver for AlarmManager triggers
+    └── SyntraBootReceiver.kt          Reschedules on: boot, update, timezone, clock
+
+assets/
+├── challenge_database.db              SQLite DB for logbook user data only (not catalog)
+├── data/
+│   ├── challenges.json                Challenge metadata (XP, timer, type, etc.)
+│   └── translations/
+│       ├── en.json                    English title/description/hint keyed by ID
+│       └── de.json                    German translations
+└── sounds/
+    ├── ding-126626.mp3                Navigation sound (tab tap)
+    ├── error-call-to-attention-129258.mp3  Failure sound
+    ├── Loading_Sucsess_sound.wav      Unused / loading sound
+    ├── Prompt_XP_Bar_Progress.wav     XP bar fill sound
+    ├── skyscraper_seven-click-buttons-ui-menu-sounds-effects-button-2-203594.mp3
+    └── yipee-45360.wav                Success sound
+
+test/
+├── challenge_filters_test.dart        Filter logic (type, flirt, sort)
+├── comfort_zone_logic_test.dart       CZL level assignment + unlock
+├── daily_mission_model_test.dart      Mission tier selection
+├── social_proof_test.dart             Deterministic hash correctness
+├── streak_logic_test.dart             Streak counting edge cases
+└── widget_test.dart                   (placeholder only)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 3 — EVERY SYSTEM IN DETAIL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+─── 3.1 APP STARTUP ────────────────────────────────────────────────────────────
+
+main() runs these steps synchronously before runApp():
+
+  1. WidgetsFlutterBinding.ensureInitialized()
+  2. tz.initializeTimeZones() — timezone data for notification scheduling
+  3. _copyDatabaseIfNeeded() — copies challenge_database.db from assets to the
+     sqflite database directory if not already present (first launch only).
+     NOTE: this DB now only stores the logbook table; the challenge catalog
+     has moved to JSON.
+  4. _migrateSettingsJson() — one-time migration: reads the legacy settings.json
+     from documents dir, writes all values to SharedPreferences via
+     SettingsRepository, then deletes the JSON file. Best-effort (errors ignored).
+  5. SettingsRepository.instance.loadOnboardingComplete() — read before router
+     init so the router can set initialLocation correctly without async redirect.
+  6. routerNotifier = RouterNotifier(onboardingDone) — global late final ChangeNotifier
+     used by GoRouter's refreshListenable.
+  7. SyntraNotificationService.instance.initialize() — Flutter plugin init +
+     Android MethodChannel setup.
+  8. runApp(ProviderScope(child: SyntraApp()))
+
+SyntraApp (ConsumerWidget):
+  - Watches themeModeProvider → ThemeMode (light/dark/system)
+  - Watches localeProvider → Locale (en/de)
+  - Renders MaterialApp.router with AppTheme.light(), AppTheme.dark(),
+    appRouter (GoRouter), S.delegate for localization.
+
+
+─── 3.2 NAVIGATION ─────────────────────────────────────────────────────────────
+
+Router: go_router (GoRouter) with a ChangeNotifier-based refresh.
+
+ROUTE GUARD (router.dart):
+  GoRouter.redirect checks routerNotifier.onboardingComplete:
+    - Not done + not on /onboarding → redirect to /onboarding
+    - Done + on /onboarding → redirect to /
+    - Otherwise → null (no redirect)
+
+NAMED ROUTES (AppRoutes abstract class):
+  /                    → HomeBar (bottom-nav shell)
+  /onboarding          → OnboardingScreen
+  /active_challenge    → ActiveChallengeScreen (extra: Challenge)
+  /challenge_done      → ChallengeDoneScreen (extra: _ChallengeDoneArgs)
+  /logbook             → LogbookPage
+  /logbook_detail      → LogbookDetailPage (extra: Map<String,dynamic>)
+  /about               → AboutNotePage
+  /streak_celebration  → StreakCelebrationScreen (extra: _StreakCelebrationArgs)
+
+EXTENSION HELPERS (AppNavigation on BuildContext):
+  context.goActiveChallenge(challenge)
+  context.goChallengeDone(challenge, rewardFactor)
+  context.goLogbook()
+  context.goLogbookDetail(entry)
+  context.goAbout()
+  context.goStreakCelebration(streak, isMilestone)
+
+BOTTOM NAVIGATION (HomeBar):
+  Uses a PageView + NavigationBar. Tabs:
+    0 — ChallengesScreen    (explore icon)
+    1 — DailyChallengeScreen (calendar icon)
+    2 — StatisticsScreen    (bar_chart icon)
+    3 — SettingsScreen      (settings icon)
+
+  PageView is swipeable (BouncingScrollPhysics) so users can swipe between tabs.
+  Programmatic tab switches use homeTabIndexProvider (StateProvider<int>).
+  HomeBar listens to homeTabIndexProvider and calls animateToPage().
+
+NOTEWORTHY INCONSISTENCY:
+  ActiveChallengeScreen pushes ChallengeDoneScreen with Navigator.of(context).push<double>
+  (old-style navigator), not GoRouter. This is intentional (it needs a return value)
+  but means /challenge_done is not reachable via deep link from this path.
+
+
+─── 3.3 CHALLENGE MODEL ────────────────────────────────────────────────────────
+
+File: lib/challenge.dart
+
+  Field              Type      Notes
+  ─────────────────────────────────────────────────────────────────────────────
+  id                 String    Unique ID as string (e.g. "90"). From JSON.
+  title              String    Localized title
+  description        String    Main challenge text
+  notSureWhatToSay   String    Suggested script for social anxiety
+  xp                 int       Base reward points
+  time               int       Timer duration in seconds
+  type               String    "solo" | "group" | "both"
+  flirt              bool      Whether this is a flirt-type challenge
+  frequency          double    0.0–1.0, how commonly it should appear
+  environment        String    "street" | "public_transport" | "home" |
+                               "work" | "all"
+
+NOTE: All fields are mutable (var, not final). The model has toMap() and
+fromMap() helpers for SQLite serialization (used in old code paths that
+wrote challenges to DB — these are vestigial; the catalog is now JSON-only).
+
+Challenge IDs start at 90 (comment in the id field). The JSON catalog uses
+numeric IDs but they are read as strings via `meta['id'].toString()`.
+
+
+─── 3.4 CHALLENGE DATA LAYER ────────────────────────────────────────────────────
+
+CATALOG (read-only, JSON):
+
+  ChallengeRepository (lib/data/challenge_repository.dart)
+  Pattern: Singleton, in-memory cache per language
+
+  loadChallenges(languageCode) → Future<List<Challenge>>:
+  1. Returns cached list if language matches.
+  2. Loads assets/data/challenges.json (metadata: id, xp, timer, type, flirt,
+     frequency, environment).
+  3. Loads assets/data/translations/{languageCode}.json (title, description, hint).
+  4. Falls back to 'en' translations if a key is missing in the requested language.
+  5. Builds List<Challenge> and stores in _cache.
+
+  invalidate() clears the cache (e.g., on language switch).
+
+LOGBOOK (read/write, SQLite):
+
+  LogbookRepository (lib/data/logbook_repository.dart)
+  Pattern: Singleton, lazy database open
+
+  Database: challenge_database.db (same file as original, but only the logbook
+  table is used — challenge tables in the file are ignored)
+
+  Schema version 2 (via onUpgrade migration):
+    logbook table:
+      id               INTEGER PK AUTOINCREMENT
+      challenge_id     INTEGER (stored as integer, coerced to string on read)
+      status           TEXT     'success' | 'tried'  (NOTE: 'tried', not 'failed')
+      earned           INTEGER  XP awarded (0 for aborted)
+      timestamp        DATETIME ISO8601 string
+      notes            TEXT     nullable
+      feeling          INTEGER  nullable, 0–4 emoji scale
+      perception       INTEGER  nullable, 0–4 emoji scale
+      duration_seconds INTEGER  nullable (added in v2 migration)
+
+  Key methods:
+    addEntry(...)                   → INSERT
+    allEntries({limit, offset})     → paginated SELECT DESC
+    entryById(id)                   → SELECT by PK
+    overviewStats()                 → single-query aggregate:
+                                       totalXp, todayXp, completedAllTime,
+                                       completedToday, streak, minutesBrave
+    weeklyXp({days=7})              → List<int> XP per day (oldest→newest)
+    weeklyChallengeCounts({days=7}) → List<List<int>> [successes, tried] per day
+    activityHeatmap({weeks=12})     → Map<dateStr, count> for heatmap grid
+    completedChallengeIds()         → Set<String> of all success challenge_ids
+    lastNotesForChallenge(id)       → most recent notes for a challenge
+    deleteEntry(id)                 → DELETE
+    countStreak(dates, today) [static, pure] → streak algorithm (testable)
+
+  STREAK ALGORITHM:
+    Queries distinct successful days (last 100), walks backwards from today.
+    If today is missed, yesterday still counts (streak is "pending").
+    If both today and yesterday are missed, streak is broken.
+    Uses string-based date comparison to avoid DST edge cases.
+
+SETTINGS (SharedPreferences only):
+
+  SettingsRepository (lib/data/settings_repository.dart)
+  Pattern: Singleton, direct SharedPreferences calls
+
+  Stored keys:
+    settings_dark_mode              bool?
+    settings_language               String?
+    notifications_enabled           bool (default: false)
+    sound_effects_enabled           bool (default: true)
+    notification{1,2,3}Enabled      bool
+    notification{1,2,3}TimeHour     int
+    notification{1,2,3}TimeMinute   int
+    onboarding_complete             bool
+    comfort_zone_level              int (default: 1)
+    last_opened_date                String (ISO date)
+    last_celebrated_streak          int (default: 0)
+
+  Also used by Kotlin BootReceiver directly (no bridge needed).
+
+
+─── 3.5 STATE MANAGEMENT (RIVERPOD) ────────────────────────────────────────────
+
+All providers live in lib/providers/. The app uses Riverpod 2.x with
+ProviderScope wrapping the whole app.
+
+SETTINGS PROVIDERS (settings_providers.dart):
+  themeModeProvider               StateNotifierProvider<ThemeModeNotifier, ThemeMode>
+  localeProvider                  StateNotifierProvider<LocaleNotifier, Locale>
+  activeLocaleProvider            Provider<String>  — derived language code string
+  notificationsEnabledProvider    StateNotifierProvider<..., bool>
+  soundEffectsEnabledProvider     StateNotifierProvider<..., bool>
+  comfortZoneLevelProvider        StateNotifierProvider<ComfortZoneNotifier, int>
+  notificationSlotsProvider       StateNotifierProvider<..., List<NotificationSlotSettings>>
+
+  All StateNotifiers load from SharedPreferences on construction (_load() async).
+  comfortZoneLevelProvider.notifier.recordSuccessAndCheckLevelUp() handles CZL
+  progression — loads catalog, delegates to ComfortZoneLogic, saves new level.
+
+CHALLENGE PROVIDERS (challenge_providers.dart):
+  challengeCatalogProvider        FutureProvider<List<Challenge>>
+                                    Watches activeLocaleProvider, reloads on lang change.
+  czlFilteredChallengesProvider   Provider<AsyncValue<List<Challenge>>>
+                                    Applies CZL gate: only challenges at or below user level.
+  challengeFiltersProvider        StateNotifierProvider<..., ChallengeFilters>
+                                    Persisted to SharedPreferences.
+  filteredChallengesProvider      Provider<AsyncValue<List<Challenge>>>
+                                    Applies ChallengeFilters to czlFiltered list.
+
+  ChallengeFilters fields:
+    typeFilter      ChallengeTypeFilter  solo | group | both  (persisted)
+    flirtFilter     FlirtFilter          all | showOnly | exclude  (persisted)
+    showOnlyNotDone bool                 (persisted)
+    sortBy          SortMode             frequency | difficulty  (persisted)
+    activeFilterCount  int getter → count of non-default advanced filters (badge)
+
+STATISTICS PROVIDERS (statistics_providers.dart):
+  statisticsRefreshProvider       StateProvider<int>  — bump to invalidate all stats
+  homeTabIndexProvider            StateProvider<int>  — programmatic tab switching
+  overviewStatsProvider           FutureProvider<Map<String,int>>
+  weeklyXpProvider                FutureProvider<List<int>>
+  weeklyCountsProvider            FutureProvider<List<List<int>>>
+  activityHeatmapProvider         FutureProvider<Map<String,int>>
+  completedChallengeIdsProvider   FutureProvider<Set<String>>
+
+  All stat providers watch statisticsRefreshProvider. refreshStatistics(ref)
+  is a convenience function that increments it to force all to reload.
+
+
+─── 3.6 COMFORT ZONE LEVEL (CZL) SYSTEM ────────────────────────────────────────
+
+File: lib/logic/comfort_zone_logic.dart
+
+Five levels, each with a name and description:
+  1 — Warming Up        "Micro-interactions — low stakes, high growth"
+  2 — Breaking the Ice  "Brief exchanges with real humans"
+  3 — Holding the Floor "Sustained conversations and presence"
+  4 — Taking Risks      "Vulnerability, compliments, assertiveness"
+  5 — The Bold Zone     "High-stakes social challenges"
+
+Level assignment (assignLevel):
+  Sorts entire catalog by XP, finds this challenge's percentile:
+    0–20%  → level 1
+    20–40% → level 2
+    40–60% → level 3
+    60–80% → level 4
+    80%+   → level 5
+
+  This is deterministic and catalog-relative — adding new challenges can
+  shift all level assignments.
+
+Level unlocking (recordSuccessAndCheckLevelUp):
+  Only completions of challenges AT or ABOVE the user's current level count.
+  After completionsToUnlock (= 3) such completions at current level → level up.
+  Completion counts are persisted per level in SharedPreferences:
+    key: 'czl_completions_' + level number
+
+filterByCzl(catalog, currentLevel):
+  Returns only challenges assigned level ≤ currentLevel. This is what
+  czlFilteredChallengesProvider applies before other filters.
+
+
+─── 3.7 DAILY MISSIONS SYSTEM ──────────────────────────────────────────────────
+
+File: lib/logic/daily_missions_logic.dart
+
+Replaces the old single-daily-challenge with a three-tier Mission Board.
+
+Three tiers per day:
+  Comfort — from the bottom third of the catalog by XP (non-flirt preferred)
+  Growth  — from the middle third
+  Bold    — from the top third (falls back to top 5 overall if too small)
+
+Selection algorithm (DailyMissionsLogic.getTodayMissions):
+  1. Load full catalog for the current language.
+  2. Filter out flirt challenges (preferred pool).
+  3. Sort by XP, split into thirds.
+  4. If stored date ≠ today OR any stored ID is null → re-roll all three.
+  5. Randomly pick one challenge per tier, persist IDs + date.
+  6. Return List<DailyMission> with completed flags from SharedPreferences.
+
+markCompleted(tier) → sets the tier's done key to true.
+
+Persistence keys (SharedPreferences):
+  daily_missions_date, daily_missions_{comfort|growth|bold}_id,
+  daily_missions_{comfort|growth|bold}_done
+
+XP BONUS: ChallengeDoneScreen adds a 10% bonus (rounded) to earned XP when
+isDailyMission = true and the challenge was not aborted.
+
+
+─── 3.8 ONBOARDING FLOW ────────────────────────────────────────────────────────
+
+File: lib/routes/onboarding_screen.dart  (864 lines)
+
+7 pages navigated via a PageController (NeverScrollableScrollPhysics — no swipe):
+  Page 1 — Hook            "You've come to the right place." CTA.
+  Page 2 — How It Works   3-step process overview with icons.
+  Page 3 — Safety          Empathy statement, mental health note.
+  Page 4 — Starting Point  User selects CZL 1/2/3 from animated cards.
+                            Selection is saved immediately to both SharedPreferences
+                            and comfortZoneLevelProvider. Auto-advances after 300ms.
+  Page 5 — Commitment      Motivational framing.
+  Page 6 — Notifications   Morning/Afternoon/Evening slot chips.
+                            Enable button requests permission + enables selected
+                            slots (defaults to all three if none selected).
+                            Skip button advances without notifications.
+  Page 7 — First Challenge Shows the easiest solo non-flirt challenge.
+                            "Start Now" → completeOnboarding → navigate to /
+                            then push ActiveChallengeScreen via Navigator.push.
+                            "Do It Later" → completeOnboarding → go('/').
+
+Progress indicator: dot indicator with active dot expanding to 20px wide.
+Skip button visible on pages 1–6, hidden on page 7.
+
+On completion, SettingsRepository.saveOnboardingComplete(true) is called and
+routerNotifier.completeOnboarding() triggers GoRouter to re-evaluate and
+redirect to '/', unblocking the main app.
+
+
+─── 3.9 ACTIVE CHALLENGE SCREEN ────────────────────────────────────────────────
+
+File: lib/routes/active_challenge_screen.dart  (499 lines)
+
+ConsumerStatefulWidget with TickerProviderStateMixin + WidgetsBindingObserver.
+
+State:
+  mainTimer         int    seconds remaining (decremented by wall-clock diff)
+  abortLockTimer    int    15 → 0 countdown before abort button appears
+  _startTime        DateTime  absolute start time
+  _endTime          DateTime  _startTime + challenge.time seconds
+  _progressController  AnimationController  drives continuous SyntraXpBar fill
+  _fadeController   AnimationController  fade-in on entry
+
+Two Future.doWhile() loops drive the timers (no periodic Timer):
+  mainTicker:     checks wall-clock diff every second, syncs mainTimer
+  abortLockTicker: decrements abortLockTimer every second until 0
+
+Background handling (WidgetsBindingObserver):
+  On paused: schedules a "time's up" notification at _endTime via
+             NotificationManager.sendNotification(scheduledTime: _endTime)
+  On resumed: re-syncs mainTimer from wall-clock, cancels scheduled notification
+              if time hasn't expired yet, re-syncs _progressController.
+
+10-second warning: VibrationService.timerWarning() fires at mainTimer == 10.
+Timer up: VibrationService.timerEnd() + immediate local notification.
+
+rewardFactor:
+  1.0  — timer expired naturally (full XP)
+  0.8  — user tapped Done before timer expired
+  -0.5 — user tapped Abort (records 'tried', earns 0 XP)
+
+_finishChallenge(rewardFactor):
+  Uses Navigator.of(context).push<double>(MaterialPageRoute → ChallengeDoneScreen).
+  On ChallengeDoneScreen returning a result, cancels any pending notification,
+  calls widget.onDone?(result), then popUntil(isFirst).
+
+PopScope(canPop: false) prevents back-button navigation during a live challenge.
+
+UI sub-widgets (file-private):
+  _TimerBar       Container with countdown text + SyntraXpBar
+  _HelpButton     OutlinedButton → opens NotSureWhatToSayDialog
+  _AbortButton    TextButton in error color, slide-in when lock expires
+
+
+─── 3.10 CHALLENGE DONE SCREEN ─────────────────────────────────────────────────
+
+File: lib/routes/challenge_done_screen.dart  (537 lines)
+
+ConsumerStatefulWidget. Receives: Challenge, rewardFactor, durationSeconds?,
+onDone? callback, isDailyMission flag.
+
+Computed state:
+  _isAborted   → rewardFactor < 0
+  _earnedXp    → isAborted ? 0 : (challenge.xp * rewardFactor).round()
+  _bonusXp     → isDailyMission && !isAborted ? (_earnedXp * 0.1).round() : 0
+  _totalXp     → _earnedXp + _bonusXp
+  _status      → isAborted ? 'tried' : 'success'
+
+UI on success:
+  - Trophy icon in primaryContainer circle
+  - "Congratulations" headline
+  - Coach message in italic quote box (deterministic per challenge ID using hash)
+  - XP chip with TweenAnimationBuilder (counts up 0 → _totalXp in 900ms)
+  - SyntraXpBar animates rewardFactor over 2300ms
+  - Daily bonus badge (scale-in animation) if _bonusXp > 0
+  - _SurveyWidget (mood emoji scale + perception emoji scale + notes text field)
+
+UI on abort:
+  - Meditation icon in surfaceContainerHighest circle
+  - "Too bad" headline
+  - failureCopy body text
+  - "+0 Aura Points" chip
+
+_onBackToHome:
+  1. Auto-submits survey if not already submitted
+  2. Writes logbook entry (LogbookRepository.addEntry with feeling, perception, notes)
+  3. If success: calls comfortZoneLevelProvider.notifier.recordSuccessAndCheckLevelUp
+  4. If level-up: shows _LevelUpDialog (blocks until dismissed)
+  5. If new streak > last celebrated: saves new last, computes isMilestone,
+     pushes StreakCelebrationScreen via Navigator.push
+  6. refreshStatistics(ref)
+  7. Calls widget.onDone? and navigator.pop(rewardFactor)
+
+SOCIAL PROOF (socialProofCount):
+  Deterministic hash of challenge ID → integer 800–4499.
+  Used to display "X others have done this" — purely cosmetic, not real data.
+
+COACH MESSAGES (coachMessage):
+  Pool of 7 localized coach messages. Deterministic hash of challenge ID selects
+  one, so the same challenge always shows the same message.
+
+_SurveyWidget (private StatefulWidget):
+  Two 5-point emoji icon rows (sentiment_very_dissatisfied → sentiment_very_satisfied).
+  Uses semantic color constants (red/orange/amber/lightGreen/green) intentionally
+  not tied to the theme — these are universal emotion colors.
+  Notes TextField (2–4 lines). submit() flips to "thank you" text.
+
+
+─── 3.11 CHALLENGES SCREEN ──────────────────────────────────────────────────────
+
+File: lib/routes/challenges_screen.dart  (965 lines — largest file)
+
+ConsumerStatefulWidget. Watches:
+  filteredChallengesProvider     — the fully-filtered list
+  challengeFiltersProvider       — active filter state
+  completedChallengeIdsProvider  — Set<String> for "show only not done"
+
+UI structure:
+  - AppBar with filter chip row (Solo/Group/Both segmented control + advanced
+    filter button with badge showing activeFilterCount)
+  - If showOnlyNotDone: filters filteredChallenges to exclude completedIds
+  - Large card list — NOT a swiper anymore. Vertical scroll of ChallengeCard widgets.
+  - Each card has a "Start" button. Tapping opens a bottom sheet with full
+    challenge description, then accepts and navigates to /active_challenge.
+
+Advanced filter bottom sheet (shown by filter icon):
+  - FlirtFilter (All/Show Only/Exclude) toggle
+  - showOnlyNotDone toggle
+  - SortMode (Frequency/Difficulty) toggle
+  - Reset all button
+
+CZL progress section at top: shows current level name, completions/3 toward next unlock.
+"Explore all challenges" link at bottom switches to tab 1 (Daily Missions) via
+homeTabIndexProvider.
+
+Previously-completed challenges show a checkmark badge on their card.
+
+
+─── 3.12 DAILY CHALLENGE SCREEN (MISSION BOARD) ────────────────────────────────
+
+File: lib/routes/daily_challenge_screen.dart  (494 lines)
+
+ConsumerStatefulWidget. Loads missions via DailyMissionsLogic.getTodayMissions()
+into local state (_missions). Three mission cards stacked vertically, one per tier.
+
+Each card shows:
+  - Tier label (Comfort / Growth / Bold) with color
+  - Challenge title and description
+  - XP amount + "Daily Bonus +10%" note
+  - Timer duration
+  - "Start" button OR completed checkmark
+
+Starting a mission: calls context.goActiveChallenge(challenge). The
+ChallengeDoneScreen is reached via the active challenge flow, which passes
+isDailyMission: true so the 10% XP bonus is applied.
+
+On return from a completed challenge, DailyMissionsLogic.markCompleted(tier)
+is called and the card updates to show the completion checkmark.
+
+
+─── 3.13 STATISTICS SCREEN ─────────────────────────────────────────────────────
+
+File: lib/routes/statistics_screen.dart  (659 lines)
+
+Watches: overviewStatsProvider, weeklyXpProvider, weeklyCountsProvider,
+         activityHeatmapProvider.
+
+Displayed stats (from overviewStatsProvider):
+  Total Aura Points (all time)
+  Aura Points today
+  Challenges completed (all time)
+  Challenges completed today
+  Current streak (days)
+  Minutes Brave (total active challenge time)
+
+Charts (fl_chart ^1.0.0):
+  Weekly XP bar chart (last 7 days, day labels Mon–Sun)
+  Weekly completions vs tried bar chart (last 7 days, grouped)
+
+Activity heatmap:
+  12-week Mon-aligned grid. Each cell is colored by activity intensity
+  (0 = surface color, 1 = light primary, 2+ = full primary).
+  Shows ISO date on tap.
+
+Streak display: prominent streak number + fire icon. Milestone banners
+shown for streaks in streakMilestones = [1, 3, 7, 14, 30, 60, 100].
+
+
+─── 3.14 STREAK CELEBRATION SCREEN ─────────────────────────────────────────────
+
+File: lib/routes/streak_celebration_screen.dart  (225 lines)
+
+ConsumerStatefulWidget with TickerProviderStateMixin. Two animation controllers:
+  _fireCtrl   — elasticOut scale + slight rotation on the main icon
+  _textCtrl   — easeIn opacity + slide-up for text content
+
+Two phases (if isMilestone = true):
+  Phase 0: Daily streak celebration. Fire icon. "🔥 X day streak!"
+  Phase 1: Milestone celebration. Trophy icon. Specific milestone message
+           for days [3,7,14,30,60,100] or a generic message otherwise.
+
+Background: hardcoded dark (#121212) with radial gradient. Phase 1 has
+a golden tint (#1A1A00). These are intentionally non-themed for dramatic impact.
+
+Triggered from two places:
+  1. ChallengeDoneScreen._onBackToHome — after logging a successful attempt
+  2. HomeBar._showStreakCelebration — on daily re-open (if new day + streak > 0)
+
+
+─── 3.15 SETTINGS SCREEN ────────────────────────────────────────────────────────
+
+File: lib/routes/settings_screen.dart  (518 lines)
+
+ConsumerStatefulWidget. Watches all settings providers.
+
+Sections:
+  Appearance: Light/Dark/System mode toggle (SegmentedButton)
+  Language: EN/DE selector (SegmentedButton)
+  Sound Effects: on/off Switch → soundEffectsEnabledProvider
+  Notifications master toggle → notificationsEnabledProvider
+    When disabled: cancels all via NotificationManager.cancelAllNotifications()
+    When enabled: schedules via NotificationManager.scheduleDailyReminders()
+  Three notification slots (Morning 9:00 / Afternoon 14:00 / Evening 19:00):
+    Each: enable/disable Switch + time picker (TimeOfDay)
+    Changes call notificationSlotsProvider.notifier.updateSlot() and
+    reschedule via NotificationManager
+  About link → context.goAbout()
+
+
+─── 3.16 NOTIFICATION SYSTEM ────────────────────────────────────────────────────
+
+Two classes manage notifications. They overlap and have some redundancy.
+
+─ SyntraNotificationService (lib/services/syntra_notification_service.dart) ─────
+~850 lines. The primary service initialized at startup.
+
+Responsibilities:
+  - Flutter plugin initialization (Android + iOS DarwinInitializationSettings)
+  - MethodChannel setup for native Android bridge
+  - Permission requests (Android: POST_NOTIFICATIONS + SCHEDULE_EXACT_ALARM;
+    iOS: UNUserNotificationCenter via IOSFlutterLocalNotificationsPlugin)
+  - scheduleExactNotification(): tries native Android first, falls back to
+    flutter_local_notifications zonedSchedule()
+  - batchScheduleNotifications(): native batch call on Android, individual
+    fallback otherwise
+  - cancelNotification(id), cancelAllNotifications()
+  - getScheduledNotifications(): reads from SharedPreferences JSON store
+  - rescheduleAllNotifications(): re-schedules from stored JSON list (used
+    by boot handler via handleBootCompleted callback)
+  - showNotificationNow(): immediate notification (debugging)
+  - setNativeNotificationsEnabled(bool): syncs to native layer
+
+Notification metadata is mirrored in SharedPreferences under key
+'syntra_scheduled_notifications' as a JSON array. This allows the service
+to reschedule from Dart without a separate database.
+
+Notification channels:
+  syntra_reminders   Daily motivation reminders
+  syntra_challenges  Challenge timer "time's up"
+  syntra_system      System messages
+
+─ NotificationManager (lib/logic/notification_manager.dart) ─────────────────────
+~640 lines. Higher-level scheduling logic that wraps SyntraNotificationService.
+
+Responsibilities:
+  - scheduleDailyReminders(): reads all enabled slots from SharedPreferences,
+    calculates next 7 occurrences of each enabled time slot, batch-schedules
+    via SyntraNotificationService.
+  - cancelAllNotifications(): triple-cancels (flutter plugin + service + native
+    MethodChannel directly — defensive coding)
+  - sendNotification(channelId, title, body, scheduledTime): used by
+    ActiveChallengeScreen for the "time's up" background notification
+  - sendImmediateNotification(): wrapper for when timer expires in foreground
+  - cancelNotification(id): cancels a specific scheduled notification
+  - initialize(): local plugin init (separate from SyntraNotificationService init)
+
+─ Android Native Layer ──────────────────────────────────────────────────────────
+
+SyntraNotificationManager.kt:
+  Uses AlarmManager.setExactAndAllowWhileIdle() for exact timing even in Doze.
+  Creates three notification channels on app install.
+  scheduleExactAlarm(id, title, body, triggerTime, channelId)
+  batchScheduleNotifications(...)
+  cancelNotification(id), cancelAllNotifications()
+  showNotificationNow(...)
+
+SyntraNotificationReceiver.kt (BroadcastReceiver):
+  Triggered by AlarmManager. Calls NotificationManager.notify() to display.
+
+SyntraBootReceiver.kt (BroadcastReceiver):
+  Listens for: ACTION_BOOT_COMPLETED, LOCKED_BOOT_COMPLETED, QUICKBOOT_POWERON,
+               PACKAGE_REPLACED, TIMEZONE_CHANGED, TIME_SET
+  On any trigger: reads SharedPreferences for notification schedules,
+  reschedules all via SyntraNotificationManager.
+  This runs without a Dart runtime — pure Kotlin/Android.
+
+Android permissions required:
+  POST_NOTIFICATIONS (Android 13+)
+  SCHEDULE_EXACT_ALARM (Android 12+)
+  Battery optimization exemption (requested in-app)
+
+
+─── 3.17 DESIGN SYSTEM ─────────────────────────────────────────────────────────
+
+Theme (lib/theme/app_theme.dart):
+  Material 3 (useMaterial3: true).
+  Seed color: Neon Pink (#FF10F0).
+  Light scheme: secondary = Softer Cyan (#00B8D4), tertiary = Reddish Orange (#FF6D00)
+  Dark scheme: secondary = Red (#FF2626), tertiary = Reddish Orange (#FF6D00)
+  Scaffold background (light): Snow (#F7F3F2)
+
+All widget theme properties are set globally: FilledButton, OutlinedButton,
+TextButton, Card, Chip, InputDecoration, SnackBar, BottomNavigationBar,
+AppBar (centerTitle: false, no elevation).
+
+Spacing (lib/theme/app_spacing.dart — 8-point grid):
+  xs = 4,  sm = 8,  md = 16,  lg = 24,  xl = 32,  xxl = 48
+  cardRadius = 20,  buttonRadius = 16,  chipRadius = 24
+
+Color usage: all screens use Theme.of(context).colorScheme — no hardcoded
+Color() constants in normal UI code. Exception: StreakCelebrationScreen
+uses intentionally hardcoded dark backgrounds for dramatic effect.
+SurveyWidget uses semantic emotion colors (red/orange/amber/green) intentionally.
+
+static.dart: now only contains notification message pools and streakMilestones.
+All legacy color constants have been removed.
+
+
+─── 3.18 LOCALIZATION ──────────────────────────────────────────────────────────
+
+UI strings: flutter_intl generates the S class (lib/generated/l10n.dart).
+ARB files: lib/l10n/intl_en.arb and intl_de.arb.
+All user-visible text goes through S.of(context).someKey.
+
+Challenge content: localized via the JSON translation files
+(assets/data/translations/{lang}.json) keyed by challenge ID.
+
+Language override: user can change language in Settings. The override is saved
+to SharedPreferences and updates localeProvider. The app rebuilds automatically
+via ConsumerWidget. activeLocaleProvider (derived Provider<String>) is watched
+by challengeCatalogProvider which reloads the catalog on change.
+
+Supported: 'en' (English), 'de' (German).
+
+
+─── 3.19 GAMIFICATION LOOP ─────────────────────────────────────────────────────
+
+Full user loop:
+
+  1. Onboarding → set CZL → unlock initial challenge pool
+  2. Open app → see challenges filtered by CZL + applied filters
+  3. Accept a challenge (or start a daily mission)
+  4. Timer runs → go do it in the real world
+  5. Return → mark result → complete survey (mood, perception, notes)
+  6. XP awarded ("Aura Points") → logged to SQLite → streak potentially extended
+  7. Streak > lastCelebrated → StreakCelebrationScreen (daily or milestone)
+  8. CZL completions++ → at 3 completions → level-up dialog → new challenges unlocked
+  9. Stats screen shows XP charts, heatmap, minutes brave
+  10. Notifications remind user each day via configurable time slots
+
+Sound effects (from SoundService via audioplayers):
+  playClick()    — nav bar taps
+  playSuccess()  — challenge success
+  playError()    — challenge abort/failure
+  All gated by soundEffectsEnabledProvider.
+
+Haptic feedback:
+  HapticFeedback.selectionClick() on nav bar press
+  VibrationService.start()        — when challenge timer starts
+  VibrationService.timerWarning() — at 10 seconds remaining
+  VibrationService.timerEnd()     — when timer hits zero
+  VibrationService.success()      — on successful completion
+  VibrationService.milestone()    — on streak milestone
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 4 — WHAT HAS BEEN COMPLETED SINCE THE PREVIOUS ANALYSIS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The 2026-03-29 analysis listed these as suggestions. They are now done:
+
+  [DONE] Replace challenge_database.db with JSON files (challenges.json + translations/)
+  [DONE] Adopt Riverpod for state management (all screens now use ConsumerWidget)
+  [DONE] Unify settings to SharedPreferences only (settings.json migrated and removed)
+  [DONE] Proper Material 3 theme (AppTheme.light/dark with fromSeed ColorScheme)
+  [DONE] app_spacing.dart with 8-point grid
+  [DONE] go_router for navigation (AppRoutes + typed AppNavigation extension)
+  [DONE] iOS notification initialization (DarwinInitializationSettings added)
+  [DONE] Data layer split: ChallengeRepository / LogbookRepository / SettingsRepository
+  [DONE] Filter state persistence (ChallengeFiltersNotifier saves to SharedPreferences)
+  [DONE] Remove toggle_switch dependency (uses Flutter built-in Switch/SegmentedButton)
+  [DONE] Basic unit tests (5 test files covering streak, filters, CZL, missions, social proof)
+  [DONE] Replace card swiper with scrollable challenge list
+
+New features added after that analysis that were not in scope:
+  [NEW]  Comfort Zone Level (CZL) system — 5-level progression
+  [NEW]  Three-tier Daily Mission Board (Comfort/Growth/Bold)
+  [NEW]  7-page Onboarding flow with CZL selection + notification setup
+  [NEW]  Post-challenge survey (mood scale, perception scale, notes)
+  [NEW]  Streak Celebration Screen (animated, milestone messages)
+  [NEW]  Level-up dialog on CZL unlock
+  [NEW]  Coach messages (deterministic per challenge)
+  [NEW]  Social proof count (deterministic fake community number)
+  [NEW]  Daily greeting system (return behavior on app open)
+  [NEW]  Sound effects toggle setting
+  [NEW]  "Aura Points" XP branding
+  [NEW]  "Minutes Brave" statistic
+  [NEW]  12-week activity heatmap
+  [NEW]  10% daily mission XP bonus
+  [NEW]  "Show only not done" filter
+  [NEW]  SortMode (frequency / difficulty) filter
+  [NEW]  CZL progress display on challenges screen
+  [NEW]  DB schema v2 with duration_seconds migration
+  [NEW]  settings.json → SharedPreferences migration on first boot
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 5 — CURRENT PROBLEMS & REMAINING GAPS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+These are real issues visible in the current code.
+
+────────────────────────────────────────────────────────────────────────────────
+PROBLEM 1: LOGBOOK SCHEMA IS MISSING MIGRATIONS FOR feeling/perception COLUMNS
+────────────────────────────────────────────────────────────────────────────────
+
+LogbookRepository opens the database at version 2 with one migration:
+  v1 → v2: ALTER TABLE logbook ADD COLUMN duration_seconds INTEGER
+
+But the logbook table also stores feeling and perception columns.
+These were added by altering the initial schema in the CREATE TABLE statement
+but there is NO migration that adds them for existing users upgrading from v1.
+Any user who had the app before these columns were added will get
+"table logbook has no column named feeling" errors on addEntry().
+
+Fix: increment to version 3 and add two ALTER TABLE migrations for feeling and
+perception in the onUpgrade handler.
+
+────────────────────────────────────────────────────────────────────────────────
+PROBLEM 2: challenge_id TYPE MISMATCH BETWEEN DB AND DART
+────────────────────────────────────────────────────────────────────────────────
+
+Challenge.id is a String in Dart ("90", "91"...).
+The logbook table's challenge_id column is INTEGER in SQLite.
+When addEntry() is called, challenge.id (a String) is passed directly and
+SQLite coerces it to integer — this works if the string is numeric.
+But completedChallengeIds() does `r['challenge_id'].toString()` as a workaround.
+
+If a challenge ever has a non-numeric ID (e.g. "custom_1"), this will break
+silently or produce wrong IDs. The DB column should be TEXT, or the Dart model
+should use int IDs consistently.
+
+────────────────────────────────────────────────────────────────────────────────
+PROBLEM 3: LARGE MONOLITHIC SCREEN FILES
+────────────────────────────────────────────────────────────────────────────────
+
+  challenges_screen.dart     965 lines
+  onboarding_screen.dart     864 lines
+  challenge_done_screen.dart 537 lines
+  statistics_screen.dart     659 lines
+  settings_screen.dart       518 lines
+
+Each is a single file with many private widget classes defined at the bottom.
+This works but makes navigation (finding a specific widget), code reviews, and
+testing difficult. The pattern should be: each meaningful sub-widget in its
+own file under a screens/<feature>/widgets/ subdirectory.
+
+────────────────────────────────────────────────────────────────────────────────
+PROBLEM 4: MIXED NAVIGATION — Navigator.push INSIDE GoRouter SCREENS
+────────────────────────────────────────────────────────────────────────────────
+
+ActiveChallengeScreen uses Navigator.of(context).push<double>(MaterialPageRoute)
+to reach ChallengeDoneScreen. This is not part of GoRouter. Consequence:
+  - ChallengeDoneScreen is not accessible via /challenge_done deep link from
+    this path.
+  - Back button behavior is not managed by GoRouter.
+  - StreakCelebrationScreen is also pushed via Navigator.push from
+    ChallengeDoneScreen and HomeBar.
+
+These should all use GoRouter.push() with extra data. The return value
+pattern (push returning a result) is supported via GoRouter.push<T>().
+
+────────────────────────────────────────────────────────────────────────────────
+PROBLEM 5: routerNotifier IS A GLOBAL LATE VARIABLE
+────────────────────────────────────────────────────────────────────────────────
+
+router_notifier.dart declares:
+  late final RouterNotifier routerNotifier;
+
+This is a module-level global variable, not a Riverpod provider. It's accessed
+from router.dart's GoRouter configuration (appRouter, also a global). This is
+a known limitation of go_router + Riverpod — the router cannot be a provider
+because GoRouter itself needs to be a const-ish global. However, it means
+RouterNotifier is not overridable in tests.
+
+────────────────────────────────────────────────────────────────────────────────
+PROBLEM 6: CZL LEVEL ASSIGNMENT IS CATALOG-RELATIVE
+────────────────────────────────────────────────────────────────────────────────
+
+ComfortZoneLogic.assignLevel() sorts the entire catalog by XP and assigns
+levels by percentile. This means:
+  - Adding or removing challenges can change the level of ALL existing challenges.
+  - A user's stored completion count (czl_completions_N) may now reference
+    challenges that moved to a different level.
+  - There is no stable level mapping for a challenge.
+
+A fixed level field per challenge (in challenges.json) would be more stable
+and predictable.
+
+────────────────────────────────────────────────────────────────────────────────
+PROBLEM 7: NOTIFICATION ARCHITECTURE IS OVER-ENGINEERED AND REDUNDANT
+────────────────────────────────────────────────────────────────────────────────
+
+There are now TWO notification manager classes doing overlapping things:
+  - SyntraNotificationService (~850 lines)
+  - NotificationManager (~640 lines)
+
+NotificationManager.cancelAllNotifications() calls:
+  1. _notificationsPlugin.cancelAll() (Flutter plugin)
+  2. SyntraNotificationService.instance.cancelAllNotifications() (which itself
+     calls MethodChannel + flutter plugin)
+  3. MethodChannel('syntra_notifications').invokeMethod('cancelAllNotifications')
+     AGAIN directly
+  4. Clears SharedPreferences key
+
+This is triple-cancelling with duplicate code paths. The two classes should
+be merged or one should clearly own the responsibility.
+
+────────────────────────────────────────────────────────────────────────────────
+PROBLEM 8: priming_screen.dart AND mindset_screen.dart ARE NOT ROUTED
+────────────────────────────────────────────────────────────────────────────────
+
+lib/routes/priming_screen.dart (243 lines) and mindset_screen.dart (287 lines)
+exist and contain full UI implementations but are NOT registered in GoRouter
+and not navigated to from anywhere visible in the code. They are either:
+  - Work in progress (intended for future navigation)
+  - Dead code from an abandoned feature branch
+
+They should be either wired up with routes or deleted.
+
+────────────────────────────────────────────────────────────────────────────────
+PROBLEM 9: Challenge MODEL HAS MUTABLE FIELDS
+────────────────────────────────────────────────────────────────────────────────
+
+All fields in Challenge are declared with `var` (mutable):
+  String id;
+  String title;
+  ...
+
+These should be `final`. Challenge instances are read-only once loaded from
+JSON — nothing modifies them after construction. Immutability makes bugs
+less likely and enables const constructors.
+
+────────────────────────────────────────────────────────────────────────────────
+PROBLEM 10: FutureProvider CALLS SharedPreferences.getInstance() ON EVERY READ
+────────────────────────────────────────────────────────────────────────────────
+
+ChallengeFiltersNotifier and other Notifiers call
+SharedPreferences.getInstance() on every write (setTypeFilter, setFlirtFilter,
+etc.). While SharedPreferences caches the instance internally, the correct
+pattern is to obtain the SharedPreferences instance once in a provider
+(sharedPreferencesProvider) and inject it, making the code testable and
+avoiding the implicit singleton.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 6 — IMPROVEMENT SUGGESTIONS (ORDERED BY IMPACT)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+────────────────────────────────────────────────────────────────────────────────
+SUGGESTION 1 (CRITICAL): FIX THE DATABASE MIGRATION (feeling/perception)
+────────────────────────────────────────────────────────────────────────────────
+
+In LogbookRepository, change:
+  version: 2, onUpgrade: (db, oldVersion, newVersion) { if (oldVersion < 2) {...} }
+
+To:
+  version: 3,
+  onUpgrade: (db, oldVersion, newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute('ALTER TABLE logbook ADD COLUMN duration_seconds INTEGER');
+    }
+    if (oldVersion < 3) {
+      await db.execute('ALTER TABLE logbook ADD COLUMN feeling INTEGER');
+      await db.execute('ALTER TABLE logbook ADD COLUMN perception INTEGER');
+    }
+  }
+
+This prevents crashes for users upgrading from pre-feeling versions.
+
+────────────────────────────────────────────────────────────────────────────────
+SUGGESTION 2: FIX challenge_id TYPE — MAKE IT TEXT IN SQLITE
+────────────────────────────────────────────────────────────────────────────────
+
+Add a migration that alters challenge_id from INTEGER to TEXT (SQLite does
+support this via a full table rebuild). Or: keep it INTEGER but ensure
+Challenge.id is always a numeric string. Document the contract clearly.
+
+Alternatively: change Challenge.id to int throughout and use .toString()
+only at display boundaries.
+
+────────────────────────────────────────────────────────────────────────────────
+SUGGESTION 3: ADD EXPLICIT level FIELD TO challenge CATALOG
+────────────────────────────────────────────────────────────────────────────────
+
+Add a "level": 1–5 field to challenges.json (curated manually).
+Remove the percentile-based assignLevel() computation from ComfortZoneLogic.
+Benefits:
+  - CZL assignments are stable across catalog changes
+  - The designer controls which challenges are "bold" vs "warming up"
+  - czl_completions_N keys remain valid after catalog updates
+
+────────────────────────────────────────────────────────────────────────────────
+SUGGESTION 4: MERGE NOTIFICATION MANAGER CLASSES
+────────────────────────────────────────────────────────────────────────────────
+
+Merge SyntraNotificationService and NotificationManager into one class
+(or make NotificationManager a thin facade over SyntraNotificationService with
+clear ownership). Remove the triple-cancel duplication.
+Suggested ownership split:
+  SyntraNotificationService: plugin init, permission, schedule/cancel (ONLY)
+  NotificationManager: scheduling logic (next occurrence calculation, batch
+                       build), using SyntraNotificationService as backend
+
+────────────────────────────────────────────────────────────────────────────────
+SUGGESTION 5: WIRE OR DELETE priming_screen.dart AND mindset_screen.dart
+────────────────────────────────────────────────────────────────────────────────
+
+Decide: are these features being built? If yes, add routes and navigation.
+If no, delete the files. Dead code adds confusion and maintenance cost.
+
+────────────────────────────────────────────────────────────────────────────────
+SUGGESTION 6: MAKE Challenge FIELDS FINAL (IMMUTABLE MODEL)
+────────────────────────────────────────────────────────────────────────────────
+
+Change all fields in Challenge from var to final.
+Remove the deprecated fromMap() constructor or update it to match current
+JSON field names. The toMap() method is vestigial (challenges are read-only)
+and can be removed.
+
+────────────────────────────────────────────────────────────────────────────────
+SUGGESTION 7: SPLIT LARGE SCREEN FILES INTO WIDGETS SUBDIRECTORY
+────────────────────────────────────────────────────────────────────────────────
+
+Extract private widget classes to dedicated files:
+
+  challenges_screen/ (currently 965 lines)
+    challenges_screen.dart          (main screen, <150 lines)
+    widgets/
+      challenge_list_item.dart      (ChallengeCard wrapper with Start button)
+      challenge_filter_bar.dart     (filter chips row)
+      challenge_filter_sheet.dart   (advanced filter bottom sheet)
+      czl_progress_bar.dart         (level progress indicator)
+
+  statistics_screen/ (currently 659 lines)
+    statistics_screen.dart
+    widgets/
+      stat_card.dart
+      weekly_xp_chart.dart
+      weekly_counts_chart.dart
+      activity_heatmap_grid.dart
+
+  settings_screen/ (currently 518 lines)
+    settings_screen.dart
+    widgets/
+      notification_slot_tile.dart
+
+────────────────────────────────────────────────────────────────────────────────
+SUGGESTION 8: MIGRATE REMAINING Navigator.push TO GoRouter
+────────────────────────────────────────────────────────────────────────────────
+
+Replace Navigator.of(context).push<double>(MaterialPageRoute → ChallengeDoneScreen)
+in ActiveChallengeScreen with GoRouter.of(context).push('/challenge_done', extra: ...)
+and use the return value via GoRouter.push<T>() which returns Future<T?>.
+
+Replace Navigator.push to StreakCelebrationScreen in HomeBar and ChallengeDoneScreen
+with context.goStreakCelebration(streak, isMilestone).
+
+────────────────────────────────────────────────────────────────────────────────
+SUGGESTION 9: ADD WIDGET TESTS
+────────────────────────────────────────────────────────────────────────────────
+
+The existing 5 unit tests cover logic well. Widget coverage is zero.
+Minimum additions:
+  test/widget/challenge_card_test.dart     — renders title, XP badge, type badge
+  test/widget/challenge_done_screen_test.dart — survey state, XP count-up
+  test/widget/active_challenge_test.dart   — timer display, abort lock behavior
+
+Use Riverpod's ProviderScope override to inject mock data without hitting SQLite.
+
+────────────────────────────────────────────────────────────────────────────────
+SUGGESTION 10: ADD SharedPreferences PROVIDER FOR TESTABILITY
+────────────────────────────────────────────────────────────────────────────────
+
+Create a Riverpod provider that wraps SharedPreferences.getInstance():
+  final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
+    throw UnimplementedError(); // must be overridden in tests
+  });
+
+Override with ProviderOverride in tests to inject a mock. This makes all
+Notifiers that currently call SharedPreferences.getInstance() directly testable
+without the actual SharedPreferences plugin.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 7 — iOS NOTIFICATION STATUS (UPDATED)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The iOS notification gap identified in the previous analysis has been PARTIALLY
+fixed:
+
+FIXED:
+  SyntraNotificationService.initialize() now includes DarwinInitializationSettings
+  with all request permissions set to false (deferred — correct pattern).
+  Permission is requested later via IOSFlutterLocalNotificationsPlugin.requestPermissions().
+  _scheduleWithFallback() includes DarwinNotificationDetails in NotificationDetails.
+
+STILL PRESENT:
+  1. The MethodChannel branch in scheduleExactNotification() is guarded by
+     Platform.isAndroid. On iOS, it falls through to _scheduleWithFallback()
+     which uses flutter_local_notifications.zonedSchedule(). This is correct.
+     BUT: AndroidNotificationDetails is still included in the fallback path.
+     On iOS, only DarwinNotificationDetails is needed — including Android details
+     is harmless but clutters the code.
+
+  2. The native scheduling layer (SyntraNotificationManager.kt, BootReceiver.kt)
+     does not exist on iOS. iOS relies on UNUserNotificationCenter via the
+     Flutter plugin. This is the correct approach for iOS — the key constraint
+     is that iOS limits apps to 64 scheduled local notifications at once
+     (UNUserNotificationCenter). The current 7-days-in-advance × 3-slots = 21
+     notifications is within this limit.
+
+  3. Boot recovery does not exist on iOS and cannot (iOS doesn't allow
+     BOOT_COMPLETED equivalent). This means if the user's scheduled notifications
+     expire (after 7 days without opening the app), they won't be rescheduled
+     until the app is opened. This is a known iOS limitation; document it.
+
+STATUS: iOS notifications should work functionally for most users. The main
+remaining risk is the 7-day expiry with no reschedule on iOS if the app is
+not opened.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 8 — KEY SHARED PREFERENCES KEY REFERENCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+This section lists every SharedPreferences key written by the app, since both
+Dart and Kotlin read from the same store.
+
+From SettingsRepository:
+  settings_dark_mode              bool
+  settings_language               String
+  notifications_enabled           bool
+  sound_effects_enabled           bool
+  notification1Enabled            bool
+  notification1TimeHour           int
+  notification1TimeMinute         int
+  notification2Enabled            bool
+  notification2TimeHour           int
+  notification2TimeMinute         int
+  notification3Enabled            bool
+  notification3TimeHour           int
+  notification3TimeMinute         int
+  onboarding_complete             bool
+  comfort_zone_level              int
+  last_opened_date                String (YYYY-MM-DD)
+  last_celebrated_streak          int
+
+From ChallengeFiltersNotifier:
+  filter_type                     int (ChallengeTypeFilter.index)
+  filter_flirt_v2                 int (FlirtFilter.index)
+  filter_not_done                 bool
+  filter_sort_by                  int (SortMode.index)
+
+From ComfortZoneLogic:
+  czl_completions_1               int
+  czl_completions_2               int
+  czl_completions_3               int
+  czl_completions_4               int
+  czl_completions_5               int
+
+From DailyMissionsLogic:
+  daily_missions_date             String (YYYY-MM-DD)
+  daily_missions_comfort_id       String (challenge ID)
+  daily_missions_growth_id        String
+  daily_missions_bold_id          String
+  daily_missions_comfort_done     bool
+  daily_missions_growth_done      bool
+  daily_missions_bold_done        bool
+
+From SyntraNotificationService:
+  syntra_scheduled_notifications  String (JSON array of notification metadata)
+
+Kotlin BootReceiver reads directly:
+  notifications_enabled
+  notification{1,2,3}Enabled
+  notification{1,2,3}TimeHour
+  notification{1,2,3}TimeMinute
+  syntra_scheduled_notifications
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 9 — PRIORITY ORDER FOR NEXT IMPROVEMENTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+BUG FIXES (must be done before any release):
+  1. Fix logbook DB migration for feeling/perception columns (Section 6, #1)
+  2. Clarify/fix challenge_id type contract (Section 6, #2)
+
+PRODUCT COMPLETENESS:
+  3. Add explicit "level" field to challenges.json (Section 6, #3)
+  4. Wire or delete priming_screen.dart / mindset_screen.dart (Section 6, #5)
+
+CODE QUALITY:
+  5. Merge notification manager classes (Section 6, #4)
+  6. Make Challenge fields final (Section 6, #6)
+  7. Migrate Navigator.push to GoRouter (Section 6, #8)
+  8. Split large screen files into widget subdirectories (Section 6, #7)
+
+TESTABILITY:
+  9. Add SharedPreferences provider for injection (Section 6, #10)
+  10. Add widget tests (Section 6, #9)
