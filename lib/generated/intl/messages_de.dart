@@ -62,6 +62,11 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m17(days) => "${days}-Tage-Serie!";
 
+  static String m18(done, goal) => "${done} von ${goal} Challenges diese Woche";
+
+  static String m19(n) =>
+      "Diese Woche hast du ${n} Challenges abgeschlossen. Weiter so!";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "about": MessageLookupByLibrary.simpleMessage("Über"),
@@ -99,6 +104,26 @@ class MessageLookup extends MessageLookupByLibrary {
     "auraPoints": MessageLookupByLibrary.simpleMessage("Aura"),
     "backToHome": MessageLookupByLibrary.simpleMessage("Zurück zum Hauptmenü"),
     "bad": MessageLookupByLibrary.simpleMessage("Schlecht"),
+    "badgeBraveMinutes": MessageLookupByLibrary.simpleMessage("60 Min. mutig"),
+    "badgeCenturyXp": MessageLookupByLibrary.simpleMessage("100-XP-Club"),
+    "badgeFiftyChallenges": MessageLookupByLibrary.simpleMessage(
+      "50 Challenges",
+    ),
+    "badgeFirstStep": MessageLookupByLibrary.simpleMessage("Erster Schritt"),
+    "badgeFiveHundredXp": MessageLookupByLibrary.simpleMessage(
+      "500-XP-Legende",
+    ),
+    "badgeSevenDayStreak": MessageLookupByLibrary.simpleMessage(
+      "7-Tage-Streak",
+    ),
+    "badgeTenChallenges": MessageLookupByLibrary.simpleMessage("10 Challenges"),
+    "badgeThreeDayStreak": MessageLookupByLibrary.simpleMessage(
+      "3-Tage-Streak",
+    ),
+    "badgesLocked": MessageLookupByLibrary.simpleMessage(
+      "Weiter so, um mehr freizuschalten!",
+    ),
+    "badgesTitle": MessageLookupByLibrary.simpleMessage("Abzeichen"),
     "basicNotifications": MessageLookupByLibrary.simpleMessage(
       "Basis-Benachrichtigungen",
     ),
@@ -746,6 +771,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "weeklyChallenges": MessageLookupByLibrary.simpleMessage(
       "Wöchentliche Challenges",
     ),
+    "weeklyGoalProgress": m18,
+    "weeklyGoalSetLabel": MessageLookupByLibrary.simpleMessage("Ziel setzen:"),
+    "weeklyGoalTitle": MessageLookupByLibrary.simpleMessage("Wochenziel"),
+    "weeklyRecapBody": m19,
+    "weeklyRecapTitle": MessageLookupByLibrary.simpleMessage("Wochenrückblick"),
     "weeklyXpProgress": MessageLookupByLibrary.simpleMessage(
       "Wöchentliche Aura",
     ),

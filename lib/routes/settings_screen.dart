@@ -424,43 +424,60 @@ class _ComfortZoneLevelCardState extends ConsumerState<_ComfortZoneLevelCard> {
         : (_completions / ComfortZoneLogic.completionsToUnlock)
             .clamp(0.0, 1.0);
 
+    final gradient = ComfortZoneLogic.levelGradient(level);
+    final levelIcon = ComfortZoneLogic.levelIcons[level.clamp(1, ComfortZoneLogic.maxLevel)];
+
     return Card(
-      child: Padding(
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Gradient header band ─────────────────────────────────────────
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(gradient: gradient),
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+            child: Row(
+              children: [
+                Icon(levelIcon, color: Colors.white, size: 22),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    levelName,
+                    style: tt.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.sm, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.white24,
+                    borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
+                  ),
+                  child: Text(
+                    S.of(context).levelN(level),
+                    style: tt.labelSmall?.copyWith(
+                        fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // ── Body ──────────────────────────────────────────────────────────
+          Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                Icon(Icons.trending_up_rounded,
-                    color: cs.primary, size: 20),
-                const SizedBox(width: AppSpacing.sm),
                 Text(
                   S.of(context).comfortZoneLevel,
                   style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600),
                 ),
-                const Spacer(),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.sm, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: cs.primaryContainer,
-                    borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
-                  ),
-                  child: Text(
-                    S.of(context).levelN(level),
-                    style: tt.labelSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: cs.onPrimaryContainer),
-                  ),
-                ),
               ],
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              levelName,
-              style: tt.bodyMedium?.copyWith(
-                  color: cs.primary, fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: AppSpacing.sm),
             if (!isMaxLevel) ...[
@@ -512,6 +529,8 @@ class _ComfortZoneLevelCardState extends ConsumerState<_ComfortZoneLevelCard> {
             ),
           ],
         ),
+      ),
+        ],
       ),
     );
   }

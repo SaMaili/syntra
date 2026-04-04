@@ -296,16 +296,17 @@ class LogbookRepository {
     return {for (final r in rows) r['day'] as String: r['cnt'] as int};
   }
 
-  /// Returns feeling scores (0–4) for [challengeId], oldest first.
-  /// Only rows where feeling IS NOT NULL are included.
-  Future<List<int>> moodHistoryForChallenge(String challengeId) async {
+  /// Returns the number of successfully completed challenges since last Monday.
+  Future<int> challengesCompletedThisWeek() async {
     final db = await _database;
+    final now = DateTime.now();
+    final monday = now.subtract(Duration(days: now.weekday - 1));
+    final mondayStr = monday.toIso8601String().substring(0, 10);
     final rows = await db.rawQuery('''
-      SELECT feeling
+      SELECT COUNT(*) AS cnt
       FROM logbook
-      WHERE challenge_id = ? AND feeling IS NOT NULL
-      ORDER BY timestamp ASC
-    ''', [challengeId]);
-    return rows.map((r) => r['feeling'] as int).toList();
+      WHERE status = 'success' AND date(timestamp) >= ?
+    ''', [mondayStr]);
+    return (rows.first['cnt'] as int?) ?? 0;
   }
 }

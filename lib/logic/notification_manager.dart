@@ -314,7 +314,44 @@ class NotificationManager {
         : '❌ Failed to schedule custom reminder');
   }
 
-  /// Cancel a specific notification by ID.
+  /// Schedules a weekly recap notification for the next Sunday at 20:00.
+  ///
+  /// The notification body mentions how many challenges the user completed
+  /// this week. Safe to call on every launch — the fixed ID (9999) means
+  /// re-scheduling replaces the previous one rather than stacking.
+  static Future<void> scheduleWeeklyRecap({
+    required int completedThisWeek,
+    required String localeCode,
+  }) async {
+    if (!await areNotificationsEnabled()) return;
+
+    final notificationService = SyntraNotificationService.instance;
+    if (!await notificationService.initialize()) return;
+
+    final now = DateTime.now();
+    // Days until next Sunday (weekday: 1=Mon … 7=Sun).
+    final daysUntilSunday = (7 - now.weekday) % 7 == 0
+        ? 7
+        : (7 - now.weekday) % 7;
+    final nextSunday = DateTime(
+        now.year, now.month, now.day + daysUntilSunday, 20, 0);
+
+    final body = localeCode == 'de'
+        ? 'Diese Woche hast du $completedThisWeek Challenges abgeschlossen. Weiter so!'
+        : 'This week you completed $completedThisWeek challenges. Keep up the great work!';
+
+    await notificationService.scheduleExactNotification(
+      id: 9999,
+      title: localeCode == 'de' ? 'Wochenrückblick' : 'Weekly Recap',
+      body: body,
+      scheduledTime: nextSunday,
+      data: {'type': 'weekly_recap'},
+      channel: NotificationChannel.reminders,
+    );
+    debugPrint('✅ Weekly recap scheduled for $nextSunday');
+  }
+
+  /// Cancel a specific notification by ID
   static Future<void> cancelNotification(int id) async {
     await SyntraNotificationService.instance.cancelNotification(id);
     debugPrint('✅ Notification $id cancelled');

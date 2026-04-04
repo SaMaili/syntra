@@ -62,6 +62,11 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m17(days) => "${days}-Day Streak!";
 
+  static String m18(done, goal) => "${done} of ${goal} challenges this week";
+
+  static String m19(n) =>
+      "This week you completed ${n} challenges. Keep up the great work!";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "about": MessageLookupByLibrary.simpleMessage("About"),
@@ -97,6 +102,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "auraPoints": MessageLookupByLibrary.simpleMessage("Aura"),
     "backToHome": MessageLookupByLibrary.simpleMessage("Back to Home"),
     "bad": MessageLookupByLibrary.simpleMessage("Bad"),
+    "badgeBraveMinutes": MessageLookupByLibrary.simpleMessage("60 Min. Brave"),
+    "badgeCenturyXp": MessageLookupByLibrary.simpleMessage("100 XP Club"),
+    "badgeFiftyChallenges": MessageLookupByLibrary.simpleMessage(
+      "50 Challenges",
+    ),
+    "badgeFirstStep": MessageLookupByLibrary.simpleMessage("First Step"),
+    "badgeFiveHundredXp": MessageLookupByLibrary.simpleMessage("500 XP Legend"),
+    "badgeSevenDayStreak": MessageLookupByLibrary.simpleMessage("7-Day Streak"),
+    "badgeTenChallenges": MessageLookupByLibrary.simpleMessage("10 Challenges"),
+    "badgeThreeDayStreak": MessageLookupByLibrary.simpleMessage("3-Day Streak"),
+    "badgesLocked": MessageLookupByLibrary.simpleMessage(
+      "Keep going to unlock more!",
+    ),
+    "badgesTitle": MessageLookupByLibrary.simpleMessage("Badges"),
     "basicNotifications": MessageLookupByLibrary.simpleMessage(
       "Basic Notifications",
     ),
@@ -722,6 +741,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "weeklyChallenges": MessageLookupByLibrary.simpleMessage(
       "Weekly Challenges",
     ),
+    "weeklyGoalProgress": m18,
+    "weeklyGoalSetLabel": MessageLookupByLibrary.simpleMessage("Set goal:"),
+    "weeklyGoalTitle": MessageLookupByLibrary.simpleMessage("Weekly Goal"),
+    "weeklyRecapBody": m19,
+    "weeklyRecapTitle": MessageLookupByLibrary.simpleMessage("Weekly Recap"),
     "weeklyXpProgress": MessageLookupByLibrary.simpleMessage("Weekly Aura"),
     "wellDone": MessageLookupByLibrary.simpleMessage("Well done! Keep it up!"),
     "xp": MessageLookupByLibrary.simpleMessage("XP"),

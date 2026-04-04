@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../generated/l10n.dart';
+import '../logic/badges_logic.dart';
 import '../providers/statistics_providers.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/syntra_button.dart';
@@ -31,7 +32,11 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen>
           padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.md, vertical: AppSpacing.sm),
           children: [
+            const _WeeklyGoalCard(),
+            const SizedBox(height: AppSpacing.md),
             const _OverviewGrid(),
+            const SizedBox(height: AppSpacing.md),
+            const _BadgesSection(),
             const SizedBox(height: AppSpacing.md),
             const _ActivityCalendar(),
             const SizedBox(height: AppSpacing.md),
@@ -668,6 +673,185 @@ class _XpBarChart extends StatelessWidget {
             ),
         ],
       ),
+    );
+  }
+}
+
+// ─── Weekly goal card ─────────────────────────────────────────────────────────
+
+class _WeeklyGoalCard extends ConsumerWidget {
+  const _WeeklyGoalCard();
+
+  static const _goals = [3, 5, 7];
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final goal = ref.watch(weeklyGoalProvider);
+    final progressAsync = ref.watch(weeklyProgressProvider);
+    final done = progressAsync.valueOrNull ?? 0;
+    final progress = (done / goal).clamp(0.0, 1.0);
+    final l = S.of(context);
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.flag_rounded, color: cs.primary, size: 20),
+                const SizedBox(width: AppSpacing.sm),
+                Text(
+                  l.weeklyGoalTitle,
+                  style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                ),
+                const Spacer(),
+                Text(
+                  l.weeklyGoalProgress(done, goal),
+                  style: tt.labelMedium?.copyWith(color: cs.onSurfaceVariant),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: progress,
+                minHeight: 8,
+                backgroundColor: cs.surfaceContainerHighest,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  done >= goal ? const Color(0xFF43A047) : cs.primary,
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Row(
+              children: [
+                Text(
+                  l.weeklyGoalSetLabel,
+                  style: tt.labelSmall?.copyWith(color: cs.onSurfaceVariant),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                ..._goals.map((g) => Padding(
+                      padding: const EdgeInsets.only(right: AppSpacing.xs),
+                      child: ChoiceChip(
+                        label: Text('$g'),
+                        selected: g == goal,
+                        selectedColor: cs.primaryContainer,
+                        backgroundColor: cs.surfaceContainerHighest,
+                        showCheckmark: false,
+                        visualDensity: VisualDensity.compact,
+                        onSelected: (_) =>
+                            ref.read(weeklyGoalProvider.notifier).setGoal(g),
+                      ),
+                    )),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Badges section ───────────────────────────────────────────────────────────
+
+class _BadgesSection extends ConsumerWidget {
+  const _BadgesSection();
+
+  String _badgeLabel(S l, String id) => switch (id) {
+        'first_step' => l.badgeFirstStep,
+        'ten_challenges' => l.badgeTenChallenges,
+        'fifty_challenges' => l.badgeFiftyChallenges,
+        'three_day_streak' => l.badgeThreeDayStreak,
+        'seven_day_streak' => l.badgeSevenDayStreak,
+        'century_xp' => l.badgeCenturyXp,
+        'five_hundred_xp' => l.badgeFiveHundredXp,
+        'brave_minutes' => l.badgeBraveMinutes,
+        _ => id,
+      };
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final statsAsync = ref.watch(overviewStatsProvider);
+    final l = S.of(context);
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
+
+    return statsAsync.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, s) => const SizedBox.shrink(),
+      data: (stats) {
+        final earned = BadgesLogic.computeEarned(stats, stats['streak'] ?? 0);
+        return Card(
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.workspace_premium_rounded,
+                        color: cs.primary, size: 20),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text(
+                      l.badgesTitle,
+                      style: tt.titleMedium
+                          ?.copyWith(fontWeight: FontWeight.w600),
+                    ),
+                    const Spacer(),
+                    Text(
+                      '${earned.length}/${BadgesLogic.all.length}',
+                      style: tt.labelSmall
+                          ?.copyWith(color: cs.onSurfaceVariant),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Wrap(
+                  spacing: AppSpacing.sm,
+                  runSpacing: AppSpacing.sm,
+                  children: BadgesLogic.all.map((badge) {
+                    final isEarned = earned.contains(badge.id);
+                    return Tooltip(
+                      message: _badgeLabel(l, badge.id),
+                      child: Container(
+                        width: 52,
+                        height: 52,
+                        decoration: BoxDecoration(
+                          color: isEarned
+                              ? badge.color.withValues(alpha: 0.15)
+                              : cs.surfaceContainerHighest,
+                          shape: BoxShape.circle,
+                          border: isEarned
+                              ? Border.all(color: badge.color, width: 2)
+                              : null,
+                        ),
+                        child: Icon(
+                          badge.icon,
+                          color: isEarned ? badge.color : cs.outlineVariant,
+                          size: 26,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+                if (earned.length < BadgesLogic.all.length) ...[
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    l.badgesLocked,
+                    style: tt.labelSmall
+                        ?.copyWith(color: cs.onSurfaceVariant),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
