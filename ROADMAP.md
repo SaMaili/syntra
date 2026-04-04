@@ -1,6 +1,6 @@
 # Syntra — Development Roadmap
 
-Generated: 2026-04-03 · Last updated: 2026-04-04
+Generated: 2026-04-03 · Last updated: 2026-04-04 (Phase 3 complete)
 Based on: CODEBASE_ANALYSIS.txt (2026-04-03)
 
 ---
@@ -21,7 +21,9 @@ main
  ├─ [PR] refactor/navigate-gorouter                 ← merge FIFTH (independent)
  │        └─ [PR] refactor/priming-gorouter         ← merge SIXTH (depends on above)
  │
- └─ [PR] refactor/notification-cleanup              ← merge SEVENTH (independent)
+ ├─ [PR] refactor/shared-prefs-provider             ← merge SEVENTH (independent)
+ │
+ └─ [PR] refactor/notification-cleanup              ← merge EIGHTH (independent)
 ```
 
 ### Branch summaries
@@ -34,6 +36,7 @@ main
 | `refactor/czl-expand` | `maxLevel` 5→10. Level names + descriptions for levels 6–10 (Stepping Up → Untouchable). Settings chip row and level-up dialog scale automatically. | Ready |
 | `refactor/navigate-gorouter` | `ActiveChallengeScreen→ChallengeDoneScreen` and both `StreakCelebration` push sites migrated from `Navigator.push` to GoRouter. Also fixes pre-existing bug: `isDailyMission` flag (and daily XP bonus) now correctly flows through `PrimingScreen→ActiveChallengeScreen→ChallengeDoneArgs`. | Ready |
 | `refactor/priming-gorouter` | Add `/priming` GoRoute. Remove `onDone` callback from `PrimingScreen` and `ActiveChallengeScreen`. Result bubbles back via `Future<double?>` pop chain. `ChallengesScreen` and `DailyChallengeScreen` use `context.pushPriming(...)`. | Ready |
+| `refactor/shared-prefs-provider` | `sharedPreferencesProvider` initialized once in `main()` and injected via `ProviderScope`. `SettingsRepository` takes `SharedPreferences` in constructor. All `StateNotifier`s receive `SettingsRepository` via constructor from `ref`. `ChallengeFiltersNotifier`, `ComfortZoneLogic`, `DailyMissionsLogic` use injected prefs. Tests can override with a fake. | Ready |
 | `refactor/notification-cleanup` | Remove duplicate `FlutterLocalNotificationsPlugin` instance from `NotificationManager`. Collapse triple-cancel into single `SyntraNotificationService.cancelAllNotifications()` call. `initialize()` delegates entirely to the service. | Ready |
 
 ---
@@ -56,8 +59,8 @@ main
 | 1.3 | Migrate `Navigator.push` calls to GoRouter | `refactor/navigate-gorouter` | **Done** (partial — PrimingScreen entry points remain) |
 | 1.4 | Merge / clean up notification manager classes | `refactor/notification-cleanup` | **Done** |
 | 1.5 | Wire `PrimingScreen` into GoRouter | `refactor/priming-gorouter` | **Done** |
-| 1.6 | Inject `SharedPreferences` via Riverpod provider | — | **TODO** |
-| 1.7 | Split large screen files into `widgets/` subdirectories | — | **TODO** |
+| 1.6 | Inject `SharedPreferences` via Riverpod provider | `refactor/shared-prefs-provider` | **Done** |
+| 1.7 | Split large screen files into `widgets/` subdirectories | — | **TODO** (deferred; Phase 2 tests written against monolithic files) |
 
 ### CZL Expansion
 
@@ -74,19 +77,20 @@ main
 
 | # | Task | Status |
 |---|---|---|
-| 2.1 | `SharedPreferences` Riverpod provider for injection | TODO (depends on 1.6) |
-| 2.2 | Widget tests for `ChallengeCard`, `ChallengeDoneScreen`, `ActiveChallengeScreen` | TODO |
+| 2.1 | `SharedPreferences` Riverpod provider for injection | **Done** (1.6) |
+| 2.2 | Widget tests for `ChallengeCard`, `ChallengeDoneScreen`, `ActiveChallengeScreen` | **Done** (`test/widget/`, branch `test/widget-tests`) |
 
 ---
 
-## Phase 3 — Core Loop Depth
+## Phase 3 — Core Loop Depth ✓
 
 | # | Task | Status |
 |---|---|---|
-| 3.1 | Challenge reflection history (mood trend chart per challenge in logbook) | TODO |
-| 3.2 | Personal best streak tracking (`all_time_max_streak` in SharedPrefs) | TODO |
-| 3.3 | Repeat challenge suggestion after abort or low mood | TODO |
-| 3.4 | Context-aware environment filter (session chip, not persisted) | TODO |
+| 3.1 | Challenge reflection history (mood trend chart per challenge in logbook) | **Done** (`_MoodChart` in detail sheet, `moodHistoryProvider`) |
+| 3.2 | Personal best streak tracking (`all_time_max_streak` in SharedPrefs) | **Done** (`personalBestStreakProvider`, Best Streak card in stats grid) |
+| 3.3 | Repeat challenge suggestion after abort | **Done** ("Try Again" button → `pushReplacement` fresh `ActiveChallengeScreen`) |
+| 3.4 | Context-aware environment filter (session chip, not persisted) | **Skipped** — all 127 challenges have `environment: "all"`, filter would be useless |
+
 ## Phase 0 — Pre-Release Bug Fixes (blocker)
 
 These must ship before any public release. They are data-integrity issues that
@@ -619,7 +623,7 @@ Phase 1  →  Phase 6 (custom challenges)
 - All 127 challenges are assigned levels 1–5 only. Levels 6–10 exist in the system
   but no challenge content covers them yet.
 - `NotificationManager` and `SyntraNotificationService` overlap cleaned up (Phase 1.4 — branch `refactor/notification-cleanup`).
-- `SharedPreferences.getInstance()` still called directly in all `StateNotifier`s (Phase 1.6).
+- `SharedPreferences.getInstance()` injection done (Phase 1.6 — branch `refactor/shared-prefs-provider`).
 - Screen files are still monolithic (Phase 1.7):
   `challenges_screen.dart` 965 lines, `onboarding_screen.dart` 864 lines, etc.
 Phase 0 (bugs)       ← must ship first, blocks release

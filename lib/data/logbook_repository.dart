@@ -295,4 +295,17 @@ class LogbookRepository {
 
     return {for (final r in rows) r['day'] as String: r['cnt'] as int};
   }
+
+  /// Returns feeling scores (0–4) for [challengeId], oldest first.
+  /// Only rows where feeling IS NOT NULL are included.
+  Future<List<int>> moodHistoryForChallenge(String challengeId) async {
+    final db = await _database;
+    final rows = await db.rawQuery('''
+      SELECT feeling
+      FROM logbook
+      WHERE challenge_id = ? AND feeling IS NOT NULL
+      ORDER BY timestamp ASC
+    ''', [challengeId]);
+    return rows.map((r) => r['feeling'] as int).toList();
+  }
 }
