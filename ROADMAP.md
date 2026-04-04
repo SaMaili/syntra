@@ -23,7 +23,17 @@ main
  │
  ├─ [PR] refactor/shared-prefs-provider             ← merge SEVENTH (independent)
  │
- └─ [PR] refactor/notification-cleanup              ← merge EIGHTH (independent)
+ ├─ [PR] refactor/notification-cleanup              ← merge EIGHTH (independent)
+ │
+ ├─ [PR] refactor/split-screens                     ← Phase 1.7 (independent)
+ │
+ ├─ [PR] test/widget-tests                          ← Phase 2.2 (after split-screens)
+ │
+ ├─ [PR] feat/phase-3-core-loop                     ← Phase 3 (independent)
+ │
+ ├─ [PR] feat/phase-4-progression                   ← Phase 4 (independent)
+ │
+ └─ [PR] feat/phase-5-ux-polish                     ← Phase 5 (independent, in progress)
 ```
 
 ### Branch summaries
@@ -38,6 +48,10 @@ main
 | `refactor/priming-gorouter` | Add `/priming` GoRoute. Remove `onDone` callback from `PrimingScreen` and `ActiveChallengeScreen`. Result bubbles back via `Future<double?>` pop chain. `ChallengesScreen` and `DailyChallengeScreen` use `context.pushPriming(...)`. | Ready |
 | `refactor/shared-prefs-provider` | `sharedPreferencesProvider` initialized once in `main()` and injected via `ProviderScope`. `SettingsRepository` takes `SharedPreferences` in constructor. All `StateNotifier`s receive `SettingsRepository` via constructor from `ref`. `ChallengeFiltersNotifier`, `ComfortZoneLogic`, `DailyMissionsLogic` use injected prefs. Tests can override with a fake. | Ready |
 | `refactor/notification-cleanup` | Remove duplicate `FlutterLocalNotificationsPlugin` instance from `NotificationManager`. Collapse triple-cancel into single `SyntraNotificationService.cancelAllNotifications()` call. `initialize()` delegates entirely to the service. | Ready |
+| `refactor/split-screens` | Split `challenges_screen.dart` (965→205 lines) and `onboarding_screen.dart` (864→193 lines) into `challenges/` and `onboarding/` subdirectory widgets. | Ready |
+| `test/widget-tests` | Widget tests for `ChallengeCard` (9 tests), `ChallengeDoneScreen` (7 tests), `ActiveChallengeScreen` (3 tests). Shared `test/helpers/test_helpers.dart` with channel mocks and fake challenge factory. | Ready |
+| `feat/phase-3-core-loop` | Personal best streak (3.2), mood trend chart (3.1), retry-after-abort button (3.3). | Ready |
+| `feat/phase-4-progression` | Badges system (4.1), CZL gradients/icons (4.2), weekly goal card (4.3), weekly recap notification (4.4). | Ready |
 
 ---
 
@@ -60,7 +74,7 @@ main
 | 1.4 | Merge / clean up notification manager classes | `refactor/notification-cleanup` | **Done** |
 | 1.5 | Wire `PrimingScreen` into GoRouter | `refactor/priming-gorouter` | **Done** |
 | 1.6 | Inject `SharedPreferences` via Riverpod provider | `refactor/shared-prefs-provider` | **Done** |
-| 1.7 | Split large screen files into `widgets/` subdirectories | — | **TODO** |
+| 1.7 | Split large screen files into `widgets/` subdirectories | `refactor/split-screens` | **Done** (`challenges/` + `onboarding/` subdirs) |
 
 ### CZL Expansion
 
@@ -73,23 +87,23 @@ main
 
 ---
 
-## Phase 2 — Testability
+## Phase 2 — Testability ✓
 
 | # | Task | Status |
 |---|---|---|
-| 2.1 | `SharedPreferences` Riverpod provider for injection | TODO (depends on 1.6) |
-| 2.2 | Widget tests for `ChallengeCard`, `ChallengeDoneScreen`, `ActiveChallengeScreen` | TODO |
+| 2.1 | `SharedPreferences` Riverpod provider for injection | **Done** (1.6 / `refactor/shared-prefs-provider`) |
+| 2.2 | Widget tests for `ChallengeCard`, `ChallengeDoneScreen`, `ActiveChallengeScreen` | **Done** (`test/widget-tests` — 19 tests total) |
 
 ---
 
-## Phase 3 — Core Loop Depth
+## Phase 3 — Core Loop Depth ✓
 
 | # | Task | Status |
 |---|---|---|
-| 3.1 | Challenge reflection history (mood trend chart per challenge in logbook) | TODO |
-| 3.2 | Personal best streak tracking (`all_time_max_streak` in SharedPrefs) | TODO |
-| 3.3 | Repeat challenge suggestion after abort or low mood | TODO |
-| 3.4 | Context-aware environment filter (session chip, not persisted) | TODO |
+| 3.1 | Challenge reflection history (mood trend chart per challenge in logbook) | **Done** (`_MoodChart` in detail sheet, `moodHistoryProvider`, `feat/phase-3-core-loop`) |
+| 3.2 | Personal best streak tracking (`all_time_max_streak` in SharedPrefs) | **Done** (`personalBestStreakProvider`, Best Streak + Done Today cards in stats grid, `feat/phase-3-core-loop`) |
+| 3.3 | Repeat challenge suggestion after abort | **Done** ("Try Again" button → `pushReplacement` to fresh `ActiveChallengeScreen`, `feat/phase-3-core-loop`) |
+| 3.4 | Context-aware environment filter (session chip, not persisted) | **Skipped** — all 127 challenges have `environment: "all"` |
 
 ---
 
@@ -144,12 +158,9 @@ Phase 1  →  Phase 6 (custom challenges)
 
 ---
 
-## Known Remaining Issues (not yet branched)
+## Known Remaining Issues
 
-- `PrimingScreen` is now fully on GoRouter (Phase 1.5 — branch `refactor/priming-gorouter`).
-- All 127 challenges are assigned levels 1–5 only. Levels 6–10 exist in the system
-  but no challenge content covers them yet.
-- `NotificationManager` and `SyntraNotificationService` overlap cleaned up (Phase 1.4 — branch `refactor/notification-cleanup`).
-- `SharedPreferences.getInstance()` injection done (Phase 1.6 — branch `refactor/shared-prefs-provider`).
-- Screen files are still monolithic (Phase 1.7):
-  `challenges_screen.dart` 965 lines, `onboarding_screen.dart` 864 lines, etc.
+- All 127 challenges are assigned levels 1–5 only. Levels 6–10 exist in the system but no challenge content covers them yet (CZL TODO).
+- Phase 3.4 (environment filter) skipped — all challenges use `environment: "all"` making the filter useless.
+- Phase 5 (UX polish) in progress on `feat/phase-5-ux-polish`.
+- Phases 1–4 complete on feature branches; none merged to `main` yet.
