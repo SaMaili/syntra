@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../generated/l10n.dart';
 import '../logic/daily_missions_logic.dart';
 import '../providers/settings_providers.dart';
+import '../providers/shared_preferences_provider.dart';
 import '../providers/statistics_providers.dart';
 import '../router.dart';
 import '../theme/app_spacing.dart';
@@ -21,11 +22,13 @@ class DailyMissionsNotifier
   @override
   Future<List<DailyMission>> build() async {
     final lang = ref.watch(activeLocaleProvider);
-    return DailyMissionsLogic().getTodayMissions(lang);
+    final prefs = ref.read(sharedPreferencesProvider);
+    return DailyMissionsLogic().getTodayMissions(lang, prefs);
   }
 
   Future<void> markCompleted(MissionTier tier) async {
-    await DailyMissionsLogic().markCompleted(tier);
+    final prefs = ref.read(sharedPreferencesProvider);
+    await DailyMissionsLogic().markCompleted(tier, prefs);
     final current = state.value;
     if (current == null) return;
     state = AsyncData(
