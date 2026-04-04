@@ -80,7 +80,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "acceptChallenge": MessageLookupByLibrary.simpleMessage("Accept Challenge"),
     "activity": MessageLookupByLibrary.simpleMessage("Activity"),
     "activitySubtitle": MessageLookupByLibrary.simpleMessage(
-      "12 weeks — each square is one day",
+      "each square is one day",
     ),
     "addCustomChallenge": MessageLookupByLibrary.simpleMessage(
       "Add Custom Challenge",
@@ -259,7 +259,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "doItLater": MessageLookupByLibrary.simpleMessage("Do it later"),
     "done": MessageLookupByLibrary.simpleMessage("Done"),
-    "doneExcited": MessageLookupByLibrary.simpleMessage("DONE! 😎"),
+    "doneExcited": MessageLookupByLibrary.simpleMessage("DONE!"),
     "doneToday": MessageLookupByLibrary.simpleMessage("Done Today"),
     "embraceChallenges": MessageLookupByLibrary.simpleMessage(
       "Embrace challenges as opportunities",

@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/logbook_repository.dart';
 import '../data/settings_repository.dart';
+import 'settings_providers.dart' show comfortZoneLevelProvider;
 
 /// Invalidate this to force all statistics providers to reload.
 final statisticsRefreshProvider = StateProvider<int>((ref) => 0);
@@ -65,6 +66,15 @@ final moodHistoryProvider =
     FutureProvider.family<List<int>, String>((ref, challengeId) {
   ref.watch(statisticsRefreshProvider);
   return LogbookRepository.instance.moodHistoryForChallenge(challengeId);
+});
+
+/// Completions toward the next CZL level-up. Reacts to both challenge
+/// completions (statisticsRefreshProvider) and level changes.
+/// SharedPreferences reads are synchronous, so this is a plain Provider.
+final czlCompletionsProvider = Provider<int>((ref) {
+  ref.watch(statisticsRefreshProvider);
+  ref.watch(comfortZoneLevelProvider);
+  return ref.read(comfortZoneLevelProvider.notifier).getCompletionsAtCurrentLevel();
 });
 
 /// Convenience helper to bump the refresh counter from anywhere.

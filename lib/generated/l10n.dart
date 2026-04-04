@@ -1,6 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -234,9 +235,9 @@ class S {
     );
   }
 
-  /// `DONE! 😎`
+  /// `DONE!`
   String get doneExcited {
-    return Intl.message('DONE! 😎', name: 'doneExcited', desc: '', args: []);
+    return Intl.message('DONE!', name: 'doneExcited', desc: '', args: []);
   }
 
   /// `Blocked {seconds} seconds`
@@ -1754,10 +1755,10 @@ class S {
     return Intl.message('Activity', name: 'activity', desc: '', args: []);
   }
 
-  /// `12 weeks — each square is one day`
+  /// `each square is one day`
   String get activitySubtitle {
     return Intl.message(
-      '12 weeks — each square is one day',
+      'each square is one day',
       name: 'activitySubtitle',
       desc: '',
       args: [],

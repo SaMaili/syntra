@@ -146,6 +146,7 @@ class ComfortZoneNotifier extends StateNotifier<int> {
   }
 
   Future<void> setLevel(int level) async {
+    await ComfortZoneLogic().resetCompletionsAtLevel(level, _prefs);
     state = level;
     await _repo.saveComfortZoneLevel(level);
   }
@@ -165,7 +166,7 @@ class ComfortZoneNotifier extends StateNotifier<int> {
     return null;
   }
 
-  Future<int> getCompletionsAtCurrentLevel() async =>
+  int getCompletionsAtCurrentLevel() =>
       ComfortZoneLogic().getCompletionsAtLevel(state, _prefs);
 }
 

@@ -56,7 +56,7 @@
   "navSettings": "Einstellungen",
   "timeRemaining": "Verbleibende Zeit",
   "notSureWhatToSay": "Nicht sicher was du sagen sollst?",
-  "doneExcited": "GESCHAFFT! 😎",
+  "doneExcited": "GESCHAFFT!",
   "stillSecondsLeft": "In {seconds} Sekunden verfügbar",
   "@stillSecondsLeft": {
     "placeholders": {
@@ -264,7 +264,7 @@
   "legendTried": "Versucht",
   "xpEarnedThisWeek": "XP diese Woche",
   "activity": "Aktivität",
-  "activitySubtitle": "12 Wochen — jedes Quadrat ist ein Tag",
+  "activitySubtitle": "jedes Quadrat ist ein Tag",
   "less": "Weniger",
   "more": "Mehr",
   "totalXp": "Gesamt-XP",

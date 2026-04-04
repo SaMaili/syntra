@@ -1,6 +1,5 @@
 import 'dart:math' show Random;
 
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:syntra/challenge.dart';
@@ -726,15 +725,13 @@ class _ChallengeListItem extends StatelessWidget {
     return s == 0 ? '${m}m' : '${m}m ${s}s';
   }
 
-  void _onInfoTap(BuildContext context) {
-    Navigator.of(context).push(
+  Future<void> _onInfoTap(BuildContext context) async {
+    final start = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
-        builder: (_) => ChallengeDetailScreen(
-          challenge: challenge,
-          onStart: onStart,
-        ),
+        builder: (_) => ChallengeDetailScreen(challenge: challenge),
       ),
     );
+    if (start == true) onStart();
   }
 }
 

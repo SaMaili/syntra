@@ -100,13 +100,13 @@ class LogbookRepository {
 
   // ─── Read ─────────────────────────────────────────────────────────────────
 
-  /// Returns entries filtered by [status] and [query] (matched against
-  /// challenge_id). Pass null to skip that filter.
+  /// Returns entries filtered by [status] and/or [challengeIds].
+  /// Pass null to skip a filter.
   Future<List<Map<String, dynamic>>> filteredEntries({
     int limit = 50,
     int offset = 0,
-    String? status,   // 'success' | 'tried' | null = all
-    String? query,    // substring search on challenge_id
+    String? status,              // 'success' | 'tried' | null = all
+    Set<String>? challengeIds,   // restrict to these challenge IDs (title search)
   }) async {
     final db = await _database;
     final conditions = <String>[];
@@ -116,9 +116,10 @@ class LogbookRepository {
       conditions.add('status = ?');
       args.add(status);
     }
-    if (query != null && query.isNotEmpty) {
-      conditions.add('challenge_id LIKE ?');
-      args.add('%$query%');
+    if (challengeIds != null && challengeIds.isNotEmpty) {
+      final placeholders = List.filled(challengeIds.length, '?').join(', ');
+      conditions.add('challenge_id IN ($placeholders)');
+      args.addAll(challengeIds);
     }
 
     final where = conditions.isEmpty ? null : conditions.join(' AND ');
@@ -326,7 +327,7 @@ class LogbookRepository {
     final todayWeekday = now.weekday; // 1=Mon
     final endOfGrid = now;
     final startOfGrid =
-        now.subtract(Duration(days: (weeks * 7) - 1 + (todayWeekday - 1)));
+        now.subtract(Duration(days: (weeks - 1) * 7 + (todayWeekday - 1)));
     final startStr = startOfGrid.toIso8601String().substring(0, 10);
     final endStr = endOfGrid.toIso8601String().substring(0, 10);
 

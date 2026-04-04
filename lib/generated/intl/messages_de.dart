@@ -82,7 +82,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "activity": MessageLookupByLibrary.simpleMessage("Aktivität"),
     "activitySubtitle": MessageLookupByLibrary.simpleMessage(
-      "12 Wochen — jedes Quadrat ist ein Tag",
+      "jedes Quadrat ist ein Tag",
     ),
     "addCustomChallenge": MessageLookupByLibrary.simpleMessage(
       "Challenge hinzufügen",
@@ -271,7 +271,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "doItLater": MessageLookupByLibrary.simpleMessage("Später machen"),
     "done": MessageLookupByLibrary.simpleMessage("Erledigt"),
-    "doneExcited": MessageLookupByLibrary.simpleMessage("GESCHAFFT! 😎"),
+    "doneExcited": MessageLookupByLibrary.simpleMessage("GESCHAFFT!"),
     "doneToday": MessageLookupByLibrary.simpleMessage("Heute geschafft"),
     "embraceChallenges": MessageLookupByLibrary.simpleMessage(
       "Betrachte Herausforderungen als Chancen",
