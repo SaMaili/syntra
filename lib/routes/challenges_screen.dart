@@ -7,8 +7,8 @@ import 'package:syntra/generated/l10n.dart';
 import 'package:syntra/providers/challenge_providers.dart';
 import 'package:syntra/providers/settings_providers.dart';
 import 'package:syntra/providers/statistics_providers.dart';
+import 'package:syntra/router.dart';
 import 'package:syntra/routes/challenge_done_screen.dart' show socialProofCount;
-import 'package:syntra/routes/priming_screen.dart';
 import 'package:syntra/services/sound_service.dart';
 import 'package:syntra/theme/app_spacing.dart';
 import 'package:syntra/widgets/syntra_button.dart';
@@ -85,16 +85,10 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
 
   void _onChallengeFinished() => refreshStatistics(ref);
 
-  void _startChallenge(BuildContext context, Challenge challenge) {
+  Future<void> _startChallenge(BuildContext context, Challenge challenge) async {
     SoundService.playDing(enabled: ref.read(soundEffectsEnabledProvider));
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => PrimingScreen(
-          challenge: challenge,
-          onDone: (_) => _onChallengeFinished(),
-        ),
-      ),
-    );
+    final result = await context.pushPriming(challenge);
+    if (result != null) _onChallengeFinished();
   }
 
   void _onGiveMeOne(BuildContext context) {
@@ -831,7 +825,7 @@ class _ChallengeDetailSheet extends ConsumerWidget {
                 challenge.description,
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
-              if (challenge.notSureWhatToSay.trim().isNotEmpty) ...[
+              if (challenge.hints.isNotEmpty) ...[
                 const SizedBox(height: AppSpacing.lg),
                 Text(
                   S.of(context).notSureWhatToSay,
@@ -848,11 +842,20 @@ class _ChallengeDetailSheet extends ConsumerWidget {
                     borderRadius:
                         BorderRadius.circular(AppSpacing.cardRadius),
                   ),
-                  child: Text(
-                    challenge.notSureWhatToSay,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: cs.onSecondaryContainer,
-                        ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: challenge.hints
+                        .map((h) => Padding(
+                              padding: const EdgeInsets.only(bottom: 4),
+                              child: Text(
+                                '• $h',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(color: cs.onSecondaryContainer),
+                              ),
+                            ))
+                        .toList(),
                   ),
                 ),
               ],

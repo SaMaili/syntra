@@ -8,11 +8,11 @@ import 'generated/l10n.dart';
 import 'logic/notification_manager.dart';
 import 'providers/settings_providers.dart';
 import 'providers/statistics_providers.dart' show homeTabIndexProvider;
+import 'router.dart';
 import 'routes/challenges_screen.dart';
 import 'routes/daily_challenge_screen.dart';
 import 'routes/settings_screen.dart';
 import 'routes/statistics_screen.dart';
-import 'routes/streak_celebration_screen.dart';
 import 'services/sound_service.dart';
 import 'static.dart';
 
@@ -155,14 +155,7 @@ class _HomeBarState extends ConsumerState<HomeBar> {
       await SettingsRepository.instance.saveLastCelebratedStreak(streak);
       final isMilestone = AppStatic.streakMilestones.contains(streak);
       if (mounted) {
-        await Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => StreakCelebrationScreen(
-              streak: streak,
-              isMilestone: isMilestone,
-            ),
-          ),
-        );
+        await context.goStreakCelebration(streak, isMilestone);
       }
     }
   }

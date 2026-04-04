@@ -10,6 +10,7 @@ import 'routes/challenge_done_screen.dart';
 import 'routes/logbook_detail_page.dart';
 import 'routes/logbook_page.dart';
 import 'routes/onboarding_screen.dart';
+import 'routes/priming_screen.dart';
 import 'routes/streak_celebration_screen.dart';
 
 /// All named routes in the app.
@@ -21,6 +22,7 @@ abstract class AppRoutes {
   static const logbook = '/logbook';
   static const logbookDetail = '/logbook_detail';
   static const about = '/about';
+  static const priming = '/priming';
   static const streakCelebration = '/streak_celebration';
 }
 
@@ -44,10 +46,23 @@ final appRouter = GoRouter(
       builder: (context, state) => const OnboardingScreen(),
     ),
     GoRoute(
+      path: AppRoutes.priming,
+      builder: (context, state) {
+        final args = state.extra as _PrimingArgs;
+        return PrimingScreen(
+          challenge: args.challenge,
+          isDailyMission: args.isDailyMission,
+        );
+      },
+    ),
+    GoRoute(
       path: AppRoutes.activeChallenge,
       builder: (context, state) {
-        final challenge = state.extra as Challenge;
-        return ActiveChallengeScreen(challenge: challenge);
+        final args = state.extra as _ActiveChallengeArgs;
+        return ActiveChallengeScreen(
+          challenge: args.challenge,
+          isDailyMission: args.isDailyMission,
+        );
       },
     ),
     GoRoute(
@@ -57,6 +72,8 @@ final appRouter = GoRouter(
         return ChallengeDoneScreen(
           challenge: args.challenge,
           rewardFactor: args.rewardFactor,
+          durationSeconds: args.durationSeconds,
+          isDailyMission: args.isDailyMission,
         );
       },
     ),
@@ -88,10 +105,29 @@ final appRouter = GoRouter(
   ],
 );
 
+class _PrimingArgs {
+  final Challenge challenge;
+  final bool isDailyMission;
+  const _PrimingArgs(this.challenge, {this.isDailyMission = false});
+}
+
+class _ActiveChallengeArgs {
+  final Challenge challenge;
+  final bool isDailyMission;
+  const _ActiveChallengeArgs(this.challenge, {this.isDailyMission = false});
+}
+
 class _ChallengeDoneArgs {
   final Challenge challenge;
   final double rewardFactor;
-  const _ChallengeDoneArgs(this.challenge, this.rewardFactor);
+  final int? durationSeconds;
+  final bool isDailyMission;
+  const _ChallengeDoneArgs(
+    this.challenge,
+    this.rewardFactor, {
+    this.durationSeconds,
+    this.isDailyMission = false,
+  });
 }
 
 class _StreakCelebrationArgs {
@@ -102,13 +138,37 @@ class _StreakCelebrationArgs {
 
 /// Type-safe helpers so callers never deal with raw strings or dynamic casts.
 extension AppNavigation on BuildContext {
-  void goActiveChallenge(Challenge challenge) =>
-      GoRouter.of(this).push(AppRoutes.activeChallenge, extra: challenge);
+  /// Push the priming countdown screen. Returns the reward factor once the full
+  /// challenge flow completes, or null if the user cancelled at the priming step.
+  Future<double?> pushPriming(Challenge challenge, {bool isDailyMission = false}) =>
+      GoRouter.of(this).push<double>(
+        AppRoutes.priming,
+        extra: _PrimingArgs(challenge, isDailyMission: isDailyMission),
+      );
 
-  void goChallengeDone(Challenge challenge, double rewardFactor) =>
-      GoRouter.of(this).push(
+  Future<double?> pushActiveChallenge(
+    Challenge challenge, {
+    bool isDailyMission = false,
+  }) =>
+      GoRouter.of(this).push<double>(
+        AppRoutes.activeChallenge,
+        extra: _ActiveChallengeArgs(challenge, isDailyMission: isDailyMission),
+      );
+
+  Future<double?> pushChallengeDone(
+    Challenge challenge,
+    double rewardFactor, {
+    int? durationSeconds,
+    bool isDailyMission = false,
+  }) =>
+      GoRouter.of(this).push<double>(
         AppRoutes.challengeDone,
-        extra: _ChallengeDoneArgs(challenge, rewardFactor),
+        extra: _ChallengeDoneArgs(
+          challenge,
+          rewardFactor,
+          durationSeconds: durationSeconds,
+          isDailyMission: isDailyMission,
+        ),
       );
 
   void goLogbook() => GoRouter.of(this).push(AppRoutes.logbook);
@@ -118,8 +178,8 @@ extension AppNavigation on BuildContext {
 
   void goAbout() => GoRouter.of(this).push(AppRoutes.about);
 
-  void goStreakCelebration(int streak, bool isMilestone) =>
-      GoRouter.of(this).push(
+  Future<void> goStreakCelebration(int streak, bool isMilestone) =>
+      GoRouter.of(this).push<void>(
         AppRoutes.streakCelebration,
         extra: _StreakCelebrationArgs(streak, isMilestone),
       );
