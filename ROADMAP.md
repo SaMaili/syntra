@@ -1,6 +1,6 @@
 # Syntra — Development Roadmap
 
-Generated: 2026-04-03 · Last updated: 2026-04-04 (Phase 5 in progress)
+Generated: 2026-04-03 · Last updated: 2026-04-04 (Phase 5 complete)
 Based on: CODEBASE_ANALYSIS.txt (2026-04-03)
 
 ---
@@ -118,14 +118,14 @@ main
 
 ---
 
-## Phase 5 — UX Polish
+## Phase 5 — UX Polish ✓
 
 | # | Task | Status |
 |---|---|---|
-| 5.1 | Logbook search and filter | TODO |
-| 5.2 | Challenge detail screen (replaces bottom sheet) | TODO |
-| 5.3 | Timer customization before starting | TODO |
-| 5.4 | Distinct haptic vocabulary per event | TODO |
+| 5.1 | Logbook search and filter | **Done** (`filteredEntries()` + search bar + status chips in `LogbookPage`) |
+| 5.2 | Challenge detail screen (replaces bottom sheet) | **Done** (`ChallengeDetailScreen` as `MaterialPageRoute`, old sheet removed) |
+| 5.3 | Timer customization before starting | **Done** (`_DurationPicker` in `PrimingScreen`, `overrideTime` in `ActiveChallengeScreen`) |
+| 5.4 | Distinct haptic vocabulary per event | **Done** (`VibrationService.abort()` added and wired; full vocabulary: accept/start/timerWarning/timerEnd/success/milestone/xpTick/abort) |
 
 ---
 
@@ -163,4 +163,5 @@ Phase 1  →  Phase 6 (custom challenges)
 - All 127 challenges are assigned levels 1–5 only. Levels 6–10 exist in the system but no challenge content covers them (CZL TODO).
 - Phase 3.4 (environment filter) skipped — all challenges use `environment: "all"`.
 - Phases 1–4 complete on feature branches; none merged to `main` yet.
-- Phase 5 in progress on `feat/phase-5-ux-polish`.
+- Phase 5 complete on `feat/phase-5-ux-polish`.
+- All feature branches (Phases 1–5) ready to merge; none merged to `main` yet.
