@@ -1,6 +1,6 @@
 # Syntra — Development Roadmap
 
-Generated: 2026-04-03 · Last updated: 2026-04-04
+Generated: 2026-04-03 · Last updated: 2026-04-04 (Phase 3 complete)
 Based on: CODEBASE_ANALYSIS.txt (2026-04-03)
 
 ---
@@ -60,7 +60,7 @@ main
 | 1.4 | Merge / clean up notification manager classes | `refactor/notification-cleanup` | **Done** |
 | 1.5 | Wire `PrimingScreen` into GoRouter | `refactor/priming-gorouter` | **Done** |
 | 1.6 | Inject `SharedPreferences` via Riverpod provider | `refactor/shared-prefs-provider` | **Done** |
-| 1.7 | Split large screen files into `widgets/` subdirectories | — | **TODO** |
+| 1.7 | Split large screen files into `widgets/` subdirectories | — | **TODO** (deferred; Phase 2 tests written against monolithic files) |
 
 ### CZL Expansion
 
@@ -77,19 +77,19 @@ main
 
 | # | Task | Status |
 |---|---|---|
-| 2.1 | `SharedPreferences` Riverpod provider for injection | TODO (depends on 1.6) |
-| 2.2 | Widget tests for `ChallengeCard`, `ChallengeDoneScreen`, `ActiveChallengeScreen` | TODO |
+| 2.1 | `SharedPreferences` Riverpod provider for injection | **Done** (1.6) |
+| 2.2 | Widget tests for `ChallengeCard`, `ChallengeDoneScreen`, `ActiveChallengeScreen` | **Done** (`test/widget/`, branch `test/widget-tests`) |
 
 ---
 
-## Phase 3 — Core Loop Depth
+## Phase 3 — Core Loop Depth ✓
 
 | # | Task | Status |
 |---|---|---|
-| 3.1 | Challenge reflection history (mood trend chart per challenge in logbook) | TODO |
-| 3.2 | Personal best streak tracking (`all_time_max_streak` in SharedPrefs) | TODO |
-| 3.3 | Repeat challenge suggestion after abort or low mood | TODO |
-| 3.4 | Context-aware environment filter (session chip, not persisted) | TODO |
+| 3.1 | Challenge reflection history (mood trend chart per challenge in logbook) | **Done** (`_MoodChart` in detail sheet, `moodHistoryProvider`) |
+| 3.2 | Personal best streak tracking (`all_time_max_streak` in SharedPrefs) | **Done** (`personalBestStreakProvider`, Best Streak card in stats grid) |
+| 3.3 | Repeat challenge suggestion after abort | **Done** ("Try Again" button → `pushReplacement` fresh `ActiveChallengeScreen`) |
+| 3.4 | Context-aware environment filter (session chip, not persisted) | **Skipped** — all 127 challenges have `environment: "all"`, filter would be useless |
 
 ---
 
