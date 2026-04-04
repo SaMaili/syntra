@@ -41,6 +41,12 @@ final personalBestStreakProvider = FutureProvider<int>((ref) {
   return SettingsRepository.instance.loadAllTimeMaxStreak();
 });
 
+final moodHistoryProvider =
+    FutureProvider.family<List<int>, String>((ref, challengeId) {
+  ref.watch(statisticsRefreshProvider);
+  return LogbookRepository.instance.moodHistoryForChallenge(challengeId);
+});
+
 /// Convenience helper to bump the refresh counter from anywhere.
 void refreshStatistics(WidgetRef ref) {
   ref.read(statisticsRefreshProvider.notifier).state++;

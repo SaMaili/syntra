@@ -364,6 +364,11 @@ class S {
     );
   }
 
+  /// `Mood Trend`
+  String get moodTrend {
+    return Intl.message('Mood Trend', name: 'moodTrend', desc: '', args: []);
+  }
+
   /// `Challenge aborted!`
   String get challengeAbortedSnackbar {
     return Intl.message(

@@ -413,6 +413,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "mindsetTips": MessageLookupByLibrary.simpleMessage("Mindset-Tipps"),
     "minutesBrave": MessageLookupByLibrary.simpleMessage("Min. mutig"),
     "mon": MessageLookupByLibrary.simpleMessage("Mo"),
+    "moodTrend": MessageLookupByLibrary.simpleMessage("Stimmungsverlauf"),
     "more": MessageLookupByLibrary.simpleMessage("Mehr"),
     "morning": MessageLookupByLibrary.simpleMessage("Morgen"),
     "motivationMessage1": MessageLookupByLibrary.simpleMessage(
