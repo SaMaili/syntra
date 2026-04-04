@@ -19,8 +19,9 @@ main
  │        └─ [PR] refactor/czl-expand               ← merge FOURTH (depends on above)
  │
  ├─ [PR] refactor/navigate-gorouter                 ← merge FIFTH (independent)
+ │        └─ [PR] refactor/priming-gorouter         ← merge SIXTH (depends on above)
  │
- └─ [PR] refactor/notification-cleanup              ← merge SIXTH (independent)
+ └─ [PR] refactor/notification-cleanup              ← merge SEVENTH (independent)
 ```
 
 ### Branch summaries
@@ -32,6 +33,7 @@ main
 | `refactor/challenge-model` | `notSureWhatToSay: String` → `hints: List<String>` (JSON arrays). New `level: int` field on `Challenge` (explicit, from JSON). All fields `final`. `toMap`/`fromMap` removed. `assignLevel` simplified. 127 challenges updated. All rendering sites updated. | Ready |
 | `refactor/czl-expand` | `maxLevel` 5→10. Level names + descriptions for levels 6–10 (Stepping Up → Untouchable). Settings chip row and level-up dialog scale automatically. | Ready |
 | `refactor/navigate-gorouter` | `ActiveChallengeScreen→ChallengeDoneScreen` and both `StreakCelebration` push sites migrated from `Navigator.push` to GoRouter. Also fixes pre-existing bug: `isDailyMission` flag (and daily XP bonus) now correctly flows through `PrimingScreen→ActiveChallengeScreen→ChallengeDoneArgs`. | Ready |
+| `refactor/priming-gorouter` | Add `/priming` GoRoute. Remove `onDone` callback from `PrimingScreen` and `ActiveChallengeScreen`. Result bubbles back via `Future<double?>` pop chain. `ChallengesScreen` and `DailyChallengeScreen` use `context.pushPriming(...)`. | Ready |
 | `refactor/notification-cleanup` | Remove duplicate `FlutterLocalNotificationsPlugin` instance from `NotificationManager`. Collapse triple-cancel into single `SyntraNotificationService.cancelAllNotifications()` call. `initialize()` delegates entirely to the service. | Ready |
 
 ---
@@ -53,7 +55,7 @@ main
 | 1.2 | Explicit `level` field in `challenges.json` (replaces percentile logic) | `refactor/challenge-model` | **Done** |
 | 1.3 | Migrate `Navigator.push` calls to GoRouter | `refactor/navigate-gorouter` | **Done** (partial — PrimingScreen entry points remain) |
 | 1.4 | Merge / clean up notification manager classes | `refactor/notification-cleanup` | **Done** |
-| 1.5 | Wire or delete `priming_screen.dart` / `mindset_screen.dart` | — | **TODO** (PrimingScreen is wired via Navigator; needs GoRouter route) |
+| 1.5 | Wire `PrimingScreen` into GoRouter | `refactor/priming-gorouter` | **Done** |
 | 1.6 | Inject `SharedPreferences` via Riverpod provider | — | **TODO** |
 | 1.7 | Split large screen files into `widgets/` subdirectories | — | **TODO** |
 
@@ -141,8 +143,7 @@ Phase 1  →  Phase 6 (custom challenges)
 
 ## Known Remaining Issues (not yet branched)
 
-- `PrimingScreen` is still pushed via `Navigator.push` from `ChallengesScreen` and
-  `DailyChallengeScreen`. Needs a GoRouter route + proper push/pop flow (Phase 1.5).
+- `PrimingScreen` is now fully on GoRouter (Phase 1.5 — branch `refactor/priming-gorouter`).
 - All 127 challenges are assigned levels 1–5 only. Levels 6–10 exist in the system
   but no challenge content covers them yet.
 - `NotificationManager` and `SyntraNotificationService` overlap cleaned up (Phase 1.4 — branch `refactor/notification-cleanup`).
