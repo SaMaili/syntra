@@ -5,10 +5,10 @@ import '../generated/l10n.dart';
 import '../logic/daily_missions_logic.dart';
 import '../providers/settings_providers.dart';
 import '../providers/statistics_providers.dart';
+import '../router.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/syntra_button.dart';
 import '../widgets/syntra_progress_bar.dart';
-import 'priming_screen.dart';
 
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
@@ -169,26 +169,14 @@ class _MissionBoard extends ConsumerWidget {
   Future<void> _onStart(
       BuildContext context, WidgetRef ref, DailyMission mission) async {
     if (!context.mounted) return;
-    final navigator = Navigator.of(context);
-
-    navigator.push<void>(
-      MaterialPageRoute(
-        builder: (_) => PrimingScreen(
-          challenge: mission.challenge,
-          isDailyMission: true,
-          onDone: (rewardFactor) {
-            // Called from ActiveChallengeScreen before it pops to root.
-            // rewardFactor > 0 means the user completed (not aborted).
-            if (rewardFactor > 0) {
-              ref
-                  .read(dailyMissionsProvider.notifier)
-                  .markCompleted(mission.tier);
-              refreshStatistics(ref);
-            }
-          },
-        ),
-      ),
+    final rewardFactor = await context.pushPriming(
+      mission.challenge,
+      isDailyMission: true,
     );
+    if (rewardFactor != null && rewardFactor > 0 && context.mounted) {
+      ref.read(dailyMissionsProvider.notifier).markCompleted(mission.tier);
+      refreshStatistics(ref);
+    }
   }
 }
 

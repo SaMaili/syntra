@@ -21,13 +21,11 @@ import 'package:timezone/data/latest.dart' as tz;
 class ActiveChallengeScreen extends ConsumerStatefulWidget {
   final Challenge challenge;
   final bool isDailyMission;
-  final ValueChanged<double>? onDone;
 
   const ActiveChallengeScreen({
     super.key,
     required this.challenge,
     this.isDailyMission = false,
-    this.onDone,
   });
 
   @override
@@ -218,8 +216,7 @@ class _ActiveChallengeScreenState extends ConsumerState<ActiveChallengeScreen>
             _bgScheduledNotificationId!);
         _bgScheduledNotificationId = null;
       }
-      widget.onDone?.call(result);
-      if (mounted) context.go('/');
+      if (mounted) context.pop(result);
     }
   }
 
