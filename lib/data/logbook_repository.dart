@@ -18,11 +18,19 @@ class LogbookRepository {
     final path = join(dbPath, 'challenge_database.db');
     _db = await openDatabase(
       path,
-      version: 2,
+      version: 3,
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
           await db.execute(
             'ALTER TABLE logbook ADD COLUMN duration_seconds INTEGER',
+          );
+        }
+        if (oldVersion < 3) {
+          await db.execute(
+            'ALTER TABLE logbook ADD COLUMN feeling INTEGER',
+          );
+          await db.execute(
+            'ALTER TABLE logbook ADD COLUMN perception INTEGER',
           );
         }
       },
