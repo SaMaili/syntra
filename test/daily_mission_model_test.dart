@@ -6,7 +6,6 @@ Challenge _make(String id, {int xp = 50}) => Challenge(
       id: id,
       title: 'T',
       description: 'D',
-      notSureWhatToSay: '',
       xp: xp,
       time: 60,
       type: 'solo',
