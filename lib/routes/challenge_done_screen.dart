@@ -2,9 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:syntra/routes/streak_celebration_screen.dart';
+import 'package:go_router/go_router.dart';
 
 import '../challenge.dart';
+import '../router.dart';
 import '../data/logbook_repository.dart';
 import '../data/settings_repository.dart';
 import '../generated/l10n.dart';
@@ -42,7 +43,6 @@ class ChallengeDoneScreen extends ConsumerStatefulWidget {
   final Challenge challenge;
   final double rewardFactor;
   final int? durationSeconds;
-  final ValueChanged<double>? onDone;
   final bool isDailyMission;
 
   const ChallengeDoneScreen({
@@ -50,7 +50,6 @@ class ChallengeDoneScreen extends ConsumerStatefulWidget {
     required this.challenge,
     this.rewardFactor = 1.0,
     this.durationSeconds,
-    this.onDone,
     this.isDailyMission = false,
   });
 
@@ -305,8 +304,6 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
     final perception = surveyState?.perceived;
     final notes = surveyState?.notes;
 
-    final navigator = Navigator.of(context);
-
     await LogbookRepository.instance.addEntry(
       challengeId: widget.challenge.id,
       status: _status,
@@ -320,10 +317,9 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
 
     int? newLevel;
     if (!_isAborted) {
-      final lang = ref.read(activeLocaleProvider);
       newLevel = await ref
           .read(comfortZoneLevelProvider.notifier)
-          .recordSuccessAndCheckLevelUp(widget.challenge, lang);
+          .recordSuccessAndCheckLevelUp(widget.challenge, ref.read(activeLocaleProvider));
     }
 
     if (newLevel != null && context.mounted) {
@@ -347,21 +343,13 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
         await SettingsRepository.instance.saveLastCelebratedStreak(streak);
         final isMilestone = AppStatic.streakMilestones.contains(streak);
         if (context.mounted) {
-          await Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => StreakCelebrationScreen(
-                streak: streak,
-                isMilestone: isMilestone,
-              ),
-            ),
-          );
+          await context.goStreakCelebration(streak, isMilestone);
         }
       }
     }
 
     refreshStatistics(ref);
-    if (widget.onDone != null) widget.onDone!(widget.rewardFactor);
-    navigator.pop(widget.rewardFactor);
+    if (context.mounted) context.pop(widget.rewardFactor);
   }
 }
 

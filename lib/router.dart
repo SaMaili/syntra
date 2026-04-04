@@ -57,6 +57,8 @@ final appRouter = GoRouter(
         return ChallengeDoneScreen(
           challenge: args.challenge,
           rewardFactor: args.rewardFactor,
+          durationSeconds: args.durationSeconds,
+          isDailyMission: args.isDailyMission,
         );
       },
     ),
@@ -91,7 +93,14 @@ final appRouter = GoRouter(
 class _ChallengeDoneArgs {
   final Challenge challenge;
   final double rewardFactor;
-  const _ChallengeDoneArgs(this.challenge, this.rewardFactor);
+  final int? durationSeconds;
+  final bool isDailyMission;
+  const _ChallengeDoneArgs(
+    this.challenge,
+    this.rewardFactor, {
+    this.durationSeconds,
+    this.isDailyMission = false,
+  });
 }
 
 class _StreakCelebrationArgs {
@@ -105,10 +114,20 @@ extension AppNavigation on BuildContext {
   void goActiveChallenge(Challenge challenge) =>
       GoRouter.of(this).push(AppRoutes.activeChallenge, extra: challenge);
 
-  void goChallengeDone(Challenge challenge, double rewardFactor) =>
-      GoRouter.of(this).push(
+  Future<double?> pushChallengeDone(
+    Challenge challenge,
+    double rewardFactor, {
+    int? durationSeconds,
+    bool isDailyMission = false,
+  }) =>
+      GoRouter.of(this).push<double>(
         AppRoutes.challengeDone,
-        extra: _ChallengeDoneArgs(challenge, rewardFactor),
+        extra: _ChallengeDoneArgs(
+          challenge,
+          rewardFactor,
+          durationSeconds: durationSeconds,
+          isDailyMission: isDailyMission,
+        ),
       );
 
   void goLogbook() => GoRouter.of(this).push(AppRoutes.logbook);
@@ -118,8 +137,8 @@ extension AppNavigation on BuildContext {
 
   void goAbout() => GoRouter.of(this).push(AppRoutes.about);
 
-  void goStreakCelebration(int streak, bool isMilestone) =>
-      GoRouter.of(this).push(
+  Future<void> goStreakCelebration(int streak, bool isMilestone) =>
+      GoRouter.of(this).push<void>(
         AppRoutes.streakCelebration,
         extra: _StreakCelebrationArgs(streak, isMilestone),
       );

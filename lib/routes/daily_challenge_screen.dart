@@ -175,6 +175,7 @@ class _MissionBoard extends ConsumerWidget {
       MaterialPageRoute(
         builder: (_) => PrimingScreen(
           challenge: mission.challenge,
+          isDailyMission: true,
           onDone: (rewardFactor) {
             // Called from ActiveChallengeScreen before it pops to root.
             // rewardFactor > 0 means the user completed (not aborted).
