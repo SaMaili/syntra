@@ -38,7 +38,7 @@
   "navSettings": "Settings",
   "timeRemaining": "Time Remaining",
   "notSureWhatToSay": "Not sure what to say?",
-  "doneExcited": "DONE! 😎",
+  "doneExcited": "DONE!",
   "stillSecondsLeft": "Blocked {seconds} seconds",
   "@stillSecondsLeft": {
     "placeholders": {
@@ -264,7 +264,7 @@
   "legendTried": "Tried",
   "xpEarnedThisWeek": "XP Earned This Week",
   "activity": "Activity",
-  "activitySubtitle": "12 weeks — each square is one day",
+  "activitySubtitle": "each square is one day",
   "less": "Less",
   "more": "More",
   "totalXp": "Total XP",

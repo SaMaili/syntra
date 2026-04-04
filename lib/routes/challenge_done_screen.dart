@@ -5,14 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../challenge.dart';
-import '../router.dart';
 import '../data/logbook_repository.dart';
 import '../data/settings_repository.dart';
 import '../generated/l10n.dart';
 import '../logic/comfort_zone_logic.dart';
 import '../providers/settings_providers.dart';
 import '../providers/statistics_providers.dart' show refreshStatistics;
-import 'active_challenge_screen.dart';
+import '../router.dart';
 import '../services/sound_service.dart';
 import '../services/vibration_service.dart';
 import '../static.dart';
@@ -408,12 +407,11 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
     refreshStatistics(ref);
 
     if (!context.mounted) return;
-    // Replace this done-screen with a fresh active challenge, keeping the
-    // back-stack so popUntil(isFirst) in ActiveChallengeScreen still works.
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => ActiveChallengeScreen(challenge: widget.challenge),
-      ),
+    // Use go() to replace the entire stack so neither this screen nor the
+    // previous ActiveChallengeScreen remain in the back-stack.
+    context.goPriming(
+      widget.challenge,
+      isDailyMission: widget.isDailyMission,
     );
   }
 }

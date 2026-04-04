@@ -1,17 +1,23 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../data/challenge_repository.dart';
 import '../data/logbook_repository.dart';
 import '../generated/l10n.dart';
-import '../providers/statistics_providers.dart' show refreshStatistics;
+import '../providers/statistics_providers.dart' show moodHistoryProvider, refreshStatistics;
 import '../theme/app_spacing.dart';
 import '../widgets/syntra_button.dart';
 
 class LogbookDetailPage extends ConsumerStatefulWidget {
   final Map<String, dynamic> entry;
+  /// Pre-resolved challenge title passed from the logbook list.
+  final String title;
 
-  const LogbookDetailPage({super.key, required this.entry});
+  const LogbookDetailPage({
+    super.key,
+    required this.entry,
+    required this.title,
+  });
 
   @override
   ConsumerState<LogbookDetailPage> createState() => _LogbookDetailPageState();
@@ -27,9 +33,9 @@ class _LogbookDetailPageState extends ConsumerState<LogbookDetailPage>
     super.initState();
     _fadeController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 400),
     );
-    _fadeAnimation = CurvedAnimation(parent: _fadeController, curve: Curves.easeIn);
+    _fadeAnimation = CurvedAnimation(parent: _fadeController, curve: Curves.easeOut);
     _fadeController.forward();
   }
 
@@ -39,346 +45,37 @@ class _LogbookDetailPageState extends ConsumerState<LogbookDetailPage>
     super.dispose();
   }
 
-  Future<String> _getChallengeTitle(
-    BuildContext context,
-    String challengeId,
-  ) async {
-    final locale = Localizations.localeOf(context).languageCode;
-    final challenges =
-        await ChallengeRepository.instance.loadChallenges(locale);
-    try {
-      return challenges.firstWhere((c) => c.id == challengeId).title;
-    } catch (_) {
-      return '';
-    }
-  }
+  // ─── Helpers ───────────────────────────────────────────────────────────────
 
-  @override
-  Widget build(BuildContext context) {
+  bool get _isSuccess => widget.entry['status']?.toString() == 'success';
 
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(S.of(context).logbookEntry),
-      ),
-      body: SafeArea(
-        child: FadeTransition(
-          opacity: _fadeAnimation,
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: FutureBuilder<String>(
-              future: _getChallengeTitle(
-                context,
-                widget.entry['challenge_id']?.toString() ?? '',
-              ),
-              builder: (context, snapshot) {
-                final challengeTitle = snapshot.data ?? '';
-                final isCustom = widget.entry['status'] == 'custom';
-                final displayTitle = isCustom && widget.entry['custom_title'] != null
-                    ? widget.entry['custom_title']
-                    : challengeTitle;
-
-                return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      _buildHeroHeader(displayTitle),
-                      const SizedBox(height: AppSpacing.md),
-                      _buildDetailsCard(),
-                      const SizedBox(height: AppSpacing.md),
-                      _buildFeelingsCard(),
-                      if (widget.entry['notes'] != null &&
-                          widget.entry['notes'].toString().isNotEmpty) ...[
-                        const SizedBox(height: AppSpacing.md),
-                        _buildNotesCard(),
-                      ],
-                      const SizedBox(height: AppSpacing.xl),
-                      _buildDeleteButton(),
-                      const SizedBox(height: AppSpacing.lg),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeroHeader(String displayTitle) {
+  Color _statusColor(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
-    final earned = widget.entry['earned'] ?? 0;
-    final statusColor = _getStatusColor(earned);
-
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          children: [
-            CircleAvatar(
-              radius: 32,
-              backgroundColor: cs.primaryContainer,
-              child: Icon(Icons.emoji_events, color: cs.primary, size: 32),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Text(
-              displayTitle,
-              style: tt.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-              decoration: BoxDecoration(
-                color: statusColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.star, color: statusColor, size: 18),
-                  const SizedBox(width: 6),
-                  Text(
-                    '${earned >= 0 ? '+' : ''}$earned XP',
-                    style: tt.titleMedium?.copyWith(
-                      color: statusColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDetailsCard() {
-    final tt = Theme.of(context).textTheme;
-    final cs = Theme.of(context).colorScheme;
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              S.of(context).details,
-              style: tt.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: cs.primary),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            _buildDetailRow(
-              Icons.calendar_today,
-              S.of(context).date,
-              _formatDate(widget.entry['timestamp']?.toString()),
-            ),
-            _buildDetailRow(
-              Icons.info_outline,
-              S.of(context).status,
-              _localizedStatus(widget.entry['status']?.toString()),
-            ),
-            if (widget.entry['reward_factor'] != null)
-              _buildDetailRow(
-                Icons.trending_up,
-                S.of(context).rewardFactor,
-                '${(widget.entry['reward_factor'] * 100).toInt()}%',
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFeelingsCard() {
-    final tt = Theme.of(context).textTheme;
-    final cs = Theme.of(context).colorScheme;
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              S.of(context).feeling,
-              style: tt.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: cs.primary),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            _buildFeelingRow(
-              S.of(context).howDidYouFeelQuestion,
-              widget.entry['feeling'],
-            ),
-            _buildFeelingRow(
-              S.of(context).howPerceivedByOthers,
-              widget.entry['perception'],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNotesCard() {
-    final tt = Theme.of(context).textTheme;
-    final cs = Theme.of(context).colorScheme;
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              S.of(context).notes,
-              style: tt.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: cs.primary),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(AppSpacing.md),
-              decoration: BoxDecoration(
-                color: cs.surfaceContainerHigh,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                widget.entry['notes']?.toString() ?? '',
-                style: tt.bodyLarge?.copyWith(height: 1.5),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDeleteButton() {
-    final cs = Theme.of(context).colorScheme;
-    return SizedBox(
-      width: double.infinity,
-      child: TextButton.icon(
-        icon: const Icon(Icons.delete_outline),
-        label: Text(S.of(context).deleteEntry),
-        style: TextButton.styleFrom(
-          foregroundColor: cs.error,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        ),
-        onPressed: () => _showDeleteDialog(),
-      ),
-    );
-  }
-
-  Widget _buildDetailRow(IconData icon, String label, String value) {
-    final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-      child: Row(
-        children: [
-          Icon(icon, color: cs.outline, size: 20),
-          const SizedBox(width: 12),
-          Text(label, style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
-          const Spacer(),
-          Text(value, style: tt.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFeelingRow(String label, dynamic value) {
-    final tt = Theme.of(context).textTheme;
-    final cs = Theme.of(context).colorScheme;
-    final feeling = value as int?;
-    final emotColor = _emotionColor(feeling);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
-          const SizedBox(height: 4),
-          Row(
-            children: [
-              Icon(_emotionIcon(feeling), color: emotColor, size: 24),
-              const SizedBox(width: 8),
-              Text(
-                _emotionText(feeling),
-                style: tt.bodyLarge?.copyWith(fontWeight: FontWeight.bold, color: emotColor),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showDeleteDialog() {
-    final l = S.of(context);
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l.deleteEntry),
-        content: Text(l.deleteEntryConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(l.cancel),
-          ),
-          SyntraButton(
-            onPressed: () => _deleteEntry(),
-            color: Theme.of(context).colorScheme.error,
-            height: 40,
-            depth: 3,
-            child: Text(
-              l.delete,
-              style: TextStyle(color: Theme.of(context).colorScheme.onError),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> _deleteEntry() async {
-    try {
-      await LogbookRepository.instance
-          .deleteEntry(widget.entry['id'] as int);
-      if (mounted) {
-        refreshStatistics(ref);
-        Navigator.of(context).pop();
-        Navigator.of(context).pop(true);
-      }
-    } catch (e) {
-      if (mounted) {
-        Navigator.of(context).pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error deleting entry: $e')),
-        );
-      }
-    }
-  }
-
-  String _localizedStatus(String? status) {
-    final l = S.of(context);
-    switch (status) {
-      case 'success': return l.statusSuccess;
-      case 'tried': return l.statusTried;
-      default: return status ?? l.unknown;
-    }
+    return _isSuccess ? const Color(0xFF4CAF50) : cs.tertiary;
   }
 
   String _formatDate(String? timestamp) {
     if (timestamp == null || timestamp.isEmpty) return S.of(context).unknown;
     try {
       final dt = DateTime.parse(timestamp);
-      return '${dt.day.toString().padLeft(2, '0')}.${dt.month.toString().padLeft(2, '0')}.${dt.year}';
-    } catch (_) { return timestamp; }
+      return '${dt.day.toString().padLeft(2, '0')}.'
+          '${dt.month.toString().padLeft(2, '0')}.'
+          '${dt.year}';
+    } catch (_) {
+      return timestamp;
+    }
   }
 
-  Color _getStatusColor(dynamic earned) {
-    final xp = earned as int? ?? 0;
-    if (xp > 0) return Colors.green;
-    if (xp < 0) return Colors.red;
-    return Colors.amber;
+  String _localizedStatus(String? status) {
+    final l = S.of(context);
+    switch (status) {
+      case 'success':
+        return l.statusSuccess;
+      case 'tried':
+        return l.statusTried;
+      default:
+        return status ?? l.unknown;
+    }
   }
 
   IconData _emotionIcon(int? feeling) {
@@ -413,5 +110,521 @@ class _LogbookDetailPageState extends ConsumerState<LogbookDetailPage>
       case 4: return l.veryGood;
       default: return l.unknown;
     }
+  }
+
+  // ─── Actions ───────────────────────────────────────────────────────────────
+
+  void _showDeleteDialog() {
+    final l = S.of(context);
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l.deleteEntry),
+        content: Text(l.deleteEntryConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l.cancel),
+          ),
+          SyntraButton(
+            onPressed: _deleteEntry,
+            color: Theme.of(context).colorScheme.error,
+            height: 40,
+            depth: 3,
+            child: Text(
+              l.delete,
+              style: TextStyle(color: Theme.of(context).colorScheme.onError),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _deleteEntry() async {
+    try {
+      await LogbookRepository.instance.deleteEntry(widget.entry['id'] as int);
+      if (mounted) {
+        refreshStatistics(ref);
+        Navigator.of(context).pop();
+        Navigator.of(context).pop(true);
+      }
+    } catch (e) {
+      if (mounted) {
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error deleting entry: $e')),
+        );
+      }
+    }
+  }
+
+  // ─── Build ─────────────────────────────────────────────────────────────────
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(S.of(context).logbookEntry),
+      ),
+      body: SafeArea(
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _HeroCard(
+                  title: widget.title,
+                  earned: widget.entry['earned'] ?? 0,
+                  status: widget.entry['status']?.toString(),
+                  timestamp: widget.entry['timestamp']?.toString(),
+                  rewardFactor: widget.entry['reward_factor'],
+                  statusColor: _statusColor(context),
+                  isSuccess: _isSuccess,
+                  formatDate: _formatDate,
+                  localizedStatus: _localizedStatus,
+                ),
+                const SizedBox(height: AppSpacing.md),
+                _FeelingsRow(
+                  feeling: widget.entry['feeling'] as int?,
+                  perception: widget.entry['perception'] as int?,
+                  emotionIcon: _emotionIcon,
+                  emotionColor: _emotionColor,
+                  emotionText: _emotionText,
+                ),
+                if (widget.entry['notes'] != null &&
+                    widget.entry['notes'].toString().isNotEmpty) ...[
+                  const SizedBox(height: AppSpacing.md),
+                  _NotesCard(notes: widget.entry['notes'].toString()),
+                ],
+                const SizedBox(height: AppSpacing.md),
+                _MoodCard(
+                  challengeId: widget.entry['challenge_id']?.toString() ?? '',
+                ),
+                const SizedBox(height: AppSpacing.xl),
+                _buildDeleteButton(),
+                const SizedBox(height: AppSpacing.lg),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDeleteButton() {
+    final cs = Theme.of(context).colorScheme;
+    return TextButton.icon(
+      icon: const Icon(Icons.delete_outline),
+      label: Text(S.of(context).deleteEntry),
+      style: TextButton.styleFrom(
+        foregroundColor: cs.error,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      ),
+      onPressed: _showDeleteDialog,
+    );
+  }
+}
+
+// ─── Hero card ────────────────────────────────────────────────────────────────
+
+class _HeroCard extends StatelessWidget {
+  final String title;
+  final int earned;
+  final String? status;
+  final String? timestamp;
+  final dynamic rewardFactor;
+  final Color statusColor;
+  final bool isSuccess;
+  final String Function(String?) formatDate;
+  final String Function(String?) localizedStatus;
+
+  const _HeroCard({
+    required this.title,
+    required this.earned,
+    required this.status,
+    required this.timestamp,
+    required this.rewardFactor,
+    required this.statusColor,
+    required this.isSuccess,
+    required this.formatDate,
+    required this.localizedStatus,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
+    final l = S.of(context);
+
+    return Card(
+      clipBehavior: Clip.hardEdge,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Accent strip
+          Container(
+            height: 4,
+            color: statusColor,
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+                AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.md),
+            child: Column(
+              children: [
+                // Icon
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    color: statusColor.withValues(alpha: 0.12),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    isSuccess
+                        ? Icons.emoji_events_rounded
+                        : Icons.directions_run_rounded,
+                    color: statusColor,
+                    size: 32,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                // Title
+                Text(
+                  title,
+                  style: tt.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                // Date + status
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.calendar_today_rounded,
+                        size: 14, color: cs.onSurfaceVariant),
+                    const SizedBox(width: 4),
+                    Text(
+                      formatDate(timestamp),
+                      style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: statusColor.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        localizedStatus(status),
+                        style: tt.labelSmall?.copyWith(
+                          color: statusColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          // XP + reward factor row
+          Container(
+            color: cs.surfaceContainerHighest,
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.star_rounded, color: statusColor, size: 18),
+                const SizedBox(width: 4),
+                Text(
+                  '${earned >= 0 ? '+' : ''}$earned XP',
+                  style: tt.titleMedium?.copyWith(
+                    color: statusColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                if (rewardFactor != null) ...[
+                  const SizedBox(width: AppSpacing.md),
+                  Container(
+                    width: 1,
+                    height: 16,
+                    color: cs.outlineVariant,
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  Icon(Icons.trending_up_rounded,
+                      size: 16, color: cs.onSurfaceVariant),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${(rewardFactor * 100).toInt()}%',
+                    style: tt.bodyMedium?.copyWith(
+                      color: cs.onSurfaceVariant,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    l.rewardFactor,
+                    style: tt.bodySmall?.copyWith(color: cs.outline),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Feelings row ─────────────────────────────────────────────────────────────
+
+class _FeelingsRow extends StatelessWidget {
+  final int? feeling;
+  final int? perception;
+  final IconData Function(int?) emotionIcon;
+  final Color Function(int?) emotionColor;
+  final String Function(int?) emotionText;
+
+  const _FeelingsRow({
+    required this.feeling,
+    required this.perception,
+    required this.emotionIcon,
+    required this.emotionColor,
+    required this.emotionText,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l = S.of(context);
+    return Row(
+      children: [
+        Expanded(
+          child: _FeelCard(
+            label: l.howDidYouFeelQuestion,
+            value: feeling,
+            emotionIcon: emotionIcon,
+            emotionColor: emotionColor,
+            emotionText: emotionText,
+          ),
+        ),
+        const SizedBox(width: AppSpacing.sm),
+        Expanded(
+          child: _FeelCard(
+            label: l.howPerceivedByOthers,
+            value: perception,
+            emotionIcon: emotionIcon,
+            emotionColor: emotionColor,
+            emotionText: emotionText,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _FeelCard extends StatelessWidget {
+  final String label;
+  final int? value;
+  final IconData Function(int?) emotionIcon;
+  final Color Function(int?) emotionColor;
+  final String Function(int?) emotionText;
+
+  const _FeelCard({
+    required this.label,
+    required this.value,
+    required this.emotionIcon,
+    required this.emotionColor,
+    required this.emotionText,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
+    final color = emotionColor(value);
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          children: [
+            Text(
+              label,
+              style: tt.labelSmall?.copyWith(color: cs.onSurfaceVariant),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.12),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(emotionIcon(value), color: color, size: 26),
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              emotionText(value),
+              style: tt.bodyMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Notes card ───────────────────────────────────────────────────────────────
+
+class _NotesCard extends StatelessWidget {
+  final String notes;
+  const _NotesCard({required this.notes});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.notes_rounded, size: 18, color: cs.primary),
+                const SizedBox(width: AppSpacing.xs),
+                Text(
+                  S.of(context).notes,
+                  style: tt.titleSmall?.copyWith(
+                      fontWeight: FontWeight.bold, color: cs.primary),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(AppSpacing.md),
+              decoration: BoxDecoration(
+                color: cs.surfaceContainerHigh,
+                borderRadius: BorderRadius.circular(12),
+                border: Border(
+                  left: BorderSide(color: cs.primary, width: 3),
+                ),
+              ),
+              child: Text(
+                notes,
+                style: tt.bodyMedium?.copyWith(height: 1.6),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Mood trend card ──────────────────────────────────────────────────────────
+
+class _MoodCard extends ConsumerWidget {
+  final String challengeId;
+  const _MoodCard({required this.challengeId});
+
+  static const _smileyLabels = ['😞', '😕', '😐', '😊', '😄'];
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final async = ref.watch(moodHistoryProvider(challengeId));
+    return async.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (scores) {
+        if (scores.length < 2) return const SizedBox.shrink();
+        final cs = Theme.of(context).colorScheme;
+        final tt = Theme.of(context).textTheme;
+        final spots = [
+          for (var i = 0; i < scores.length; i++)
+            FlSpot(i.toDouble(), scores[i].toDouble()),
+        ];
+        return Card(
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.show_chart_rounded,
+                        size: 18, color: cs.primary),
+                    const SizedBox(width: AppSpacing.xs),
+                    Text(
+                      S.of(context).moodTrend,
+                      style: tt.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold, color: cs.primary),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.md),
+                SizedBox(
+                  height: 100,
+                  child: LineChart(
+                    LineChartData(
+                      minY: 0,
+                      maxY: 4,
+                      gridData: const FlGridData(show: false),
+                      borderData: FlBorderData(show: false),
+                      titlesData: FlTitlesData(
+                        leftTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            reservedSize: 28,
+                            interval: 2,
+                            getTitlesWidget: (v, _) => Text(
+                              _smileyLabels[v.round().clamp(0, 4)],
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                          ),
+                        ),
+                        bottomTitles: const AxisTitles(
+                            sideTitles: SideTitles(showTitles: false)),
+                        topTitles: const AxisTitles(
+                            sideTitles: SideTitles(showTitles: false)),
+                        rightTitles: const AxisTitles(
+                            sideTitles: SideTitles(showTitles: false)),
+                      ),
+                      lineBarsData: [
+                        LineChartBarData(
+                          spots: spots,
+                          isCurved: true,
+                          color: cs.primary,
+                          barWidth: 2.5,
+                          dotData: FlDotData(show: spots.length <= 10),
+                          belowBarData: BarAreaData(
+                            show: true,
+                            color: cs.primary.withValues(alpha: 0.12),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }

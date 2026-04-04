@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:syntra/logic/daily_missions_logic.dart';
 import 'package:syntra/challenge.dart';
+import 'package:syntra/logic/daily_missions_logic.dart';
 
 Challenge _make(String id, {int xp = 50}) => Challenge(
       id: id,

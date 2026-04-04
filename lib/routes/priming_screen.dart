@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-
 import 'package:go_router/go_router.dart';
 
 import '../challenge.dart';
@@ -32,8 +31,6 @@ class _PrimingScreenState extends State<PrimingScreen>
   int _secondsLeft = _totalSeconds;
   Timer? _timer;
   bool _isExiting = false;
-  int? _selectedTime;
-
   /// Duration override chosen by user; null = use challenge default.
   int? _selectedTime;
 

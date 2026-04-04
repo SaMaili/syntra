@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../data/challenge_repository.dart';
 import '../data/logbook_repository.dart';
 import '../generated/l10n.dart';
+import '../router.dart';
 import '../theme/app_spacing.dart';
-import 'logbook_detail_page.dart';
 
 class LogbookPage extends StatefulWidget {
   const LogbookPage({super.key});
@@ -19,27 +20,49 @@ class _LogbookPageState extends State<LogbookPage> {
   bool _isLoadingMore = false;
   static const int _pageSize = 50;
 
-  String? _statusFilter; // null = all, 'success', 'tried'
+  String? _statusFilter;
   final _searchController = TextEditingController();
   String _searchQuery = '';
+
+  /// challenge_id → localized title, loaded once per locale.
+  Map<String, String> _idToTitle = {};
+  String _locale = '';
 
   @override
   void initState() {
     super.initState();
-    _loadEntries();
     _searchController.addListener(() {
       final q = _searchController.text.trim();
       if (q != _searchQuery) {
-        _searchQuery = q;
+        setState(() => _searchQuery = q);
         _loadEntries();
       }
     });
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final locale = Localizations.localeOf(context).languageCode;
+    if (locale != _locale) {
+      _locale = locale;
+      _loadChallengeTitles(locale);
+    }
+  }
+
+  @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadChallengeTitles(String locale) async {
+    final challenges = await ChallengeRepository.instance.loadChallenges(locale);
+    if (!mounted) return;
+    setState(() {
+      _idToTitle = {for (final c in challenges) c.id: c.title};
+    });
+    _loadEntries();
   }
 
   Future<void> _loadEntries({bool append = false}) async {
@@ -49,11 +72,29 @@ class _LogbookPageState extends State<LogbookPage> {
       _isLoadingMore = append;
     });
 
+    Set<String>? challengeIds;
+    if (_searchQuery.isNotEmpty && _idToTitle.isNotEmpty) {
+      final q = _searchQuery.toLowerCase();
+      challengeIds = _idToTitle.entries
+          .where((e) => e.value.toLowerCase().contains(q))
+          .map((e) => e.key)
+          .toSet();
+      if (challengeIds.isEmpty) {
+        setState(() {
+          _entries = [];
+          _hasMore = false;
+          _loading = false;
+          _isLoadingMore = false;
+        });
+        return;
+      }
+    }
+
     final result = await LogbookRepository.instance.filteredEntries(
       limit: _pageSize,
       offset: append ? _entries.length : 0,
       status: _statusFilter,
-      query: _searchQuery.isEmpty ? null : _searchQuery,
+      challengeIds: challengeIds,
     );
 
     setState(() {
@@ -103,9 +144,7 @@ class _LogbookPageState extends State<LogbookPage> {
                 suffixIcon: _searchQuery.isNotEmpty
                     ? IconButton(
                         icon: const Icon(Icons.clear_rounded),
-                        onPressed: () {
-                          _searchController.clear();
-                        },
+                        onPressed: _searchController.clear,
                       )
                     : null,
                 isDense: true,
@@ -188,18 +227,18 @@ class _LogbookPageState extends State<LogbookPage> {
                                   ),
                                 );
                               }
+                              final entry = _entries[i];
+                              final title = _idToTitle[
+                                      entry['challenge_id']?.toString()] ??
+                                  entry['challenge_id']?.toString() ??
+                                  '';
                               return _LogbookEntryTile(
-                                index: i,
-                                entry: _entries[i],
+                                entry: entry,
+                                title: title,
                                 timestamp: _formatTimestamp(
-                                    _entries[i]['timestamp']?.toString()),
+                                    entry['timestamp']?.toString()),
                                 onTap: () async {
-                                  await Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (_) => LogbookDetailPage(
-                                          entry: _entries[i]),
-                                    ),
-                                  );
+                                  await context.goLogbookDetail(entry, title);
                                   _loadEntries();
                                 },
                               );
@@ -244,8 +283,7 @@ class _FilterChip extends StatelessWidget {
           label,
           style: Theme.of(context).textTheme.labelMedium?.copyWith(
                 color: selected ? cs.onPrimaryContainer : cs.onSurfaceVariant,
-                fontWeight:
-                    selected ? FontWeight.bold : FontWeight.normal,
+                fontWeight: selected ? FontWeight.bold : FontWeight.normal,
               ),
         ),
       ),
@@ -279,14 +317,14 @@ class _EmptyState extends StatelessWidget {
 // ─── Entry tile ───────────────────────────────────────────────────────────────
 
 class _LogbookEntryTile extends StatelessWidget {
-  final int index;
   final Map<String, dynamic> entry;
+  final String title;
   final String timestamp;
   final VoidCallback onTap;
 
   const _LogbookEntryTile({
-    required this.index,
     required this.entry,
+    required this.title,
     required this.timestamp,
     required this.onTap,
   });
@@ -308,7 +346,6 @@ class _LogbookEntryTile extends StatelessWidget {
           padding: const EdgeInsets.all(AppSpacing.md),
           child: Row(
             children: [
-              // Status icon instead of plain index badge
               Container(
                 width: 40,
                 height: 40,
@@ -324,8 +361,9 @@ class _LogbookEntryTile extends StatelessWidget {
                       ? Icons.check_circle_rounded
                       : Icons.radio_button_unchecked_rounded,
                   size: 22,
-                  color:
-                      isSuccess ? cs.onPrimaryContainer : cs.onSurfaceVariant,
+                  color: isSuccess
+                      ? cs.onPrimaryContainer
+                      : cs.onSurfaceVariant,
                 ),
               ),
               const SizedBox(width: AppSpacing.md),
@@ -334,8 +372,7 @@ class _LogbookEntryTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      S.of(context).challengeNumber(
-                          entry['challenge_id'].toString()),
+                      title,
                       style: const TextStyle(fontWeight: FontWeight.w600),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

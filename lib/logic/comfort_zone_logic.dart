@@ -44,12 +44,17 @@ class ComfortZoneLogic {
   ];
 
   static const levelIcons = <IconData>[
-    Icons.spa_rounded,          // 0 unused
-    Icons.spa_rounded,          // 1 Warming Up
-    Icons.ac_unit_rounded,      // 2 Breaking the Ice
-    Icons.mic_rounded,          // 3 Holding the Floor
-    Icons.flash_on_rounded,     // 4 Taking Risks
-    Icons.star_rounded,         // 5 The Bold Zone
+    Icons.spa_rounded,               // 0 unused
+    Icons.spa_rounded,               // 1 Warming Up
+    Icons.ac_unit_rounded,           // 2 Breaking the Ice
+    Icons.mic_rounded,               // 3 Holding the Floor
+    Icons.flash_on_rounded,          // 4 Taking Risks
+    Icons.star_rounded,              // 5 The Bold Zone
+    Icons.trending_up_rounded,       // 6 Stepping Up
+    Icons.emoji_events_rounded,      // 7 Owning the Room
+    Icons.fitness_center_rounded,    // 8 Social Athlete
+    Icons.whatshot_rounded,          // 9 Fearless
+    Icons.workspace_premium_rounded, // 10 Untouchable
   ];
 
   /// Two-stop gradient per level (begin → end).
@@ -60,11 +65,16 @@ class ComfortZoneLogic {
     (Color(0xFFE65100), Color(0xFFFF7043)), // 3 orange
     (Color(0xFFC62828), Color(0xFFEF5350)), // 4 red
     (Color(0xFFFF8F00), Color(0xFFFFCA28)), // 5 gold
+    (Color(0xFF6A1B9A), Color(0xFFAB47BC)), // 6 purple
+    (Color(0xFF00695C), Color(0xFF26A69A)), // 7 teal
+    (Color(0xFF1565C0), Color(0xFF42A5F5)), // 8 deep blue
+    (Color(0xFF880E4F), Color(0xFFEC407A)), // 9 pink
+    (Color(0xFF212121), Color(0xFF757575)), // 10 obsidian
   ];
 
   /// Returns the [LinearGradient] for [level] (clamped to valid range).
   static LinearGradient levelGradient(int level) {
-    final idx = level.clamp(1, maxLevel);
+    final idx = level.clamp(1, levelGradientColors.length - 1);
     final (begin, end) = levelGradientColors[idx];
     return LinearGradient(
       colors: [begin, end],
@@ -76,9 +86,12 @@ class ComfortZoneLogic {
   static const _keyCompletions = 'czl_completions_'; // + level number
 
   /// Returns how many successful completions count toward the next level unlock.
-  /// Only completions of challenges *at* or *above* the current CZL count.
-  Future<int> getCompletionsAtLevel(int level, SharedPreferences prefs) async =>
+  int getCompletionsAtLevel(int level, SharedPreferences prefs) =>
       prefs.getInt('$_keyCompletions$level') ?? 0;
+
+  /// Resets the completion counter for [level] to zero.
+  Future<void> resetCompletionsAtLevel(int level, SharedPreferences prefs) =>
+      prefs.setInt('$_keyCompletions$level', 0);
 
   /// Records a successful completion and checks if the user should level up.
   /// Returns the new level if a level-up occurred, null otherwise.
@@ -89,9 +102,6 @@ class ComfortZoneLogic {
     SharedPreferences prefs,
   ) async {
     if (currentLevel >= maxLevel) return null;
-
-    // Only count challenges at the current level or above.
-    if (completed.level < currentLevel) return null;
 
     final key = '$_keyCompletions$currentLevel';
     final newCount = (prefs.getInt(key) ?? 0) + 1;

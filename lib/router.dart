@@ -85,8 +85,8 @@ final appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.logbookDetail,
       builder: (context, state) {
-        final entry = state.extra as Map<String, dynamic>;
-        return LogbookDetailPage(entry: entry);
+        final args = state.extra as _LogbookDetailArgs;
+        return LogbookDetailPage(entry: args.entry, title: args.title);
       },
     ),
     GoRoute(
@@ -133,6 +133,12 @@ class _ChallengeDoneArgs {
   });
 }
 
+class _LogbookDetailArgs {
+  final Map<String, dynamic> entry;
+  final String title;
+  const _LogbookDetailArgs(this.entry, this.title);
+}
+
 class _StreakCelebrationArgs {
   final int streak;
   final bool isMilestone;
@@ -149,12 +155,37 @@ extension AppNavigation on BuildContext {
         extra: _PrimingArgs(challenge, isDailyMission: isDailyMission),
       );
 
+  /// Replaces the entire stack with a fresh priming screen (use for "try again").
+  /// Resets to home then immediately pushes priming — both state changes are
+  /// batched into a single rebuild so there is no visible flash.
+  void goPriming(Challenge challenge, {bool isDailyMission = false}) {
+    final router = GoRouter.of(this);
+    router.go(AppRoutes.home);
+    router.push(
+      AppRoutes.priming,
+      extra: _PrimingArgs(challenge, isDailyMission: isDailyMission),
+    );
+  }
+
   Future<double?> pushActiveChallenge(
     Challenge challenge, {
     bool isDailyMission = false,
     int? overrideTime,
   }) =>
       GoRouter.of(this).push<double>(
+        AppRoutes.activeChallenge,
+        extra: _ActiveChallengeArgs(challenge,
+            isDailyMission: isDailyMission, overrideTime: overrideTime),
+      );
+
+  /// Replaces the entire navigation stack with a fresh [ActiveChallengeScreen].
+  /// Use this for "try again" so the old challenge route is not left in the stack.
+  void goActiveChallenge(
+    Challenge challenge, {
+    bool isDailyMission = false,
+    int? overrideTime,
+  }) =>
+      GoRouter.of(this).go(
         AppRoutes.activeChallenge,
         extra: _ActiveChallengeArgs(challenge,
             isDailyMission: isDailyMission, overrideTime: overrideTime),
@@ -178,8 +209,11 @@ extension AppNavigation on BuildContext {
 
   void goLogbook() => GoRouter.of(this).push(AppRoutes.logbook);
 
-  void goLogbookDetail(Map<String, dynamic> entry) =>
-      GoRouter.of(this).push(AppRoutes.logbookDetail, extra: entry);
+  Future<bool?> goLogbookDetail(Map<String, dynamic> entry, String title) =>
+      GoRouter.of(this).push<bool>(
+        AppRoutes.logbookDetail,
+        extra: _LogbookDetailArgs(entry, title),
+      );
 
   void goAbout() => GoRouter.of(this).push(AppRoutes.about);
 

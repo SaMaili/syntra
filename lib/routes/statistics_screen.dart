@@ -53,86 +53,6 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen>
   }
 }
 
-// ─── Growth story ─────────────────────────────────────────────────────────────
-
-class _GrowthStory extends ConsumerWidget {
-  const _GrowthStory();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final async = ref.watch(overviewStatsProvider);
-    final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
-
-    return async.when(
-      loading: () => const SizedBox.shrink(),
-      error: (_, _) => const SizedBox.shrink(),
-      data: (stats) {
-        final l = S.of(context);
-        final total = stats['completedAllTime'] ?? 0;
-        final streak = stats['streak'] ?? 0;
-        final totalXp = stats['totalXp'] ?? 0;
-
-        // Narrative sentences
-        final sentences = <String>[];
-        if (total == 0) {
-          sentences.add(l.storyFirstChallenge);
-        } else if (total == 1) {
-          sentences.add(l.storyOnce);
-        } else {
-          sentences.add(l.storyNTimes(total));
-        }
-        if (streak >= 2) {
-          sentences.add(l.storyStreakMany(streak));
-        } else if (streak == 1) {
-          sentences.add(l.storyStreakOne);
-        }
-        if (totalXp >= 1000) {
-          sentences.add(l.storyXpKilo((totalXp / 1000).toStringAsFixed(1)));
-        } else if (totalXp > 0) {
-          sentences.add(l.storyXpSmall(totalXp));
-        }
-        final mins = stats['minutesBrave'] ?? 0;
-        if (mins >= 5) {
-          sentences.add(l.storyMinutesBrave(mins));
-        }
-
-        return Card(
-          color: cs.primaryContainer,
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.auto_stories_rounded,
-                        color: cs.onPrimaryContainer, size: 20),
-                    const SizedBox(width: AppSpacing.sm),
-                    Text(l.yourProgress,
-                        style: tt.titleSmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: cs.onPrimaryContainer)),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                ...sentences.map((s) => Padding(
-                      padding: const EdgeInsets.only(bottom: 4),
-                      child: Text(
-                        s,
-                        style: tt.bodyMedium?.copyWith(
-                            color: cs.onPrimaryContainer, height: 1.5),
-                      ),
-                    )),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
 // ─── Overview grid ────────────────────────────────────────────────────────────
 
 class _OverviewGrid extends ConsumerWidget {
@@ -340,74 +260,115 @@ class _HeatmapGrid extends StatelessWidget {
   final Map<String, int> data;
   const _HeatmapGrid({required this.data});
 
+  static const _weeks = 12;
+  static const _gap = 3.0;
+  static const _dayLabelWidth = 14.0;
+  // Only show labels on Mon (0), Wed (2), Fri (4) to avoid crowding.
+  static const _dayLabels = {0: 'M', 2: 'W', 4: 'F'};
+  static const _monthAbbr = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+  ];
+
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
     final now = DateTime.now();
     final todayWeekday = now.weekday; // 1=Mon
-    // Start from Monday of 12 weeks ago
+    // Monday of 12 weeks ago — always column 0, row 0.
+    // Formula: go back (weeks-1) complete weeks, then back to Monday of that week.
+    // This guarantees col (weeks-1), row (weekday-1) == today exactly.
     final startOfGrid =
-        now.subtract(Duration(days: (12 * 7) - 1 + (todayWeekday - 1)));
+        now.subtract(Duration(days: (_weeks - 1) * 7 + (todayWeekday - 1)));
 
-    // Total days in the grid
-    final totalDays = now.difference(startOfGrid).inDays + 1;
-    // Number of columns (weeks)
-    final cols = (totalDays / 7).ceil();
-
-    const cellSize = 11.0;
-    const gap = 2.0;
-
-    return SizedBox(
-      height: 7 * (cellSize + gap),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        reverse: true, // most recent on the right
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            for (int col = 0; col < cols; col++)
-              Padding(
-                padding: const EdgeInsets.only(right: gap),
-                child: Column(
-                  children: [
-                    for (int row = 0; row < 7; row++)
-                      _buildCell(startOfGrid, col, row, now, cellSize, gap, cs),
-                  ],
-                ),
-              ),
-          ],
-        ),
-      ),
+    final labelStyle = tt.labelSmall?.copyWith(
+      fontSize: 9,
+      color: cs.onSurfaceVariant,
     );
+
+    return LayoutBuilder(builder: (context, constraints) {
+      // Fill the full available width; size cells to fit exactly.
+      final gridWidth = constraints.maxWidth - _dayLabelWidth - _gap;
+      final cellSize = (gridWidth - (_weeks - 1) * _gap) / _weeks;
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Month labels ──────────────────────────────────────────────────
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              SizedBox(width: _dayLabelWidth + _gap),
+              for (int col = 0; col < _weeks; col++) ...[
+                SizedBox(
+                  width: cellSize,
+                  child: _monthLabel(startOfGrid, col, labelStyle),
+                ),
+                if (col < _weeks - 1) const SizedBox(width: _gap),
+              ],
+            ],
+          ),
+          const SizedBox(height: 2),
+          // ── Day rows ──────────────────────────────────────────────────────
+          for (int row = 0; row < 7; row++) ...[
+            if (row > 0) const SizedBox(height: _gap),
+            Row(
+              children: [
+                // Day label
+                SizedBox(
+                  width: _dayLabelWidth,
+                  child: Text(
+                    _dayLabels[row] ?? '',
+                    style: labelStyle,
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+                const SizedBox(width: _gap),
+                // Cells
+                for (int col = 0; col < _weeks; col++) ...[
+                  _buildCell(startOfGrid, col, row, now, cellSize, cs),
+                  if (col < _weeks - 1) const SizedBox(width: _gap),
+                ],
+              ],
+            ),
+          ],
+        ],
+      );
+    });
+  }
+
+  Widget? _monthLabel(DateTime start, int col, TextStyle? style) {
+    final weekStart = start.add(Duration(days: col * 7));
+    // Show label if any day in this week is the 1st, or it's the first column.
+    for (int d = 0; d < 7; d++) {
+      final day = weekStart.add(Duration(days: d));
+      if (day.day == 1 || (col == 0 && d == 0)) {
+        return Text(
+          _monthAbbr[day.month - 1],
+          style: style,
+          overflow: TextOverflow.visible,
+        );
+      }
+    }
+    return null;
   }
 
   Widget _buildCell(DateTime start, int col, int row, DateTime now,
-      double cellSize, double gap, ColorScheme cs) {
-    final dayOffset = col * 7 + row;
-    final date = start.add(Duration(days: dayOffset));
-    // Don't render cells beyond today
+      double cellSize, ColorScheme cs) {
+    final date = start.add(Duration(days: col * 7 + row));
     if (date.isAfter(now)) {
-      return SizedBox(height: cellSize + gap);
+      return SizedBox(width: cellSize, height: cellSize);
     }
     final dateStr = date.toIso8601String().substring(0, 10);
     final count = data[dateStr] ?? 0;
-    final level = count == 0
-        ? 0
-        : count == 1
-            ? 1
-            : count <= 3
-                ? 2
-                : 3;
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 2),
-      child: Container(
-        width: cellSize,
-        height: cellSize,
-        decoration: BoxDecoration(
-          color: _heatColor(level, cs),
-          borderRadius: BorderRadius.circular(2),
-        ),
+    final level = count == 0 ? 0 : count == 1 ? 1 : count <= 3 ? 2 : 3;
+    return Container(
+      width: cellSize,
+      height: cellSize,
+      decoration: BoxDecoration(
+        color: _heatColor(level, cs),
+        borderRadius: BorderRadius.circular(cellSize * 0.2),
       ),
     );
   }
@@ -728,27 +689,53 @@ class _WeeklyGoalCard extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
+            Text(
+              l.weeklyGoalSetLabel,
+              style: tt.labelSmall?.copyWith(color: cs.onSurfaceVariant),
+            ),
+            const SizedBox(height: AppSpacing.xs),
             Row(
-              children: [
-                Text(
-                  l.weeklyGoalSetLabel,
-                  style: tt.labelSmall?.copyWith(color: cs.onSurfaceVariant),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                ..._goals.map((g) => Padding(
-                      padding: const EdgeInsets.only(right: AppSpacing.xs),
-                      child: ChoiceChip(
-                        label: Text('$g'),
-                        selected: g == goal,
-                        selectedColor: cs.primaryContainer,
-                        backgroundColor: cs.surfaceContainerHighest,
-                        showCheckmark: false,
-                        visualDensity: VisualDensity.compact,
-                        onSelected: (_) =>
-                            ref.read(weeklyGoalProvider.notifier).setGoal(g),
+              children: List.generate(_goals.length, (i) {
+                final g = _goals[i];
+                final selected = g == goal;
+                return Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        left: i == 0 ? 0 : AppSpacing.xs / 2,
+                        right: i == _goals.length - 1 ? 0 : AppSpacing.xs / 2),
+                    child: GestureDetector(
+                      onTap: () =>
+                          ref.read(weeklyGoalProvider.notifier).setGoal(g),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 150),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        decoration: BoxDecoration(
+                          color: selected
+                              ? cs.primaryContainer
+                              : cs.surfaceContainerHighest,
+                          borderRadius:
+                              BorderRadius.circular(AppSpacing.chipRadius),
+                          border: selected
+                              ? Border.all(color: cs.primary, width: 1.5)
+                              : null,
+                        ),
+                        child: Center(
+                          child: Text(
+                            '$g',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: selected
+                                  ? cs.onPrimaryContainer
+                                  : cs.onSurfaceVariant,
+                            ),
+                          ),
+                        ),
                       ),
-                    )),
-              ],
+                    ),
+                  ),
+                );
+              }),
             ),
           ],
         ),

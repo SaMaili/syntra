@@ -8,7 +8,7 @@ import '../logic/comfort_zone_logic.dart';
 import '../logic/notification_manager.dart';
 import '../providers/challenge_providers.dart';
 import '../providers/settings_providers.dart';
-import '../providers/statistics_providers.dart' show statisticsRefreshProvider;
+import '../providers/statistics_providers.dart' show czlCompletionsProvider;
 import '../services/syntra_notification_service.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/syntra_button.dart';
@@ -366,40 +366,13 @@ class _LevelDownDialog extends ConsumerWidget {
 
 // ─── Comfort Zone Level progress card ────────────────────────────────────────
 
-class _ComfortZoneLevelCard extends ConsumerStatefulWidget {
+class _ComfortZoneLevelCard extends ConsumerWidget {
   const _ComfortZoneLevelCard();
 
-  @override
-  ConsumerState<_ComfortZoneLevelCard> createState() =>
-      _ComfortZoneLevelCardState();
-}
-
-class _ComfortZoneLevelCardState extends ConsumerState<_ComfortZoneLevelCard> {
-  int _completions = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadCompletions();
-    // Reload completions whenever the level changes (e.g. after a level-up)
-    // so the bar shows fresh data for the new level instead of stale old count.
-    ref.listenManual(comfortZoneLevelProvider, (prev, next) {
-      if (prev != next) _loadCompletions();
-    });
-    // Refresh after every challenge completion (even without a level-up).
-    ref.listenManual(statisticsRefreshProvider, (_, _) => _loadCompletions());
-  }
-
-  Future<void> _loadCompletions() async {
-    final count = await ref
-        .read(comfortZoneLevelProvider.notifier)
-        .getCompletionsAtCurrentLevel();
-    if (mounted) setState(() => _completions = count);
-  }
-
-  Future<void> _onSetLevel(BuildContext context, WidgetRef ref, int targetLevel) async {
+  Future<void> _onSetLevel(
+      BuildContext context, WidgetRef ref, int targetLevel) async {
     final currentLevel = ref.read(comfortZoneLevelProvider);
-    if (targetLevel >= currentLevel) return; // Can only downgrade
+    if (targetLevel >= currentLevel) return;
 
     final confirmed = await showDialog<bool>(
       context: context,
@@ -407,13 +380,13 @@ class _ComfortZoneLevelCardState extends ConsumerState<_ComfortZoneLevelCard> {
     );
     if (confirmed == true && context.mounted) {
       await ref.read(comfortZoneLevelProvider.notifier).setLevel(targetLevel);
-      _loadCompletions();
     }
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final level = ref.watch(comfortZoneLevelProvider);
+    final completions = ref.watch(czlCompletionsProvider);
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
 
@@ -421,11 +394,10 @@ class _ComfortZoneLevelCardState extends ConsumerState<_ComfortZoneLevelCard> {
     final levelName = ComfortZoneLogic.levelNames[level];
     final progress = isMaxLevel
         ? 1.0
-        : (_completions / ComfortZoneLogic.completionsToUnlock)
-            .clamp(0.0, 1.0);
+        : (completions / ComfortZoneLogic.completionsToUnlock).clamp(0.0, 1.0);
 
     final gradient = ComfortZoneLogic.levelGradient(level);
-    final levelIcon = ComfortZoneLogic.levelIcons[level.clamp(1, ComfortZoneLogic.maxLevel)];
+    final levelIcon = ComfortZoneLogic.levelIcons[level.clamp(1, ComfortZoneLogic.levelIcons.length - 1)];
 
     return Card(
       clipBehavior: Clip.antiAlias,
@@ -467,69 +439,92 @@ class _ComfortZoneLevelCardState extends ConsumerState<_ComfortZoneLevelCard> {
           ),
           // ── Body ──────────────────────────────────────────────────────────
           Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   S.of(context).comfortZoneLevel,
                   style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600),
                 ),
+                const SizedBox(height: AppSpacing.sm),
+                if (!isMaxLevel) ...[
+                  SyntraXpBar(value: progress),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    S.of(context).completionsToLevel(
+                        completions,
+                        ComfortZoneLogic.completionsToUnlock,
+                        level + 1),
+                    style: tt.labelSmall?.copyWith(color: cs.onSurfaceVariant),
+                  ),
+                ] else
+                  Text(
+                    S.of(context).reachedTheTop,
+                    style: tt.labelSmall?.copyWith(color: cs.onSurfaceVariant),
+                  ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  S.of(context).setDifficultyManually,
+                  style: tt.labelSmall?.copyWith(color: cs.onSurfaceVariant),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                // Two rows of 5, each level button taking equal width.
+                for (int row = 0; row < 2; row++) ...[
+                  if (row > 0) const SizedBox(height: AppSpacing.xs),
+                  Row(
+                    children: List.generate(5, (col) {
+                      final lvl = row * 5 + col + 1;
+                      final selected = lvl == level;
+                      final locked = lvl > level;
+                      return Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              left: col == 0 ? 0 : AppSpacing.xs / 2,
+                              right: col == 4 ? 0 : AppSpacing.xs / 2),
+                          child: GestureDetector(
+                            onTap: locked ? null : () => _onSetLevel(context, ref, lvl),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 150),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 8),
+                              decoration: BoxDecoration(
+                                color: selected
+                                    ? cs.primaryContainer
+                                    : locked
+                                        ? cs.surfaceContainerHighest.withValues(alpha: 0.5)
+                                        : cs.surfaceContainerHighest,
+                                borderRadius: BorderRadius.circular(
+                                    AppSpacing.chipRadius),
+                                border: selected
+                                    ? Border.all(
+                                        color: cs.primary, width: 1.5)
+                                    : null,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  '$lvl',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: selected
+                                        ? cs.onPrimaryContainer
+                                        : locked
+                                            ? cs.onSurfaceVariant.withValues(alpha: 0.35)
+                                            : cs.onSurfaceVariant,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+                  ),
+                ],
               ],
             ),
-            const SizedBox(height: AppSpacing.sm),
-            if (!isMaxLevel) ...[
-              SyntraXpBar(value: progress),
-              const SizedBox(height: AppSpacing.xs),
-              Text(
-                S.of(context).completionsToLevel(
-                    _completions, ComfortZoneLogic.completionsToUnlock, level + 1),
-                style: tt.labelSmall?.copyWith(color: cs.onSurfaceVariant),
-              ),
-            ] else
-              Text(
-                S.of(context).reachedTheTop,
-                style: tt.labelSmall?.copyWith(color: cs.onSurfaceVariant),
-              ),
-
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              S.of(context).setDifficultyManually,
-              style: tt.labelSmall?.copyWith(color: cs.onSurfaceVariant),
-            ),
-
-            const SizedBox(height: AppSpacing.xs),
-            Wrap(
-              spacing: AppSpacing.xs,
-              runSpacing: AppSpacing.xs,
-              children: List.generate(ComfortZoneLogic.maxLevel, (i) {
-                final lvl = i + 1;
-                final selected = lvl == level;
-                return ChoiceChip(
-                  label: Text(
-                    '$lvl',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                      color: selected
-                          ? cs.onPrimaryContainer
-                          : cs.onSurfaceVariant,
-                    ),
-                  ),
-                  selected: selected,
-                  selectedColor: cs.primaryContainer,
-                  backgroundColor: cs.surfaceContainerHighest,
-                  showCheckmark: false,
-                  visualDensity: VisualDensity.compact,
-                  onSelected: (_) => _onSetLevel(context, ref, lvl),
-                );
-              }),
-            ),
-          ],
-        ),
-      ),
+          ),
         ],
       ),
     );
