@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/logbook_repository.dart';
+import '../data/settings_repository.dart';
 
 /// Invalidate this to force all statistics providers to reload.
 final statisticsRefreshProvider = StateProvider<int>((ref) => 0);
@@ -33,6 +34,11 @@ final activityHeatmapProvider =
 final completedChallengeIdsProvider = FutureProvider<Set<String>>((ref) {
   ref.watch(statisticsRefreshProvider);
   return LogbookRepository.instance.completedChallengeIds();
+});
+
+final personalBestStreakProvider = FutureProvider<int>((ref) {
+  ref.watch(statisticsRefreshProvider);
+  return SettingsRepository.instance.loadAllTimeMaxStreak();
 });
 
 /// Convenience helper to bump the refresh counter from anywhere.

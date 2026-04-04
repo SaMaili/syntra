@@ -1,7 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -353,6 +352,16 @@ class S {
   /// `Back to Home`
   String get backToHome {
     return Intl.message('Back to Home', name: 'backToHome', desc: '', args: []);
+  }
+
+  /// `Try Again`
+  String get retryChallenge {
+    return Intl.message(
+      'Try Again',
+      name: 'retryChallenge',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Challenge aborted!`
@@ -1743,6 +1752,11 @@ class S {
   /// `Min. Brave`
   String get minutesBrave {
     return Intl.message('Min. Brave', name: 'minutesBrave', desc: '', args: []);
+  }
+
+  /// `Best Streak`
+  String get bestStreak {
+    return Intl.message('Best Streak', name: 'bestStreak', desc: '', args: []);
   }
 
   /// `Done Today`

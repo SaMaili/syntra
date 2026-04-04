@@ -25,6 +25,7 @@ class SettingsRepository {
   static const _keyComfortZoneLevel = 'comfort_zone_level';
   static const _keyLastOpenedDate = 'last_opened_date';
   static const _keyLastCelebratedStreak = 'last_celebrated_streak';
+  static const _keyAllTimeMaxStreak = 'all_time_max_streak';
 
   static SettingsRepository? _instance;
   static SettingsRepository get instance =>
@@ -147,6 +148,18 @@ class SettingsRepository {
   Future<void> saveLastCelebratedStreak(int streak) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_keyLastCelebratedStreak, streak);
+  }
+
+  // ─── All-time best streak ─────────────────────────────────────────────────
+
+  Future<int> loadAllTimeMaxStreak() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(_keyAllTimeMaxStreak) ?? 0;
+  }
+
+  Future<void> saveAllTimeMaxStreak(int streak) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_keyAllTimeMaxStreak, streak);
   }
 
   // ─── Helpers ──────────────────────────────────────────────────────────────

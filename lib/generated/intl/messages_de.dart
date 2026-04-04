@@ -102,6 +102,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "basicNotifications": MessageLookupByLibrary.simpleMessage(
       "Basis-Benachrichtigungen",
     ),
+    "bestStreak": MessageLookupByLibrary.simpleMessage("Bester Streak"),
     "boldMove": MessageLookupByLibrary.simpleMessage("Mutiger Schritt"),
     "cancel": MessageLookupByLibrary.simpleMessage("Abbrechen"),
     "celebrateSmallWins": MessageLookupByLibrary.simpleMessage(
@@ -629,6 +630,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Du kannst diese Challenge so oft wiederholen, wie du möchtest!",
     ),
     "required": MessageLookupByLibrary.simpleMessage("Erforderlich"),
+    "retryChallenge": MessageLookupByLibrary.simpleMessage("Nochmal versuchen"),
     "rewardFactor": MessageLookupByLibrary.simpleMessage("Belohnungsfaktor"),
     "sat": MessageLookupByLibrary.simpleMessage("Sa"),
     "saveEntry": MessageLookupByLibrary.simpleMessage("Eintrag speichern"),
