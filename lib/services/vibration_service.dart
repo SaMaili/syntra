@@ -57,5 +57,11 @@ abstract class VibrationService {
     Vibration.vibrate(duration: 18, amplitude: 50);
   }
 
-  // No vibration for failure — do not punish with haptics.
+  /// Soft double-tap — challenge aborted.
+  ///
+  /// Gentler than [success] to signal stopping without punishing the user.
+  static Future<void> abort() async {
+    if (!await _available) return;
+    Vibration.vibrate(pattern: [0, 50, 100, 50], intensities: [0, 80, 0, 80]);
+  }
 }

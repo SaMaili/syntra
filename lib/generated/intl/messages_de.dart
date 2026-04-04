@@ -430,6 +430,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "logbookEntrySaved": MessageLookupByLibrary.simpleMessage(
       "Logbuch-Eintrag gespeichert",
     ),
+    "logbookFilterAll": MessageLookupByLibrary.simpleMessage("Alle"),
+    "logbookFilterCompleted": MessageLookupByLibrary.simpleMessage(
+      "Abgeschlossen",
+    ),
+    "logbookFilterTried": MessageLookupByLibrary.simpleMessage("Versucht"),
+    "logbookSearchHint": MessageLookupByLibrary.simpleMessage(
+      "Nach Challenge-ID suchen…",
+    ),
     "lostForWords": MessageLookupByLibrary.simpleMessage("Sprachlos?"),
     "mindsetGrowth": MessageLookupByLibrary.simpleMessage("Mindset & Wachstum"),
     "mindsetShapesReality": MessageLookupByLibrary.simpleMessage(
@@ -747,6 +755,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "timeUpNotificationTitle": MessageLookupByLibrary.simpleMessage(
       "Zeit ist um!",
     ),
+    "timerCustomLabel": MessageLookupByLibrary.simpleMessage("Timer setzen:"),
     "timesTried": MessageLookupByLibrary.simpleMessage("Mal versucht"),
     "today": MessageLookupByLibrary.simpleMessage("Heute"),
     "todaysMissions": MessageLookupByLibrary.simpleMessage("Heutige Missionen"),
