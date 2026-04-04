@@ -279,8 +279,7 @@ class _ActiveChallengeScreenState extends ConsumerState<ActiveChallengeScreen>
 
                       // ── Help button ────────────────────────────────────
                       if (!mainTimeOver) ...[
-                        _HelpButton(
-                            hintText: widget.challenge.notSureWhatToSay),
+                        _HelpButton(hints: widget.challenge.hints),
                         SizedBox(height: gapSm),
                       ],
 
@@ -452,8 +451,8 @@ class _TimerBar extends StatelessWidget {
 // ─── Help button ──────────────────────────────────────────────────────────────
 
 class _HelpButton extends StatelessWidget {
-  final String hintText;
-  const _HelpButton({required this.hintText});
+  final List<String> hints;
+  const _HelpButton({required this.hints});
 
   @override
   Widget build(BuildContext context) {
@@ -471,7 +470,7 @@ class _HelpButton extends StatelessWidget {
         ),
         onPressed: () => showDialog(
           context: context,
-          builder: (_) => NotSureWhatToSayDialog(text: hintText),
+          builder: (_) => NotSureWhatToSayDialog(hints: hints),
         ),
       ),
     );
