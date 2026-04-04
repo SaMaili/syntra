@@ -392,11 +392,19 @@ class _LevelUpDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CircleAvatar(
-              radius: 40,
-              backgroundColor: cs.primaryContainer,
-              child: Icon(Icons.trending_up_rounded,
-                  size: 40, color: cs.onPrimaryContainer),
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: ComfortZoneLogic.levelGradient(newLevel),
+              ),
+              child: Icon(
+                ComfortZoneLogic.levelIcons[
+                    newLevel.clamp(1, ComfortZoneLogic.maxLevel)],
+                size: 40,
+                color: Colors.white,
+              ),
             ),
             const SizedBox(height: AppSpacing.lg),
             Text(

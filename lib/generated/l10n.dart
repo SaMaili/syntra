@@ -1,7 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -2867,6 +2866,151 @@ class S {
       name: 'giveMeOneTooltip',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `Badges`
+  String get badgesTitle {
+    return Intl.message('Badges', name: 'badgesTitle', desc: '', args: []);
+  }
+
+  /// `Keep going to unlock more!`
+  String get badgesLocked {
+    return Intl.message(
+      'Keep going to unlock more!',
+      name: 'badgesLocked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `First Step`
+  String get badgeFirstStep {
+    return Intl.message(
+      'First Step',
+      name: 'badgeFirstStep',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `10 Challenges`
+  String get badgeTenChallenges {
+    return Intl.message(
+      '10 Challenges',
+      name: 'badgeTenChallenges',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `50 Challenges`
+  String get badgeFiftyChallenges {
+    return Intl.message(
+      '50 Challenges',
+      name: 'badgeFiftyChallenges',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `3-Day Streak`
+  String get badgeThreeDayStreak {
+    return Intl.message(
+      '3-Day Streak',
+      name: 'badgeThreeDayStreak',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `7-Day Streak`
+  String get badgeSevenDayStreak {
+    return Intl.message(
+      '7-Day Streak',
+      name: 'badgeSevenDayStreak',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `100 XP Club`
+  String get badgeCenturyXp {
+    return Intl.message(
+      '100 XP Club',
+      name: 'badgeCenturyXp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `500 XP Legend`
+  String get badgeFiveHundredXp {
+    return Intl.message(
+      '500 XP Legend',
+      name: 'badgeFiveHundredXp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `60 Min. Brave`
+  String get badgeBraveMinutes {
+    return Intl.message(
+      '60 Min. Brave',
+      name: 'badgeBraveMinutes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Weekly Goal`
+  String get weeklyGoalTitle {
+    return Intl.message(
+      'Weekly Goal',
+      name: 'weeklyGoalTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{done} of {goal} challenges this week`
+  String weeklyGoalProgress(int done, int goal) {
+    return Intl.message(
+      '$done of $goal challenges this week',
+      name: 'weeklyGoalProgress',
+      desc: '',
+      args: [done, goal],
+    );
+  }
+
+  /// `Set goal:`
+  String get weeklyGoalSetLabel {
+    return Intl.message(
+      'Set goal:',
+      name: 'weeklyGoalSetLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Weekly Recap`
+  String get weeklyRecapTitle {
+    return Intl.message(
+      'Weekly Recap',
+      name: 'weeklyRecapTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This week you completed {n} challenges. Keep up the great work!`
+  String weeklyRecapBody(int n) {
+    return Intl.message(
+      'This week you completed $n challenges. Keep up the great work!',
+      name: 'weeklyRecapBody',
+      desc: '',
+      args: [n],
     );
   }
 }

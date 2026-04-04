@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/logbook_repository.dart';
+import '../data/settings_repository.dart';
 
 /// Invalidate this to force all statistics providers to reload.
 final statisticsRefreshProvider = StateProvider<int>((ref) => 0);
@@ -34,6 +35,27 @@ final completedChallengeIdsProvider = FutureProvider<Set<String>>((ref) {
   ref.watch(statisticsRefreshProvider);
   return LogbookRepository.instance.completedChallengeIds();
 });
+
+final weeklyProgressProvider = FutureProvider<int>((ref) {
+  ref.watch(statisticsRefreshProvider);
+  return LogbookRepository.instance.challengesCompletedThisWeek();
+});
+
+/// Mutable weekly goal (3 / 5 / 7). Loaded once from SharedPrefs.
+final weeklyGoalProvider = StateNotifierProvider<_WeeklyGoalNotifier, int>(
+  (_) => _WeeklyGoalNotifier(),
+);
+
+class _WeeklyGoalNotifier extends StateNotifier<int> {
+  _WeeklyGoalNotifier() : super(5) {
+    SettingsRepository.instance.loadWeeklyGoal().then((v) => state = v);
+  }
+
+  Future<void> setGoal(int goal) async {
+    await SettingsRepository.instance.saveWeeklyGoal(goal);
+    state = goal;
+  }
+}
 
 /// Convenience helper to bump the refresh counter from anywhere.
 void refreshStatistics(WidgetRef ref) {

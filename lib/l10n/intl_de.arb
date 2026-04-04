@@ -437,5 +437,29 @@
   "filterSortBy": "Sortieren nach",
   "filterSortPopular": "Beliebt",
   "filterSortEasiest": "Einfachste zuerst",
-  "giveMeOneTooltip": "Gib mir eine!"
+  "giveMeOneTooltip": "Gib mir eine!",
+  "badgesTitle": "Abzeichen",
+  "badgesLocked": "Weiter so, um mehr freizuschalten!",
+  "badgeFirstStep": "Erster Schritt",
+  "badgeTenChallenges": "10 Challenges",
+  "badgeFiftyChallenges": "50 Challenges",
+  "badgeThreeDayStreak": "3-Tage-Streak",
+  "badgeSevenDayStreak": "7-Tage-Streak",
+  "badgeCenturyXp": "100-XP-Club",
+  "badgeFiveHundredXp": "500-XP-Legende",
+  "badgeBraveMinutes": "60 Min. mutig",
+  "weeklyGoalTitle": "Wochenziel",
+  "weeklyGoalProgress": "{done} von {goal} Challenges diese Woche",
+  "@weeklyGoalProgress": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "goal": { "type": "int" }
+    }
+  },
+  "weeklyGoalSetLabel": "Ziel setzen:",
+  "weeklyRecapTitle": "Wochenrückblick",
+  "weeklyRecapBody": "Diese Woche hast du {n} Challenges abgeschlossen. Weiter so!",
+  "@weeklyRecapBody": {
+    "placeholders": { "n": { "type": "int" } }
+  }
 }

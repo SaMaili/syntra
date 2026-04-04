@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -10,8 +11,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
+import 'data/logbook_repository.dart';
 import 'data/settings_repository.dart';
 import 'generated/l10n.dart';
+import 'logic/notification_manager.dart';
 import 'providers/router_notifier.dart';
 import 'providers/settings_providers.dart';
 import 'router.dart';
@@ -27,7 +30,25 @@ void main() async {
       await SettingsRepository.instance.loadOnboardingComplete();
   routerNotifier = RouterNotifier(onboardingDone);
   await SyntraNotificationService.instance.initialize();
+  unawaited(_scheduleWeeklyRecapIfEnabled());
   runApp(const ProviderScope(child: SyntraApp()));
+}
+
+// ─── Weekly recap scheduling ──────────────────────────────────────────────────
+
+Future<void> _scheduleWeeklyRecapIfEnabled() async {
+  try {
+    final localeCode =
+        await SettingsRepository.instance.loadLanguage() ?? 'en';
+    final completedThisWeek =
+        await LogbookRepository.instance.challengesCompletedThisWeek();
+    await NotificationManager.scheduleWeeklyRecap(
+      completedThisWeek: completedThisWeek,
+      localeCode: localeCode,
+    );
+  } catch (e) {
+    debugPrint('⚠️ Could not schedule weekly recap: $e');
+  }
 }
 
 // ─── Boot helpers ─────────────────────────────────────────────────────────────

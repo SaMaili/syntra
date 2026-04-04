@@ -266,4 +266,18 @@ class LogbookRepository {
 
     return {for (final r in rows) r['day'] as String: r['cnt'] as int};
   }
+
+  /// Returns the number of successfully completed challenges since last Monday.
+  Future<int> challengesCompletedThisWeek() async {
+    final db = await _database;
+    final now = DateTime.now();
+    final monday = now.subtract(Duration(days: now.weekday - 1));
+    final mondayStr = monday.toIso8601String().substring(0, 10);
+    final rows = await db.rawQuery('''
+      SELECT COUNT(*) AS cnt
+      FROM logbook
+      WHERE status = 'success' AND date(timestamp) >= ?
+    ''', [mondayStr]);
+    return (rows.first['cnt'] as int?) ?? 0;
+  }
 }
