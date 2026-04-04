@@ -12,9 +12,15 @@ import 'active_challenge_screen.dart';
 /// 5-second priming screen shown between challenge selection and the timer.
 class PrimingScreen extends StatefulWidget {
   final Challenge challenge;
+  final bool isDailyMission;
   final ValueChanged<double>? onDone;
 
-  const PrimingScreen({super.key, required this.challenge, this.onDone});
+  const PrimingScreen({
+    super.key,
+    required this.challenge,
+    this.isDailyMission = false,
+    this.onDone,
+  });
 
   @override
   State<PrimingScreen> createState() => _PrimingScreenState();
@@ -95,6 +101,7 @@ class _PrimingScreenState extends State<PrimingScreen>
       MaterialPageRoute(
         builder: (_) => ActiveChallengeScreen(
           challenge: widget.challenge,
+          isDailyMission: widget.isDailyMission,
           onDone: widget.onDone,
         ),
       ),

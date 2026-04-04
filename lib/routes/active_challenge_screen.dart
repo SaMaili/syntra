@@ -3,10 +3,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:syntra/challenge.dart';
 import 'package:syntra/generated/l10n.dart';
 import 'package:syntra/logic/notification_manager.dart';
 import 'package:syntra/providers/settings_providers.dart';
+import 'package:syntra/router.dart';
 import 'package:syntra/services/sound_service.dart';
 import 'package:syntra/services/vibration_service.dart';
 import 'package:syntra/theme/app_spacing.dart';
@@ -16,15 +18,15 @@ import 'package:syntra/widgets/syntra_button.dart';
 import 'package:syntra/widgets/syntra_progress_bar.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
-import 'challenge_done_screen.dart';
-
 class ActiveChallengeScreen extends ConsumerStatefulWidget {
   final Challenge challenge;
+  final bool isDailyMission;
   final ValueChanged<double>? onDone;
 
   const ActiveChallengeScreen({
     super.key,
     required this.challenge,
+    this.isDailyMission = false,
     this.onDone,
   });
 
@@ -203,16 +205,12 @@ class _ActiveChallengeScreenState extends ConsumerState<ActiveChallengeScreen>
   }
 
   Future<void> _finishChallenge(double rewardFactor) async {
-    final navigator = Navigator.of(context);
     final durationSeconds = DateTime.now().difference(_startTime).inSeconds;
-    final result = await navigator.push<double>(
-      MaterialPageRoute(
-        builder: (context) => ChallengeDoneScreen(
-          challenge: widget.challenge,
-          rewardFactor: rewardFactor,
-          durationSeconds: durationSeconds,
-        ),
-      ),
+    final result = await context.pushChallengeDone(
+      widget.challenge,
+      rewardFactor,
+      durationSeconds: durationSeconds,
+      isDailyMission: widget.isDailyMission,
     );
     if (result != null && mounted) {
       if (_bgScheduledNotificationId != null) {
@@ -221,7 +219,7 @@ class _ActiveChallengeScreenState extends ConsumerState<ActiveChallengeScreen>
         _bgScheduledNotificationId = null;
       }
       widget.onDone?.call(result);
-      navigator.popUntil((route) => route.isFirst);
+      if (mounted) context.go('/');
     }
   }
 
