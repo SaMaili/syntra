@@ -78,6 +78,8 @@
   "notesPlaceholder": "Deine Gedanken, Beobachtungen, ...",
   "thankYouFeedback": "Danke für dein Feedback!",
   "backToHome": "Zurück zum Hauptmenü",
+  "retryChallenge": "Nochmal versuchen",
+  "moodTrend": "Stimmungsverlauf",
   "challengeAbortedSnackbar": "Challenge abgebrochen!",
   "challengeCompletedSnackbar": "Challenge abgeschlossen! Logbuch-Eintrag gespeichert.",
   "wellDone": "Gut gemacht! Mach weiter so!",
@@ -265,6 +267,7 @@
   "dayStreak": "Tage-Streak",
   "timesTried": "Mal versucht",
   "minutesBrave": "Min. mutig",
+  "bestStreak": "Bester Streak",
   "doneToday": "Heute geschafft",
   "storyMinutesBrave": "{minutes} Minuten mutig gewesen.",
   "@storyMinutesBrave": {

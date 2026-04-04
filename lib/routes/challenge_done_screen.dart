@@ -12,6 +12,7 @@ import '../generated/l10n.dart';
 import '../logic/comfort_zone_logic.dart';
 import '../providers/settings_providers.dart';
 import '../providers/statistics_providers.dart' show refreshStatistics;
+import 'active_challenge_screen.dart';
 import '../services/sound_service.dart';
 import '../services/vibration_service.dart';
 import '../static.dart';
@@ -277,7 +278,7 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
             ),
           ),
 
-          // ── Pinned bottom button ───────────────────────────────────────
+          // ── Pinned bottom button(s) ────────────────────────────────────
           Padding(
             padding: EdgeInsets.fromLTRB(
               AppSpacing.lg,
@@ -285,12 +286,34 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
               AppSpacing.lg,
               bottomPad,
             ),
-            child: SyntraButton.icon(
-              onPressed: () => _onBackToHome(context),
-              color: _isAborted ? cs.error : cs.primary,
-              icon: Icons.home_rounded,
-              label: Text(l.backToHome),
-            ),
+            child: _isAborted
+                ? Row(
+                    children: [
+                      Expanded(
+                        child: SyntraButton.icon(
+                          onPressed: () => _onBackToHome(context),
+                          color: cs.error,
+                          icon: Icons.home_rounded,
+                          label: Text(l.backToHome),
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      Expanded(
+                        child: SyntraButton.icon(
+                          onPressed: () => _onTryAgain(context),
+                          color: cs.primary,
+                          icon: Icons.refresh_rounded,
+                          label: Text(l.retryChallenge),
+                        ),
+                      ),
+                    ],
+                  )
+                : SyntraButton.icon(
+                    onPressed: () => _onBackToHome(context),
+                    color: cs.primary,
+                    icon: Icons.home_rounded,
+                    label: Text(l.backToHome),
+                  ),
           ),
         ],
       ),
@@ -336,6 +359,13 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
     if (!_isAborted && context.mounted) {
       final stats = await LogbookRepository.instance.overviewStats();
       final streak = stats['streak'] ?? 0;
+
+      // Update personal best.
+      final prevBest = await SettingsRepository.instance.loadAllTimeMaxStreak();
+      if (streak > prevBest) {
+        await SettingsRepository.instance.saveAllTimeMaxStreak(streak);
+      }
+
       final lastCelebrated =
           await SettingsRepository.instance.loadLastCelebratedStreak();
 
@@ -350,6 +380,37 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
 
     refreshStatistics(ref);
     if (context.mounted) context.pop(widget.rewardFactor);
+  }
+
+  Future<void> _onTryAgain(BuildContext context) async {
+    // Log the abort entry before navigating away.
+    final surveyState = _surveyKey.currentState;
+    if (surveyState != null && !surveyState.submitted) surveyState.submit();
+    final feeling = surveyState?.feeling;
+    final perception = surveyState?.perceived;
+    final notes = surveyState?.notes;
+
+    await LogbookRepository.instance.addEntry(
+      challengeId: widget.challenge.id,
+      status: _status,
+      earned: 0,
+      timestamp: DateTime.now(),
+      feeling: feeling,
+      perception: perception,
+      notes: notes,
+      durationSeconds: widget.durationSeconds,
+    );
+
+    refreshStatistics(ref);
+
+    if (!context.mounted) return;
+    // Replace this done-screen with a fresh active challenge, keeping the
+    // back-stack so popUntil(isFirst) in ActiveChallengeScreen still works.
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => ActiveChallengeScreen(challenge: widget.challenge),
+      ),
+    );
   }
 }
 
