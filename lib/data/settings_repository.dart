@@ -7,6 +7,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// SharedPreferences. That caused divergence bugs when one write failed.
 /// Now everything lives in SharedPreferences — both Dart and the Kotlin
 /// BootReceiver can read it without any bridge code.
+///
+/// The [SharedPreferences] instance is injected via the constructor rather
+/// than fetched per-call. Use [sharedPreferencesProvider] and
+/// [settingsRepositoryProvider] in Riverpod contexts. For non-Riverpod code
+/// (e.g. [NotificationManager]) call [SettingsRepository.instance] after
+/// [SettingsRepository.configure] has been called in [main].
 class SettingsRepository {
   static const _keyDarkMode = 'settings_dark_mode';
   static const _keyLanguage = 'settings_language';
@@ -26,128 +32,103 @@ class SettingsRepository {
   static const _keyLastOpenedDate = 'last_opened_date';
   static const _keyLastCelebratedStreak = 'last_celebrated_streak';
 
-  static SettingsRepository? _instance;
-  static SettingsRepository get instance =>
-      _instance ??= SettingsRepository._();
+  final SharedPreferences _prefs;
 
-  SettingsRepository._();
+  SettingsRepository(this._prefs);
+
+  // ─── Static accessor for non-Riverpod callers (NotificationManager etc.) ──
+
+  static SettingsRepository? _instance;
+
+  /// The app-wide instance set by [configure]. Available after [main] has run.
+  static SettingsRepository get instance {
+    assert(_instance != null,
+        'SettingsRepository.configure() must be called before accessing .instance');
+    return _instance!;
+  }
+
+  /// Call once in [main] before [runApp] to make [instance] available to
+  /// non-Riverpod code (e.g. [NotificationManager]).
+  static void configure(SharedPreferences prefs) {
+    _instance = SettingsRepository(prefs);
+  }
 
   // ─── Theme ────────────────────────────────────────────────────────────────
 
-  Future<bool?> loadDarkMode() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_keyDarkMode);
-  }
+  Future<bool?> loadDarkMode() async => _prefs.getBool(_keyDarkMode);
 
-  Future<void> saveDarkMode(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_keyDarkMode, value);
-  }
+  Future<void> saveDarkMode(bool value) async =>
+      _prefs.setBool(_keyDarkMode, value);
 
   // ─── Language ─────────────────────────────────────────────────────────────
 
-  Future<String?> loadLanguage() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_keyLanguage);
-  }
+  Future<String?> loadLanguage() async => _prefs.getString(_keyLanguage);
 
-  Future<void> saveLanguage(String code) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_keyLanguage, code);
-  }
+  Future<void> saveLanguage(String code) async =>
+      _prefs.setString(_keyLanguage, code);
 
   // ─── Notifications ────────────────────────────────────────────────────────
 
-  Future<bool> loadNotificationsEnabled() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_keyNotificationsEnabled) ?? false;
-  }
+  Future<bool> loadNotificationsEnabled() async =>
+      _prefs.getBool(_keyNotificationsEnabled) ?? false;
 
-  Future<void> saveNotificationsEnabled(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_keyNotificationsEnabled, value);
-  }
+  Future<void> saveNotificationsEnabled(bool value) async =>
+      _prefs.setBool(_keyNotificationsEnabled, value);
 
-  Future<bool> loadSoundEffectsEnabled() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_keySoundEffectsEnabled) ?? true;
-  }
+  Future<bool> loadSoundEffectsEnabled() async =>
+      _prefs.getBool(_keySoundEffectsEnabled) ?? true;
 
-  Future<void> saveSoundEffectsEnabled(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_keySoundEffectsEnabled, value);
-  }
+  Future<void> saveSoundEffectsEnabled(bool value) async =>
+      _prefs.setBool(_keySoundEffectsEnabled, value);
 
   Future<NotificationSlotSettings> loadSlot(int slot) async {
     assert(slot >= 1 && slot <= 3);
-    final prefs = await SharedPreferences.getInstance();
-    final enabledKey = _enabledKey(slot);
-    final hourKey = _hourKey(slot);
-    final minuteKey = _minuteKey(slot);
     return NotificationSlotSettings(
-      enabled: prefs.getBool(enabledKey) ?? false,
+      enabled: _prefs.getBool(_enabledKey(slot)) ?? false,
       time: TimeOfDay(
-        hour: prefs.getInt(hourKey) ?? _defaultHour(slot),
-        minute: prefs.getInt(minuteKey) ?? 0,
+        hour: _prefs.getInt(_hourKey(slot)) ?? _defaultHour(slot),
+        minute: _prefs.getInt(_minuteKey(slot)) ?? 0,
       ),
     );
   }
 
   Future<void> saveSlot(int slot, NotificationSlotSettings s) async {
     assert(slot >= 1 && slot <= 3);
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_enabledKey(slot), s.enabled);
-    await prefs.setInt(_hourKey(slot), s.time.hour);
-    await prefs.setInt(_minuteKey(slot), s.time.minute);
+    await _prefs.setBool(_enabledKey(slot), s.enabled);
+    await _prefs.setInt(_hourKey(slot), s.time.hour);
+    await _prefs.setInt(_minuteKey(slot), s.time.minute);
   }
 
   // ─── Onboarding ───────────────────────────────────────────────────────────
 
-  Future<bool> loadOnboardingComplete() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_keyOnboardingComplete) ?? false;
-  }
+  Future<bool> loadOnboardingComplete() async =>
+      _prefs.getBool(_keyOnboardingComplete) ?? false;
 
-  Future<void> saveOnboardingComplete(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_keyOnboardingComplete, value);
-  }
+  Future<void> saveOnboardingComplete(bool value) async =>
+      _prefs.setBool(_keyOnboardingComplete, value);
 
-  Future<int> loadComfortZoneLevel() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getInt(_keyComfortZoneLevel) ?? 1;
-  }
+  Future<int> loadComfortZoneLevel() async =>
+      _prefs.getInt(_keyComfortZoneLevel) ?? 1;
 
-  Future<void> saveComfortZoneLevel(int level) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_keyComfortZoneLevel, level);
-  }
+  Future<void> saveComfortZoneLevel(int level) async =>
+      _prefs.setInt(_keyComfortZoneLevel, level);
 
-  Future<String?> loadLastOpenedDate() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_keyLastOpenedDate);
-  }
+  Future<String?> loadLastOpenedDate() async =>
+      _prefs.getString(_keyLastOpenedDate);
 
-  Future<void> saveLastOpenedDate(String date) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_keyLastOpenedDate, date);
-  }
+  Future<void> saveLastOpenedDate(String date) async =>
+      _prefs.setString(_keyLastOpenedDate, date);
 
-  Future<List<NotificationSlotSettings>> loadAllSlots() async {
-    return Future.wait([loadSlot(1), loadSlot(2), loadSlot(3)]);
-  }
+  Future<List<NotificationSlotSettings>> loadAllSlots() =>
+      Future.wait([loadSlot(1), loadSlot(2), loadSlot(3)]);
 
   // ─── Streak milestones ───────────────────────────────────────────────────
 
-  Future<int> loadLastCelebratedStreak() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getInt(_keyLastCelebratedStreak) ?? 0;
-  }
+  Future<int> loadLastCelebratedStreak() async =>
+      _prefs.getInt(_keyLastCelebratedStreak) ?? 0;
 
-  Future<void> saveLastCelebratedStreak(int streak) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_keyLastCelebratedStreak, streak);
-  }
+  Future<void> saveLastCelebratedStreak(int streak) async =>
+      _prefs.setInt(_keyLastCelebratedStreak, streak);
 
   // ─── Helpers ──────────────────────────────────────────────────────────────
 

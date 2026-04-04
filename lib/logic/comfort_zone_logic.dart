@@ -33,22 +33,23 @@ class ComfortZoneLogic {
 
   /// Returns how many successful completions count toward the next level unlock.
   /// Only completions of challenges *at* or *above* the current CZL count.
-  Future<int> getCompletionsAtLevel(int level) async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getInt('$_keyCompletions$level') ?? 0;
-  }
+  Future<int> getCompletionsAtLevel(int level, SharedPreferences prefs) async =>
+      prefs.getInt('$_keyCompletions$level') ?? 0;
 
   /// Records a successful completion and checks if the user should level up.
   /// Returns the new level if a level-up occurred, null otherwise.
   Future<int?> recordSuccessAndCheckLevelUp(
-      int currentLevel, Challenge completed, List<Challenge> catalog) async {
+    int currentLevel,
+    Challenge completed,
+    List<Challenge> catalog,
+    SharedPreferences prefs,
+  ) async {
     if (currentLevel >= maxLevel) return null;
 
     // Only count challenges that belong to the current level or above.
     final challengeLevel = assignLevel(completed, catalog);
     if (challengeLevel < currentLevel) return null;
 
-    final prefs = await SharedPreferences.getInstance();
     final key = '$_keyCompletions$currentLevel';
     final newCount = (prefs.getInt(key) ?? 0) + 1;
     await prefs.setInt(key, newCount);
