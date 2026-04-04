@@ -73,7 +73,11 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
   @override
   void initState() {
     super.initState();
-    if (!_isAborted) unawaited(VibrationService.success());
+    if (_isAborted) {
+      unawaited(VibrationService.abort());
+    } else {
+      unawaited(VibrationService.success());
+    }
   }
 
   @override

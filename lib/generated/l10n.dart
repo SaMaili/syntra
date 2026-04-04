@@ -1,7 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -598,6 +597,41 @@ class S {
   /// `Logbook`
   String get logbook {
     return Intl.message('Logbook', name: 'logbook', desc: '', args: []);
+  }
+
+  /// `Search by challenge ID…`
+  String get logbookSearchHint {
+    return Intl.message(
+      'Search by challenge ID…',
+      name: 'logbookSearchHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All`
+  String get logbookFilterAll {
+    return Intl.message('All', name: 'logbookFilterAll', desc: '', args: []);
+  }
+
+  /// `Completed`
+  String get logbookFilterCompleted {
+    return Intl.message(
+      'Completed',
+      name: 'logbookFilterCompleted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tried`
+  String get logbookFilterTried {
+    return Intl.message(
+      'Tried',
+      name: 'logbookFilterTried',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Add Custom Challenge`
@@ -2608,6 +2642,16 @@ class S {
   /// `I'm Ready`
   String get imReady {
     return Intl.message('I\'m Ready', name: 'imReady', desc: '', args: []);
+  }
+
+  /// `Set timer:`
+  String get timerCustomLabel {
+    return Intl.message(
+      'Set timer:',
+      name: 'timerCustomLabel',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Not now`

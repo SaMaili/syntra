@@ -19,10 +19,27 @@ class _LogbookPageState extends State<LogbookPage> {
   bool _isLoadingMore = false;
   static const int _pageSize = 50;
 
+  String? _statusFilter; // null = all, 'success', 'tried'
+  final _searchController = TextEditingController();
+  String _searchQuery = '';
+
   @override
   void initState() {
     super.initState();
     _loadEntries();
+    _searchController.addListener(() {
+      final q = _searchController.text.trim();
+      if (q != _searchQuery) {
+        _searchQuery = q;
+        _loadEntries();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadEntries({bool append = false}) async {
@@ -32,9 +49,11 @@ class _LogbookPageState extends State<LogbookPage> {
       _isLoadingMore = append;
     });
 
-    final result = await LogbookRepository.instance.allEntries(
+    final result = await LogbookRepository.instance.filteredEntries(
       limit: _pageSize,
       offset: append ? _entries.length : 0,
+      status: _statusFilter,
+      query: _searchQuery.isEmpty ? null : _searchQuery,
     );
 
     setState(() {
@@ -65,58 +84,171 @@ class _LogbookPageState extends State<LogbookPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l = S.of(context);
+    final cs = Theme.of(context).colorScheme;
+
     return Scaffold(
-      appBar: AppBar(title: Text(S.of(context).logbook)),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : _entries.isEmpty
-              ? _EmptyState()
-              : NotificationListener<ScrollNotification>(
-                  onNotification: (info) {
-                    if (_hasMore &&
-                        !_isLoadingMore &&
-                        info.metrics.pixels >=
-                            info.metrics.maxScrollExtent - 200) {
-                      _loadEntries(append: true);
-                    }
-                    return false;
-                  },
-                  child: RefreshIndicator(
-                    onRefresh: _loadEntries,
-                    child: ListView.separated(
-                      padding: const EdgeInsets.all(AppSpacing.md),
-                      itemCount:
-                          _entries.length + (_isLoadingMore ? 1 : 0),
-                      separatorBuilder: (_, _) =>
-                          const SizedBox(height: AppSpacing.sm),
-                      itemBuilder: (context, i) {
-                        if (i >= _entries.length) {
-                          return const Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(AppSpacing.md),
-                              child: CircularProgressIndicator(),
-                            ),
-                          );
-                        }
-                        return _LogbookEntryTile(
-                          index: i,
-                          entry: _entries[i],
-                          timestamp:
-                              _formatTimestamp(_entries[i]['timestamp']?.toString()),
-                          onTap: () async {
-                            await Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => LogbookDetailPage(
-                                    entry: _entries[i]),
-                              ),
-                            );
-                            _loadEntries();
-                          },
-                        );
-                      },
-                    ),
-                  ),
+      appBar: AppBar(title: Text(l.logbook)),
+      body: Column(
+        children: [
+          // ── Search bar ─────────────────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+                AppSpacing.md, AppSpacing.sm, AppSpacing.md, 0),
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: l.logbookSearchHint,
+                prefixIcon: const Icon(Icons.search_rounded),
+                suffixIcon: _searchQuery.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear_rounded),
+                        onPressed: () {
+                          _searchController.clear();
+                        },
+                      )
+                    : null,
+                isDense: true,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
+                  borderSide: BorderSide.none,
                 ),
+                filled: true,
+                fillColor: cs.surfaceContainerHighest,
+              ),
+            ),
+          ),
+
+          // ── Status filter chips ─────────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md, vertical: AppSpacing.xs),
+            child: Row(
+              children: [
+                _FilterChip(
+                  label: l.logbookFilterAll,
+                  selected: _statusFilter == null,
+                  onTap: () => setState(() {
+                    _statusFilter = null;
+                    _loadEntries();
+                  }),
+                ),
+                const SizedBox(width: AppSpacing.xs),
+                _FilterChip(
+                  label: l.logbookFilterCompleted,
+                  selected: _statusFilter == 'success',
+                  onTap: () => setState(() {
+                    _statusFilter = 'success';
+                    _loadEntries();
+                  }),
+                ),
+                const SizedBox(width: AppSpacing.xs),
+                _FilterChip(
+                  label: l.logbookFilterTried,
+                  selected: _statusFilter == 'tried',
+                  onTap: () => setState(() {
+                    _statusFilter = 'tried';
+                    _loadEntries();
+                  }),
+                ),
+              ],
+            ),
+          ),
+
+          // ── Entry list ─────────────────────────────────────────────────────
+          Expanded(
+            child: _loading
+                ? const Center(child: CircularProgressIndicator())
+                : _entries.isEmpty
+                    ? _EmptyState()
+                    : NotificationListener<ScrollNotification>(
+                        onNotification: (info) {
+                          if (_hasMore &&
+                              !_isLoadingMore &&
+                              info.metrics.pixels >=
+                                  info.metrics.maxScrollExtent - 200) {
+                            _loadEntries(append: true);
+                          }
+                          return false;
+                        },
+                        child: RefreshIndicator(
+                          onRefresh: _loadEntries,
+                          child: ListView.separated(
+                            padding: const EdgeInsets.all(AppSpacing.md),
+                            itemCount:
+                                _entries.length + (_isLoadingMore ? 1 : 0),
+                            separatorBuilder: (_, _) =>
+                                const SizedBox(height: AppSpacing.sm),
+                            itemBuilder: (context, i) {
+                              if (i >= _entries.length) {
+                                return const Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(AppSpacing.md),
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                );
+                              }
+                              return _LogbookEntryTile(
+                                index: i,
+                                entry: _entries[i],
+                                timestamp: _formatTimestamp(
+                                    _entries[i]['timestamp']?.toString()),
+                                onTap: () async {
+                                  await Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (_) => LogbookDetailPage(
+                                          entry: _entries[i]),
+                                    ),
+                                  );
+                                  _loadEntries();
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Filter chip ──────────────────────────────────────────────────────────────
+
+class _FilterChip extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _FilterChip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+        decoration: BoxDecoration(
+          color: selected ? cs.primaryContainer : cs.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
+        ),
+        child: Text(
+          label,
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: selected ? cs.onPrimaryContainer : cs.onSurfaceVariant,
+                fontWeight:
+                    selected ? FontWeight.bold : FontWeight.normal,
+              ),
+        ),
+      ),
     );
   }
 }
@@ -130,21 +262,13 @@ class _EmptyState extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.book_outlined,
+          Icon(Icons.menu_book_rounded,
               size: 64,
-              color: Theme.of(context).colorScheme.outline),
+              color: Theme.of(context).colorScheme.outlineVariant),
           const SizedBox(height: AppSpacing.md),
           Text(
             S.of(context).noEntriesYet,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            S.of(context).completeChallengesToSee,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.outline,
-                ),
-            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyLarge,
           ),
         ],
       ),
@@ -184,21 +308,24 @@ class _LogbookEntryTile extends StatelessWidget {
           padding: const EdgeInsets.all(AppSpacing.md),
           child: Row(
             children: [
-              // Index badge
+              // Status icon instead of plain index badge
               Container(
                 width: 40,
                 height: 40,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: cs.primaryContainer,
+                  color: isSuccess
+                      ? cs.primaryContainer
+                      : cs.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Text(
-                  '${index + 1}',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: cs.onPrimaryContainer,
-                  ),
+                child: Icon(
+                  isSuccess
+                      ? Icons.check_circle_rounded
+                      : Icons.radio_button_unchecked_rounded,
+                  size: 22,
+                  color:
+                      isSuccess ? cs.onPrimaryContainer : cs.onSurfaceVariant,
                 ),
               ),
               const SizedBox(width: AppSpacing.md),
@@ -207,7 +334,8 @@ class _LogbookEntryTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      S.of(context).challengeNumber(entry['challenge_id'].toString()),
+                      S.of(context).challengeNumber(
+                          entry['challenge_id'].toString()),
                       style: const TextStyle(fontWeight: FontWeight.w600),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

@@ -57,6 +57,38 @@ class LogbookRepository {
 
   // ─── Read ─────────────────────────────────────────────────────────────────
 
+  /// Returns entries filtered by [status] and [query] (matched against
+  /// challenge_id). Pass null to skip that filter.
+  Future<List<Map<String, dynamic>>> filteredEntries({
+    int limit = 50,
+    int offset = 0,
+    String? status,   // 'success' | 'tried' | null = all
+    String? query,    // substring search on challenge_id
+  }) async {
+    final db = await _database;
+    final conditions = <String>[];
+    final args = <dynamic>[];
+
+    if (status != null) {
+      conditions.add('status = ?');
+      args.add(status);
+    }
+    if (query != null && query.isNotEmpty) {
+      conditions.add('challenge_id LIKE ?');
+      args.add('%$query%');
+    }
+
+    final where = conditions.isEmpty ? null : conditions.join(' AND ');
+    return db.query(
+      'logbook',
+      where: where,
+      whereArgs: args.isEmpty ? null : args,
+      orderBy: 'timestamp DESC',
+      limit: limit,
+      offset: offset,
+    );
+  }
+
   Future<List<Map<String, dynamic>>> allEntries({
     int limit = 50,
     int offset = 0,

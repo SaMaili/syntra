@@ -107,6 +107,10 @@
   "done": "Erledigt",
   "streak": "Serie",
   "logbook": "Logbuch",
+  "logbookSearchHint": "Nach Challenge-ID suchen…",
+  "logbookFilterAll": "Alle",
+  "logbookFilterCompleted": "Abgeschlossen",
+  "logbookFilterTried": "Versucht",
   "addCustomChallenge": "Challenge hinzufügen",
   "logbookEntry": "Logbuch-Eintrag",
   "challenge": "Challenge",
@@ -394,6 +398,7 @@
   "primingSubHard": "Die Challenges, die dich am meisten einschüchtern, lassen dich am meisten wachsen. Das hier ist eine davon.",
   "primingSubDefault": "Jedes Mal wird es ein bisschen leichter. Dein zukünftiges Ich ist dir schon dankbar.",
   "imReady": "Ich bin bereit",
+  "timerCustomLabel": "Timer setzen:",
   "notNow": "Nicht jetzt",
 
   "comfortZone": "Komfortzone",

@@ -27,6 +27,9 @@ class _PrimingScreenState extends State<PrimingScreen>
   Timer? _timer;
   bool _isExiting = false;
 
+  /// Duration override chosen by user; null = use challenge default.
+  int? _selectedTime;
+
   /// Drives the circular arc from 1.0 → 0.0 continuously over the full
   /// countdown so the ring sweeps smoothly instead of jumping each second.
   late final AnimationController _arcController;
@@ -96,6 +99,7 @@ class _PrimingScreenState extends State<PrimingScreen>
         builder: (_) => ActiveChallengeScreen(
           challenge: widget.challenge,
           onDone: widget.onDone,
+          overrideTime: _selectedTime,
         ),
       ),
     );
@@ -140,6 +144,15 @@ class _PrimingScreenState extends State<PrimingScreen>
                       height: 1.6,
                     ),
                 textAlign: TextAlign.center,
+              ),
+
+              const SizedBox(height: AppSpacing.lg),
+
+              // ── Duration picker ───────────────────────────────────────
+              _DurationPicker(
+                challengeTime: widget.challenge.time,
+                selected: _selectedTime,
+                onChanged: (t) => setState(() => _selectedTime = t),
               ),
 
               const Spacer(),
@@ -238,6 +251,111 @@ class _CountdownRing extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+// ─── Duration picker ──────────────────────────────────────────────────────────
+
+class _DurationPicker extends StatelessWidget {
+  final int challengeTime;
+  final int? selected; // null = default
+  final ValueChanged<int?> onChanged;
+
+  const _DurationPicker({
+    required this.challengeTime,
+    required this.selected,
+    required this.onChanged,
+  });
+
+  static const _overrides = [30, 60, 120, 300]; // seconds
+
+  String _fmt(int s) {
+    if (s < 60) return '${s}s';
+    final m = s ~/ 60;
+    final r = s % 60;
+    return r == 0 ? '${m}m' : '${m}m ${r}s';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
+
+    return Column(
+      children: [
+        Text(
+          S.of(context).timerCustomLabel,
+          style: tt.labelSmall?.copyWith(color: cs.onSurfaceVariant),
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        Wrap(
+          spacing: AppSpacing.xs,
+          runSpacing: AppSpacing.xs,
+          alignment: WrapAlignment.center,
+          children: [
+            // "Default" chip (null → use challenge time)
+            _Chip(
+              label: _fmt(challengeTime),
+              suffix: ' ★',
+              isSelected: selected == null,
+              onTap: () => onChanged(null),
+              cs: cs,
+            ),
+            for (final t in _overrides)
+              if (t != challengeTime)
+                _Chip(
+                  label: _fmt(t),
+                  isSelected: selected == t,
+                  onTap: () => onChanged(t),
+                  cs: cs,
+                ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _Chip extends StatelessWidget {
+  final String label;
+  final String suffix;
+  final bool isSelected;
+  final VoidCallback onTap;
+  final ColorScheme cs;
+
+  const _Chip({
+    required this.label,
+    this.suffix = '',
+    required this.isSelected,
+    required this.onTap,
+    required this.cs,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+        decoration: BoxDecoration(
+          color: isSelected ? cs.primaryContainer : cs.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
+          border: isSelected
+              ? Border.all(color: cs.primary, width: 1.5)
+              : null,
+        ),
+        child: Text(
+          '$label$suffix',
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: isSelected ? cs.onPrimaryContainer : cs.onSurfaceVariant,
+                fontWeight:
+                    isSelected ? FontWeight.bold : FontWeight.normal,
+              ),
+        ),
+      ),
     );
   }
 }

@@ -89,6 +89,10 @@
   "done": "Done",
   "streak": "Streak",
   "logbook": "Logbook",
+  "logbookSearchHint": "Search by challenge ID…",
+  "logbookFilterAll": "All",
+  "logbookFilterCompleted": "Completed",
+  "logbookFilterTried": "Tried",
   "addCustomChallenge": "Add Custom Challenge",
   "logbookEntry": "Logbook Entry",
   "challenge": "Challenge",
@@ -394,6 +398,7 @@
   "primingSubHard": "The challenges that scare you most are the ones that grow you the most. This is one of those.",
   "primingSubDefault": "Every time you do this, it gets a little easier. Your future self is already grateful.",
   "imReady": "I'm Ready",
+  "timerCustomLabel": "Set timer:",
   "notNow": "Not now",
 
   "comfortZone": "Comfort Zone",
