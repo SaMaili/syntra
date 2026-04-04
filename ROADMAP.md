@@ -1,6 +1,6 @@
 # Syntra — Development Roadmap
 
-Generated: 2026-04-03 · Last updated: 2026-04-04
+Generated: 2026-04-03 · Last updated: 2026-04-04 (Phase 4 complete)
 Based on: CODEBASE_ANALYSIS.txt (2026-04-03)
 
 ---
@@ -93,14 +93,14 @@ main
 
 ---
 
-## Phase 4 — Progression & Motivation
+## Phase 4 — Progression & Motivation ✓
 
 | # | Task | Status |
 |---|---|---|
-| 4.1 | Badges / achievements system | TODO |
-| 4.2 | CZL visual identity — level icon + gradient per level | TODO |
-| 4.3 | Weekly goal setting (3/5/7 challenges, progress ring) | TODO |
-| 4.4 | Weekly recap notification (Sunday evening summary) | TODO |
+| 4.1 | Badges / achievements system | **Done** (8 badges, `BadgesLogic`, `_BadgesSection` in stats) |
+| 4.2 | CZL visual identity — level icon + gradient per level | **Done** (`levelIcons`/`levelGradients` in `ComfortZoneLogic`, gradient card header + level-up dialog) |
+| 4.3 | Weekly goal setting (3/5/7 challenges, progress ring) | **Done** (`weeklyGoalProvider`, `weeklyProgressProvider`, `_WeeklyGoalCard` at top of stats) |
+| 4.4 | Weekly recap notification (Sunday evening summary) | **Done** (`NotificationManager.scheduleWeeklyRecap`, called from `main()` on every launch) |
 
 ---
 
