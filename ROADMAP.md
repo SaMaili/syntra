@@ -21,7 +21,9 @@ main
  ├─ [PR] refactor/navigate-gorouter                 ← merge FIFTH (independent)
  │        └─ [PR] refactor/priming-gorouter         ← merge SIXTH (depends on above)
  │
- └─ [PR] refactor/notification-cleanup              ← merge SEVENTH (independent)
+ ├─ [PR] refactor/shared-prefs-provider             ← merge SEVENTH (independent)
+ │
+ └─ [PR] refactor/notification-cleanup              ← merge EIGHTH (independent)
 ```
 
 ### Branch summaries
@@ -34,6 +36,7 @@ main
 | `refactor/czl-expand` | `maxLevel` 5→10. Level names + descriptions for levels 6–10 (Stepping Up → Untouchable). Settings chip row and level-up dialog scale automatically. | Ready |
 | `refactor/navigate-gorouter` | `ActiveChallengeScreen→ChallengeDoneScreen` and both `StreakCelebration` push sites migrated from `Navigator.push` to GoRouter. Also fixes pre-existing bug: `isDailyMission` flag (and daily XP bonus) now correctly flows through `PrimingScreen→ActiveChallengeScreen→ChallengeDoneArgs`. | Ready |
 | `refactor/priming-gorouter` | Add `/priming` GoRoute. Remove `onDone` callback from `PrimingScreen` and `ActiveChallengeScreen`. Result bubbles back via `Future<double?>` pop chain. `ChallengesScreen` and `DailyChallengeScreen` use `context.pushPriming(...)`. | Ready |
+| `refactor/shared-prefs-provider` | `sharedPreferencesProvider` initialized once in `main()` and injected via `ProviderScope`. `SettingsRepository` takes `SharedPreferences` in constructor. All `StateNotifier`s receive `SettingsRepository` via constructor from `ref`. `ChallengeFiltersNotifier`, `ComfortZoneLogic`, `DailyMissionsLogic` use injected prefs. Tests can override with a fake. | Ready |
 | `refactor/notification-cleanup` | Remove duplicate `FlutterLocalNotificationsPlugin` instance from `NotificationManager`. Collapse triple-cancel into single `SyntraNotificationService.cancelAllNotifications()` call. `initialize()` delegates entirely to the service. | Ready |
 
 ---
@@ -56,7 +59,7 @@ main
 | 1.3 | Migrate `Navigator.push` calls to GoRouter | `refactor/navigate-gorouter` | **Done** (partial — PrimingScreen entry points remain) |
 | 1.4 | Merge / clean up notification manager classes | `refactor/notification-cleanup` | **Done** |
 | 1.5 | Wire `PrimingScreen` into GoRouter | `refactor/priming-gorouter` | **Done** |
-| 1.6 | Inject `SharedPreferences` via Riverpod provider | — | **TODO** |
+| 1.6 | Inject `SharedPreferences` via Riverpod provider | `refactor/shared-prefs-provider` | **Done** |
 | 1.7 | Split large screen files into `widgets/` subdirectories | — | **TODO** |
 
 ### CZL Expansion
@@ -147,6 +150,6 @@ Phase 1  →  Phase 6 (custom challenges)
 - All 127 challenges are assigned levels 1–5 only. Levels 6–10 exist in the system
   but no challenge content covers them yet.
 - `NotificationManager` and `SyntraNotificationService` overlap cleaned up (Phase 1.4 — branch `refactor/notification-cleanup`).
-- `SharedPreferences.getInstance()` still called directly in all `StateNotifier`s (Phase 1.6).
+- `SharedPreferences.getInstance()` injection done (Phase 1.6 — branch `refactor/shared-prefs-provider`).
 - Screen files are still monolithic (Phase 1.7):
   `challenges_screen.dart` 965 lines, `onboarding_screen.dart` 864 lines, etc.
