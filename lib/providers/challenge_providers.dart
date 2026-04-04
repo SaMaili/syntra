@@ -5,6 +5,7 @@ import '../challenge.dart';
 import '../data/challenge_repository.dart';
 import '../logic/comfort_zone_logic.dart';
 import 'settings_providers.dart';
+import 'shared_preferences_provider.dart';
 
 // ─── Catalog ──────────────────────────────────────────────────────────────────
 
@@ -38,7 +39,7 @@ enum SortMode { frequency, difficulty }
 /// Persisted filter state for the challenges screen.
 final challengeFiltersProvider =
     StateNotifierProvider<ChallengeFiltersNotifier, ChallengeFilters>(
-  (ref) => ChallengeFiltersNotifier(),
+  (ref) => ChallengeFiltersNotifier(ref.watch(sharedPreferencesProvider)),
 );
 
 class ChallengeFilters {
@@ -78,7 +79,9 @@ class ChallengeFilters {
 }
 
 class ChallengeFiltersNotifier extends StateNotifier<ChallengeFilters> {
-  ChallengeFiltersNotifier() : super(const ChallengeFilters()) {
+  final SharedPreferences _prefs;
+
+  ChallengeFiltersNotifier(this._prefs) : super(const ChallengeFilters()) {
     _load();
   }
 
@@ -88,11 +91,10 @@ class ChallengeFiltersNotifier extends StateNotifier<ChallengeFilters> {
   static const _keySortBy = 'filter_sort_by';
 
   Future<void> _load() async {
-    final prefs = await SharedPreferences.getInstance();
-    final typeIdx = prefs.getInt(_keyType) ?? 0;
-    final flirtIdx = prefs.getInt(_keyFlirtV2) ?? 0;
-    final notDone = prefs.getBool(_keyNotDone) ?? false;
-    final sortIdx = prefs.getInt(_keySortBy) ?? 0;
+    final typeIdx = _prefs.getInt(_keyType) ?? 0;
+    final flirtIdx = _prefs.getInt(_keyFlirtV2) ?? 0;
+    final notDone = _prefs.getBool(_keyNotDone) ?? false;
+    final sortIdx = _prefs.getInt(_keySortBy) ?? 0;
     state = ChallengeFilters(
       typeFilter: ChallengeTypeFilter.values[typeIdx.clamp(0, 2)],
       flirtFilter:
@@ -104,26 +106,22 @@ class ChallengeFiltersNotifier extends StateNotifier<ChallengeFilters> {
 
   Future<void> setTypeFilter(ChallengeTypeFilter filter) async {
     state = state.copyWith(typeFilter: filter);
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_keyType, filter.index);
+    await _prefs.setInt(_keyType, filter.index);
   }
 
   Future<void> setFlirtFilter(FlirtFilter filter) async {
     state = state.copyWith(flirtFilter: filter);
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_keyFlirtV2, filter.index);
+    await _prefs.setInt(_keyFlirtV2, filter.index);
   }
 
   Future<void> setShowOnlyNotDone(bool value) async {
     state = state.copyWith(showOnlyNotDone: value);
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_keyNotDone, value);
+    await _prefs.setBool(_keyNotDone, value);
   }
 
   Future<void> setSortBy(SortMode mode) async {
     state = state.copyWith(sortBy: mode);
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_keySortBy, mode.index);
+    await _prefs.setInt(_keySortBy, mode.index);
   }
 
   Future<void> resetAdvancedFilters() async {
@@ -132,10 +130,9 @@ class ChallengeFiltersNotifier extends StateNotifier<ChallengeFilters> {
       showOnlyNotDone: false,
       sortBy: SortMode.frequency,
     );
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_keyFlirtV2, 0);
-    await prefs.setBool(_keyNotDone, false);
-    await prefs.setInt(_keySortBy, 0);
+    await _prefs.setInt(_keyFlirtV2, 0);
+    await _prefs.setBool(_keyNotDone, false);
+    await _prefs.setInt(_keySortBy, 0);
   }
 }
 

@@ -6,7 +6,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 1,
@@ -15,7 +16,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 3,
@@ -24,7 +26,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 4,
@@ -33,7 +36,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 5,
@@ -42,7 +46,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 6,
@@ -51,7 +56,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 2
   },
   {
     "id": 7,
@@ -60,7 +66,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 8,
@@ -69,7 +76,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 9,
@@ -78,7 +86,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 11,
@@ -87,7 +96,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 12,
@@ -96,7 +106,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 13,
@@ -105,7 +116,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 2
   },
   {
     "id": 16,
@@ -114,7 +126,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 17,
@@ -123,7 +136,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 18,
@@ -132,7 +146,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 4
   },
   {
     "id": 20,
@@ -141,7 +156,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 21,
@@ -150,7 +166,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 5
   },
   {
     "id": 22,
@@ -159,7 +176,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 4
   },
   {
     "id": 25,
@@ -168,7 +186,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 5
   },
   {
     "id": 26,
@@ -177,7 +196,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 5
   },
   {
     "id": 27,
@@ -186,7 +206,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 4
   },
   {
     "id": 28,
@@ -195,7 +216,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 4
   },
   {
     "id": 29,
@@ -204,7 +226,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 5
   },
   {
     "id": 30,
@@ -213,7 +236,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 4
   },
   {
     "id": 31,
@@ -222,7 +246,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 4
   },
   {
     "id": 32,
@@ -231,7 +256,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 5
   },
   {
     "id": 33,
@@ -240,7 +266,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 5
   },
   {
     "id": 34,
@@ -249,7 +276,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 4
   },
   {
     "id": 35,
@@ -258,7 +286,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 4
   },
   {
     "id": 36,
@@ -267,7 +296,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 5
   },
   {
     "id": 37,
@@ -276,7 +306,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 5
   },
   {
     "id": 38,
@@ -285,7 +316,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 4
   },
   {
     "id": 39,
@@ -294,7 +326,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 5
   },
   {
     "id": 40,
@@ -303,7 +336,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 5
   },
   {
     "id": 42,
@@ -312,7 +346,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 2
   },
   {
     "id": 44,
@@ -321,7 +356,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 4
   },
   {
     "id": 45,
@@ -330,7 +366,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 4
   },
   {
     "id": 46,
@@ -339,7 +376,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 47,
@@ -348,7 +386,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 48,
@@ -357,7 +396,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 4
   },
   {
     "id": 49,
@@ -366,7 +406,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 4
   },
   {
     "id": 52,
@@ -375,7 +416,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 54,
@@ -384,7 +426,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 5
   },
   {
     "id": 56,
@@ -393,7 +436,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 5
   },
   {
     "id": 57,
@@ -402,7 +446,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 5
   },
   {
     "id": 58,
@@ -411,7 +456,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 5
   },
   {
     "id": 60,
@@ -420,7 +466,8 @@
     "type": "either",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 4
   },
   {
     "id": 61,
@@ -429,7 +476,8 @@
     "type": "either",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 4
   },
   {
     "id": 62,
@@ -438,7 +486,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 4
   },
   {
     "id": 63,
@@ -447,7 +496,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 4
   },
   {
     "id": 64,
@@ -456,7 +506,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 5
   },
   {
     "id": 65,
@@ -465,7 +516,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 5
   },
   {
     "id": 66,
@@ -474,7 +526,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 5
   },
   {
     "id": 67,
@@ -483,7 +536,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 5
   },
   {
     "id": 68,
@@ -492,7 +546,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 5
   },
   {
     "id": 69,
@@ -501,7 +556,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 5
   },
   {
     "id": 70,
@@ -510,7 +566,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 4
   },
   {
     "id": 71,
@@ -519,7 +576,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 5
   },
   {
     "id": 72,
@@ -528,7 +586,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 5
   },
   {
     "id": 73,
@@ -537,7 +596,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 74,
@@ -546,7 +606,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 75,
@@ -555,7 +616,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 76,
@@ -564,7 +626,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 4
   },
   {
     "id": 77,
@@ -573,7 +636,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 78,
@@ -582,7 +646,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 79,
@@ -591,7 +656,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 80,
@@ -600,7 +666,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 4
   },
   {
     "id": 81,
@@ -609,7 +676,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 4
   },
   {
     "id": 82,
@@ -618,7 +686,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 83,
@@ -627,7 +696,8 @@
     "type": "group",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 4
   },
   {
     "id": 84,
@@ -636,7 +706,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 91,
@@ -645,7 +716,8 @@
     "type": "group",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 5
   },
   {
     "id": 122,
@@ -654,7 +726,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 2
   },
   {
     "id": 123,
@@ -663,7 +736,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 124,
@@ -672,7 +746,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 125,
@@ -681,7 +756,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 126,
@@ -690,7 +766,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 127,
@@ -699,7 +776,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 128,
@@ -708,7 +786,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 2
   },
   {
     "id": 129,
@@ -717,7 +796,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 130,
@@ -726,7 +806,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 131,
@@ -735,7 +816,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 132,
@@ -744,7 +826,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 133,
@@ -753,7 +836,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 2
   },
   {
     "id": 134,
@@ -762,7 +846,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 135,
@@ -771,7 +856,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 136,
@@ -780,7 +866,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 137,
@@ -789,7 +876,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 138,
@@ -798,7 +886,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 139,
@@ -807,7 +896,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 140,
@@ -816,7 +906,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 2
   },
   {
     "id": 141,
@@ -825,7 +916,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 142,
@@ -834,7 +926,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 2
   },
   {
     "id": 143,
@@ -843,7 +936,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 144,
@@ -852,7 +946,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 2
   },
   {
     "id": 145,
@@ -861,7 +956,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 148,
@@ -870,7 +966,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 2
   },
   {
     "id": 149,
@@ -879,7 +976,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 150,
@@ -888,7 +986,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 151,
@@ -897,7 +996,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 152,
@@ -906,7 +1006,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 153,
@@ -915,7 +1016,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 2
   },
   {
     "id": 155,
@@ -924,7 +1026,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 2
   },
   {
     "id": 156,
@@ -933,7 +1036,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 157,
@@ -942,7 +1046,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 159,
@@ -951,7 +1056,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 2
   },
   {
     "id": 160,
@@ -960,7 +1066,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 161,
@@ -969,7 +1076,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 162,
@@ -978,7 +1086,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 2
   },
   {
     "id": 163,
@@ -987,7 +1096,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 164,
@@ -996,7 +1106,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 2
   },
   {
     "id": 165,
@@ -1005,7 +1116,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 166,
@@ -1014,7 +1126,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 167,
@@ -1023,7 +1136,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 168,
@@ -1032,7 +1146,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 169,
@@ -1041,7 +1156,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 170,
@@ -1050,7 +1166,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 2
   },
   {
     "id": 171,
@@ -1059,7 +1176,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 172,
@@ -1068,7 +1186,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 173,
@@ -1077,7 +1196,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 175,
@@ -1086,7 +1206,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 176,
@@ -1095,7 +1216,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 2
   },
   {
     "id": 177,
@@ -1104,7 +1226,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 178,
@@ -1113,7 +1236,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   },
   {
     "id": 179,
@@ -1122,7 +1246,8 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 2
   },
   {
     "id": 180,
@@ -1131,7 +1256,8 @@
     "type": "solo",
     "flirt": true,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 3
   },
   {
     "id": 181,
@@ -1140,6 +1266,7 @@
     "type": "solo",
     "flirt": false,
     "frequency": 1.0,
-    "environment": "all"
+    "environment": "all",
+    "level": 1
   }
 ]

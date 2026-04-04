@@ -2,19 +2,25 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import 'package:go_router/go_router.dart';
+
 import '../challenge.dart';
 import '../generated/l10n.dart';
+import '../router.dart';
 import '../services/vibration_service.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/syntra_button.dart';
-import 'active_challenge_screen.dart';
 
 /// 5-second priming screen shown between challenge selection and the timer.
 class PrimingScreen extends StatefulWidget {
   final Challenge challenge;
-  final ValueChanged<double>? onDone;
+  final bool isDailyMission;
 
-  const PrimingScreen({super.key, required this.challenge, this.onDone});
+  const PrimingScreen({
+    super.key,
+    required this.challenge,
+    this.isDailyMission = false,
+  });
 
   @override
   State<PrimingScreen> createState() => _PrimingScreenState();
@@ -87,18 +93,15 @@ class _PrimingScreenState extends State<PrimingScreen>
     _isExiting = true;
     _timer?.cancel();
     if (!mounted) return;
-    if (ModalRoute.of(context)?.isCurrent != true) return;
-    
-    final nav = Navigator.of(context);
+
     await VibrationService.start();
-    nav.pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => ActiveChallengeScreen(
-          challenge: widget.challenge,
-          onDone: widget.onDone,
-        ),
-      ),
+    if (!mounted) return;
+
+    final result = await context.pushActiveChallenge(
+      widget.challenge,
+      isDailyMission: widget.isDailyMission,
     );
+    if (mounted) context.pop(result);
   }
 
   @override
@@ -158,7 +161,7 @@ class _PrimingScreenState extends State<PrimingScreen>
                   if (_isExiting) return;
                   _isExiting = true;
                   _timer?.cancel();
-                  Navigator.of(context).pop();
+                  context.pop();
                 },
                 child: Text(
                   l.notNow,

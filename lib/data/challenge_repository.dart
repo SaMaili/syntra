@@ -41,11 +41,17 @@ class ChallengeRepository {
           (fallback[id] as Map<String, dynamic>?) ??
           <String, dynamic>{};
 
+      final rawHints = t['hints'];
+      final hints = rawHints is List
+          ? rawHints.cast<String>()
+          : const <String>[];
+
       return Challenge(
         id: id,
         title: (t['title'] as String?) ?? '',
         description: (t['description'] as String?) ?? '',
-        notSureWhatToSay: (t['hint'] as String?) ?? '',
+        hints: hints,
+        level: (meta['level'] as num?)?.toInt() ?? 1,
         xp: (meta['xp'] as num).toInt(),
         time: (meta['timer'] as num).toInt(),
         type: (meta['type'] as String?) ?? 'both',

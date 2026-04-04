@@ -18,12 +18,43 @@ class LogbookRepository {
     final path = join(dbPath, 'challenge_database.db');
     _db = await openDatabase(
       path,
-      version: 2,
+      version: 4,
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
           await db.execute(
             'ALTER TABLE logbook ADD COLUMN duration_seconds INTEGER',
           );
+        }
+        if (oldVersion < 3) {
+          await db.execute(
+            'ALTER TABLE logbook ADD COLUMN feeling INTEGER',
+          );
+          await db.execute(
+            'ALTER TABLE logbook ADD COLUMN perception INTEGER',
+          );
+        }
+        if (oldVersion < 4) {
+          // Rebuild the table to change challenge_id from INTEGER to TEXT.
+          // SQLite does not support ALTER COLUMN, so we use the recommended
+          // rename-copy-drop pattern.
+          await db.execute('''
+            CREATE TABLE logbook_new (
+              id               INTEGER PRIMARY KEY AUTOINCREMENT,
+              challenge_id     TEXT,
+              status           TEXT,
+              earned           INTEGER,
+              timestamp        DATETIME,
+              notes            TEXT,
+              feeling          INTEGER,
+              perception       INTEGER,
+              duration_seconds INTEGER
+            )
+          ''');
+          await db.execute(
+            'INSERT INTO logbook_new SELECT * FROM logbook',
+          );
+          await db.execute('DROP TABLE logbook');
+          await db.execute('ALTER TABLE logbook_new RENAME TO logbook');
         }
       },
     );
@@ -198,9 +229,7 @@ class LogbookRepository {
     final rows = await db.rawQuery(
       "SELECT DISTINCT challenge_id FROM logbook WHERE status = 'success'",
     );
-    // challenge_id is stored as INTEGER in the DB schema, so coerce to String
-    // to match Challenge.id (which is always a String from the JSON catalog).
-    return {for (final r in rows) r['challenge_id'].toString()};
+    return {for (final r in rows) r['challenge_id'] as String};
   }
 
   // ─── Delete ───────────────────────────────────────────────────────────────
