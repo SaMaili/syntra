@@ -354,6 +354,21 @@ class S {
     return Intl.message('Back to Home', name: 'backToHome', desc: '', args: []);
   }
 
+  /// `Try Again`
+  String get retryChallenge {
+    return Intl.message(
+      'Try Again',
+      name: 'retryChallenge',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mood Trend`
+  String get moodTrend {
+    return Intl.message('Mood Trend', name: 'moodTrend', desc: '', args: []);
+  }
+
   /// `Challenge aborted!`
   String get challengeAbortedSnackbar {
     return Intl.message(
@@ -1742,6 +1757,11 @@ class S {
   /// `Min. Brave`
   String get minutesBrave {
     return Intl.message('Min. Brave', name: 'minutesBrave', desc: '', args: []);
+  }
+
+  /// `Best Streak`
+  String get bestStreak {
+    return Intl.message('Best Streak', name: 'bestStreak', desc: '', args: []);
   }
 
   /// `Done Today`

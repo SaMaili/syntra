@@ -4,11 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../generated/l10n.dart';
 import '../logic/daily_missions_logic.dart';
 import '../providers/settings_providers.dart';
+import '../providers/shared_preferences_provider.dart';
 import '../providers/statistics_providers.dart';
+import '../router.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/syntra_button.dart';
 import '../widgets/syntra_progress_bar.dart';
-import 'priming_screen.dart';
 
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
@@ -21,11 +22,13 @@ class DailyMissionsNotifier
   @override
   Future<List<DailyMission>> build() async {
     final lang = ref.watch(activeLocaleProvider);
-    return DailyMissionsLogic().getTodayMissions(lang);
+    final prefs = ref.read(sharedPreferencesProvider);
+    return DailyMissionsLogic().getTodayMissions(lang, prefs);
   }
 
   Future<void> markCompleted(MissionTier tier) async {
-    await DailyMissionsLogic().markCompleted(tier);
+    final prefs = ref.read(sharedPreferencesProvider);
+    await DailyMissionsLogic().markCompleted(tier, prefs);
     final current = state.value;
     if (current == null) return;
     state = AsyncData(
@@ -169,25 +172,14 @@ class _MissionBoard extends ConsumerWidget {
   Future<void> _onStart(
       BuildContext context, WidgetRef ref, DailyMission mission) async {
     if (!context.mounted) return;
-    final navigator = Navigator.of(context);
-
-    navigator.push<void>(
-      MaterialPageRoute(
-        builder: (_) => PrimingScreen(
-          challenge: mission.challenge,
-          onDone: (rewardFactor) {
-            // Called from ActiveChallengeScreen before it pops to root.
-            // rewardFactor > 0 means the user completed (not aborted).
-            if (rewardFactor > 0) {
-              ref
-                  .read(dailyMissionsProvider.notifier)
-                  .markCompleted(mission.tier);
-              refreshStatistics(ref);
-            }
-          },
-        ),
-      ),
+    final rewardFactor = await context.pushPriming(
+      mission.challenge,
+      isDailyMission: true,
     );
+    if (rewardFactor != null && rewardFactor > 0 && context.mounted) {
+      ref.read(dailyMissionsProvider.notifier).markCompleted(mission.tier);
+      refreshStatistics(ref);
+    }
   }
 }
 
@@ -435,7 +427,7 @@ class _MissionCardState extends State<_MissionCard> {
               ),
 
               // Expanded hint
-              if (_expanded && c.notSureWhatToSay.trim().isNotEmpty) ...[
+              if (_expanded && c.hints.isNotEmpty) ...[
                 const SizedBox(height: AppSpacing.sm),
                 Container(
                   width: double.infinity,
@@ -444,11 +436,20 @@ class _MissionCardState extends State<_MissionCard> {
                     color: cs.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
                   ),
-                  child: Text(
-                    '💬 ${c.notSureWhatToSay}',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: cs.onSurfaceVariant,
-                        ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: c.hints
+                        .map((h) => Padding(
+                              padding: const EdgeInsets.only(bottom: 4),
+                              child: Text(
+                                '💬 $h',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(color: cs.onSurfaceVariant),
+                              ),
+                            ))
+                        .toList(),
                   ),
                 ),
               ],

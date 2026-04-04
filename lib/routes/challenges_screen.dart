@@ -1,5 +1,6 @@
 import 'dart:math' show Random;
 
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:syntra/challenge.dart';
@@ -7,8 +8,8 @@ import 'package:syntra/generated/l10n.dart';
 import 'package:syntra/providers/challenge_providers.dart';
 import 'package:syntra/providers/settings_providers.dart';
 import 'package:syntra/providers/statistics_providers.dart';
+import 'package:syntra/router.dart';
 import 'package:syntra/routes/challenge_done_screen.dart' show socialProofCount;
-import 'package:syntra/routes/priming_screen.dart';
 import 'package:syntra/services/sound_service.dart';
 import 'package:syntra/theme/app_spacing.dart';
 import 'package:syntra/widgets/syntra_button.dart';
@@ -85,16 +86,10 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
 
   void _onChallengeFinished() => refreshStatistics(ref);
 
-  void _startChallenge(BuildContext context, Challenge challenge) {
+  Future<void> _startChallenge(BuildContext context, Challenge challenge) async {
     SoundService.playDing(enabled: ref.read(soundEffectsEnabledProvider));
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => PrimingScreen(
-          challenge: challenge,
-          onDone: (_) => _onChallengeFinished(),
-        ),
-      ),
-    );
+    final result = await context.pushPriming(challenge);
+    if (result != null) _onChallengeFinished();
   }
 
   void _onGiveMeOne(BuildContext context) {
@@ -831,7 +826,7 @@ class _ChallengeDetailSheet extends ConsumerWidget {
                 challenge.description,
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
-              if (challenge.notSureWhatToSay.trim().isNotEmpty) ...[
+              if (challenge.hints.isNotEmpty) ...[
                 const SizedBox(height: AppSpacing.lg),
                 Text(
                   S.of(context).notSureWhatToSay,
@@ -848,14 +843,25 @@ class _ChallengeDetailSheet extends ConsumerWidget {
                     borderRadius:
                         BorderRadius.circular(AppSpacing.cardRadius),
                   ),
-                  child: Text(
-                    challenge.notSureWhatToSay,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: cs.onSecondaryContainer,
-                        ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: challenge.hints
+                        .map((h) => Padding(
+                              padding: const EdgeInsets.only(bottom: 4),
+                              child: Text(
+                                '• $h',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(color: cs.onSecondaryContainer),
+                              ),
+                            ))
+                        .toList(),
                   ),
                 ),
               ],
+              const SizedBox(height: AppSpacing.lg),
+              _MoodChart(challengeId: challenge.id),
               const SizedBox(height: AppSpacing.xl),
               SyntraButton.icon(
                 onPressed: () {
@@ -960,6 +966,89 @@ class _TagChips extends StatelessWidget {
                 ),
               ))
           .toList(),
+    );
+  }
+}
+
+// ─── Mood trend chart ─────────────────────────────────────────────────────────
+
+class _MoodChart extends ConsumerWidget {
+  final String challengeId;
+  const _MoodChart({required this.challengeId});
+
+  static const _smileyLabels = ['😞', '😕', '😐', '😊', '😄'];
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final async = ref.watch(moodHistoryProvider(challengeId));
+    return async.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, _s) => const SizedBox.shrink(),
+      data: (scores) {
+        if (scores.length < 2) return const SizedBox.shrink();
+        final cs = Theme.of(context).colorScheme;
+        final tt = Theme.of(context).textTheme;
+        final spots = [
+          for (var i = 0; i < scores.length; i++)
+            FlSpot(i.toDouble(), scores[i].toDouble()),
+        ];
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              S.of(context).moodTrend,
+              style: tt.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            SizedBox(
+              height: 100,
+              child: LineChart(
+                LineChartData(
+                  minY: 0,
+                  maxY: 4,
+                  gridData: FlGridData(show: false),
+                  borderData: FlBorderData(show: false),
+                  titlesData: FlTitlesData(
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 28,
+                        interval: 2,
+                        getTitlesWidget: (v, _) => Text(
+                          _smileyLabels[v.round().clamp(0, 4)],
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                      ),
+                    ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    topTitles: AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    rightTitles: AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                  ),
+                  lineBarsData: [
+                    LineChartBarData(
+                      spots: spots,
+                      isCurved: true,
+                      color: cs.primary,
+                      barWidth: 2.5,
+                      dotData: FlDotData(show: spots.length <= 10),
+                      belowBarData: BarAreaData(
+                        show: true,
+                        color: cs.primary.withValues(alpha: 0.12),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

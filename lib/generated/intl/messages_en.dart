@@ -119,6 +119,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "basicNotifications": MessageLookupByLibrary.simpleMessage(
       "Basic Notifications",
     ),
+    "bestStreak": MessageLookupByLibrary.simpleMessage("Best Streak"),
     "boldMove": MessageLookupByLibrary.simpleMessage("Bold Move"),
     "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
     "celebrateSmallWins": MessageLookupByLibrary.simpleMessage(
@@ -411,6 +412,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "mindsetTips": MessageLookupByLibrary.simpleMessage("Mindset Tips"),
     "minutesBrave": MessageLookupByLibrary.simpleMessage("Min. Brave"),
     "mon": MessageLookupByLibrary.simpleMessage("M"),
+    "moodTrend": MessageLookupByLibrary.simpleMessage("Mood Trend"),
     "more": MessageLookupByLibrary.simpleMessage("More"),
     "morning": MessageLookupByLibrary.simpleMessage("Morning"),
     "motivationMessage1": MessageLookupByLibrary.simpleMessage(
@@ -624,6 +626,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "You can repeat this challenge as often as you like!",
     ),
     "required": MessageLookupByLibrary.simpleMessage("Required"),
+    "retryChallenge": MessageLookupByLibrary.simpleMessage("Try Again"),
     "rewardFactor": MessageLookupByLibrary.simpleMessage("Reward Factor"),
     "sat": MessageLookupByLibrary.simpleMessage("S"),
     "saveEntry": MessageLookupByLibrary.simpleMessage("Save Entry"),

@@ -56,6 +56,16 @@ class _WeeklyGoalNotifier extends StateNotifier<int> {
     state = goal;
   }
 }
+final personalBestStreakProvider = FutureProvider<int>((ref) {
+  ref.watch(statisticsRefreshProvider);
+  return SettingsRepository.instance.loadAllTimeMaxStreak();
+});
+
+final moodHistoryProvider =
+    FutureProvider.family<List<int>, String>((ref, challengeId) {
+  ref.watch(statisticsRefreshProvider);
+  return LogbookRepository.instance.moodHistoryForChallenge(challengeId);
+});
 
 /// Convenience helper to bump the refresh counter from anywhere.
 void refreshStatistics(WidgetRef ref) {

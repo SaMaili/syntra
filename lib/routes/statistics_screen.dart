@@ -141,6 +141,7 @@ class _OverviewGrid extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final async = ref.watch(overviewStatsProvider);
+    final bestStreakAsync = ref.watch(personalBestStreakProvider);
 
     return async.when(
       loading: () => const _StatsShimmer(),
@@ -148,6 +149,7 @@ class _OverviewGrid extends ConsumerWidget {
       data: (stats) {
         final l = S.of(context);
         final cs = Theme.of(context).colorScheme;
+        final bestStreak = bestStreakAsync.valueOrNull ?? 0;
         return GridView.count(
           crossAxisCount: 2,
           shrinkWrap: true,
@@ -179,6 +181,18 @@ class _OverviewGrid extends ConsumerWidget {
               value: '${stats['minutesBrave'] ?? 0}',
               label: l.minutesBrave,
               color: Colors.blueAccent,
+            ),
+            _StatCard(
+              icon: Icons.military_tech_rounded,
+              value: '$bestStreak',
+              label: l.bestStreak,
+              color: const Color(0xFFFFB300), // Amber
+            ),
+            _StatCard(
+              icon: Icons.today_rounded,
+              value: '${stats['completedToday'] ?? 0}',
+              label: l.doneToday,
+              color: cs.tertiary,
             ),
           ],
         );

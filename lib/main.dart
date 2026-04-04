@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -17,6 +18,7 @@ import 'generated/l10n.dart';
 import 'logic/notification_manager.dart';
 import 'providers/router_notifier.dart';
 import 'providers/settings_providers.dart';
+import 'providers/shared_preferences_provider.dart';
 import 'router.dart';
 import 'services/syntra_notification_service.dart';
 import 'theme/app_theme.dart';
@@ -25,13 +27,22 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
   await _copyDatabaseIfNeeded();
+
+  // Initialize SharedPreferences once at startup.
+  // configure() makes it available to non-Riverpod code (NotificationManager).
+  // The ProviderScope override makes it injectable for all Riverpod providers.
+  final prefs = await SharedPreferences.getInstance();
+  SettingsRepository.configure(prefs);
+
   await _migrateSettingsJson();
   final onboardingDone =
       await SettingsRepository.instance.loadOnboardingComplete();
   routerNotifier = RouterNotifier(onboardingDone);
   await SyntraNotificationService.instance.initialize();
-  unawaited(_scheduleWeeklyRecapIfEnabled());
-  runApp(const ProviderScope(child: SyntraApp()));
+  runApp(ProviderScope(
+    overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
+    child: const SyntraApp(),
+  ));
 }
 
 // ─── Weekly recap scheduling ──────────────────────────────────────────────────

@@ -44,8 +44,8 @@ class DailyMissionsLogic {
     return '${t.year}-${t.month.toString().padLeft(2, '0')}-${t.day.toString().padLeft(2, '0')}';
   }
 
-  Future<List<DailyMission>> getTodayMissions(String languageCode) async {
-    final prefs = await SharedPreferences.getInstance();
+  Future<List<DailyMission>> getTodayMissions(
+      String languageCode, SharedPreferences prefs) async {
     final today = _todayStr();
     final storedDate = prefs.getString(_keyDate);
 
@@ -113,8 +113,7 @@ class DailyMissionsLogic {
     ];
   }
 
-  Future<void> markCompleted(MissionTier tier) async {
-    final prefs = await SharedPreferences.getInstance();
+  Future<void> markCompleted(MissionTier tier, SharedPreferences prefs) async {
     final key = switch (tier) {
       MissionTier.comfort => _keyComfortDone,
       MissionTier.growth => _keyGrowthDone,
