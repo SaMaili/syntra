@@ -320,10 +320,9 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
 
     int? newLevel;
     if (!_isAborted) {
-      final lang = ref.read(activeLocaleProvider);
       newLevel = await ref
           .read(comfortZoneLevelProvider.notifier)
-          .recordSuccessAndCheckLevelUp(widget.challenge, lang);
+          .recordSuccessAndCheckLevelUp(widget.challenge);
     }
 
     if (newLevel != null && context.mounted) {

@@ -435,7 +435,7 @@ class _MissionCardState extends State<_MissionCard> {
               ),
 
               // Expanded hint
-              if (_expanded && c.notSureWhatToSay.trim().isNotEmpty) ...[
+              if (_expanded && c.hints.isNotEmpty) ...[
                 const SizedBox(height: AppSpacing.sm),
                 Container(
                   width: double.infinity,
@@ -444,11 +444,20 @@ class _MissionCardState extends State<_MissionCard> {
                     color: cs.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
                   ),
-                  child: Text(
-                    '💬 ${c.notSureWhatToSay}',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: cs.onSurfaceVariant,
-                        ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: c.hints
+                        .map((h) => Padding(
+                              padding: const EdgeInsets.only(bottom: 4),
+                              child: Text(
+                                '💬 $h',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(color: cs.onSurfaceVariant),
+                              ),
+                            ))
+                        .toList(),
                   ),
                 ),
               ],
