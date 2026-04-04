@@ -26,12 +26,18 @@ class LogbookRepository {
           );
         }
         if (oldVersion < 3) {
-          await db.execute(
-            'ALTER TABLE logbook ADD COLUMN feeling INTEGER',
-          );
-          await db.execute(
-            'ALTER TABLE logbook ADD COLUMN perception INTEGER',
-          );
+          // Guard against devices where these columns were added outside of a
+          // proper migration (e.g. during development on an earlier build).
+          try {
+            await db.execute(
+              'ALTER TABLE logbook ADD COLUMN feeling INTEGER',
+            );
+          } catch (_) {}
+          try {
+            await db.execute(
+              'ALTER TABLE logbook ADD COLUMN perception INTEGER',
+            );
+          } catch (_) {}
         }
         if (oldVersion < 4) {
           // Rebuild the table to change challenge_id from INTEGER to TEXT.
@@ -50,9 +56,15 @@ class LogbookRepository {
               duration_seconds INTEGER
             )
           ''');
-          await db.execute(
-            'INSERT INTO logbook_new SELECT * FROM logbook',
-          );
+          // Use explicit column names so order mismatches never cause failures.
+          await db.execute('''
+            INSERT INTO logbook_new
+              (id, challenge_id, status, earned, timestamp, notes,
+               feeling, perception, duration_seconds)
+            SELECT id, challenge_id, status, earned, timestamp, notes,
+               feeling, perception, duration_seconds
+            FROM logbook
+          ''');
           await db.execute('DROP TABLE logbook');
           await db.execute('ALTER TABLE logbook_new RENAME TO logbook');
         }
@@ -294,6 +306,19 @@ class LogbookRepository {
     ''', [startStr, endStr]);
 
     return {for (final r in rows) r['day'] as String: r['cnt'] as int};
+  }
+
+  /// Returns feeling scores (0–4) for [challengeId], oldest first.
+  /// Only rows where feeling IS NOT NULL are included.
+  Future<List<int>> moodHistoryForChallenge(String challengeId) async {
+    final db = await _database;
+    final rows = await db.rawQuery('''
+      SELECT feeling
+      FROM logbook
+      WHERE challenge_id = ? AND feeling IS NOT NULL
+      ORDER BY timestamp ASC
+    ''', [challengeId]);
+    return rows.map((r) => r['feeling'] as int).toList();
   }
 
   /// Returns the number of successfully completed challenges since last Monday.

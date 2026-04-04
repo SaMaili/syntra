@@ -32,6 +32,7 @@ class _PrimingScreenState extends State<PrimingScreen>
   int _secondsLeft = _totalSeconds;
   Timer? _timer;
   bool _isExiting = false;
+  int? _selectedTime;
 
   /// Drives the circular arc from 1.0 → 0.0 continuously over the full
   /// countdown so the ring sweeps smoothly instead of jumping each second.
@@ -100,6 +101,7 @@ class _PrimingScreenState extends State<PrimingScreen>
     final result = await context.pushActiveChallenge(
       widget.challenge,
       isDailyMission: widget.isDailyMission,
+      overrideTime: _selectedTime,
     );
     if (mounted) context.pop(result);
   }

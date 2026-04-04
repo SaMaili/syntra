@@ -62,6 +62,7 @@ final appRouter = GoRouter(
         return ActiveChallengeScreen(
           challenge: args.challenge,
           isDailyMission: args.isDailyMission,
+          overrideTime: args.overrideTime,
         );
       },
     ),
@@ -114,7 +115,9 @@ class _PrimingArgs {
 class _ActiveChallengeArgs {
   final Challenge challenge;
   final bool isDailyMission;
-  const _ActiveChallengeArgs(this.challenge, {this.isDailyMission = false});
+  final int? overrideTime;
+  const _ActiveChallengeArgs(this.challenge,
+      {this.isDailyMission = false, this.overrideTime});
 }
 
 class _ChallengeDoneArgs {
@@ -149,10 +152,12 @@ extension AppNavigation on BuildContext {
   Future<double?> pushActiveChallenge(
     Challenge challenge, {
     bool isDailyMission = false,
+    int? overrideTime,
   }) =>
       GoRouter.of(this).push<double>(
         AppRoutes.activeChallenge,
-        extra: _ActiveChallengeArgs(challenge, isDailyMission: isDailyMission),
+        extra: _ActiveChallengeArgs(challenge,
+            isDailyMission: isDailyMission, overrideTime: overrideTime),
       );
 
   Future<double?> pushChallengeDone(

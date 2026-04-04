@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../challenge.dart';
+import '../data/challenge_repository.dart';
 import '../data/settings_repository.dart';
 import '../logic/comfort_zone_logic.dart';
 import 'shared_preferences_provider.dart';

@@ -21,11 +21,13 @@ import 'package:timezone/data/latest.dart' as tz;
 class ActiveChallengeScreen extends ConsumerStatefulWidget {
   final Challenge challenge;
   final bool isDailyMission;
+  final int? overrideTime;
 
   const ActiveChallengeScreen({
     super.key,
     required this.challenge,
     this.isDailyMission = false,
+    this.overrideTime,
   });
 
   @override
@@ -58,7 +60,7 @@ class _ActiveChallengeScreenState extends ConsumerState<ActiveChallengeScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    mainTimer = widget.challenge.time;
+    mainTimer = widget.overrideTime ?? widget.challenge.time;
     _startTime = DateTime.now();
     _endTime = _startTime.add(Duration(seconds: mainTimer));
     tz.initializeTimeZones();
@@ -74,7 +76,7 @@ class _ActiveChallengeScreenState extends ConsumerState<ActiveChallengeScreen>
 
     _progressController = AnimationController(
       vsync: this,
-      duration: Duration(seconds: widget.challenge.time),
+      duration: Duration(seconds: mainTimer),
     )..forward();
   }
 
@@ -105,7 +107,7 @@ class _ActiveChallengeScreenState extends ConsumerState<ActiveChallengeScreen>
         mainTimer = secondsLeft > 0 ? secondsLeft : 0;
       });
       // Re-sync the continuous progress animation to actual elapsed time.
-      final total = widget.challenge.time;
+      final total = widget.overrideTime ?? widget.challenge.time;
       if (total > 0) {
         final elapsed = now.difference(_startTime).inMilliseconds;
         final progress = (elapsed / (total * 1000)).clamp(0.0, 1.0);
