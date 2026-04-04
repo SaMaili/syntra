@@ -1,6 +1,6 @@
 # Syntra — Development Roadmap
 
-Generated: 2026-04-03 · Last updated: 2026-04-04 (Phase 3 complete)
+Generated: 2026-04-03 · Last updated: 2026-04-04 (Phase 4 complete)
 Based on: CODEBASE_ANALYSIS.txt (2026-04-03)
 
 ---
@@ -23,7 +23,17 @@ main
  │
  ├─ [PR] refactor/shared-prefs-provider             ← merge SEVENTH (independent)
  │
- └─ [PR] refactor/notification-cleanup              ← merge EIGHTH (independent)
+ ├─ [PR] refactor/notification-cleanup              ← merge EIGHTH (independent)
+ │
+ ├─ [PR] refactor/split-screens                     ← Phase 1.7 (independent)
+ │
+ ├─ [PR] test/widget-tests                          ← Phase 2.2 (after split-screens)
+ │
+ ├─ [PR] feat/phase-3-core-loop                     ← Phase 3 (independent)
+ │
+ ├─ [PR] feat/phase-4-progression                   ← Phase 4 (independent)
+ │
+ └─ [PR] feat/phase-5-ux-polish                     ← Phase 5 (independent, in progress)
 ```
 
 ### Branch summaries
@@ -38,6 +48,10 @@ main
 | `refactor/priming-gorouter` | Add `/priming` GoRoute. Remove `onDone` callback from `PrimingScreen` and `ActiveChallengeScreen`. Result bubbles back via `Future<double?>` pop chain. `ChallengesScreen` and `DailyChallengeScreen` use `context.pushPriming(...)`. | Ready |
 | `refactor/shared-prefs-provider` | `sharedPreferencesProvider` initialized once in `main()` and injected via `ProviderScope`. `SettingsRepository` takes `SharedPreferences` in constructor. All `StateNotifier`s receive `SettingsRepository` via constructor from `ref`. `ChallengeFiltersNotifier`, `ComfortZoneLogic`, `DailyMissionsLogic` use injected prefs. Tests can override with a fake. | Ready |
 | `refactor/notification-cleanup` | Remove duplicate `FlutterLocalNotificationsPlugin` instance from `NotificationManager`. Collapse triple-cancel into single `SyntraNotificationService.cancelAllNotifications()` call. `initialize()` delegates entirely to the service. | Ready |
+| `refactor/split-screens` | Split `challenges_screen.dart` (965→205 lines) and `onboarding_screen.dart` (864→193 lines) into `challenges/` and `onboarding/` subdirectory widgets. | Ready |
+| `test/widget-tests` | Widget tests for `ChallengeCard` (9 tests), `ChallengeDoneScreen` (7 tests), `ActiveChallengeScreen` (3 tests). Shared `test/helpers/test_helpers.dart` with channel mocks and fake challenge factory. | Ready |
+| `feat/phase-3-core-loop` | Personal best streak (3.2), mood trend chart (3.1), retry-after-abort button (3.3). | Ready |
+| `feat/phase-4-progression` | Badges system (4.1), CZL gradients/icons (4.2), weekly goal card (4.3), weekly recap notification (4.4). | Ready |
 
 ---
 
@@ -60,7 +74,7 @@ main
 | 1.4 | Merge / clean up notification manager classes | `refactor/notification-cleanup` | **Done** |
 | 1.5 | Wire `PrimingScreen` into GoRouter | `refactor/priming-gorouter` | **Done** |
 | 1.6 | Inject `SharedPreferences` via Riverpod provider | `refactor/shared-prefs-provider` | **Done** |
-| 1.7 | Split large screen files into `widgets/` subdirectories | — | **TODO** (deferred; Phase 2 tests written against monolithic files) |
+| 1.7 | Split large screen files into `widgets/` subdirectories | `refactor/split-screens` | **Done** (`challenges/` + `onboarding/` subdirs) |
 
 ### CZL Expansion
 
@@ -73,12 +87,12 @@ main
 
 ---
 
-## Phase 2 — Testability
+## Phase 2 — Testability ✓
 
 | # | Task | Status |
 |---|---|---|
-| 2.1 | `SharedPreferences` Riverpod provider for injection | **Done** (1.6) |
-| 2.2 | Widget tests for `ChallengeCard`, `ChallengeDoneScreen`, `ActiveChallengeScreen` | **Done** (`test/widget/`, branch `test/widget-tests`) |
+| 2.1 | `SharedPreferences` Riverpod provider for injection | **Done** (1.6 / `refactor/shared-prefs-provider`) |
+| 2.2 | Widget tests for `ChallengeCard`, `ChallengeDoneScreen`, `ActiveChallengeScreen` | **Done** (`test/widget-tests` — 19 tests total) |
 
 ---
 
@@ -86,302 +100,14 @@ main
 
 | # | Task | Status |
 |---|---|---|
-| 3.1 | Challenge reflection history (mood trend chart per challenge in logbook) | **Done** (`_MoodChart` in detail sheet, `moodHistoryProvider`) |
-| 3.2 | Personal best streak tracking (`all_time_max_streak` in SharedPrefs) | **Done** (`personalBestStreakProvider`, Best Streak card in stats grid) |
-| 3.3 | Repeat challenge suggestion after abort | **Done** ("Try Again" button → `pushReplacement` fresh `ActiveChallengeScreen`) |
-| 3.4 | Context-aware environment filter (session chip, not persisted) | **Skipped** — all 127 challenges have `environment: "all"`, filter would be useless |
-
-## Phase 0 — Pre-Release Bug Fixes (blocker)
-
-These must ship before any public release. They are data-integrity issues that
-will cause crashes or silent corruption for users upgrading from an earlier build.
+| 3.1 | Challenge reflection history (mood trend chart per challenge in logbook) | **Done** (`_MoodChart` in detail sheet, `moodHistoryProvider`, `feat/phase-3-core-loop`) |
+| 3.2 | Personal best streak tracking (`all_time_max_streak` in SharedPrefs) | **Done** (`personalBestStreakProvider`, Best Streak + Done Today cards in stats grid, `feat/phase-3-core-loop`) |
+| 3.3 | Repeat challenge suggestion after abort | **Done** ("Try Again" button → `pushReplacement` to fresh `ActiveChallengeScreen`, `feat/phase-3-core-loop`) |
+| 3.4 | Context-aware environment filter (session chip, not persisted) | **Skipped** — all 127 challenges have `environment: "all"` |
 
 ---
 
-### 0.1 Fix logbook DB migration — `feeling` / `perception` columns
-
-**File:** `lib/data/logbook_repository.dart`  
-**Problem (Problem #1):** The `logbook` table schema at version 2 includes
-`feeling INTEGER` and `perception INTEGER` in the `CREATE TABLE` statement, but
-the `onUpgrade` handler only adds `duration_seconds` (v1 → v2). Any user who
-had the DB at version 1 will get `"table logbook has no column named feeling"`
-on the first `addEntry()` call.
-
-**Fix:**
-- Bump DB version to `3`
-- Add a new `if (oldVersion < 3)` branch in `onUpgrade` that runs:
-  ```sql
-  ALTER TABLE logbook ADD COLUMN feeling INTEGER;
-  ALTER TABLE logbook ADD COLUMN perception INTEGER;
-  ```
-
----
-
-### 0.2 Fix `challenge_id` type mismatch — DB vs Dart
-
-**Files:** `lib/data/logbook_repository.dart`, `lib/challenge.dart`  
-**Problem (Problem #2):** `Challenge.id` is a `String` in Dart; the SQLite
-column is `INTEGER`. The coercion works while IDs stay numeric, but
-`completedChallengeIds()` already works around it with `.toString()`. A
-non-numeric ID would corrupt the logbook silently.
-
-**Fix (pick one, document the contract):**
-- Option A (minimal): Change the DB column to `TEXT` via a migration, update
-  all query bindings to pass the string as-is.
-- Option B (type-safe): Change `Challenge.id` to `int` throughout Dart and use
-  `.toString()` only at display boundaries.
-
----
-
-## Phase 1 — Code Quality & Architecture (before adding features)
-
-Completing this phase makes every future feature faster and safer to build.
-Items are ordered from highest to lowest leverage.
-
----
-
-### 1.1 Make `Challenge` fields `final`
-
-**File:** `lib/challenge.dart`  
-**Problem (Problem #9):** All fields use `var`, making instances mutable after
-construction. Nothing in the codebase mutates a `Challenge` after loading.
-
-**Changes:**
-- Replace all `var` with `final`
-- Remove `toMap()` (challenges are never written back to DB)
-- Keep or clean up `fromMap()` to match current JSON field names (it is vestigial)
-
----
-
-### 1.2 Add a `level` field to `challenges.json`
-
-**Files:** `assets/data/challenges.json`, `lib/logic/comfort_zone_logic.dart`,
-`lib/challenge.dart`  
-**Problem (Problem #6):** Level assignment is computed at runtime by percentile
-across the whole catalog. Adding or removing any challenge shifts every
-challenge's level, potentially invalidating stored `czl_completions_N` counts.
-
-**Changes:**
-- Add `"level": 1–5` to each entry in `challenges.json` (curate manually)
-- Add `final int level` field to `Challenge`
-- Replace `ComfortZoneLogic.assignLevel()` with a direct read of `challenge.level`
-- Delete the percentile-sorting logic
-
----
-
-### 1.3 Migrate `Navigator.push` calls to GoRouter
-
-**Files:** `lib/routes/active_challenge_screen.dart`,
-`lib/routes/challenge_done_screen.dart`, `lib/home_bar.dart`  
-**Problem (Problem #4):** Three screens use the old `Navigator.of(context).push`
-API, bypassing GoRouter. This breaks deep links and makes back-stack behaviour
-unpredictable.
-
-**Changes:**
-- `ActiveChallengeScreen` → replace `Navigator.push<double>(MaterialPageRoute →
-  ChallengeDoneScreen)` with `context.push('/challenge_done', extra: ...)`,
-  use the returned `Future<double?>` for the reward factor
-- `ChallengeDoneScreen` → replace `Navigator.push → StreakCelebrationScreen`
-  with `context.goStreakCelebration(streak, isMilestone)`
-- `HomeBar._showStreakCelebration` → same `context.goStreakCelebration(…)` call
-
----
-
-### 1.4 Merge the two notification classes
-
-**Files:** `lib/services/syntra_notification_service.dart` (~850 lines),
-`lib/logic/notification_manager.dart` (~640 lines)  
-**Problem (Problem #7):** The two classes overlap heavily. `cancelAllNotifications`
-currently triple-cancels via three separate code paths in the same call.
-
-**Target ownership split:**
-- `SyntraNotificationService`: plugin init, permission, schedule/cancel (low-level)
-- `NotificationManager`: next-occurrence calculation, batch build, uses
-  `SyntraNotificationService` as its only backend — no direct plugin calls
-
-**Changes:**
-- Remove all direct `_notificationsPlugin` calls from `NotificationManager`
-- Remove the duplicated `MethodChannel` call in `NotificationManager.cancelAllNotifications`
-- Ensure `cancelAllNotifications` calls `SyntraNotificationService.cancelAllNotifications`
-  exactly once
-
----
-
-### 1.5 Wire or delete `priming_screen.dart` and `mindset_screen.dart`
-
-**Files:** `lib/routes/priming_screen.dart` (243 lines),
-`lib/routes/mindset_screen.dart` (287 lines)  
-**Problem (Problem #8):** Both files are fully implemented but have no route
-registration and no navigation entry point — unreachable dead code.
-
-**Decision required:**
-- If these screens are roadmapped (see §3.3 Custom Challenges, §3.4 CZL visual
-  identity): add routes in `router.dart` + navigation entry points now
-- If uncertain: **delete both files** until they are actually needed
-
----
-
-### 1.6 Inject `SharedPreferences` via a Riverpod provider
-
-**Files:** `lib/providers/challenge_providers.dart`,
-`lib/providers/settings_providers.dart`, all `Notifier` subclasses  
-**Problem (Problem #10):** Every `StateNotifier` calls
-`SharedPreferences.getInstance()` directly. This is non-injectable and
-untestable.
-
-**Changes:**
-- Add `sharedPreferencesProvider` as a `Provider<SharedPreferences>` that
-  throws `UnimplementedError` (must be overridden in tests)
-- Override it with the real instance in `main.dart` before `runApp`
-- Refactor all `Notifier` constructors to `ref.read(sharedPreferencesProvider)`
-  instead of calling `getInstance()` directly
-
----
-
-### 1.7 Split large screen files into widget subdirectories
-
-**Problem (Problem #3):** Five screens are 500–965 lines each, making code
-navigation and testing difficult.
-
-**Target structure:**
-
-```
-lib/routes/
-  challenges/
-    challenges_screen.dart          (orchestrator, <150 lines)
-    widgets/
-      challenge_list_item.dart
-      challenge_filter_bar.dart
-      challenge_filter_sheet.dart
-      czl_progress_card.dart
-
-  statistics/
-    statistics_screen.dart
-    widgets/
-      stat_overview_card.dart
-      weekly_xp_chart.dart
-      weekly_counts_chart.dart
-      activity_heatmap_grid.dart
-
-  settings/
-    settings_screen.dart
-    widgets/
-      notification_slot_tile.dart
-
-  onboarding/
-    onboarding_screen.dart
-    widgets/
-      onboarding_page_*.dart        (one per page)
-
-  challenge_done/
-    challenge_done_screen.dart
-    widgets/
-      survey_widget.dart
-      xp_reward_card.dart
-      level_up_dialog.dart
-```
-
----
-
-## Phase 2 — Testability
-
----
-
-### 2.1 Add widget tests
-
-**File:** `test/widget/` (new directory)  
-**Problem (Suggestion #9):** Widget test coverage is currently zero. The five
-unit tests cover only logic.
-
-**Minimum test additions:**
-- `challenge_card_test.dart` — title, XP badge, type badge render
-- `challenge_done_screen_test.dart` — survey state transitions, XP count-up
-  animation, bonus badge visibility
-- `active_challenge_test.dart` — timer display, abort-lock countdown, abort
-  button appears at t=0
-
-Use `ProviderScope` overrides (from §1.6) to inject mock data without SQLite.
-
----
-
-## Phase 3 — Core Loop Depth (high-impact features)
-
-These use data the app already collects. No new infrastructure needed.
-
----
-
-### 3.1 Challenge reflection history in logbook
-
-**Files:** `lib/routes/logbook_detail_page.dart`,
-`lib/data/logbook_repository.dart`  
-**Source:** Section 10.1
-
-The survey data (`feeling`, `perception`, `notes`) is stored but never shown
-back to the user.
-
-**Changes:**
-- Add `LogbookRepository.attemptsForChallenge(challengeId)` → `List<Map>`
-  (all entries for this challenge, ordered by date)
-- In `LogbookDetailPage`, add a "Your history with this challenge" section:
-  - Mini chart (feeling over time, dots connected by line) using `fl_chart`
-  - List of past attempts with date + feeling emoji + notes preview
-- If only one attempt exists, show an encouraging "First attempt!" message
-
----
-
-### 3.2 Personal best streak tracking
-
-**Files:** `lib/data/logbook_repository.dart`,
-`lib/data/settings_repository.dart`,
-`lib/routes/statistics_screen.dart`  
-**Source:** Section 10.1
-
-**Changes:**
-- Add `all_time_max_streak` key to `SettingsRepository`
-- In `comfortZoneLevelProvider.notifier.recordSuccessAndCheckLevelUp` (or
-  wherever streak is computed after a success), compare current streak to stored
-  max and update if higher
-- Display "Personal best: X days" alongside current streak on the stats screen
-
----
-
-### 3.3 Repeat challenge suggestion after failure/low mood
-
-**Files:** `lib/routes/challenge_done_screen.dart`,
-`lib/data/logbook_repository.dart`  
-**Source:** Section 10.1
-
-After abort or a feeling rating ≤ 1, show a card: "Want to try something
-a bit easier?" with one lower-XP challenge of the same type.
-
-**Changes:**
-- Add `LogbookRepository.suggestEasierChallenge(type, maxXp, excludeIds)`
-  query
-- In `ChallengeDoneScreen._onBackToHome`, if `_isAborted` or `_feeling <= 1`,
-  pass the suggestion as part of the navigation extras to the home screen
-- Show a dismissible suggestion card at the top of `ChallengesScreen` if set
-
----
-
-### 3.4 Context-aware environment filter
-
-**Files:** `lib/routes/challenges_screen.dart`,
-`lib/providers/challenge_providers.dart`  
-**Source:** Section 10.3
-
-The `environment` field exists on `Challenge` but the filter was removed.
-
-**Changes:**
-- Add a horizontal chip row above the challenge list: `Street / Transport /
-  Work / Home` — "Where are you right now?"
-- This is a *session filter* (not persisted), cleared when the user leaves
-  the screen
-- Add `environmentFilter` to `ChallengeFilters` but do not persist it to
-  SharedPreferences
-
----
-
-## Phase 4 — Progression & Motivation
+## Phase 4 — Progression & Motivation ✓
 
 | # | Task | Status |
 |---|---|---|
@@ -617,7 +343,7 @@ Phase 1  →  Phase 6 (custom challenges)
 
 ---
 
-## Known Remaining Issues (not yet branched)
+## Known Remaining Issues
 
 - `PrimingScreen` is now fully on GoRouter (Phase 1.5 — branch `refactor/priming-gorouter`).
 - All 127 challenges are assigned levels 1–5 only. Levels 6–10 exist in the system

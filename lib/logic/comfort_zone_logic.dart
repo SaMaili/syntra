@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../challenge.dart';
@@ -41,6 +42,36 @@ class ComfortZoneLogic {
     'Embracing full exposure without hesitation',        // 9
     'Elite social mastery — nothing holds you back',     // 10
   ];
+
+  static const levelIcons = <IconData>[
+    Icons.spa_rounded,          // 0 unused
+    Icons.spa_rounded,          // 1 Warming Up
+    Icons.ac_unit_rounded,      // 2 Breaking the Ice
+    Icons.mic_rounded,          // 3 Holding the Floor
+    Icons.flash_on_rounded,     // 4 Taking Risks
+    Icons.star_rounded,         // 5 The Bold Zone
+  ];
+
+  /// Two-stop gradient per level (begin → end).
+  static const levelGradientColors = <(Color, Color)>[
+    (Color(0xFF43A047), Color(0xFF66BB6A)), // 0 unused
+    (Color(0xFF43A047), Color(0xFF66BB6A)), // 1 green
+    (Color(0xFF0288D1), Color(0xFF29B6F6)), // 2 blue
+    (Color(0xFFE65100), Color(0xFFFF7043)), // 3 orange
+    (Color(0xFFC62828), Color(0xFFEF5350)), // 4 red
+    (Color(0xFFFF8F00), Color(0xFFFFCA28)), // 5 gold
+  ];
+
+  /// Returns the [LinearGradient] for [level] (clamped to valid range).
+  static LinearGradient levelGradient(int level) {
+    final idx = level.clamp(1, maxLevel);
+    final (begin, end) = levelGradientColors[idx];
+    return LinearGradient(
+      colors: [begin, end],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    );
+  }
 
   static const _keyCompletions = 'czl_completions_'; // + level number
 

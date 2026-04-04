@@ -36,6 +36,26 @@ final completedChallengeIdsProvider = FutureProvider<Set<String>>((ref) {
   return LogbookRepository.instance.completedChallengeIds();
 });
 
+final weeklyProgressProvider = FutureProvider<int>((ref) {
+  ref.watch(statisticsRefreshProvider);
+  return LogbookRepository.instance.challengesCompletedThisWeek();
+});
+
+/// Mutable weekly goal (3 / 5 / 7). Loaded once from SharedPrefs.
+final weeklyGoalProvider = StateNotifierProvider<_WeeklyGoalNotifier, int>(
+  (_) => _WeeklyGoalNotifier(),
+);
+
+class _WeeklyGoalNotifier extends StateNotifier<int> {
+  _WeeklyGoalNotifier() : super(5) {
+    SettingsRepository.instance.loadWeeklyGoal().then((v) => state = v);
+  }
+
+  Future<void> setGoal(int goal) async {
+    await SettingsRepository.instance.saveWeeklyGoal(goal);
+    state = goal;
+  }
+}
 final personalBestStreakProvider = FutureProvider<int>((ref) {
   ref.watch(statisticsRefreshProvider);
   return SettingsRepository.instance.loadAllTimeMaxStreak();
