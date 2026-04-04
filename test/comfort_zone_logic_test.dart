@@ -67,8 +67,8 @@ void main() {
       expect(ComfortZoneLogic.completionsToUnlock, greaterThan(0));
     });
 
-    test('maxLevel is 5', () {
-      expect(ComfortZoneLogic.maxLevel, 5);
+    test('maxLevel is 10', () {
+      expect(ComfortZoneLogic.maxLevel, 10);
     });
   });
 }
