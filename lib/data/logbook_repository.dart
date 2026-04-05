@@ -354,6 +354,27 @@ class LogbookRepository {
     return rows.map((r) => r['feeling'] as int).toList();
   }
 
+  /// Returns the last [limit] individual feeling scores with their timestamps,
+  /// oldest first. Each entry is one challenge completion.
+  Future<List<({DateTime date, double avg})>> averageMoodPerDay(
+      {int days = 14}) async {
+    final db = await _database;
+    // Fetch last 20 individual entries so the chart shows a curve even when
+    // all data is from a single day.
+    final rows = await db.rawQuery('''
+      SELECT timestamp, feeling
+      FROM logbook
+      WHERE feeling IS NOT NULL
+      ORDER BY timestamp DESC
+      LIMIT 20
+    ''');
+    return rows.reversed.map((r) {
+      final date = DateTime.parse(r['timestamp'] as String);
+      final avg = (r['feeling'] as num).toDouble();
+      return (date: date, avg: avg);
+    }).toList();
+  }
+
   /// Returns the number of successfully completed challenges since last Monday.
   Future<int> challengesCompletedThisWeek() async {
     final db = await _database;

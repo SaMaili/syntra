@@ -369,6 +369,66 @@ class S {
     return Intl.message('Mood Trend', name: 'moodTrend', desc: '', args: []);
   }
 
+  /// `Mood Trend (last 20 entries)`
+  String get avgMoodTitle {
+    return Intl.message(
+      'Mood Trend (last 20 entries)',
+      name: 'avgMoodTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rate how you feel after each challenge to see your mood trend here.`
+  String get avgMoodEmpty {
+    return Intl.message(
+      'Rate how you feel after each challenge to see your mood trend here.',
+      name: 'avgMoodEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Based on how you rated each completed challenge`
+  String get avgMoodSubtitle {
+    return Intl.message(
+      'Based on how you rated each completed challenge',
+      name: 'avgMoodSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `🚶 Street`
+  String get filterEnvStreet {
+    return Intl.message(
+      '🚶 Street',
+      name: 'filterEnvStreet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `🚌 Transit`
+  String get filterEnvTransit {
+    return Intl.message(
+      '🚌 Transit',
+      name: 'filterEnvTransit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `☕ Café`
+  String get filterEnvCafe {
+    return Intl.message('☕ Café', name: 'filterEnvCafe', desc: '', args: []);
+  }
+
+  /// `🎉 Event`
+  String get filterEnvEvent {
+    return Intl.message('🎉 Event', name: 'filterEnvEvent', desc: '', args: []);
+  }
+
   /// `Challenge aborted!`
   String get challengeAbortedSnackbar {
     return Intl.message(

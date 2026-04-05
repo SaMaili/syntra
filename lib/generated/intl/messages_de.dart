@@ -102,6 +102,15 @@ class MessageLookup extends MessageLookupByLibrary {
       "Genaue Alarme zulassen",
     ),
     "auraPoints": MessageLookupByLibrary.simpleMessage("Aura"),
+    "avgMoodEmpty": MessageLookupByLibrary.simpleMessage(
+      "Bewerte dein Gefühl nach jeder Challenge, um deinen Stimmungsverlauf zu sehen.",
+    ),
+    "avgMoodSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Basierend auf deiner Bewertung nach jeder abgeschlossenen Challenge",
+    ),
+    "avgMoodTitle": MessageLookupByLibrary.simpleMessage(
+      "Stimmungsverlauf (letzte 20 Einträge)",
+    ),
     "backToHome": MessageLookupByLibrary.simpleMessage("Zurück zum Hauptmenü"),
     "bad": MessageLookupByLibrary.simpleMessage("Schlecht"),
     "badgeBraveMinutes": MessageLookupByLibrary.simpleMessage("60 Min. mutig"),
@@ -313,7 +322,11 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "feeling": MessageLookupByLibrary.simpleMessage("Gefühl"),
     "filterAll": MessageLookupByLibrary.simpleMessage("Alle"),
+    "filterEnvCafe": MessageLookupByLibrary.simpleMessage("☕ Café"),
+    "filterEnvEvent": MessageLookupByLibrary.simpleMessage("🎉 Event"),
     "filterEnvLabel": MessageLookupByLibrary.simpleMessage("Ort"),
+    "filterEnvStreet": MessageLookupByLibrary.simpleMessage("🚶 Straße"),
+    "filterEnvTransit": MessageLookupByLibrary.simpleMessage("🚌 Transit"),
     "filterFlirtExclude": MessageLookupByLibrary.simpleMessage("Kein Flirt"),
     "filterFlirtLabel": MessageLookupByLibrary.simpleMessage(
       "Flirt-Challenges",

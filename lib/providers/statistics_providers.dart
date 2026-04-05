@@ -68,6 +68,12 @@ final moodHistoryProvider =
   return LogbookRepository.instance.moodHistoryForChallenge(challengeId);
 });
 
+final averageMoodProvider =
+    FutureProvider<List<({DateTime date, double avg})>>((ref) {
+  ref.watch(statisticsRefreshProvider);
+  return LogbookRepository.instance.averageMoodPerDay(days: 14);
+});
+
 /// Completions toward the next CZL level-up. Reacts to both challenge
 /// completions (statisticsRefreshProvider) and level changes.
 /// SharedPreferences reads are synchronous, so this is a plain Provider.

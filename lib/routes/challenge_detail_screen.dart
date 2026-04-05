@@ -223,10 +223,10 @@ class _TagChips extends StatelessWidget {
     }
 
     String envLabel(String e) => switch (e) {
-          'street' => '🚶 Street',
-          'transit' => '🚌 Transit',
-          'cafe' => '☕ Café',
-          'event' => '🎉 Event',
+          'street' => l.filterEnvStreet,
+          'transit' => l.filterEnvTransit,
+          'cafe' => l.filterEnvCafe,
+          'event' => l.filterEnvEvent,
           _ => '',
         };
 

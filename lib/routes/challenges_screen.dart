@@ -120,7 +120,7 @@ class _Header extends ConsumerWidget {
           // Streak badge
           Container(
             padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.sm, vertical: AppSpacing.sm),
+                horizontal: AppSpacing.md, vertical: AppSpacing.sm),
             decoration: BoxDecoration(
               color: streak > 0 && isStreakActiveToday
                   ? cs.tertiary.withValues(alpha: 0.12)
@@ -132,15 +132,15 @@ class _Header extends ConsumerWidget {
               children: [
                 Icon(
                   Icons.local_fire_department_rounded,
-                  size: 16,
+                  size: 18,
                   color: streak > 0 && isStreakActiveToday
                       ? cs.tertiary
                       : cs.outline,
                 ),
-                const SizedBox(width: 4),
+                const SizedBox(width: AppSpacing.xs),
                 Text(
                   '$streak',
-                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: streak > 0 && isStreakActiveToday
                             ? cs.tertiary
@@ -151,6 +151,7 @@ class _Header extends ConsumerWidget {
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
+          // XP badge
           Container(
             padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.md, vertical: AppSpacing.sm),
@@ -204,48 +205,16 @@ class _FilterBar extends ConsumerWidget {
           horizontal: AppSpacing.md, vertical: AppSpacing.xs),
       child: Row(
         children: [
-          // ── Type segments: Solo | Coop | All ────────────────────────────
+          // ── Type selector with sliding pill ────────────────────────────
           Expanded(
-            child: SegmentedButton<ChallengeTypeFilter>(
-              showSelectedIcon: false,
-              style: SegmentedButton.styleFrom(
-                textStyle: const TextStyle(fontSize: 13),
-              ),
-              segments: [
-                ButtonSegment(
-                  value: ChallengeTypeFilter.solo,
-                  icon: const Icon(Icons.person, size: 18),
-                  label: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(S.of(context).solo)),
-                ),
-                ButtonSegment(
-                  value: ChallengeTypeFilter.coop,
-                  icon: const Icon(Icons.people_alt_rounded, size: 18),
-                  label: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(S.of(context).coop)),
-                ),
-                ButtonSegment(
-                  value: ChallengeTypeFilter.all,
-                  icon: const Icon(Icons.all_inclusive, size: 18),
-                  label: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(S.of(context).filterAll)),
-                ),
+            child: _TypeSelector(
+              selected: filters.typeFilter,
+              onChanged: notifier.setTypeFilter,
+              labels: [
+                S.of(context).solo,
+                S.of(context).coop,
+                S.of(context).filterAll,
               ],
-              selected: {
-                // If current filter isn't in main bar, show All as selected
-                const {
-                      ChallengeTypeFilter.solo,
-                      ChallengeTypeFilter.coop,
-                      ChallengeTypeFilter.all,
-                    }.contains(filters.typeFilter)
-                    ? filters.typeFilter
-                    : ChallengeTypeFilter.all,
-              },
-              onSelectionChanged: (s) =>
-                  notifier.setTypeFilter(s.first),
             ),
           ),
           // ── Flirt cycle button ───────────────────────────────────────────
@@ -285,6 +254,115 @@ class _FilterBar extends ConsumerWidget {
       isScrollControlled: true,
       useSafeArea: true,
       builder: (_) => const _FilterSheet(),
+    );
+  }
+}
+
+// ─── Sliding-pill type selector ──────────────────────────────────────────────
+
+/// Three-tab bar (Solo | Coop | All) with a sliding indicator that animates
+/// like the bottom NavigationBar pill.
+class _TypeSelector extends StatelessWidget {
+  static const _mainBarValues = [
+    ChallengeTypeFilter.solo,
+    ChallengeTypeFilter.coop,
+    ChallengeTypeFilter.all,
+  ];
+  static const _icons = [
+    Icons.person_rounded,
+    Icons.people_alt_rounded,
+    Icons.all_inclusive_rounded,
+  ];
+
+  final ChallengeTypeFilter selected;
+  final ValueChanged<ChallengeTypeFilter> onChanged;
+  final List<String> labels;
+
+  const _TypeSelector({
+    required this.selected,
+    required this.onChanged,
+    required this.labels,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
+
+    // Map group/dare → all for display purposes
+    final display = _mainBarValues.contains(selected)
+        ? selected
+        : ChallengeTypeFilter.all;
+    final selectedIdx = _mainBarValues.indexOf(display);
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final tabW = constraints.maxWidth / _mainBarValues.length;
+        return Container(
+          height: 36,
+          decoration: BoxDecoration(
+            color: cs.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Stack(
+            children: [
+              // Sliding pill
+              AnimatedPositioned(
+                duration: const Duration(milliseconds: 280),
+                curve: Curves.easeInOutCubicEmphasized,
+                left: selectedIdx * tabW + 3,
+                top: 3,
+                bottom: 3,
+                width: tabW - 6,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: cs.secondaryContainer,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+              ),
+              // Tab labels (on top of pill)
+              Row(
+                children: List.generate(_mainBarValues.length, (i) {
+                  final isSelected = i == selectedIdx;
+                  return Expanded(
+                    child: GestureDetector(
+                      onTap: () => onChanged(_mainBarValues[i]),
+                      behavior: HitTestBehavior.opaque,
+                      child: Center(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              _icons[i],
+                              size: 13,
+                              color: isSelected
+                                  ? cs.onSecondaryContainer
+                                  : cs.onSurfaceVariant,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              labels[i],
+                              style: tt.labelSmall?.copyWith(
+                                fontWeight: isSelected
+                                    ? FontWeight.w600
+                                    : FontWeight.normal,
+                                color: isSelected
+                                    ? cs.onSecondaryContainer
+                                    : cs.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
@@ -369,10 +447,10 @@ class _FilterSheet extends ConsumerWidget {
             selected: filters.environmentFilter,
             label: (e) => switch (e) {
               EnvironmentFilter.all => l.filterAll,
-              EnvironmentFilter.street => '🚶 Street',
-              EnvironmentFilter.transit => '🚌 Transit',
-              EnvironmentFilter.cafe => '☕ Café',
-              EnvironmentFilter.event => '🎉 Event',
+              EnvironmentFilter.street => l.filterEnvStreet,
+              EnvironmentFilter.transit => l.filterEnvTransit,
+              EnvironmentFilter.cafe => l.filterEnvCafe,
+              EnvironmentFilter.event => l.filterEnvEvent,
             },
             icon: (_) => null,
             onSelected: notifier.setEnvironmentFilter,
@@ -664,22 +742,30 @@ class _ChallengeListItem extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(
                 AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _MetaChip(
-                  icon: Icons.timer_outlined,
-                  label: _formatTime(challenge.time),
+                Flexible(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _MetaChip(
+                        icon: Icons.timer_outlined,
+                        label: _formatTime(challenge.time),
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      _MetaChip(
+                        icon: Icons.emoji_events_outlined,
+                        label: '${challenge.xp} XP',
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      _MetaChip(
+                        icon: _typeIcon(challenge.type),
+                        label: _typeLabel(context, challenge.type),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
-                _MetaChip(
-                  icon: Icons.emoji_events_outlined,
-                  label: '${challenge.xp} XP',
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                _MetaChip(
-                  icon: _typeIcon(challenge.type),
-                  label: _typeLabel(context, challenge.type),
-                ),
-                const Spacer(),
                 SyntraButton.small(
                   onPressed: onStart,
                   child: Padding(
@@ -742,12 +828,15 @@ class _MetaChip extends StatelessWidget {
       children: [
         Icon(icon, size: 14, color: cs.outline),
         const SizedBox(width: 3),
-        Text(
-          label,
-          style: Theme.of(context)
-              .textTheme
-              .labelSmall
-              ?.copyWith(color: cs.outline),
+        Flexible(
+          child: Text(
+            label,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context)
+                .textTheme
+                .labelSmall
+                ?.copyWith(color: cs.outline),
+          ),
         ),
       ],
     );
