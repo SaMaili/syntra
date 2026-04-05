@@ -1,141 +1,157 @@
 # Syntra
 
-#### Video Demo:  [Click here](https://www.youtube.com/watch?v=n8rUr89IBlM)
+> Build real social confidence through deliberate real-world challenges.
 
-#### Description:
+Syntra is an offline-first Flutter app that helps you step outside your comfort zone — one social challenge at a time. Accept challenges, run a countdown timer, go do it in the real world, then log how it went. Earn Aura Points, build streaks, and unlock harder challenges as you grow.
 
-Syntra is a modern Flutter application designed to help users elevate their social life and personal
-growth through daily challenges, reminders, and progress tracking. The app is built with a focus on
-usability, accessibility, and a visually appealing interface. Syntra leverages a variety of Flutter
-packages to provide a rich user experience, including notifications, sound effects, persistent
-storage, and more.
+---
 
 ## Features
 
-- **Daily Challenges:** Users receive daily challenges to encourage social interaction and personal
-  development.
-- **Reminders & Notifications:** The app can send notifications to remind users about their daily
-  tasks and challenges.
-- **Dark Mode:** Users can switch between light and dark themes for comfortable viewing in any
-  environment.
-- **Sound Effects:** Interactive sound effects enhance the user experience.
-- **About Page:** Displays up-to-date app information, including the current version, using dynamic
-  version fetching.
+- **Comfort Zone Level (CZL)** — 5-level progression system. Challenges are gated by level; complete 3 at your current level to unlock the next tier.
+- **Mission Board** — three daily challenges (Comfort / Growth / Bold) with a 10% Aura bonus for completing them.
+- **Aura Points** — XP awarded per challenge based on difficulty and how long you lasted. Tracked all-time, shown in charts.
+- **Streak system** — consecutive days of completing challenges. Celebrated with an animated screen at milestones (3, 7, 14, 30, 60, 100 days).
+- **Badges** — 8 achievement badges earned by hitting XP, streak, and completion milestones.
+- **Weekly goal** — set a challenge target (3 / 5 / 7 per week) and track progress.
+- **Logbook** — every attempt stored locally with your mood rating, perception rating, and optional notes.
+- **Activity heatmap** — GitHub-style 12-week calendar showing daily activity intensity.
+- **Mood tracking** — per-challenge mood history chart and 14-day average mood line chart.
+- **Priming screen** — motivational framing shown before each challenge starts.
+- **Local notifications** — up to 3 configurable daily reminders (morning / afternoon / evening). Exact-alarm scheduling on Android via AlarmManager; rescheduled automatically on boot, update, and timezone change.
+- **Sound effects** — optional audio feedback for challenge start, success, and failure.
+- **Haptic feedback** — vibration at timer start, 10-second warning, timer end, success, and streak milestones.
+- **Dark / light / system theme** — Material 3 design with a neon pink seed color.
+- **Two languages** — English and German, switchable at runtime.
+- **Onboarding** — 7-page flow covering how it works, CZL starting level selection, and notification setup.
 
-## File Overview
+---
 
-Below is a summary of every file in the project, each explained in one sentence:
+## Tech Stack
 
-- `lib/main.dart`: The main entry point of the app, responsible for initializing the app, setting up
-  themes, and managing navigation.
-- `lib/static.dart`: Defines static constants for colors, text styles, and other design elements
-  used throughout the app.
-- `lib/routes/about_page.dart`: Implements the About page, displaying app information and version
-  details dynamically.
-- `lib/routes/active_challenge_screen.dart`: Handles the workflow and UI for an active challenge,
-  including timers and completion logic.
-- `lib/routes/challenge_done_screen.dart`: Shows the results and feedback options after a challenge is
-  completed or aborted.
-- `lib/routes/challenges_screen.dart`: Displays a list of available challenges and allows users to
-  browse and select them.
-- `lib/routes/daily_challenge_screen.dart`: Presents the daily challenge to the user and manages its
-  acceptance and completion.
-- `lib/routes/logbook_detail_page.dart`: Shows detailed information about a specific logbook entry,
-  including challenge results and notes.
-- `lib/routes/logbook_page.dart`: Lists all completed challenges, allowing users to review their
-  progress in a logbook format.
-- `lib/routes/settings_screen.dart`: Provides a settings interface for configuring notifications,
-  dark mode, language, and accessing app info.
-- `lib/routes/statistics_screen.dart`: Displays user statistics, such as XP, streaks, and activity
-  charts.
-- `lib/database/database_helper.dart`: Contains helper functions for interacting with the SQLite
-  database for persistent storage.
-- `lib/database/logbook_database.dart`: Manages the logbook database, including CRUD operations for
-  challenge entries.
-- `lib/database/settings_database.dart`: Handles storage and retrieval of user settings in the
-  database.
-- `lib/widgets/challenge_card.dart`: Defines the UI for displaying individual challenge cards with
-  adaptive theming.
-- `lib/widgets/challenge_info_notification.dart`: Provides dialogs and notifications with
-  information about challenges and user progress.
-- `lib/widgets/not_sure_what_to_say_dialog.dart`: Implements a dialog to help users if they are unsure
-  what to say during a challenge.
-- `lib/widgets/StatsOverviewContainer.dart`: Displays a summary of user statistics in a visually
-  appealing container.
-- `lib/widgets/CardSwiper.dart`: Implements a swipeable card interface for browsing challenges.
-- `lib/widgets/DebugDbButton.dart`: Adds a debug button for developers to inspect or reset the
-  database.
-- `lib/challenge.dart`: Defines the Challenge model and logic for managing challenge data.
-- `lib/ChallengeLogic.dart`: Contains business logic for filtering, shuffling, and managing
-  challenges.
-- `lib/DailyChallengeLogic.dart`: Manages the logic for daily challenges, including selection and
-  completion tracking.
-- `lib/NotificationService.dart`: Handles scheduling and displaying local notifications to the user.
-- `lib/themeModeNotifier.dart`: Provides a notifier for managing and persisting the app's theme
-  mode (light/dark).
-- `lib/assets/challenges.json`: Stores the database of available challenges in JSON format.
-- `lib/assets/sounds/`: Contains sound files used for interactive feedback and notifications.
-- `pubspec.yaml`: Specifies project dependencies, assets, and metadata for the Flutter app.
-- `README.md`: This documentation file, describing the project, its structure, and design decisions.
+| Layer | Technology |
+|---|---|
+| Framework | Flutter (Dart) |
+| State management | Riverpod 2.x |
+| Navigation | go_router |
+| Local database | SQLite via sqflite (schema v4) |
+| Settings | SharedPreferences |
+| Charts | fl_chart |
+| Notifications | flutter_local_notifications + native AlarmManager (Android) |
+| Audio | audioplayers |
+| Haptics | vibration |
+| Localization | flutter_intl (ARB files) |
 
-## Design Choices
+---
 
-- **Dynamic Version Display:** The About page uses the `package_info_plus` package to always show
-  the current app version, ensuring accuracy even after updates.
-- **Persistent Settings:** User preferences (like dark mode) are saved using local storage, so
-  settings persist across app restarts.
-- **Separation of Concerns:** The codebase is organized into logical folders (routes, widgets,
-  database) to keep the project maintainable and scalable.
-- **Accessibility:** The app uses clear text, sufficient color contrast, and large touch targets to
-  be accessible to a wide range of users.
-- **Extensibility:** The modular structure allows for easy addition of new features, such as more
-  languages or challenge types.
-- **Simplicity in UI:** The user interface was intentionally kept simple and focused to reduce
-  distractions and make the app approachable for everyone. In earlier versions of Syntra, there was
-  a dedicated "Mindset" page where users could view encouraging quotes and mindset guidelines.
-  However, after user feedback and design review, this feature was removed to streamline the
-  experience and keep the main focus on actionable challenges and progress tracking.
+## Project Structure
 
-## Notable Packages Used
+```
+lib/
+├── main.dart                  Boot: copy DB, migrate settings, init router
+├── challenge.dart             Immutable Challenge data model
+├── home_bar.dart              Bottom-nav shell (4 tabs, PageView)
+├── router.dart                GoRouter config + AppNavigation helpers
+├── static.dart                Notification message pools + streak milestones
+│
+├── theme/
+│   ├── app_theme.dart         Material 3 light/dark themes (seed: #FF10F0)
+│   └── app_spacing.dart       8-point grid constants
+│
+├── data/
+│   ├── challenge_repository.dart   JSON catalog loader with per-language cache
+│   ├── logbook_repository.dart     SQLite CRUD + stat queries (schema v4)
+│   └── settings_repository.dart   SharedPreferences wrapper (single source of truth)
+│
+├── providers/
+│   ├── challenge_providers.dart    Catalog, CZL filter, challenge filters
+│   ├── settings_providers.dart     Theme, locale, notifications, CZL, sound
+│   ├── statistics_providers.dart   Stats/charts FutureProviders + refresh signal
+│   └── router_notifier.dart        Onboarding guard for GoRouter
+│
+├── logic/
+│   ├── comfort_zone_logic.dart     CZL level assignment + unlock progression
+│   ├── daily_missions_logic.dart   Three-tier daily mission selection
+│   ├── badges_logic.dart           Badge definitions + earned-set computation
+│   └── notification_manager.dart   Scheduling logic (next occurrences, batch)
+│
+├── routes/
+│   ├── onboarding_screen.dart
+│   ├── challenges_screen.dart
+│   ├── challenge_detail_screen.dart
+│   ├── active_challenge_screen.dart
+│   ├── challenge_done_screen.dart
+│   ├── daily_challenge_screen.dart
+│   ├── statistics_screen.dart
+│   ├── logbook_page.dart
+│   ├── logbook_detail_page.dart
+│   ├── settings_screen.dart
+│   ├── streak_celebration_screen.dart
+│   ├── priming_screen.dart
+│   └── about_page.dart
+│
+├── services/
+│   ├── syntra_notification_service.dart
+│   ├── sound_service.dart
+│   └── vibration_service.dart
+│
+└── widgets/
+    ├── challenge_card.dart
+    ├── syntra_button.dart
+    ├── syntra_progress_bar.dart
+    └── ...
 
-- `package_info_plus`: For retrieving app version and build number.
-- `flutter_local_notifications`: For scheduling and displaying notifications.
-- `audioplayers`: For playing sound effects.
-- `path_provider`: For locating commonly used locations on the filesystem.
-- `sqflite`: For SQLite database operations and persistent storage.
-- `shared_preferences`: For storing simple key-value pairs and user settings.
-- `provider`: For state management and dependency injection.
-- `google_fonts`: For custom font support and improved typography.
-- `intl`: For date and time formatting and localization.
-- `url_launcher`: For opening URLs in the device browser.
-- `flutter_svg`: For rendering SVG images and icons.
-- `animations`: For advanced and prebuilt animation widgets.
-- `flutter_slidable`: For swipeable list tiles and actions.
-- `fluttertoast`: For displaying toast notifications.
-- `timezone`: For advanced timezone handling with notifications.
+assets/
+├── challenge_database.db          Logbook SQLite DB (copied to device on first run)
+└── data/
+    ├── challenges.json            Challenge catalog (XP, timer, type, level, environment)
+    └── translations/
+        ├── en.json
+        └── de.json
+```
 
-## Challenges and Decisions
+---
 
-During development, several design decisions were made to balance user experience and technical
-complexity. For example, the choice to use `FutureBuilder` on the About page ensures that version
-information is always accurate, but required careful handling of asynchronous data in the UI. The
-settings page was designed to be both comprehensive and user-friendly, grouping related options and
-providing clear explanations for each setting.
+## Architecture Decisions
 
-The app's structure was influenced by the need for maintainability and future growth. By separating
-widgets, routes, and data logic, the codebase remains clean and easy to navigate. The use of
-external packages was carefully considered to avoid unnecessary dependencies while still providing a
-rich feature set.
+**Offline-first, no account required.**
+All data lives on the device. SQLite stores the logbook; SharedPreferences stores settings. No cloud sync, no login.
 
-## How to Run
+**Challenge catalog is JSON, not SQL.**
+The catalog is read-only at runtime. Storing it in JSON assets (with a separate translation file per language) makes it trivial to edit, version-control, and swap without touching the database.
 
-1. Ensure you have Flutter installed and configured on your machine.
-2. Run `flutter pub get` to install dependencies.
-3. Launch the app using `flutter run` on your preferred device or emulator.
+**Riverpod for all state.**
+Every piece of mutable state is a Riverpod provider. `statisticsRefreshProvider` acts as a manual invalidation signal — bumping it forces all stat providers to reload after a logbook write.
 
-## Conclusion
+**Comfort Zone Level is percentile-based (for now).**
+CZL levels are assigned by sorting all challenges by XP and bucketing by percentile. This is simple but catalog-sensitive — a planned improvement is to add an explicit `level` field to `challenges.json`.
 
-Syntra is a thoughtfully designed app that combines daily motivation with practical tools for
-self-improvement. Its modular architecture, dynamic features, and attention to user experience make
-it a solid foundation for further development and customization. For more details, see the in-app
-About page or explore the codebase.
+**Android notifications use AlarmManager, not just the Flutter plugin.**
+`flutter_local_notifications` alone cannot guarantee exact timing when the device is in Doze mode. The native Kotlin layer uses `setExactAndAllowWhileIdle()` and a `BroadcastReceiver` that reschedules on boot, app update, and timezone changes.
+
+---
+
+## Getting Started
+
+```bash
+# Install dependencies
+flutter pub get
+
+# Run on connected device or emulator
+flutter run
+
+# Run tests
+flutter test
+```
+
+Requires Flutter 3.x and Dart SDK ^3.8.1.
+
+---
+
+## Roadmap
+
+- Weekly streak system (replace daily streak — more forgiving, rewards consistent use)
+- New challenge content (6 per category, explicit difficulty levels, updated tags)
+- Streak Shield + app themes (spend Aura Points, merged into Profile/Stats tab)
+- Weekly goal completion animation
+- Backend + leaderboard (Firebase sync, social ranking — planned after v1 is stable)
