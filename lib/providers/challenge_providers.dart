@@ -30,11 +30,12 @@ final czlFilteredChallengesProvider =
 
 // ─── Filters ──────────────────────────────────────────────────────────────────
 
-enum ChallengeTypeFilter { solo, group, both }
+/// Indexes must stay stable for SharedPreferences compatibility.
+enum ChallengeTypeFilter { solo, group, all, coop, dare }
 
 enum FlirtFilter { all, showOnly, exclude }
 
-enum SortMode { frequency, difficulty }
+enum EnvironmentFilter { all, street, transit, cafe, event }
 
 /// Persisted filter state for the challenges screen.
 final challengeFiltersProvider =
@@ -45,35 +46,37 @@ final challengeFiltersProvider =
 class ChallengeFilters {
   final ChallengeTypeFilter typeFilter;
   final FlirtFilter flirtFilter;
+  final EnvironmentFilter environmentFilter;
   final bool showOnlyNotDone;
-  final SortMode sortBy;
 
   const ChallengeFilters({
     this.typeFilter = ChallengeTypeFilter.solo,
     this.flirtFilter = FlirtFilter.all,
+    this.environmentFilter = EnvironmentFilter.all,
     this.showOnlyNotDone = false,
-    this.sortBy = SortMode.frequency,
   });
 
   ChallengeFilters copyWith({
     ChallengeTypeFilter? typeFilter,
     FlirtFilter? flirtFilter,
+    EnvironmentFilter? environmentFilter,
     bool? showOnlyNotDone,
-    SortMode? sortBy,
   }) =>
       ChallengeFilters(
         typeFilter: typeFilter ?? this.typeFilter,
         flirtFilter: flirtFilter ?? this.flirtFilter,
+        environmentFilter: environmentFilter ?? this.environmentFilter,
         showOnlyNotDone: showOnlyNotDone ?? this.showOnlyNotDone,
-        sortBy: sortBy ?? this.sortBy,
       );
 
-  /// Number of non-default advanced filters active (shown as badge).
+  /// Number of non-default advanced filters active (shown as badge on tune button).
+  /// Solo / Coop / All type are shown in the main bar and don't count as "advanced".
   int get activeFilterCount {
     int n = 0;
-    if (flirtFilter != FlirtFilter.all) n++;
+    if (typeFilter == ChallengeTypeFilter.group ||
+        typeFilter == ChallengeTypeFilter.dare) n++;
+    if (environmentFilter != EnvironmentFilter.all) n++;
     if (showOnlyNotDone) n++;
-    if (sortBy != SortMode.frequency) n++;
     return n;
   }
 }
@@ -86,21 +89,23 @@ class ChallengeFiltersNotifier extends StateNotifier<ChallengeFilters> {
   }
 
   static const _keyType = 'filter_type';
-  static const _keyFlirtV2 = 'filter_flirt_v2'; // v2 to avoid old bool key conflict
+  static const _keyFlirtV2 = 'filter_flirt_v2';
   static const _keyNotDone = 'filter_not_done';
-  static const _keySortBy = 'filter_sort_by';
+  static const _keyEnv = 'filter_env';
 
-  Future<void> _load() async {
+  void _load() {
     final typeIdx = _prefs.getInt(_keyType) ?? 0;
     final flirtIdx = _prefs.getInt(_keyFlirtV2) ?? 0;
     final notDone = _prefs.getBool(_keyNotDone) ?? false;
-    final sortIdx = _prefs.getInt(_keySortBy) ?? 0;
+    final envIdx = _prefs.getInt(_keyEnv) ?? 0;
     state = ChallengeFilters(
-      typeFilter: ChallengeTypeFilter.values[typeIdx.clamp(0, 2)],
+      typeFilter: ChallengeTypeFilter.values[
+          typeIdx.clamp(0, ChallengeTypeFilter.values.length - 1)],
       flirtFilter:
           FlirtFilter.values[flirtIdx.clamp(0, FlirtFilter.values.length - 1)],
+      environmentFilter: EnvironmentFilter.values[
+          envIdx.clamp(0, EnvironmentFilter.values.length - 1)],
       showOnlyNotDone: notDone,
-      sortBy: SortMode.values[sortIdx.clamp(0, SortMode.values.length - 1)],
     );
   }
 
@@ -114,32 +119,33 @@ class ChallengeFiltersNotifier extends StateNotifier<ChallengeFilters> {
     await _prefs.setInt(_keyFlirtV2, filter.index);
   }
 
+  Future<void> setEnvironmentFilter(EnvironmentFilter filter) async {
+    state = state.copyWith(environmentFilter: filter);
+    await _prefs.setInt(_keyEnv, filter.index);
+  }
+
   Future<void> setShowOnlyNotDone(bool value) async {
     state = state.copyWith(showOnlyNotDone: value);
     await _prefs.setBool(_keyNotDone, value);
   }
 
-  Future<void> setSortBy(SortMode mode) async {
-    state = state.copyWith(sortBy: mode);
-    await _prefs.setInt(_keySortBy, mode.index);
-  }
-
   Future<void> resetAdvancedFilters() async {
     state = state.copyWith(
       flirtFilter: FlirtFilter.all,
+      environmentFilter: EnvironmentFilter.all,
       showOnlyNotDone: false,
-      sortBy: SortMode.frequency,
     );
     await _prefs.setInt(_keyFlirtV2, 0);
+    await _prefs.setInt(_keyEnv, 0);
     await _prefs.setBool(_keyNotDone, false);
-    await _prefs.setInt(_keySortBy, 0);
   }
 }
 
-// ─── Filtered list (used by external consumers) ───────────────────────────────
+// ─── Filtered list ────────────────────────────────────────────────────────────
 
-/// Applies all current filters. Note: [showOnlyNotDone] is applied inside
-/// the widget since it needs the completed-IDs set from the logbook.
+/// Applies type, flirt, and environment filters.
+/// Note: [showOnlyNotDone] is applied inside the widget since it needs the
+/// completed-IDs set from the logbook.
 final filteredChallengesProvider =
     Provider<AsyncValue<List<Challenge>>>((ref) {
   final czlFilteredAsync = ref.watch(czlFilteredChallengesProvider);
@@ -148,15 +154,21 @@ final filteredChallengesProvider =
   return czlFilteredAsync.whenData((list) {
     var filtered = List<Challenge>.from(list);
 
+    // Type filter
     switch (filters.typeFilter) {
       case ChallengeTypeFilter.solo:
-        filtered = filtered.where((c) => c.type != 'group').toList();
+        filtered = filtered.where((c) => c.type == 'solo').toList();
       case ChallengeTypeFilter.group:
         filtered = filtered.where((c) => c.type == 'group').toList();
-      case ChallengeTypeFilter.both:
+      case ChallengeTypeFilter.coop:
+        filtered = filtered.where((c) => c.type == 'coop').toList();
+      case ChallengeTypeFilter.dare:
+        filtered = filtered.where((c) => c.type == 'dare').toList();
+      case ChallengeTypeFilter.all:
         break;
     }
 
+    // Flirt filter
     switch (filters.flirtFilter) {
       case FlirtFilter.showOnly:
         filtered = filtered.where((c) => c.flirt).toList();
@@ -166,11 +178,12 @@ final filteredChallengesProvider =
         break;
     }
 
-    switch (filters.sortBy) {
-      case SortMode.frequency:
-        filtered.sort((a, b) => b.frequency.compareTo(a.frequency));
-      case SortMode.difficulty:
-        filtered.sort((a, b) => a.xp.compareTo(b.xp));
+    // Environment filter — challenges tagged 'all' always pass through
+    if (filters.environmentFilter != EnvironmentFilter.all) {
+      final envKey = filters.environmentFilter.name;
+      filtered = filtered
+          .where((c) => c.environment == 'all' || c.environment == envKey)
+          .toList();
     }
 
     return filtered;

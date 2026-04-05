@@ -1,7 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -2840,6 +2839,16 @@ class S {
     );
   }
 
+  /// `Coop`
+  String get coop {
+    return Intl.message('Coop', name: 'coop', desc: '', args: []);
+  }
+
+  /// `Dare`
+  String get dare {
+    return Intl.message('Dare', name: 'dare', desc: '', args: []);
+  }
+
   /// `Filters`
   String get filterTitle {
     return Intl.message('Filters', name: 'filterTitle', desc: '', args: []);
@@ -2848,6 +2857,21 @@ class S {
   /// `Reset`
   String get filterReset {
     return Intl.message('Reset', name: 'filterReset', desc: '', args: []);
+  }
+
+  /// `Challenge Type`
+  String get filterTypeLabel {
+    return Intl.message(
+      'Challenge Type',
+      name: 'filterTypeLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location`
+  String get filterEnvLabel {
+    return Intl.message('Location', name: 'filterEnvLabel', desc: '', args: []);
   }
 
   /// `Flirt challenges`

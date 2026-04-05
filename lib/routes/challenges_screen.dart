@@ -23,66 +23,8 @@ class ChallengesScreen extends ConsumerStatefulWidget {
 
 class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
     with AutomaticKeepAliveClientMixin {
-  late PageController _pageController;
-  ChallengeTypeFilter _lastType = ChallengeTypeFilter.solo;
-  bool _isAnimating = false;
-
   @override
   bool get wantKeepAlive => true;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final filters = ref.read(challengeFiltersProvider);
-      _lastType = filters.typeFilter;
-      _pageController.jumpToPage(_indexFromFilter(_lastType));
-    });
-    _pageController = PageController();
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  int _indexFromFilter(ChallengeTypeFilter filter) {
-    switch (filter) {
-      case ChallengeTypeFilter.solo:
-        return 0;
-      case ChallengeTypeFilter.group:
-        return 1;
-      case ChallengeTypeFilter.both:
-        return 2;
-    }
-  }
-
-  ChallengeTypeFilter _filterFromIndex(int index) {
-    switch (index) {
-      case 0:
-        return ChallengeTypeFilter.solo;
-      case 1:
-        return ChallengeTypeFilter.group;
-      default:
-        return ChallengeTypeFilter.both;
-    }
-  }
-
-  void _onFilterSelected(ChallengeTypeFilter filter) {
-    if (_lastType == filter) return;
-    _lastType = filter;
-    ref.read(challengeFiltersProvider.notifier).setTypeFilter(filter);
-    _isAnimating = true;
-    _pageController
-        .animateToPage(
-          _indexFromFilter(filter),
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOutCubic,
-        )
-        .whenComplete(() => _isAnimating = false);
-  }
 
   void _onChallengeFinished() => refreshStatistics(ref);
 
@@ -93,27 +35,26 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
   }
 
   void _onGiveMeOne(BuildContext context) {
-    final allAsync = ref.read(czlFilteredChallengesProvider);
+    final allAsync = ref.read(filteredChallengesProvider);
     final list = allAsync.value;
-    if (list == null || list.isEmpty) return;
+    if (list == null || list.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(S.of(context).noChalllengesFound),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
 
     final filters = ref.read(challengeFiltersProvider);
     final completedIds =
         ref.read(completedChallengeIdsProvider).valueOrNull ?? {};
 
-    final candidates = list.where((c) {
-      final matchesType = (_lastType == ChallengeTypeFilter.both) ||
-          (_lastType == ChallengeTypeFilter.solo && c.type != 'group') ||
-          (_lastType == ChallengeTypeFilter.group && c.type == 'group');
-      final matchesFlirt = switch (filters.flirtFilter) {
-        FlirtFilter.showOnly => c.flirt,
-        FlirtFilter.exclude => !c.flirt,
-        FlirtFilter.all => true,
-      };
-      final matchesNotDone =
-          !filters.showOnlyNotDone || !completedIds.contains(c.id);
-      return matchesType && matchesFlirt && matchesNotDone;
-    }).toList();
+    final candidates = list
+        .where((c) =>
+            !filters.showOnlyNotDone || !completedIds.contains(c.id))
+        .toList();
 
     if (candidates.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -133,63 +74,15 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
   Widget build(BuildContext context) {
     super.build(context);
 
-    final completedIds =
-        ref.watch(completedChallengeIdsProvider).valueOrNull ?? {};
-
-    ref.listen(challengeFiltersProvider.select((f) => f.typeFilter), (_, next) {
-      if (next != _lastType) {
-        _lastType = next;
-        if (_pageController.hasClients) {
-          _pageController.animateToPage(
-            _indexFromFilter(next),
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOutCubic,
-          );
-        }
-      }
-    });
-
     return Scaffold(
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _Header(),
-            _FilterBar(
-              onTypeSelected: _onFilterSelected,
-              onGiveMeOne: () => _onGiveMeOne(context),
-            ),
+            _FilterBar(onGiveMeOne: () => _onGiveMeOne(context)),
             Expanded(
-              child: PageView(
-                controller: _pageController,
-                onPageChanged: (i) {
-                  if (_isAnimating) return;
-                  final newFilter = _filterFromIndex(i);
-                  if (_lastType != newFilter) {
-                    _lastType = newFilter;
-                    ref
-                        .read(challengeFiltersProvider.notifier)
-                        .setTypeFilter(newFilter);
-                  }
-                },
-                children: [
-                  _ChallengeList(
-                    type: ChallengeTypeFilter.solo,
-                    completedIds: completedIds,
-                    onStart: _startChallenge,
-                  ),
-                  _ChallengeList(
-                    type: ChallengeTypeFilter.group,
-                    completedIds: completedIds,
-                    onStart: _startChallenge,
-                  ),
-                  _ChallengeList(
-                    type: ChallengeTypeFilter.both,
-                    completedIds: completedIds,
-                    onStart: _startChallenge,
-                  ),
-                ],
-              ),
+              child: _ChallengeList(onStart: _startChallenge),
             ),
           ],
         ),
@@ -206,7 +99,8 @@ class _Header extends ConsumerWidget {
     final stats = ref.watch(overviewStatsProvider);
     final totalXp = stats.whenOrNull(data: (s) => s['totalXp']) ?? 0;
     final streak = stats.whenOrNull(data: (s) => s['streak']) ?? 0;
-    final completedToday = stats.whenOrNull(data: (s) => s['completedToday']) ?? 0;
+    final completedToday =
+        stats.whenOrNull(data: (s) => s['completedToday']) ?? 0;
     final isStreakActiveToday = completedToday > 0;
     final cs = Theme.of(context).colorScheme;
 
@@ -223,7 +117,7 @@ class _Header extends ConsumerWidget {
                   ),
             ),
           ),
-          // Streak badge — greyed out when no active streak.
+          // Streak badge
           Container(
             padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.sm, vertical: AppSpacing.sm),
@@ -239,14 +133,18 @@ class _Header extends ConsumerWidget {
                 Icon(
                   Icons.local_fire_department_rounded,
                   size: 16,
-                  color: streak > 0 && isStreakActiveToday ? cs.tertiary : cs.outline,
+                  color: streak > 0 && isStreakActiveToday
+                      ? cs.tertiary
+                      : cs.outline,
                 ),
                 const SizedBox(width: 4),
                 Text(
                   '$streak',
                   style: Theme.of(context).textTheme.labelMedium?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: streak > 0 && isStreakActiveToday ? cs.tertiary : cs.outline,
+                        color: streak > 0 && isStreakActiveToday
+                            ? cs.tertiary
+                            : cs.outline,
                       ),
                 ),
               ],
@@ -284,20 +182,29 @@ class _Header extends ConsumerWidget {
 // ─── Filter bar ───────────────────────────────────────────────────────────────
 
 class _FilterBar extends ConsumerWidget {
-  final ValueChanged<ChallengeTypeFilter> onTypeSelected;
   final VoidCallback onGiveMeOne;
-  const _FilterBar({required this.onTypeSelected, required this.onGiveMeOne});
+  const _FilterBar({required this.onGiveMeOne});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final filters = ref.watch(challengeFiltersProvider);
+    final notifier = ref.read(challengeFiltersProvider.notifier);
     final badgeCount = filters.activeFilterCount;
+    final cs = Theme.of(context).colorScheme;
+
+    // Flirt icon cycles: all → showOnly → exclude → all
+    final (flirtIcon, flirtColor) = switch (filters.flirtFilter) {
+      FlirtFilter.all => (Icons.favorite_border_rounded, cs.onSurfaceVariant),
+      FlirtFilter.showOnly => (Icons.favorite_rounded, cs.secondary),
+      FlirtFilter.exclude => (Icons.heart_broken_rounded, cs.error),
+    };
 
     return Padding(
       padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md, vertical: AppSpacing.xs),
       child: Row(
         children: [
+          // ── Type segments: Solo | Coop | All ────────────────────────────
           Expanded(
             child: SegmentedButton<ChallengeTypeFilter>(
               showSelectedIcon: false,
@@ -313,26 +220,45 @@ class _FilterBar extends ConsumerWidget {
                       child: Text(S.of(context).solo)),
                 ),
                 ButtonSegment(
-                  value: ChallengeTypeFilter.group,
-                  icon: const Icon(Icons.group, size: 18),
+                  value: ChallengeTypeFilter.coop,
+                  icon: const Icon(Icons.people_alt_rounded, size: 18),
                   label: FittedBox(
                       fit: BoxFit.scaleDown,
-                      child: Text(S.of(context).group)),
+                      child: Text(S.of(context).coop)),
                 ),
                 ButtonSegment(
-                  value: ChallengeTypeFilter.both,
+                  value: ChallengeTypeFilter.all,
                   icon: const Icon(Icons.all_inclusive, size: 18),
                   label: FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(S.of(context).filterAll)),
                 ),
               ],
-              selected: {filters.typeFilter},
-              onSelectionChanged: (s) => onTypeSelected(s.first),
+              selected: {
+                // If current filter isn't in main bar, show All as selected
+                const {
+                      ChallengeTypeFilter.solo,
+                      ChallengeTypeFilter.coop,
+                      ChallengeTypeFilter.all,
+                    }.contains(filters.typeFilter)
+                    ? filters.typeFilter
+                    : ChallengeTypeFilter.all,
+              },
+              onSelectionChanged: (s) =>
+                  notifier.setTypeFilter(s.first),
             ),
           ),
-          const SizedBox(width: AppSpacing.sm),
-          // Advanced filter button with badge.
+          // ── Flirt cycle button ───────────────────────────────────────────
+          IconButton(
+            icon: Icon(flirtIcon, color: flirtColor),
+            tooltip: S.of(context).filterFlirtLabel,
+            onPressed: () {
+              final next = FlirtFilter
+                  .values[(filters.flirtFilter.index + 1) % FlirtFilter.values.length];
+              notifier.setFlirtFilter(next);
+            },
+          ),
+          // ── Advanced filter button with badge ────────────────────────────
           Badge(
             isLabelVisible: badgeCount > 0,
             label: Text('$badgeCount'),
@@ -342,7 +268,7 @@ class _FilterBar extends ConsumerWidget {
               onPressed: () => _openFilterSheet(context, ref),
             ),
           ),
-          // "Give me one" — random brave challenge pick.
+          // ── Give me one ──────────────────────────────────────────────────
           IconButton(
             icon: const Icon(Icons.casino_rounded),
             tooltip: S.of(context).giveMeOneTooltip,
@@ -376,7 +302,7 @@ class _FilterSheet extends ConsumerWidget {
     final tt = Theme.of(context).textTheme;
     final l = S.of(context);
 
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(
           AppSpacing.lg, AppSpacing.md, AppSpacing.lg, AppSpacing.xl),
       child: Column(
@@ -409,33 +335,68 @@ class _FilterSheet extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.lg),
 
-          // ── Flirt filter ─────────────────────────────────────────────────
+          // ── Challenge type ────────────────────────────────────────────────
+          Text(l.filterTypeLabel,
+              style: tt.labelLarge?.copyWith(fontWeight: FontWeight.w600)),
+          const SizedBox(height: AppSpacing.sm),
+          _AnimatedChipRow<ChallengeTypeFilter>(
+            items: ChallengeTypeFilter.values,
+            selected: filters.typeFilter,
+            label: (t) => switch (t) {
+              ChallengeTypeFilter.solo => l.solo,
+              ChallengeTypeFilter.group => l.group,
+              ChallengeTypeFilter.coop => l.coop,
+              ChallengeTypeFilter.dare => l.dare,
+              ChallengeTypeFilter.all => l.filterAll,
+            },
+            icon: (t) => switch (t) {
+              ChallengeTypeFilter.solo => Icons.person_rounded,
+              ChallengeTypeFilter.group => Icons.group_rounded,
+              ChallengeTypeFilter.coop => Icons.people_alt_rounded,
+              ChallengeTypeFilter.dare => Icons.bolt_rounded,
+              ChallengeTypeFilter.all => Icons.all_inclusive_rounded,
+            },
+            onSelected: notifier.setTypeFilter,
+          ),
+          const SizedBox(height: AppSpacing.lg),
+
+          // ── Environment ───────────────────────────────────────────────────
+          Text(l.filterEnvLabel,
+              style: tt.labelLarge?.copyWith(fontWeight: FontWeight.w600)),
+          const SizedBox(height: AppSpacing.sm),
+          _AnimatedChipRow<EnvironmentFilter>(
+            items: EnvironmentFilter.values,
+            selected: filters.environmentFilter,
+            label: (e) => switch (e) {
+              EnvironmentFilter.all => l.filterAll,
+              EnvironmentFilter.street => '🚶 Street',
+              EnvironmentFilter.transit => '🚌 Transit',
+              EnvironmentFilter.cafe => '☕ Café',
+              EnvironmentFilter.event => '🎉 Event',
+            },
+            icon: (_) => null,
+            onSelected: notifier.setEnvironmentFilter,
+          ),
+          const SizedBox(height: AppSpacing.lg),
+
+          // ── Flirt filter ──────────────────────────────────────────────────
           Text(l.filterFlirtLabel,
               style: tt.labelLarge?.copyWith(fontWeight: FontWeight.w600)),
           const SizedBox(height: AppSpacing.sm),
-          SegmentedButton<FlirtFilter>(
-            showSelectedIcon: false,
-            style: SegmentedButton.styleFrom(
-                textStyle: const TextStyle(fontSize: 13)),
-            segments: [
-              ButtonSegment(
-                value: FlirtFilter.all,
-                label: Text(l.filterAll),
-                icon: const Icon(Icons.apps_rounded, size: 16),
-              ),
-              ButtonSegment(
-                value: FlirtFilter.showOnly,
-                label: Text(l.filterFlirtOnly),
-                icon: const Icon(Icons.favorite_rounded, size: 16),
-              ),
-              ButtonSegment(
-                value: FlirtFilter.exclude,
-                label: Text(l.filterFlirtExclude),
-                icon: const Icon(Icons.heart_broken_rounded, size: 16),
-              ),
-            ],
-            selected: {filters.flirtFilter},
-            onSelectionChanged: (s) => notifier.setFlirtFilter(s.first),
+          _AnimatedChipRow<FlirtFilter>(
+            items: FlirtFilter.values,
+            selected: filters.flirtFilter,
+            label: (f) => switch (f) {
+              FlirtFilter.all => l.filterAll,
+              FlirtFilter.showOnly => l.filterFlirtOnly,
+              FlirtFilter.exclude => l.filterFlirtExclude,
+            },
+            icon: (f) => switch (f) {
+              FlirtFilter.all => Icons.apps_rounded,
+              FlirtFilter.showOnly => Icons.favorite_rounded,
+              FlirtFilter.exclude => Icons.heart_broken_rounded,
+            },
+            onSelected: notifier.setFlirtFilter,
           ),
           const SizedBox(height: AppSpacing.lg),
 
@@ -447,8 +408,8 @@ class _FilterSheet extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(l.filterNewOnly,
-                        style:
-                            tt.labelLarge?.copyWith(fontWeight: FontWeight.w600)),
+                        style: tt.labelLarge
+                            ?.copyWith(fontWeight: FontWeight.w600)),
                     Text(l.filterNewOnlySubtitle,
                         style: tt.bodySmall
                             ?.copyWith(color: cs.onSurfaceVariant)),
@@ -460,31 +421,6 @@ class _FilterSheet extends ConsumerWidget {
                 onChanged: notifier.setShowOnlyNotDone,
               ),
             ],
-          ),
-          const SizedBox(height: AppSpacing.lg),
-
-          // ── Sort by ───────────────────────────────────────────────────────
-          Text(l.filterSortBy,
-              style: tt.labelLarge?.copyWith(fontWeight: FontWeight.w600)),
-          const SizedBox(height: AppSpacing.sm),
-          SegmentedButton<SortMode>(
-            showSelectedIcon: false,
-            style: SegmentedButton.styleFrom(
-                textStyle: const TextStyle(fontSize: 13)),
-            segments: [
-              ButtonSegment(
-                value: SortMode.frequency,
-                label: Text(l.filterSortPopular),
-                icon: const Icon(Icons.trending_up_rounded, size: 16),
-              ),
-              ButtonSegment(
-                value: SortMode.difficulty,
-                label: Text(l.filterSortEasiest),
-                icon: const Icon(Icons.signal_cellular_alt_rounded, size: 16),
-              ),
-            ],
-            selected: {filters.sortBy},
-            onSelectionChanged: (s) => notifier.setSortBy(s.first),
           ),
           const SizedBox(height: AppSpacing.xl),
 
@@ -499,56 +435,101 @@ class _FilterSheet extends ConsumerWidget {
   }
 }
 
-// ─── Challenge list ───────────────────────────────────────────────────────────
+// ─── Animated chip row ────────────────────────────────────────────────────────
 
-class _ChallengeList extends ConsumerWidget {
-  final ChallengeTypeFilter type;
-  final Set<String> completedIds;
-  final void Function(BuildContext, Challenge) onStart;
+class _AnimatedChipRow<T> extends StatelessWidget {
+  final List<T> items;
+  final T selected;
+  final String Function(T) label;
+  final IconData? Function(T) icon;
+  final ValueChanged<T> onSelected;
 
-  const _ChallengeList({
-    required this.type,
-    required this.completedIds,
-    required this.onStart,
+  const _AnimatedChipRow({
+    required this.items,
+    required this.selected,
+    required this.label,
+    required this.icon,
+    required this.onSelected,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final allChallenges = ref.watch(czlFilteredChallengesProvider);
-    final filters = ref.watch(challengeFiltersProvider);
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
 
-    return allChallenges.when(
+    return Wrap(
+      spacing: AppSpacing.xs,
+      runSpacing: AppSpacing.xs,
+      children: items.map((item) {
+        final isSelected = item == selected;
+        final chipIcon = icon(item);
+        return GestureDetector(
+          onTap: () => onSelected(item),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            curve: Curves.easeInOut,
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+            decoration: BoxDecoration(
+              color: isSelected ? cs.primary : cs.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
+              border: isSelected
+                  ? null
+                  : Border.all(color: cs.outlineVariant, width: 1),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (chipIcon != null) ...[
+                  Icon(
+                    chipIcon,
+                    size: 14,
+                    color: isSelected ? cs.onPrimary : cs.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 4),
+                ],
+                Text(
+                  label(item),
+                  style: tt.labelMedium?.copyWith(
+                    color: isSelected ? cs.onPrimary : cs.onSurfaceVariant,
+                    fontWeight:
+                        isSelected ? FontWeight.w600 : FontWeight.normal,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+
+// ─── Challenge list ───────────────────────────────────────────────────────────
+
+class _ChallengeList extends ConsumerWidget {
+  final void Function(BuildContext, Challenge) onStart;
+
+  const _ChallengeList({required this.onStart});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final filteredAsync = ref.watch(filteredChallengesProvider);
+    final filters = ref.watch(challengeFiltersProvider);
+    final completedIds =
+        ref.watch(completedChallengeIdsProvider).valueOrNull ?? {};
+
+    return filteredAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (e, _) => Center(child: Text('Error: $e')),
       data: (list) {
-        var filtered = list.where((c) {
-          // Type
-          final matchesType = (type == ChallengeTypeFilter.both) ||
-              (type == ChallengeTypeFilter.solo && c.type != 'group') ||
-              (type == ChallengeTypeFilter.group && c.type == 'group');
-          // Flirt
-          final matchesFlirt = switch (filters.flirtFilter) {
-            FlirtFilter.showOnly => c.flirt,
-            FlirtFilter.exclude => !c.flirt,
-            FlirtFilter.all => true,
-          };
-          // Not-done
-          final matchesNotDone =
-              !filters.showOnlyNotDone || !completedIds.contains(c.id);
-          return matchesType && matchesFlirt && matchesNotDone;
-        }).toList();
+        // Apply showOnlyNotDone here since we need completedIds
+        final filtered = filters.showOnlyNotDone
+            ? list.where((c) => !completedIds.contains(c.id)).toList()
+            : list;
 
-        // Sort
-        switch (filters.sortBy) {
-          case SortMode.frequency:
-            filtered.sort((a, b) => b.frequency.compareTo(a.frequency));
-          case SortMode.difficulty:
-            filtered.sort((a, b) => a.xp.compareTo(b.xp));
-        }
+        if (filtered.isEmpty) return _EmptyState();
 
-        if (filtered.isEmpty) {
-          return _EmptyState();
-        }
         return ListView.separated(
           padding: const EdgeInsets.only(
             left: AppSpacing.md,
@@ -695,12 +676,8 @@ class _ChallengeListItem extends StatelessWidget {
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 _MetaChip(
-                  icon: challenge.type == 'group'
-                      ? Icons.group_outlined
-                      : Icons.person_outlined,
-                  label: challenge.type == 'group'
-                      ? S.of(context).group
-                      : S.of(context).solo,
+                  icon: _typeIcon(challenge.type),
+                  label: _typeLabel(context, challenge.type),
                 ),
                 const Spacer(),
                 SyntraButton.small(
@@ -716,6 +693,23 @@ class _ChallengeListItem extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  IconData _typeIcon(String type) => switch (type) {
+        'group' => Icons.group_outlined,
+        'coop' => Icons.people_alt_outlined,
+        'dare' => Icons.bolt_outlined,
+        _ => Icons.person_outlined,
+      };
+
+  String _typeLabel(BuildContext context, String type) {
+    final l = S.of(context);
+    return switch (type) {
+      'group' => l.group,
+      'coop' => l.coop,
+      'dare' => l.dare,
+      _ => l.solo,
+    };
   }
 
   String _formatTime(int seconds) {
@@ -759,4 +753,3 @@ class _MetaChip extends StatelessWidget {
     );
   }
 }
-

@@ -7,10 +7,9 @@ class Challenge {
   final int level; // 1–N explicit difficulty level from the catalog
   final int xp;
   final int time; // seconds
-  final String type; // 'solo' | 'group' | 'both'
+  final String type; // 'solo' | 'group' | 'coop' | 'dare'
   final bool flirt;
-  final double frequency; // 0.0–1.0
-  final String environment; // 'street' | 'public_transport' | 'home' | 'work' | 'all'
+  final String environment; // 'all' | 'street' | 'transit' | 'cafe' | 'event'
 
   const Challenge({
     required this.id,
@@ -19,9 +18,8 @@ class Challenge {
     this.hints = const [],
     this.level = 1,
     required this.xp,
-    this.type = 'both',
+    this.type = 'solo',
     this.flirt = false,
-    this.frequency = 1.0,
     this.environment = 'all',
     this.time = 60,
   });

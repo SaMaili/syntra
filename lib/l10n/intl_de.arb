@@ -435,8 +435,12 @@
   "somePermissionsMissing": "Einige Berechtigungen fehlen noch. Bitte aktiviere sie manuell.",
   "flirtTagExplanation": "💘 Flirt-Challenges konzentrieren sich auf spielerische, soziale Interaktionen, um romantisches Selbstvertrauen aufzubauen.",
 
+  "coop": "Coop",
+  "dare": "Dare",
   "filterTitle": "Filter",
   "filterReset": "Zurücksetzen",
+  "filterTypeLabel": "Challenge-Typ",
+  "filterEnvLabel": "Ort",
   "filterFlirtLabel": "Flirt-Challenges",
   "filterFlirtOnly": "Nur Flirt",
   "filterFlirtExclude": "Kein Flirt",

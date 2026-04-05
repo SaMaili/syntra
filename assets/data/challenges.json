@@ -5,7 +5,6 @@
     "xp": 100,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -15,7 +14,6 @@
     "xp": 50,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -25,7 +23,6 @@
     "xp": 100,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -35,7 +32,6 @@
     "xp": 80,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -45,7 +41,6 @@
     "xp": 120,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -55,7 +50,6 @@
     "xp": 150,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 2
   },
@@ -65,7 +59,6 @@
     "xp": 80,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -75,7 +68,6 @@
     "xp": 200,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -85,7 +77,6 @@
     "xp": 250,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -95,7 +86,6 @@
     "xp": 100,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -105,7 +95,6 @@
     "xp": 300,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -115,7 +104,6 @@
     "xp": 150,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 2
   },
@@ -125,7 +113,6 @@
     "xp": 120,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -135,7 +122,6 @@
     "xp": 80,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -145,7 +131,6 @@
     "xp": 400,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 4
   },
@@ -155,7 +140,6 @@
     "xp": 200,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -165,7 +149,6 @@
     "xp": 850,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 5
   },
@@ -175,7 +158,6 @@
     "xp": 500,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 4
   },
@@ -185,7 +167,6 @@
     "xp": 700,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 5
   },
@@ -195,7 +176,6 @@
     "xp": 650,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 5
   },
@@ -205,7 +185,6 @@
     "xp": 550,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 4
   },
@@ -215,7 +194,6 @@
     "xp": 500,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 4
   },
@@ -225,7 +203,6 @@
     "xp": 750,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 5
   },
@@ -235,7 +212,6 @@
     "xp": 600,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 4
   },
@@ -245,7 +221,6 @@
     "xp": 500,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 4
   },
@@ -255,7 +230,6 @@
     "xp": 850,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 5
   },
@@ -265,7 +239,6 @@
     "xp": 700,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 5
   },
@@ -275,7 +248,6 @@
     "xp": 600,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 4
   },
@@ -285,7 +257,6 @@
     "xp": 550,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 4
   },
@@ -295,7 +266,6 @@
     "xp": 700,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 5
   },
@@ -305,7 +275,6 @@
     "xp": 750,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 5
   },
@@ -315,7 +284,6 @@
     "xp": 500,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 4
   },
@@ -325,7 +293,6 @@
     "xp": 950,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 5
   },
@@ -335,7 +302,6 @@
     "xp": 800,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 5
   },
@@ -345,7 +311,6 @@
     "xp": 150,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 2
   },
@@ -355,7 +320,6 @@
     "xp": 350,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 4
   },
@@ -365,7 +329,6 @@
     "xp": 320,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 4
   },
@@ -375,7 +338,6 @@
     "xp": 250,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -385,7 +347,6 @@
     "xp": 300,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -395,7 +356,6 @@
     "xp": 400,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 4
   },
@@ -405,7 +365,6 @@
     "xp": 600,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 4
   },
@@ -415,7 +374,6 @@
     "xp": 300,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -425,7 +383,6 @@
     "xp": 700,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 5
   },
@@ -435,7 +392,6 @@
     "xp": 900,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 5
   },
@@ -445,7 +401,6 @@
     "xp": 800,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 5
   },
@@ -455,7 +410,6 @@
     "xp": 1000,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 5
   },
@@ -465,7 +419,6 @@
     "xp": 600,
     "type": "either",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 4
   },
@@ -475,7 +428,6 @@
     "xp": 500,
     "type": "either",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 4
   },
@@ -485,7 +437,6 @@
     "xp": 600,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 4
   },
@@ -495,7 +446,6 @@
     "xp": 500,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 4
   },
@@ -505,7 +455,6 @@
     "xp": 650,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 5
   },
@@ -515,7 +464,6 @@
     "xp": 850,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 5
   },
@@ -525,7 +473,6 @@
     "xp": 700,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 5
   },
@@ -535,7 +482,6 @@
     "xp": 900,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 5
   },
@@ -545,7 +491,6 @@
     "xp": 750,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 5
   },
@@ -555,7 +500,6 @@
     "xp": 1000,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 5
   },
@@ -565,7 +509,6 @@
     "xp": 600,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 4
   },
@@ -575,7 +518,6 @@
     "xp": 700,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 5
   },
@@ -585,7 +527,6 @@
     "xp": 800,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 5
   },
@@ -595,7 +536,6 @@
     "xp": 300,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -605,7 +545,6 @@
     "xp": 250,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -615,7 +554,6 @@
     "xp": 200,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -625,7 +563,6 @@
     "xp": 350,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 4
   },
@@ -635,7 +572,6 @@
     "xp": 200,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -645,7 +581,6 @@
     "xp": 300,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -655,7 +590,6 @@
     "xp": 250,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -665,7 +599,6 @@
     "xp": 400,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 4
   },
@@ -675,7 +608,6 @@
     "xp": 350,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 4
   },
@@ -685,7 +617,6 @@
     "xp": 300,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -695,7 +626,6 @@
     "xp": 400,
     "type": "group",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 4
   },
@@ -705,7 +635,6 @@
     "xp": 250,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -715,7 +644,6 @@
     "xp": 1000,
     "type": "group",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 5
   },
@@ -725,7 +653,6 @@
     "xp": 150,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 2
   },
@@ -735,7 +662,6 @@
     "xp": 180,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -745,7 +671,6 @@
     "xp": 200,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -755,7 +680,6 @@
     "xp": 170,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -765,7 +689,6 @@
     "xp": 140,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -775,7 +698,6 @@
     "xp": 130,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -785,7 +707,6 @@
     "xp": 150,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 2
   },
@@ -795,7 +716,6 @@
     "xp": 160,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -805,7 +725,6 @@
     "xp": 140,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -815,7 +734,6 @@
     "xp": 130,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -825,7 +743,6 @@
     "xp": 160,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -835,7 +752,6 @@
     "xp": 150,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 2
   },
@@ -845,7 +761,6 @@
     "xp": 140,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -855,7 +770,6 @@
     "xp": 170,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -865,7 +779,6 @@
     "xp": 130,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -875,7 +788,6 @@
     "xp": 140,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -885,7 +797,6 @@
     "xp": 180,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -895,7 +806,6 @@
     "xp": 140,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -905,7 +815,6 @@
     "xp": 150,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 2
   },
@@ -915,7 +824,6 @@
     "xp": 130,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -925,7 +833,6 @@
     "xp": 150,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 2
   },
@@ -935,7 +842,6 @@
     "xp": 130,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -945,7 +851,6 @@
     "xp": 150,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 2
   },
@@ -955,7 +860,6 @@
     "xp": 160,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -965,7 +869,6 @@
     "xp": 150,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 2
   },
@@ -975,7 +878,6 @@
     "xp": 170,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -985,7 +887,6 @@
     "xp": 140,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -995,7 +896,6 @@
     "xp": 160,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -1005,7 +905,6 @@
     "xp": 160,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -1015,7 +914,6 @@
     "xp": 150,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 2
   },
@@ -1025,7 +923,6 @@
     "xp": 150,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 2
   },
@@ -1035,7 +932,6 @@
     "xp": 140,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -1045,7 +941,6 @@
     "xp": 130,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -1055,7 +950,6 @@
     "xp": 150,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 2
   },
@@ -1065,7 +959,6 @@
     "xp": 140,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -1075,7 +968,6 @@
     "xp": 130,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -1085,7 +977,6 @@
     "xp": 150,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 2
   },
@@ -1095,7 +986,6 @@
     "xp": 140,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -1105,7 +995,6 @@
     "xp": 150,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 2
   },
@@ -1115,7 +1004,6 @@
     "xp": 160,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -1125,7 +1013,6 @@
     "xp": 140,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -1135,7 +1022,6 @@
     "xp": 170,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -1145,7 +1031,6 @@
     "xp": 130,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -1155,7 +1040,6 @@
     "xp": 140,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -1165,7 +1049,6 @@
     "xp": 150,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 2
   },
@@ -1175,7 +1058,6 @@
     "xp": 140,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -1185,7 +1067,6 @@
     "xp": 160,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -1195,7 +1076,6 @@
     "xp": 160,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -1205,7 +1085,6 @@
     "xp": 130,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -1215,7 +1094,6 @@
     "xp": 150,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 2
   },
@@ -1225,7 +1103,6 @@
     "xp": 140,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -1235,7 +1112,6 @@
     "xp": 130,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   },
@@ -1245,7 +1121,6 @@
     "xp": 150,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 2
   },
@@ -1255,7 +1130,6 @@
     "xp": 160,
     "type": "solo",
     "flirt": true,
-    "frequency": 1.0,
     "environment": "all",
     "level": 3
   },
@@ -1265,7 +1139,6 @@
     "xp": 130,
     "type": "solo",
     "flirt": false,
-    "frequency": 1.0,
     "environment": "all",
     "level": 1
   }

@@ -10,7 +10,6 @@ Challenge _make(String id, {int xp = 50}) => Challenge(
       time: 60,
       type: 'solo',
       flirt: false,
-      frequency: 1,
       environment: 'street',
     );
 

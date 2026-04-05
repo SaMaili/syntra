@@ -14,15 +14,15 @@ void main() {
         typeFilter: ChallengeTypeFilter.group,
         flirtFilter: FlirtFilter.showOnly,
       );
-      final updated = original.copyWith(typeFilter: ChallengeTypeFilter.both);
-      expect(updated.typeFilter, ChallengeTypeFilter.both);
+      final updated = original.copyWith(typeFilter: ChallengeTypeFilter.all);
+      expect(updated.typeFilter, ChallengeTypeFilter.all);
       expect(updated.flirtFilter, FlirtFilter.showOnly);
     });
 
     test('copyWith flirtFilter changes only that field', () {
-      const original = ChallengeFilters(typeFilter: ChallengeTypeFilter.both);
+      const original = ChallengeFilters(typeFilter: ChallengeTypeFilter.all);
       final updated = original.copyWith(flirtFilter: FlirtFilter.showOnly);
-      expect(updated.typeFilter, ChallengeTypeFilter.both);
+      expect(updated.typeFilter, ChallengeTypeFilter.all);
       expect(updated.flirtFilter, FlirtFilter.showOnly);
     });
   });

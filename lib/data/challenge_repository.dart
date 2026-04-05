@@ -54,9 +54,8 @@ class ChallengeRepository {
         level: (meta['level'] as num?)?.toInt() ?? 1,
         xp: (meta['xp'] as num).toInt(),
         time: (meta['timer'] as num).toInt(),
-        type: (meta['type'] as String?) ?? 'both',
+        type: (meta['type'] as String?) ?? 'solo',
         flirt: (meta['flirt'] as bool?) ?? false,
-        frequency: (meta['frequency'] as num?)?.toDouble() ?? 1.0,
         environment: (meta['environment'] as String?) ?? 'all',
       );
     }).toList();

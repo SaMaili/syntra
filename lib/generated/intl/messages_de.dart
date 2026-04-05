@@ -229,6 +229,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "congratulations": MessageLookupByLibrary.simpleMessage(
       "Glückwunsch! Du hast die Challenge abgeschlossen.",
     ),
+    "coop": MessageLookupByLibrary.simpleMessage("Coop"),
     "couldNotOpenLink": MessageLookupByLibrary.simpleMessage(
       "Link konnte nicht geöffnet werden",
     ),
@@ -242,6 +243,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "dailyRemindersSubtitle": MessageLookupByLibrary.simpleMessage(
       "Lass dich daran erinnern, Herausforderungen zu meistern",
     ),
+    "dare": MessageLookupByLibrary.simpleMessage("Dare"),
     "darkMode": MessageLookupByLibrary.simpleMessage("Dunkler Modus"),
     "darkModeSubtitle": MessageLookupByLibrary.simpleMessage(
       "In den dunklen Modus wechseln",
@@ -311,6 +313,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "feeling": MessageLookupByLibrary.simpleMessage("Gefühl"),
     "filterAll": MessageLookupByLibrary.simpleMessage("Alle"),
+    "filterEnvLabel": MessageLookupByLibrary.simpleMessage("Ort"),
     "filterFlirtExclude": MessageLookupByLibrary.simpleMessage("Kein Flirt"),
     "filterFlirtLabel": MessageLookupByLibrary.simpleMessage(
       "Flirt-Challenges",
@@ -329,6 +332,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "filterSortPopular": MessageLookupByLibrary.simpleMessage("Beliebt"),
     "filterTitle": MessageLookupByLibrary.simpleMessage("Filter"),
+    "filterTypeLabel": MessageLookupByLibrary.simpleMessage("Challenge-Typ"),
     "firstChallengeDesc": MessageLookupByLibrary.simpleMessage(
       "Dauert etwa 2 Minuten. Oder heb sie für später auf.",
     ),

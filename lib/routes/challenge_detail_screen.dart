@@ -223,9 +223,11 @@ class _TagChips extends StatelessWidget {
     }
 
     String envLabel(String e) => switch (e) {
-          'home' => '🏠 Home',
-          'work' => '💼 Work',
-          _ => '🌍 Any',
+          'street' => '🚶 Street',
+          'transit' => '🚌 Transit',
+          'cafe' => '☕ Café',
+          'event' => '🎉 Event',
+          _ => '',
         };
 
     final chips = <({IconData? icon, String label, Color bg})>[
@@ -240,10 +242,18 @@ class _TagChips extends StatelessWidget {
         bg: cs.primaryContainer
       ),
       (
-        icon: challenge.type == 'group'
-            ? Icons.group_outlined
-            : Icons.person_outlined,
-        label: challenge.type == 'group' ? l.group : l.solo,
+        icon: switch (challenge.type) {
+          'group' => Icons.group_outlined,
+          'coop' => Icons.people_alt_outlined,
+          'dare' => Icons.bolt_outlined,
+          _ => Icons.person_outlined,
+        },
+        label: switch (challenge.type) {
+          'group' => l.group,
+          'coop' => l.coop,
+          'dare' => l.dare,
+          _ => l.solo,
+        },
         bg: cs.surfaceContainerHighest,
       ),
       if (challenge.environment != 'all' && challenge.environment.isNotEmpty)
