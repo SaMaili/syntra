@@ -377,7 +377,7 @@ class _MissionCardState extends State<_MissionCard> {
                   const SizedBox(width: AppSpacing.xs),
                   _MetaChip(
                     icon: Icons.emoji_events_outlined,
-                    label: '${c.xp} XP',
+                    label: '${c.xp} ${l.auraPoints}',
                   ),
                   const SizedBox(width: AppSpacing.xs),
                   _MetaChip(

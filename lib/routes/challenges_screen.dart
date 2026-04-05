@@ -40,7 +40,7 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
     if (list == null || list.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(S.of(context).noChalllengesFound),
+          content: Text(S.of(context).noChallengesFound),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -59,7 +59,7 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
     if (candidates.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(S.of(context).noChalllengesFound),
+          content: Text(S.of(context).noChallengesFound),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -165,7 +165,7 @@ class _Header extends ConsumerWidget {
                 Icon(Icons.emoji_events, size: 18, color: cs.onPrimaryContainer),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
-                  '$totalXp XP',
+                  '$totalXp ${S.of(context).auraPoints}',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: cs.onPrimaryContainer,
@@ -641,7 +641,7 @@ class _EmptyState extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            S.of(context).noChalllengesFound,
+            S.of(context).noChallengesFound,
             style: Theme.of(context).textTheme.titleMedium,
             textAlign: TextAlign.center,
           ),
@@ -755,7 +755,7 @@ class _ChallengeListItem extends StatelessWidget {
                       const SizedBox(width: AppSpacing.sm),
                       _MetaChip(
                         icon: Icons.emoji_events_outlined,
-                        label: '${challenge.xp} XP',
+                        label: '${challenge.xp} ${S.of(context).auraPoints}',
                       ),
                       const SizedBox(width: AppSpacing.sm),
                       _MetaChip(

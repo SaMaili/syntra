@@ -470,10 +470,10 @@ class S {
   }
 
   /// `No challenges found`
-  String get noChalllengesFound {
+  String get noChallengesFound {
     return Intl.message(
       'No challenges found',
-      name: 'noChalllengesFound',
+      name: 'noChallengesFound',
       desc: '',
       args: [],
     );
@@ -1799,10 +1799,10 @@ class S {
     return Intl.message('Tried', name: 'legendTried', desc: '', args: []);
   }
 
-  /// `XP Earned This Week`
+  /// `Aura Earned This Week`
   String get xpEarnedThisWeek {
     return Intl.message(
-      'XP Earned This Week',
+      'Aura Earned This Week',
       name: 'xpEarnedThisWeek',
       desc: '',
       args: [],
@@ -1834,9 +1834,9 @@ class S {
     return Intl.message('More', name: 'more', desc: '', args: []);
   }
 
-  /// `Total XP`
+  /// `Total Aura`
   String get totalXp {
-    return Intl.message('Total XP', name: 'totalXp', desc: '', args: []);
+    return Intl.message('Total Aura', name: 'totalXp', desc: '', args: []);
   }
 
   /// `Day Streak`

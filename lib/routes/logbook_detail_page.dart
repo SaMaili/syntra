@@ -342,7 +342,7 @@ class _HeroCard extends StatelessWidget {
                 Icon(Icons.star_rounded, color: statusColor, size: 18),
                 const SizedBox(width: 4),
                 Text(
-                  '${earned >= 0 ? '+' : ''}$earned XP',
+                  '${earned >= 0 ? '+' : ''}$earned ${S.of(context).auraPoints}',
                   style: tt.titleMedium?.copyWith(
                     color: statusColor,
                     fontWeight: FontWeight.bold,

@@ -803,7 +803,7 @@ class _Page7FirstChallenge extends StatelessWidget {
                             borderRadius:
                                 BorderRadius.circular(AppSpacing.chipRadius),
                           ),
-                          child: Text('+${challenge!.xp} XP',
+                          child: Text('+${challenge!.xp} ${S.of(context).auraPoints}',
                               style: tt.labelSmall?.copyWith(
                                   color: cs.onPrimaryContainer,
                                   fontWeight: FontWeight.bold)),
