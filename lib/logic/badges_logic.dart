@@ -48,16 +48,16 @@ class BadgesLogic {
       condition: _fiftyChallenges,
     ),
     AppBadge(
-      id: 'three_day_streak',
+      id: 'three_week_streak',
       icon: Icons.local_fire_department_rounded,
       color: Color(0xFFE65100),
-      condition: _threeDayStreak,
+      condition: _threeWeekStreak,
     ),
     AppBadge(
-      id: 'seven_day_streak',
+      id: 'seven_week_streak',
       icon: Icons.whatshot_rounded,
       color: Color(0xFFC62828),
-      condition: _sevenDayStreak,
+      condition: _sevenWeekStreak,
     ),
     AppBadge(
       id: 'century_xp',
@@ -99,10 +99,10 @@ class BadgesLogic {
   static bool _fiftyChallenges(Map<String, int> s, int _) =>
       (s['completedAllTime'] ?? 0) >= 50;
 
-  static bool _threeDayStreak(Map<String, int> s, int best) =>
+  static bool _threeWeekStreak(Map<String, int> s, int best) =>
       best >= 3;
 
-  static bool _sevenDayStreak(Map<String, int> s, int best) =>
+  static bool _sevenWeekStreak(Map<String, int> s, int best) =>
       best >= 7;
 
   static bool _centuryXp(Map<String, int> s, int _) =>

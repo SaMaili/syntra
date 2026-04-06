@@ -1,6 +1,8 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../logic/weekly_streak_logic.dart';
+
 /// All reads and writes to the logbook SQLite table go through this class.
 /// The challenge catalog tables are no longer read here — they live in JSON.
 class LogbookRepository {
@@ -182,42 +184,70 @@ class LogbookRepository {
     ''', [today, today]);
 
     final row = rows.first;
-    final streak = await _currentStreak();
     final totalSeconds = (row['totalSeconds'] as int?) ?? 0;
+    final now = DateTime.now();
+    final xpByWeek = await weeklyXpByWeek(weeks: 52);
+    final weekStreak = WeeklyStreakLogic.countStreak(xpByWeek, now);
+    // pendingWeekStreak: streak from last week — shown in grey when the current
+    // week hasn't reached the threshold yet (grace period motivational cue).
+    // Resets to 0 only when two or more consecutive weeks were missed.
+    final pendingWeekStreak =
+        weekStreak == 0 ? WeeklyStreakLogic.countPendingStreak(xpByWeek, now) : 0;
 
     return {
       'totalXp': (row['totalXp'] as int?) ?? 0,
       'todayXp': (row['todayXp'] as int?) ?? 0,
       'completedAllTime': (row['completedAllTime'] as int?) ?? 0,
       'completedToday': (row['completedToday'] as int?) ?? 0,
-      'streak': streak,
+      'weekStreak': weekStreak,
+      'pendingWeekStreak': pendingWeekStreak,
       'minutesBrave': totalSeconds ~/ 60,
     };
   }
 
-  Future<int> _currentStreak() async {
+  /// XP earned per ISO year-week (e.g. `"2026-W14"`) for the last [weeks] weeks.
+  /// Weeks with no entries are not included in the returned map.
+  Future<Map<String, int>> weeklyXpByWeek({int weeks = 52}) async {
     final db = await _database;
+    final now = DateTime.now();
+    final cutoff = DateTime(now.year, now.month, now.day - weeks * 7)
+        .toIso8601String()
+        .substring(0, 10);
+
     final rows = await db.rawQuery('''
-      SELECT DISTINCT date(timestamp) AS day
+      SELECT timestamp, COALESCE(SUM(earned), 0) AS xp
       FROM logbook
-      WHERE status = 'success'
-      ORDER BY date(timestamp) DESC
-      LIMIT 100
-    ''');
+      WHERE date(timestamp) >= ?
+      GROUP BY strftime('%Y-%W', timestamp)
+    ''', [cutoff]);
 
-    if (rows.isEmpty) return 0;
-
-    final dates = rows
-        .map((r) => DateTime.parse(r['day'] as String))
-        .toList();
-
-    return countStreak(dates, DateTime.now());
+    final result = <String, int>{};
+    for (final r in rows) {
+      final ts = DateTime.parse(r['timestamp'] as String);
+      final key = WeeklyStreakLogic.isoYearWeek(ts);
+      result[key] = (result[key] ?? 0) + (r['xp'] as int);
+    }
+    return result;
   }
 
-  /// Pure streak-counting logic, separated for testability.
+  /// Total XP earned in the current Mon–Sun week.
+  Future<int> currentWeekXp() async {
+    final db = await _database;
+    final now = DateTime.now();
+    final monday = WeeklyStreakLogic.startOfIsoWeek(now);
+    final mondayStr = monday.toIso8601String().substring(0, 10);
+
+    final rows = await db.rawQuery('''
+      SELECT COALESCE(SUM(earned), 0) AS xp
+      FROM logbook
+      WHERE date(timestamp) >= ?
+    ''', [mondayStr]);
+    return (rows.first['xp'] as int?) ?? 0;
+  }
+
+  /// Pure daily-streak-counting logic, kept for the existing test suite.
   /// [successDates] must be distinct dates (time part ignored).
   /// [today] is the reference date (typically DateTime.now()).
-  /// Uses calendar-day arithmetic to avoid DST edge cases.
   static int countStreak(List<DateTime> successDates, DateTime today) {
     if (successDates.isEmpty) return 0;
 
@@ -233,7 +263,6 @@ class LogbookRepository {
         streak++;
       } else {
         if (i == 0) {
-          // It's okay if today is missed, but yesterday must be present.
           continue;
         } else {
           break;

@@ -392,9 +392,10 @@ class _ComfortZoneLevelCard extends ConsumerWidget {
 
     final isMaxLevel = level >= ComfortZoneLogic.maxLevel;
     final levelName = ComfortZoneLogic.levelNames[level];
+    final needed = ComfortZoneLogic.completionsNeeded(level);
     final progress = isMaxLevel
         ? 1.0
-        : (completions / ComfortZoneLogic.completionsToUnlock).clamp(0.0, 1.0);
+        : (completions / needed).clamp(0.0, 1.0);
 
     final gradient = ComfortZoneLogic.levelGradient(level);
     final levelIcon = ComfortZoneLogic.levelIcons[level.clamp(1, ComfortZoneLogic.levelIcons.length - 1)];
@@ -454,7 +455,7 @@ class _ComfortZoneLevelCard extends ConsumerWidget {
                   Text(
                     S.of(context).completionsToLevel(
                         completions,
-                        ComfortZoneLogic.completionsToUnlock,
+                        needed,
                         level + 1),
                     style: tt.labelSmall?.copyWith(color: cs.onSurfaceVariant),
                   ),

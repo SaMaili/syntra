@@ -59,7 +59,12 @@ class _WeeklyGoalNotifier extends StateNotifier<int> {
 }
 final personalBestStreakProvider = FutureProvider<int>((ref) {
   ref.watch(statisticsRefreshProvider);
-  return SettingsRepository.instance.loadAllTimeMaxStreak();
+  return SettingsRepository.instance.loadBestWeeklyStreak();
+});
+
+final currentWeekXpProvider = FutureProvider<int>((ref) {
+  ref.watch(statisticsRefreshProvider);
+  return LogbookRepository.instance.currentWeekXp();
 });
 
 final moodHistoryProvider =

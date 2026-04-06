@@ -12,10 +12,17 @@ class ChallengesHeader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final stats = ref.watch(overviewStatsProvider);
     final totalXp = stats.whenOrNull(data: (s) => s['totalXp']) ?? 0;
-    final streak = stats.whenOrNull(data: (s) => s['streak']) ?? 0;
-    final completedToday = stats.whenOrNull(data: (s) => s['completedToday']) ?? 0;
-    final isStreakActiveToday = completedToday > 0;
+    final weekStreak = stats.whenOrNull(data: (s) => s['weekStreak']) ?? 0;
+    final pendingWeekStreak =
+        stats.whenOrNull(data: (s) => s['pendingWeekStreak']) ?? 0;
+    // Active (orange): current week already hit the threshold.
+    // Pending (grey with count): last week qualified but current week not yet —
+    //   one-week grace period, shows previous streak as motivational cue.
+    // Reset (grey 0): two or more consecutive weeks missed.
+    final isStreakActive = weekStreak > 0;
+    final displayStreak = weekStreak > 0 ? weekStreak : pendingWeekStreak;
     final cs = Theme.of(context).colorScheme;
+    final l = S.of(context);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(
@@ -24,18 +31,18 @@ class ChallengesHeader extends ConsumerWidget {
         children: [
           Expanded(
             child: Text(
-              S.of(context).navChallenge,
+              l.navChallenge,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
             ),
           ),
-          // Streak badge
+          // Weekly streak badge
           Container(
             padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.md, vertical: AppSpacing.sm),
             decoration: BoxDecoration(
-              color: streak > 0 && isStreakActiveToday
+              color: isStreakActive
                   ? cs.tertiary.withValues(alpha: 0.12)
                   : cs.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
@@ -46,16 +53,14 @@ class ChallengesHeader extends ConsumerWidget {
                 Icon(
                   Icons.local_fire_department_rounded,
                   size: 18,
-                  color: streak > 0 && isStreakActiveToday ? cs.tertiary : cs.outline,
+                  color: isStreakActive ? cs.tertiary : cs.outline,
                 ),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
-                  '$streak',
+                  '$displayStreak ${l.weeksShort}',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: streak > 0 && isStreakActiveToday
-                            ? cs.tertiary
-                            : cs.outline,
+                        color: isStreakActive ? cs.tertiary : cs.outline,
                       ),
                 ),
               ],

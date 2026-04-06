@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../challenge.dart';
 import '../data/logbook_repository.dart';
 import '../data/settings_repository.dart';
+import '../logic/weekly_streak_logic.dart';
 import '../generated/l10n.dart';
 import '../providers/settings_providers.dart';
 import '../providers/statistics_providers.dart' show refreshStatistics;
@@ -369,22 +370,35 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
     }
 
     if (!_isAborted && context.mounted) {
-      final stats = await LogbookRepository.instance.overviewStats();
-      final streak = stats['streak'] ?? 0;
+      // ── Weekly XP goal celebration ────────────────────────────────────
+      // Fire the flame animation as soon as the user reaches the weekly
+      // XP threshold — not at the week boundary. Uses an ISO year-week key
+      // so the celebration fires at most once per week.
+      final currentWeekXp =
+          await LogbookRepository.instance.currentWeekXp();
+      if (currentWeekXp >= kWeeklyXpThreshold) {
+        final currentWeek =
+            WeeklyStreakLogic.isoYearWeek(DateTime.now());
+        final lastGoalWeek =
+            await SettingsRepository.instance.loadLastGoalWeek();
 
-      final prevBest = await SettingsRepository.instance.loadAllTimeMaxStreak();
-      if (streak > prevBest) {
-        await SettingsRepository.instance.saveAllTimeMaxStreak(streak);
-      }
+        if (lastGoalWeek != currentWeek) {
+          await SettingsRepository.instance.saveLastGoalWeek(currentWeek);
 
-      final lastCelebrated =
-          await SettingsRepository.instance.loadLastCelebratedStreak();
+          // weekStreak already includes the current week (since threshold is met).
+          final stats = await LogbookRepository.instance.overviewStats();
+          final weekStreak = stats['weekStreak'] ?? 0;
 
-      if (streak > lastCelebrated) {
-        await SettingsRepository.instance.saveLastCelebratedStreak(streak);
-        final isMilestone = AppStatic.streakMilestones.contains(streak);
-        if (context.mounted) {
-          await context.goStreakCelebration(streak, isMilestone);
+          final prevBest =
+              await SettingsRepository.instance.loadBestWeeklyStreak();
+          if (weekStreak > prevBest) {
+            await SettingsRepository.instance.saveBestWeeklyStreak(weekStreak);
+          }
+
+          final isMilestone = AppStatic.streakMilestones.contains(weekStreak);
+          if (context.mounted) {
+            await context.goStreakCelebration(weekStreak, isMilestone);
+          }
         }
       }
     }

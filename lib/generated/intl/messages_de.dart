@@ -30,7 +30,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m3(done, needed, next) =>
       "${done} / ${needed} Abschlüsse bis Level ${next}";
 
-  static String m4(streak) => "Tag ${streak} — bleib dran.";
+  static String m4(streak) => "Woche ${streak} — bleib dran.";
 
   static String m5(level) => "Level ${level}";
 
@@ -58,9 +58,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m15(xp) => "${xp} Aura durch echtes Handeln verdient.";
 
-  static String m16(days) => "Du bist seit ${days} Tagen dabei. Weiter so.";
+  static String m16(days) => "Du bist seit ${days} Wochen dabei. Weiter so.";
 
-  static String m17(days) => "${days}-Tage-Serie!";
+  static String m17(days) => "${days}-Wochen-Serie!";
 
   static String m18(done, goal) => "${done} von ${goal} Challenges diese Woche";
 
@@ -123,12 +123,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "badgeFiveHundredXp": MessageLookupByLibrary.simpleMessage(
       "500-Aura-Legende",
     ),
-    "badgeSevenDayStreak": MessageLookupByLibrary.simpleMessage(
-      "7-Tage-Streak",
+    "badgeSevenWeekStreak": MessageLookupByLibrary.simpleMessage(
+      "7-Wochen-Streak",
     ),
     "badgeTenChallenges": MessageLookupByLibrary.simpleMessage("10 Challenges"),
-    "badgeThreeDayStreak": MessageLookupByLibrary.simpleMessage(
-      "3-Tage-Streak",
+    "badgeThreeWeekStreak": MessageLookupByLibrary.simpleMessage(
+      "3-Wochen-Streak",
     ),
     "badgesLocked": MessageLookupByLibrary.simpleMessage(
       "Weiter so, um mehr freizuschalten!",
@@ -759,22 +759,22 @@ class MessageLookup extends MessageLookupByLibrary {
     "storyXpSmall": m15,
     "streak": MessageLookupByLibrary.simpleMessage("Serie"),
     "streakMilestone100": MessageLookupByLibrary.simpleMessage(
-      "100 Tage. Du hast etwas Außergewöhnliches aufgebaut. Respekt.",
+      "100 Wochen. Du hast etwas Außergewöhnliches aufgebaut. Respekt.",
     ),
     "streakMilestone14": MessageLookupByLibrary.simpleMessage(
-      "Zwei Wochen durchgezogen. Du bist nicht mehr die gleiche Person wie vor 14 Tagen.",
+      "14 Wochen durchgezogen. Du bist nicht mehr die gleiche Person wie vor 14 Wochen.",
     ),
     "streakMilestone3": MessageLookupByLibrary.simpleMessage(
-      "Drei Tage am Stück. Du baust eine Gewohnheit auf.",
+      "3 Wochen am Stück. Du baust eine Gewohnheit auf.",
     ),
     "streakMilestone30": MessageLookupByLibrary.simpleMessage(
-      "30 Tage. Ein ganzer Monat dranbleiben. Das ist selten. Das ist stark.",
+      "30 Wochen. Über ein halbes Jahr. Das ist selten. Das ist stark.",
     ),
     "streakMilestone60": MessageLookupByLibrary.simpleMessage(
-      "60 Tage. Die meisten geben nach einer Woche auf. Du nicht.",
+      "60 Wochen. Die meisten geben nach zwei Monaten auf. Du nicht.",
     ),
     "streakMilestone7": MessageLookupByLibrary.simpleMessage(
-      "Eine ganze Woche! Deine Komfortzone ist gerade gewachsen.",
+      "7 Wochen! Fast zwei Monate drangeblieben. Deine Komfortzone ist gewachsen.",
     ),
     "streakMilestoneGeneric": m16,
     "streakMilestoneTitle": m17,
@@ -816,6 +816,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Sollen wir dich erinnern?",
     ),
     "wed": MessageLookupByLibrary.simpleMessage("Mi"),
+    "weekStreak": MessageLookupByLibrary.simpleMessage("Wochen-Streak"),
+    "weeklyAuraGoalReached": MessageLookupByLibrary.simpleMessage(
+      "Ziel erreicht! Diese Woche zählt.",
+    ),
+    "weeklyAuraGoalTitle": MessageLookupByLibrary.simpleMessage(
+      "Wöchentliches Aura-Ziel",
+    ),
     "weeklyChallenges": MessageLookupByLibrary.simpleMessage(
       "Wöchentliche Challenges",
     ),
@@ -827,6 +834,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "weeklyXpProgress": MessageLookupByLibrary.simpleMessage(
       "Wöchentliche Aura",
     ),
+    "weeksShort": MessageLookupByLibrary.simpleMessage("Wochen"),
     "wellDone": MessageLookupByLibrary.simpleMessage(
       "Gut gemacht! Mach weiter so!",
     ),

@@ -1844,6 +1844,36 @@ class S {
     return Intl.message('Day Streak', name: 'dayStreak', desc: '', args: []);
   }
 
+  /// `Week Streak`
+  String get weekStreak {
+    return Intl.message('Week Streak', name: 'weekStreak', desc: '', args: []);
+  }
+
+  /// `weeks`
+  String get weeksShort {
+    return Intl.message('weeks', name: 'weeksShort', desc: '', args: []);
+  }
+
+  /// `Weekly Aura Goal`
+  String get weeklyAuraGoalTitle {
+    return Intl.message(
+      'Weekly Aura Goal',
+      name: 'weeklyAuraGoalTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Goal reached! This week counts.`
+  String get weeklyAuraGoalReached {
+    return Intl.message(
+      'Goal reached! This week counts.',
+      name: 'weeklyAuraGoalReached',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Times Tried`
   String get timesTried {
     return Intl.message('Times Tried', name: 'timesTried', desc: '', args: []);
@@ -1929,10 +1959,10 @@ class S {
     );
   }
 
-  /// `Day {streak} — keep it going.`
+  /// `Week {streak} — keep it going.`
   String greetingStreak(int streak) {
     return Intl.message(
-      'Day $streak — keep it going.',
+      'Week $streak — keep it going.',
       name: 'greetingStreak',
       desc: '',
       args: [streak],
@@ -2189,80 +2219,80 @@ class S {
     return Intl.message('Do it later', name: 'doItLater', desc: '', args: []);
   }
 
-  /// `{days}-Day Streak!`
+  /// `{days}-Week Streak!`
   String streakMilestoneTitle(int days) {
     return Intl.message(
-      '$days-Day Streak!',
+      '$days-Week Streak!',
       name: 'streakMilestoneTitle',
       desc: '',
       args: [days],
     );
   }
 
-  /// `Three days in a row. You're building a habit.`
+  /// `3 weeks in a row. You're building a real habit.`
   String get streakMilestone3 {
     return Intl.message(
-      'Three days in a row. You\'re building a habit.',
+      '3 weeks in a row. You\'re building a real habit.',
       name: 'streakMilestone3',
       desc: '',
       args: [],
     );
   }
 
-  /// `A full week! Your comfort zone just got bigger.`
+  /// `7 weeks! Nearly two months of consistent effort. Your comfort zone has grown.`
   String get streakMilestone7 {
     return Intl.message(
-      'A full week! Your comfort zone just got bigger.',
+      '7 weeks! Nearly two months of consistent effort. Your comfort zone has grown.',
       name: 'streakMilestone7',
       desc: '',
       args: [],
     );
   }
 
-  /// `Two weeks straight. You're not the same person you were 14 days ago.`
+  /// `14 weeks straight. You're not the same person you were 14 weeks ago.`
   String get streakMilestone14 {
     return Intl.message(
-      'Two weeks straight. You\'re not the same person you were 14 days ago.',
+      '14 weeks straight. You\'re not the same person you were 14 weeks ago.',
       name: 'streakMilestone14',
       desc: '',
       args: [],
     );
   }
 
-  /// `30 days. A whole month of showing up. That's rare. That's powerful.`
+  /// `30 weeks. Over half a year of showing up. That's rare. That's powerful.`
   String get streakMilestone30 {
     return Intl.message(
-      '30 days. A whole month of showing up. That\'s rare. That\'s powerful.',
+      '30 weeks. Over half a year of showing up. That\'s rare. That\'s powerful.',
       name: 'streakMilestone30',
       desc: '',
       args: [],
     );
   }
 
-  /// `60 days. Most people quit after a week. You didn't.`
+  /// `60 weeks. Most people quit after a month. You didn't.`
   String get streakMilestone60 {
     return Intl.message(
-      '60 days. Most people quit after a week. You didn\'t.',
+      '60 weeks. Most people quit after a month. You didn\'t.',
       name: 'streakMilestone60',
       desc: '',
       args: [],
     );
   }
 
-  /// `100 days. You've built something extraordinary. Respect.`
+  /// `100 weeks. You've built something extraordinary. Respect.`
   String get streakMilestone100 {
     return Intl.message(
-      '100 days. You\'ve built something extraordinary. Respect.',
+      '100 weeks. You\'ve built something extraordinary. Respect.',
       name: 'streakMilestone100',
       desc: '',
       args: [],
     );
   }
 
-  /// `You've been showing up for {days} days. Keep going.`
+  /// `You've been showing up for {days} weeks. Keep going.`
   String streakMilestoneGeneric(int days) {
     return Intl.message(
-      'You\'ve been showing up for $days days. Keep going.',
+      'You\'ve been showing up for $days weeks. Keep going.',
       name: 'streakMilestoneGeneric',
       desc: '',
       args: [days],
@@ -3064,21 +3094,21 @@ class S {
     );
   }
 
-  /// `3-Day Streak`
-  String get badgeThreeDayStreak {
+  /// `3-Week Streak`
+  String get badgeThreeWeekStreak {
     return Intl.message(
-      '3-Day Streak',
-      name: 'badgeThreeDayStreak',
+      '3-Week Streak',
+      name: 'badgeThreeWeekStreak',
       desc: '',
       args: [],
     );
   }
 
-  /// `7-Day Streak`
-  String get badgeSevenDayStreak {
+  /// `7-Week Streak`
+  String get badgeSevenWeekStreak {
     return Intl.message(
-      '7-Day Streak',
-      name: 'badgeSevenDayStreak',
+      '7-Week Streak',
+      name: 'badgeSevenWeekStreak',
       desc: '',
       args: [],
     );
