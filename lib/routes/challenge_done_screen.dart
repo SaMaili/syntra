@@ -8,7 +8,6 @@ import '../challenge.dart';
 import '../data/logbook_repository.dart';
 import '../data/settings_repository.dart';
 import '../generated/l10n.dart';
-import '../logic/comfort_zone_logic.dart';
 import '../providers/settings_providers.dart';
 import '../providers/statistics_providers.dart' show refreshStatistics;
 import '../router.dart';
@@ -18,6 +17,8 @@ import '../static.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/syntra_button.dart';
 import '../widgets/syntra_progress_bar.dart';
+import 'challenge_done/level_up_dialog.dart';
+import 'challenge_done/survey_widget.dart';
 
 int socialProofCount(String challengeId) {
   var hash = 0;
@@ -59,7 +60,7 @@ class ChallengeDoneScreen extends ConsumerStatefulWidget {
 }
 
 class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
-  final _surveyKey = GlobalKey<_SurveyWidgetState>();
+  final _surveyKey = GlobalKey<SurveyWidgetState>();
 
   bool get _isAborted => widget.rewardFactor < 0;
   int get _earnedXp =>
@@ -101,8 +102,7 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title:
-            Text(_isAborted ? l.challengeAborted : l.challengeCompleted),
+        title: Text(_isAborted ? l.challengeAborted : l.challengeCompleted),
         automaticallyImplyLeading: false,
       ),
       body: Column(
@@ -178,7 +178,7 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
 
                   SizedBox(height: gapXl),
 
-                  // ── XP chip — number counts up from 0 on appear ────────
+                  // ── Aura chip — number counts up from 0 on appear ──────
                   TweenAnimationBuilder<int>(
                     tween: IntTween(begin: 0, end: _totalXp),
                     duration: const Duration(milliseconds: 900),
@@ -221,7 +221,7 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
                     ),
                   ),
 
-                  // ── XP progress bar ────────────────────────────────────
+                  // ── Aura progress bar ──────────────────────────────────
                   if (!_isAborted) ...[
                     SizedBox(height: gapMd),
                     SyntraXpBar(
@@ -274,7 +274,7 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
                   SizedBox(height: gapMd),
 
                   // ── Survey ─────────────────────────────────────────────
-                  _SurveyWidget(key: _surveyKey, isAborted: _isAborted),
+                  SurveyWidget(key: _surveyKey, isAborted: _isAborted),
                   SizedBox(height: gapMd),
                 ],
               ),
@@ -355,7 +355,7 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
       await showDialog<void>(
         context: context,
         barrierDismissible: false,
-        builder: (_) => _LevelUpDialog(newLevel: newLevel!),
+        builder: (_) => LevelUpDialog(newLevel: newLevel!),
       );
     }
 
@@ -363,7 +363,6 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
       final stats = await LogbookRepository.instance.overviewStats();
       final streak = stats['streak'] ?? 0;
 
-      // Update personal best.
       final prevBest = await SettingsRepository.instance.loadAllTimeMaxStreak();
       if (streak > prevBest) {
         await SettingsRepository.instance.saveAllTimeMaxStreak(streak);
@@ -386,7 +385,6 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
   }
 
   Future<void> _onTryAgain(BuildContext context) async {
-    // Log the abort entry before navigating away.
     final surveyState = _surveyKey.currentState;
     if (surveyState != null && !surveyState.submitted) surveyState.submit();
     final feeling = surveyState?.feeling;
@@ -414,183 +412,4 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
       isDailyMission: widget.isDailyMission,
     );
   }
-}
-
-// ─── Level-up dialog ──────────────────────────────────────────────────────────
-
-class _LevelUpDialog extends StatelessWidget {
-  final int newLevel;
-  const _LevelUpDialog({required this.newLevel});
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
-    final l = S.of(context);
-
-    final name = newLevel <= ComfortZoneLogic.maxLevel
-        ? ComfortZoneLogic.levelNames[newLevel]
-        : ComfortZoneLogic.levelNames[ComfortZoneLogic.maxLevel];
-    final desc = newLevel <= ComfortZoneLogic.maxLevel
-        ? ComfortZoneLogic.levelDescriptions[newLevel]
-        : ComfortZoneLogic.levelDescriptions[ComfortZoneLogic.maxLevel];
-
-    return Dialog(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.cardRadius * 2)),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: ComfortZoneLogic.levelGradient(newLevel),
-              ),
-              child: Icon(
-                ComfortZoneLogic.levelIcons[
-                    newLevel.clamp(1, ComfortZoneLogic.maxLevel)],
-                size: 40,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            Text(
-              l.levelUnlocked(newLevel),
-              style: tt.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              name,
-              style: tt.titleMedium
-                  ?.copyWith(color: cs.primary, fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              desc,
-              style: tt.bodyMedium
-                  ?.copyWith(color: cs.onSurfaceVariant, height: 1.5),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppSpacing.xl),
-            SyntraButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(l.letsGoButton),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ─── Survey widget ────────────────────────────────────────────────────────────
-
-class _SurveyWidget extends StatefulWidget {
-  final bool isAborted;
-  const _SurveyWidget({super.key, required this.isAborted});
-
-  @override
-  State<_SurveyWidget> createState() => _SurveyWidgetState();
-}
-
-class _SurveyWidgetState extends State<_SurveyWidget> {
-  int _feeling = 2;
-  int _perceived = 2;
-  bool _submitted = false;
-  final TextEditingController _notesController = TextEditingController();
-
-  // Semantic sentiment scale — intentionally not theme colors.
-  static const _smileys = [
-    Icons.sentiment_very_dissatisfied,
-    Icons.sentiment_dissatisfied,
-    Icons.sentiment_neutral,
-    Icons.sentiment_satisfied,
-    Icons.sentiment_very_satisfied,
-  ];
-  static const _smileyColors = [
-    Colors.red, Colors.orange, Colors.amber, Colors.lightGreen, Colors.green,
-  ];
-
-  @override
-  void dispose() {
-    _notesController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
-    final l = S.of(context);
-
-    if (_submitted) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: AppSpacing.lg),
-        child: Text(
-          l.thankYouFeedback,
-          style: tt.bodyLarge?.copyWith(color: cs.primary),
-        ),
-      );
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(l.howDidYouFeel,
-            style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
-        const SizedBox(height: AppSpacing.sm),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: List.generate(5, (i) => IconButton(
-            icon: Icon(
-              _smileys[i],
-              color: _feeling == i ? _smileyColors[i] : cs.outlineVariant,
-              size: 36,
-            ),
-            onPressed: () => setState(() => _feeling = i),
-          )),
-        ),
-        const SizedBox(height: AppSpacing.md),
-        Text(l.howPerceivedQuestion,
-            style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
-        const SizedBox(height: AppSpacing.sm),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: List.generate(5, (i) => IconButton(
-            icon: Icon(
-              _smileys[i],
-              color: _perceived == i ? _smileyColors[i] : cs.outlineVariant,
-              size: 36,
-            ),
-            onPressed: () => setState(() => _perceived = i),
-          )),
-        ),
-        const SizedBox(height: AppSpacing.md),
-        Text(l.notes,
-            style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
-        const SizedBox(height: AppSpacing.xs),
-        TextField(
-          controller: _notesController,
-          minLines: 2,
-          maxLines: 4,
-          decoration: InputDecoration(
-            hintText: widget.isAborted
-                ? l.failureNotesHint
-                : l.notesPlaceholder,
-          ),
-        ),
-      ],
-    );
-  }
-
-  bool get submitted => _submitted;
-  int get feeling => _feeling;
-  int get perceived => _perceived;
-  String get notes => _notesController.text;
-  void submit() => setState(() => _submitted = true);
 }

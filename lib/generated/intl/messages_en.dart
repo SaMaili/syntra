@@ -117,7 +117,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "50 Challenges",
     ),
     "badgeFirstStep": MessageLookupByLibrary.simpleMessage("First Step"),
-    "badgeFiveHundredXp": MessageLookupByLibrary.simpleMessage("500 Aura Legend"),
+    "badgeFiveHundredXp": MessageLookupByLibrary.simpleMessage(
+      "500 Aura Legend",
+    ),
     "badgeSevenDayStreak": MessageLookupByLibrary.simpleMessage("7-Day Streak"),
     "badgeTenChallenges": MessageLookupByLibrary.simpleMessage("10 Challenges"),
     "badgeThreeDayStreak": MessageLookupByLibrary.simpleMessage("3-Day Streak"),
@@ -772,7 +774,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "weeklyRecapTitle": MessageLookupByLibrary.simpleMessage("Weekly Recap"),
     "weeklyXpProgress": MessageLookupByLibrary.simpleMessage("Weekly Aura"),
     "wellDone": MessageLookupByLibrary.simpleMessage("Well done! Keep it up!"),
-    "xp": MessageLookupByLibrary.simpleMessage("Aura"),
+    "xp": MessageLookupByLibrary.simpleMessage("XP"),
     "xpEarnedThisWeek": MessageLookupByLibrary.simpleMessage(
       "Aura Earned This Week",
     ),

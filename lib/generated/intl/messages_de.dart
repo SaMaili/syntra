@@ -808,8 +808,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "wellDone": MessageLookupByLibrary.simpleMessage(
       "Gut gemacht! Mach weiter so!",
     ),
-    "xp": MessageLookupByLibrary.simpleMessage("Aura"),
-    "xpEarnedThisWeek": MessageLookupByLibrary.simpleMessage("Aura diese Woche"),
+    "xp": MessageLookupByLibrary.simpleMessage("XP"),
+    "xpEarnedThisWeek": MessageLookupByLibrary.simpleMessage(
+      "Aura diese Woche",
+    ),
     "yesChallengeStart": MessageLookupByLibrary.simpleMessage(
       "Ja, ich habe sie gemacht",
     ),

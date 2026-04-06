@@ -1744,20 +1744,20 @@ class S {
     );
   }
 
-  /// `{kilo}k XP earned — you are building something real.`
+  /// `{kilo}k Aura earned — you are building something real.`
   String storyXpKilo(String kilo) {
     return Intl.message(
-      '${kilo}k XP earned — you are building something real.',
+      '${kilo}k Aura earned — you are building something real.',
       name: 'storyXpKilo',
       desc: '',
       args: [kilo],
     );
   }
 
-  /// `{xp} XP earned through genuine action.`
+  /// `{xp} Aura earned through genuine action.`
   String storyXpSmall(int xp) {
     return Intl.message(
-      '$xp XP earned through genuine action.',
+      '$xp Aura earned through genuine action.',
       name: 'storyXpSmall',
       desc: '',
       args: [xp],
@@ -3084,20 +3084,20 @@ class S {
     );
   }
 
-  /// `100 XP Club`
+  /// `100 Aura Club`
   String get badgeCenturyXp {
     return Intl.message(
-      '100 XP Club',
+      '100 Aura Club',
       name: 'badgeCenturyXp',
       desc: '',
       args: [],
     );
   }
 
-  /// `500 XP Legend`
+  /// `500 Aura Legend`
   String get badgeFiveHundredXp {
     return Intl.message(
-      '500 XP Legend',
+      '500 Aura Legend',
       name: 'badgeFiveHundredXp',
       desc: '',
       args: [],
