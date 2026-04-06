@@ -18,7 +18,7 @@ class LogbookRepository {
     final path = join(dbPath, 'challenge_database.db');
     _db = await openDatabase(
       path,
-      version: 4,
+      version: 5,
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
           await db.execute(
@@ -68,6 +68,13 @@ class LogbookRepository {
           await db.execute('DROP TABLE logbook');
           await db.execute('ALTER TABLE logbook_new RENAME TO logbook');
         }
+        if (oldVersion < 5) {
+          try {
+            await db.execute(
+              'ALTER TABLE logbook ADD COLUMN pre_anxiety INTEGER',
+            );
+          } catch (_) {}
+        }
       },
     );
     return _db!;
@@ -84,6 +91,7 @@ class LogbookRepository {
     int? feeling,
     int? perception,
     int? durationSeconds,
+    int? preAnxiety,
   }) async {
     final db = await _database;
     return db.insert('logbook', {
@@ -95,6 +103,7 @@ class LogbookRepository {
       'feeling': feeling,
       'perception': perception,
       'duration_seconds': durationSeconds,
+      'pre_anxiety': preAnxiety,
     });
   }
 

@@ -90,6 +90,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "addCustomChallengeTitle": MessageLookupByLibrary.simpleMessage(
       "Challenge hinzufügen",
     ),
+    "afterLabel": MessageLookupByLibrary.simpleMessage("Nachher"),
     "afternoon": MessageLookupByLibrary.simpleMessage("Nachmittag"),
     "allPermissionsGranted": MessageLookupByLibrary.simpleMessage(
       "Alle Berechtigungen erfolgreich erteilt!",
@@ -136,6 +137,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "basicNotifications": MessageLookupByLibrary.simpleMessage(
       "Basis-Benachrichtigungen",
     ),
+    "beforeLabel": MessageLookupByLibrary.simpleMessage("Vorher"),
     "bestStreak": MessageLookupByLibrary.simpleMessage("Bester Streak"),
     "boldMove": MessageLookupByLibrary.simpleMessage("Mutiger Schritt"),
     "cancel": MessageLookupByLibrary.simpleMessage("Abbrechen"),
@@ -359,6 +361,15 @@ class MessageLookup extends MessageLookupByLibrary {
       "Für das beste Erlebnis",
     ),
     "fri": MessageLookupByLibrary.simpleMessage("Fr"),
+    "gapNegative": MessageLookupByLibrary.simpleMessage(
+      "Es war schwieriger als erwartet — das ist okay.",
+    ),
+    "gapNeutral": MessageLookupByLibrary.simpleMessage(
+      "Deine Erwartung hat gestimmt.",
+    ),
+    "gapPositive": MessageLookupByLibrary.simpleMessage(
+      "Du hast dich besser gefühlt als erwartet.",
+    ),
     "getNewMotivation": MessageLookupByLibrary.simpleMessage(
       "Neue Motivation erhalten",
     ),
@@ -393,6 +404,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Wie hast du dich gefühlt?",
     ),
     "howDoYouFeel": MessageLookupByLibrary.simpleMessage("Wie fühlst du dich?"),
+    "howNervousQuestion": MessageLookupByLibrary.simpleMessage(
+      "Wie nervös bist du gerade?",
+    ),
     "howPerceivedByOthers": MessageLookupByLibrary.simpleMessage(
       "Wie wurdest du wahrgenommen?",
     ),
@@ -512,6 +526,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "noNotesYet": MessageLookupByLibrary.simpleMessage(
       "Du hast noch keine Notizen für diese Challenge.",
     ),
+    "notNervousAtAll": MessageLookupByLibrary.simpleMessage("Gar nicht"),
     "notNow": MessageLookupByLibrary.simpleMessage("Nicht jetzt"),
     "notSureWhatToSay": MessageLookupByLibrary.simpleMessage(
       "Nicht sicher was du sagen sollst?",
@@ -610,6 +625,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "perception": MessageLookupByLibrary.simpleMessage("Wahrnehmung"),
     "positive": MessageLookupByLibrary.simpleMessage("Positiv"),
+    "predictionRealityGapTitle": MessageLookupByLibrary.simpleMessage(
+      "Nervosität vorher vs. Gefühl nachher",
+    ),
+    "predictionRealityInsight": MessageLookupByLibrary.simpleMessage(
+      "Du warst vorher nervös. Wie fühlst du dich jetzt?",
+    ),
     "preferAnotherChallenge": MessageLookupByLibrary.simpleMessage(
       "Ich hätte lieber eine andere Challenge",
     ),
@@ -789,6 +810,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "veryBad": MessageLookupByLibrary.simpleMessage("Sehr schlecht"),
     "veryGood": MessageLookupByLibrary.simpleMessage("Sehr gut"),
     "veryNegative": MessageLookupByLibrary.simpleMessage("Sehr negativ"),
+    "veryNervous": MessageLookupByLibrary.simpleMessage("Sehr nervös"),
     "veryPositive": MessageLookupByLibrary.simpleMessage("Sehr positiv"),
     "wantReminders": MessageLookupByLibrary.simpleMessage(
       "Sollen wir dich erinnern?",

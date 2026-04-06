@@ -3163,6 +3163,96 @@ class S {
       args: [n],
     );
   }
+
+  /// `How nervous are you right now?`
+  String get howNervousQuestion {
+    return Intl.message(
+      'How nervous are you right now?',
+      name: 'howNervousQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You were nervous before. How do you feel now?`
+  String get predictionRealityInsight {
+    return Intl.message(
+      'You were nervous before. How do you feel now?',
+      name: 'predictionRealityInsight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not at all`
+  String get notNervousAtAll {
+    return Intl.message(
+      'Not at all',
+      name: 'notNervousAtAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Very nervous`
+  String get veryNervous {
+    return Intl.message(
+      'Very nervous',
+      name: 'veryNervous',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nervousness before vs. feeling after`
+  String get predictionRealityGapTitle {
+    return Intl.message(
+      'Nervousness before vs. feeling after',
+      name: 'predictionRealityGapTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Before`
+  String get beforeLabel {
+    return Intl.message('Before', name: 'beforeLabel', desc: '', args: []);
+  }
+
+  /// `After`
+  String get afterLabel {
+    return Intl.message('After', name: 'afterLabel', desc: '', args: []);
+  }
+
+  /// `You felt better than you expected.`
+  String get gapPositive {
+    return Intl.message(
+      'You felt better than you expected.',
+      name: 'gapPositive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your expectation was accurate.`
+  String get gapNeutral {
+    return Intl.message(
+      'Your expectation was accurate.',
+      name: 'gapNeutral',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `It was harder than expected — that's okay.`
+  String get gapNegative {
+    return Intl.message(
+      'It was harder than expected — that\'s okay.',
+      name: 'gapNegative',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

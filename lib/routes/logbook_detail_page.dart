@@ -195,6 +195,17 @@ class _LogbookDetailPageState extends ConsumerState<LogbookDetailPage>
                   emotionColor: _emotionColor,
                   emotionText: _emotionText,
                 ),
+                if (widget.entry['pre_anxiety'] != null &&
+                    widget.entry['feeling'] != null) ...[
+                  const SizedBox(height: AppSpacing.md),
+                  _PredictionRealityGapCard(
+                    preAnxiety: widget.entry['pre_anxiety'] as int,
+                    feeling: widget.entry['feeling'] as int,
+                    emotionIcon: _emotionIcon,
+                    emotionColor: _emotionColor,
+                    emotionText: _emotionText,
+                  ),
+                ],
                 if (widget.entry['notes'] != null &&
                     widget.entry['notes'].toString().isNotEmpty) ...[
                   const SizedBox(height: AppSpacing.md),
@@ -527,6 +538,145 @@ class _NotesCard extends StatelessWidget {
               child: Text(
                 notes,
                 style: tt.bodyMedium?.copyWith(height: 1.6),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Prediction-reality gap card ──────────────────────────────────────────────
+
+class _PredictionRealityGapCard extends StatelessWidget {
+  /// 1–5: 1 = gar nicht nervös, 5 = sehr nervös
+  final int preAnxiety;
+  /// 0–4: 0 = sehr schlecht, 4 = sehr gut
+  final int feeling;
+  final IconData Function(int?) emotionIcon;
+  final Color Function(int?) emotionColor;
+  final String Function(int?) emotionText;
+
+  const _PredictionRealityGapCard({
+    required this.preAnxiety,
+    required this.feeling,
+    required this.emotionIcon,
+    required this.emotionColor,
+    required this.emotionText,
+  });
+
+  // Convert pre_anxiety (1–5, nervousness) to the 0–4 feeling scale for comparison.
+  // pre_anxiety=1 (gar nicht) → feeling=4 (sehr gut), pre_anxiety=5 (sehr nervös) → feeling=0 (sehr schlecht)
+  int get _anxietyAsFeelingScale => (5 - preAnxiety).clamp(0, 4);
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
+    final l = S.of(context);
+
+    // Positive gap: felt better than feared. Negative: worse than feared.
+    final gap = feeling - _anxietyAsFeelingScale;
+    final String insight;
+    if (gap > 0) {
+      insight = l.gapPositive;
+    } else if (gap < 0) {
+      insight = l.gapNegative;
+    } else {
+      insight = l.gapNeutral;
+    }
+
+    final beforeColor = emotionColor(_anxietyAsFeelingScale);
+    final afterColor = emotionColor(feeling);
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.insights_rounded, size: 18, color: cs.primary),
+                const SizedBox(width: AppSpacing.xs),
+                Text(
+                  l.predictionRealityGapTitle,
+                  style: tt.titleSmall?.copyWith(
+                      fontWeight: FontWeight.bold, color: cs.primary),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // Before
+                Column(
+                  children: [
+                    Text(l.beforeLabel,
+                        style: tt.labelSmall
+                            ?.copyWith(color: cs.onSurfaceVariant)),
+                    const SizedBox(height: AppSpacing.xs),
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: beforeColor.withValues(alpha: 0.12),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                          emotionIcon(_anxietyAsFeelingScale),
+                          color: beforeColor,
+                          size: 26),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(emotionText(_anxietyAsFeelingScale),
+                        style: tt.labelSmall
+                            ?.copyWith(color: beforeColor, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+                Icon(Icons.arrow_forward_rounded,
+                    color: cs.outlineVariant, size: 20),
+                // After
+                Column(
+                  children: [
+                    Text(l.afterLabel,
+                        style: tt.labelSmall
+                            ?.copyWith(color: cs.onSurfaceVariant)),
+                    const SizedBox(height: AppSpacing.xs),
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: afterColor.withValues(alpha: 0.12),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(emotionIcon(feeling),
+                          color: afterColor, size: 26),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(emotionText(feeling),
+                        style: tt.labelSmall?.copyWith(
+                            color: afterColor, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+              decoration: BoxDecoration(
+                color: cs.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
+              ),
+              child: Text(
+                insight,
+                style: tt.bodySmall?.copyWith(
+                    color: cs.onSurfaceVariant, height: 1.4),
+                textAlign: TextAlign.center,
               ),
             ),
           ],
