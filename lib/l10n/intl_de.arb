@@ -480,5 +480,15 @@
   "weeklyRecapBody": "Diese Woche hast du {n} Challenges abgeschlossen. Weiter so!",
   "@weeklyRecapBody": {
     "placeholders": { "n": { "type": "int" } }
-  }
+  },
+  "howNervousQuestion": "Wie nervös bist du gerade?",
+  "predictionRealityInsight": "Du warst vorher nervös. Wie fühlst du dich jetzt?",
+  "notNervousAtAll": "Gar nicht",
+  "veryNervous": "Sehr nervös",
+  "predictionRealityGapTitle": "Nervosität vorher vs. Gefühl nachher",
+  "beforeLabel": "Vorher",
+  "afterLabel": "Nachher",
+  "gapPositive": "Du hast dich besser gefühlt als erwartet.",
+  "gapNeutral": "Deine Erwartung hat gestimmt.",
+  "gapNegative": "Es war schwieriger als erwartet — das ist okay."
 }

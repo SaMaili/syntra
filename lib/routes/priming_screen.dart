@@ -33,6 +33,8 @@ class _PrimingScreenState extends State<PrimingScreen>
   bool _isExiting = false;
   /// Duration override chosen by user; null = use challenge default.
   int? _selectedTime;
+  /// Pre-challenge anxiety level (1–5); null = user skipped.
+  int? _preAnxiety;
 
   /// Drives the circular arc from 1.0 → 0.0 continuously over the full
   /// countdown so the ring sweeps smoothly instead of jumping each second.
@@ -102,6 +104,7 @@ class _PrimingScreenState extends State<PrimingScreen>
       widget.challenge,
       isDailyMission: widget.isDailyMission,
       overrideTime: _selectedTime,
+      preAnxiety: _preAnxiety,
     );
     if (mounted) context.pop(result);
   }
@@ -145,6 +148,14 @@ class _PrimingScreenState extends State<PrimingScreen>
                       height: 1.6,
                     ),
                 textAlign: TextAlign.center,
+              ),
+
+              const SizedBox(height: AppSpacing.lg),
+
+              // ── Pre-challenge anxiety picker ──────────────────────────
+              _AnxietyPicker(
+                selected: _preAnxiety,
+                onChanged: (v) => setState(() => _preAnxiety = v),
               ),
 
               const SizedBox(height: AppSpacing.lg),
@@ -357,6 +368,74 @@ class _Chip extends StatelessWidget {
               ),
         ),
       ),
+    );
+  }
+}
+
+// ─── Anxiety picker ───────────────────────────────────────────────────────────
+
+class _AnxietyPicker extends StatelessWidget {
+  final int? selected;
+  final ValueChanged<int?> onChanged;
+
+  const _AnxietyPicker({required this.selected, required this.onChanged});
+
+  static const _icons = [
+    Icons.sentiment_very_satisfied,
+    Icons.sentiment_satisfied,
+    Icons.sentiment_neutral,
+    Icons.sentiment_dissatisfied,
+    Icons.sentiment_very_dissatisfied,
+  ];
+  static const _colors = [
+    Colors.green,
+    Colors.lightGreen,
+    Colors.amber,
+    Colors.orange,
+    Colors.red,
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
+    final l = S.of(context);
+
+    return Column(
+      children: [
+        Text(
+          l.howNervousQuestion,
+          style: tt.labelSmall?.copyWith(color: cs.onSurfaceVariant),
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: List.generate(5, (i) {
+            final value = i + 1; // 1–5
+            final isSelected = selected == value;
+            return IconButton(
+              icon: Icon(
+                _icons[i],
+                color: isSelected ? _colors[i] : cs.outlineVariant,
+                size: 36,
+              ),
+              onPressed: () => onChanged(isSelected ? null : value),
+            );
+          }),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(l.notNervousAtAll,
+                  style: tt.labelSmall?.copyWith(color: cs.outlineVariant)),
+              Text(l.veryNervous,
+                  style: tt.labelSmall?.copyWith(color: cs.outlineVariant)),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

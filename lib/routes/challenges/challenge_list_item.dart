@@ -3,7 +3,7 @@ import 'package:syntra/challenge.dart';
 
 import '../../generated/l10n.dart';
 import '../../routes/challenge_detail_screen.dart';
-import '../../routes/challenge_done_screen.dart' show socialProofCount;
+// TODO: re-enable when backend is available: import '../../routes/challenge_done_screen.dart' show socialProofCount;
 import '../../theme/app_spacing.dart';
 import '../../widgets/syntra_button.dart';
 
@@ -81,13 +81,14 @@ class ChallengeListItem extends StatelessWidget {
                         .bodyMedium
                         ?.copyWith(color: cs.onSurfaceVariant),
                   ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    '~${socialProofCount(challenge.id)} people in this community have tried this',
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: cs.onSurfaceVariant.withAlpha(160),
-                        ),
-                  ),
+                  // TODO: re-enable social proof once backend provides real participant counts
+                  // const SizedBox(height: AppSpacing.xs),
+                  // Text(
+                  //   '~${socialProofCount(challenge.id)} people in this community have tried this',
+                  //   style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  //         color: cs.onSurfaceVariant.withAlpha(160),
+                  //       ),
+                  // ),
                 ],
               ),
             ),
