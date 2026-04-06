@@ -33,6 +33,10 @@ class SettingsRepository {
   static const _keyLastCelebratedStreak = 'last_celebrated_streak';
   static const _keyWeeklyGoal = 'weekly_goal';
   static const _keyAllTimeMaxStreak = 'all_time_max_streak';
+  static const _keyBestWeeklyStreak = 'best_weekly_streak';
+  /// ISO year-week (e.g. "2026-W15") of the last week where the weekly XP
+  /// goal was reached and the flame celebration was shown.
+  static const _keyLastGoalWeek = 'last_goal_week';
 
   final SharedPreferences _prefs;
 
@@ -143,6 +147,20 @@ class SettingsRepository {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_keyAllTimeMaxStreak, streak);
   }
+
+  // ─── Best weekly streak ───────────────────────────────────────────────────
+
+  Future<int> loadBestWeeklyStreak() async =>
+      _prefs.getInt(_keyBestWeeklyStreak) ?? 0;
+
+  Future<void> saveBestWeeklyStreak(int streak) async =>
+      _prefs.setInt(_keyBestWeeklyStreak, streak);
+
+  Future<String?> loadLastGoalWeek() async =>
+      _prefs.getString(_keyLastGoalWeek);
+
+  Future<void> saveLastGoalWeek(String isoWeek) async =>
+      _prefs.setString(_keyLastGoalWeek, isoWeek);
 
   // ─── Weekly goal ─────────────────────────────────────────────────────────
 

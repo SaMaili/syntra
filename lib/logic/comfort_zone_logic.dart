@@ -6,14 +6,37 @@ import '../challenge.dart';
 /// Ten-level comfort zone progression system.
 ///
 /// Levels progress from micro-interactions (1) to elite social mastery (10).
-/// Each level unlocks after [completionsToUnlock] successful completions
-/// at the current level. Levels are stored as integers 1–[maxLevel].
+/// Each level unlocks after [completionsNeeded] successful completions.
+/// The threshold grows with each level so early progress feels fast and
+/// later mastery requires real commitment.
+/// Levels are stored as integers 1–[maxLevel].
 ///
 /// Challenge difficulty levels are assigned explicitly in the catalog JSON
 /// (the `level` field), not computed at runtime.
 class ComfortZoneLogic {
-  static const completionsToUnlock = 3;
   static const maxLevel = 10;
+
+  /// Completions required to advance from [level] to [level + 1].
+  /// Index matches the current level (index 0 unused).
+  static const List<int> _completionsPerLevel = [
+    0,   // index 0: unused
+    3,   // level 1 → 2
+    5,   // level 2 → 3
+    8,   // level 3 → 4
+    12,  // level 4 → 5
+    16,  // level 5 → 6
+    20,  // level 6 → 7
+    25,  // level 7 → 8
+    30,  // level 8 → 9
+    35,  // level 9 → 10
+  ];
+
+  /// Returns the number of successful completions needed to advance from
+  /// [level] to the next level. Clamped to valid range.
+  static int completionsNeeded(int level) {
+    final idx = level.clamp(1, _completionsPerLevel.length - 1);
+    return _completionsPerLevel[idx];
+  }
 
   static const levelNames = [
     '',                       // index 0 unused
@@ -107,7 +130,7 @@ class ComfortZoneLogic {
     final newCount = (prefs.getInt(key) ?? 0) + 1;
     await prefs.setInt(key, newCount);
 
-    if (newCount >= completionsToUnlock) {
+    if (newCount >= completionsNeeded(currentLevel)) {
       return currentLevel + 1;
     }
     return null;

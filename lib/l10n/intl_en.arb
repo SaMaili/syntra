@@ -276,6 +276,10 @@
   "more": "More",
   "totalXp": "Total Aura",
   "dayStreak": "Day Streak",
+  "weekStreak": "Week Streak",
+  "weeksShort": "weeks",
+  "weeklyAuraGoalTitle": "Weekly Aura Goal",
+  "weeklyAuraGoalReached": "Goal reached! This week counts.",
   "timesTried": "Times Tried",
   "minutesBrave": "Min. Brave",
   "bestStreak": "Best Streak",
@@ -293,7 +297,7 @@
   "sun": "S",
   "greetingLongTime": "Long time. No worries — your progress is still here.",
   "greetingFresh": "Welcome back. Ready to start fresh today?",
-  "greetingStreak": "Day {streak} — keep it going.",
+  "greetingStreak": "Week {streak} — keep it going.",
   "@greetingStreak": {
     "placeholders": { "streak": { "type": "int" } }
   },
@@ -328,19 +332,19 @@
   "startNow": "Start Now",
   "doItLater": "Do it later",
 
-  "streakMilestoneTitle": "{days}-Day Streak!",
+  "streakMilestoneTitle": "{days}-Week Streak!",
   "@streakMilestoneTitle": {
     "placeholders": {
       "days": {"type": "int"}
     }
   },
-  "streakMilestone3": "Three days in a row. You're building a habit.",
-  "streakMilestone7": "A full week! Your comfort zone just got bigger.",
-  "streakMilestone14": "Two weeks straight. You're not the same person you were 14 days ago.",
-  "streakMilestone30": "30 days. A whole month of showing up. That's rare. That's powerful.",
-  "streakMilestone60": "60 days. Most people quit after a week. You didn't.",
-  "streakMilestone100": "100 days. You've built something extraordinary. Respect.",
-  "streakMilestoneGeneric": "You've been showing up for {days} days. Keep going.",
+  "streakMilestone3": "3 weeks in a row. You're building a real habit.",
+  "streakMilestone7": "7 weeks! Nearly two months of consistent effort. Your comfort zone has grown.",
+  "streakMilestone14": "14 weeks straight. You're not the same person you were 14 weeks ago.",
+  "streakMilestone30": "30 weeks. Over half a year of showing up. That's rare. That's powerful.",
+  "streakMilestone60": "60 weeks. Most people quit after a month. You didn't.",
+  "streakMilestone100": "100 weeks. You've built something extraordinary. Respect.",
+  "streakMilestoneGeneric": "You've been showing up for {days} weeks. Keep going.",
   "@streakMilestoneGeneric": {
     "placeholders": {
       "days": {"type": "int"}
@@ -462,8 +466,8 @@
   "badgeFirstStep": "First Step",
   "badgeTenChallenges": "10 Challenges",
   "badgeFiftyChallenges": "50 Challenges",
-  "badgeThreeDayStreak": "3-Day Streak",
-  "badgeSevenDayStreak": "7-Day Streak",
+  "badgeThreeWeekStreak": "3-Week Streak",
+  "badgeSevenWeekStreak": "7-Week Streak",
   "badgeCenturyXp": "100 Aura Club",
   "badgeFiveHundredXp": "500 Aura Legend",
   "badgeBraveMinutes": "60 Min. Brave",

@@ -63,12 +63,42 @@ void main() {
       expect(ComfortZoneLogic.levelNames.length, ComfortZoneLogic.maxLevel + 1);
     });
 
-    test('completionsToUnlock is positive', () {
-      expect(ComfortZoneLogic.completionsToUnlock, greaterThan(0));
-    });
-
     test('maxLevel is 10', () {
       expect(ComfortZoneLogic.maxLevel, 10);
+    });
+  });
+
+  group('ComfortZoneLogic.completionsNeeded', () {
+    test('level 1 requires 3 completions', () {
+      expect(ComfortZoneLogic.completionsNeeded(1), 3);
+    });
+
+    test('completions needed increases with each level', () {
+      // Only levels 1..maxLevel-1 have a "next level" to advance to.
+      for (int level = 1; level < ComfortZoneLogic.maxLevel - 1; level++) {
+        expect(
+          ComfortZoneLogic.completionsNeeded(level + 1),
+          greaterThan(ComfortZoneLogic.completionsNeeded(level)),
+          reason: 'Level ${level + 1} should need more than level $level',
+        );
+      }
+    });
+
+    test('all levels have positive completions needed', () {
+      for (int level = 1; level < ComfortZoneLogic.maxLevel; level++) {
+        expect(ComfortZoneLogic.completionsNeeded(level), greaterThan(0));
+      }
+    });
+
+    test('level 9 requires 35 completions', () {
+      expect(ComfortZoneLogic.completionsNeeded(9), 35);
+    });
+
+    test('clamped to valid range for out-of-bounds input', () {
+      expect(ComfortZoneLogic.completionsNeeded(0),
+          ComfortZoneLogic.completionsNeeded(1));
+      expect(ComfortZoneLogic.completionsNeeded(99),
+          ComfortZoneLogic.completionsNeeded(9));
     });
   });
 }

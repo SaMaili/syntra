@@ -276,6 +276,10 @@
   "more": "Mehr",
   "totalXp": "Gesamt-Aura",
   "dayStreak": "Tage-Streak",
+  "weekStreak": "Wochen-Streak",
+  "weeksShort": "Wochen",
+  "weeklyAuraGoalTitle": "Wöchentliches Aura-Ziel",
+  "weeklyAuraGoalReached": "Ziel erreicht! Diese Woche zählt.",
   "timesTried": "Mal versucht",
   "minutesBrave": "Min. mutig",
   "bestStreak": "Bester Streak",
@@ -293,7 +297,7 @@
   "sun": "So",
   "greetingLongTime": "Lange nicht gesehen. Keine Sorge — dein Fortschritt ist noch da.",
   "greetingFresh": "Willkommen zurück. Bereit für einen neuen Start?",
-  "greetingStreak": "Tag {streak} — bleib dran.",
+  "greetingStreak": "Woche {streak} — bleib dran.",
   "@greetingStreak": {
     "placeholders": { "streak": { "type": "int" } }
   },
@@ -328,19 +332,19 @@
   "startNow": "Jetzt starten",
   "doItLater": "Später machen",
 
-  "streakMilestoneTitle": "{days}-Tage-Serie!",
+  "streakMilestoneTitle": "{days}-Wochen-Serie!",
   "@streakMilestoneTitle": {
     "placeholders": {
       "days": {"type": "int"}
     }
   },
-  "streakMilestone3": "Drei Tage am Stück. Du baust eine Gewohnheit auf.",
-  "streakMilestone7": "Eine ganze Woche! Deine Komfortzone ist gerade gewachsen.",
-  "streakMilestone14": "Zwei Wochen durchgezogen. Du bist nicht mehr die gleiche Person wie vor 14 Tagen.",
-  "streakMilestone30": "30 Tage. Ein ganzer Monat dranbleiben. Das ist selten. Das ist stark.",
-  "streakMilestone60": "60 Tage. Die meisten geben nach einer Woche auf. Du nicht.",
-  "streakMilestone100": "100 Tage. Du hast etwas Außergewöhnliches aufgebaut. Respekt.",
-  "streakMilestoneGeneric": "Du bist seit {days} Tagen dabei. Weiter so.",
+  "streakMilestone3": "3 Wochen am Stück. Du baust eine Gewohnheit auf.",
+  "streakMilestone7": "7 Wochen! Fast zwei Monate drangeblieben. Deine Komfortzone ist gewachsen.",
+  "streakMilestone14": "14 Wochen durchgezogen. Du bist nicht mehr die gleiche Person wie vor 14 Wochen.",
+  "streakMilestone30": "30 Wochen. Über ein halbes Jahr. Das ist selten. Das ist stark.",
+  "streakMilestone60": "60 Wochen. Die meisten geben nach zwei Monaten auf. Du nicht.",
+  "streakMilestone100": "100 Wochen. Du hast etwas Außergewöhnliches aufgebaut. Respekt.",
+  "streakMilestoneGeneric": "Du bist seit {days} Wochen dabei. Weiter so.",
   "@streakMilestoneGeneric": {
     "placeholders": {
       "days": {"type": "int"}
@@ -462,8 +466,8 @@
   "badgeFirstStep": "Erster Schritt",
   "badgeTenChallenges": "10 Challenges",
   "badgeFiftyChallenges": "50 Challenges",
-  "badgeThreeDayStreak": "3-Tage-Streak",
-  "badgeSevenDayStreak": "7-Tage-Streak",
+  "badgeThreeWeekStreak": "3-Wochen-Streak",
+  "badgeSevenWeekStreak": "7-Wochen-Streak",
   "badgeCenturyXp": "100-Aura-Club",
   "badgeFiveHundredXp": "500-Aura-Legende",
   "badgeBraveMinutes": "60 Min. mutig",

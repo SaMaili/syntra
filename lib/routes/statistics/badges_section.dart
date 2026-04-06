@@ -13,8 +13,8 @@ class BadgesSection extends ConsumerWidget {
         'first_step' => l.badgeFirstStep,
         'ten_challenges' => l.badgeTenChallenges,
         'fifty_challenges' => l.badgeFiftyChallenges,
-        'three_day_streak' => l.badgeThreeDayStreak,
-        'seven_day_streak' => l.badgeSevenDayStreak,
+        'three_week_streak' => l.badgeThreeWeekStreak,
+        'seven_week_streak' => l.badgeSevenWeekStreak,
         'century_xp' => l.badgeCenturyXp,
         'five_hundred_xp' => l.badgeFiveHundredXp,
         'brave_minutes' => l.badgeBraveMinutes,
@@ -32,7 +32,7 @@ class BadgesSection extends ConsumerWidget {
       loading: () => const SizedBox.shrink(),
       error: (_, __) => const SizedBox.shrink(),
       data: (stats) {
-        final earned = BadgesLogic.computeEarned(stats, stats['streak'] ?? 0);
+        final earned = BadgesLogic.computeEarned(stats, stats['weekStreak'] ?? 0);
         return Card(
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.md),

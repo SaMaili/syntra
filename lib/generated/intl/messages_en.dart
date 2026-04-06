@@ -30,7 +30,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m3(done, needed, next) =>
       "${done} / ${needed} completions to Level ${next}";
 
-  static String m4(streak) => "Day ${streak} — keep it going.";
+  static String m4(streak) => "Week ${streak} — keep it going.";
 
   static String m5(level) => "Level ${level}";
 
@@ -58,9 +58,9 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m15(xp) => "${xp} Aura earned through genuine action.";
 
   static String m16(days) =>
-      "You\'ve been showing up for ${days} days. Keep going.";
+      "You\'ve been showing up for ${days} weeks. Keep going.";
 
-  static String m17(days) => "${days}-Day Streak!";
+  static String m17(days) => "${days}-Week Streak!";
 
   static String m18(done, goal) => "${done} of ${goal} challenges this week";
 
@@ -121,9 +121,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "badgeFiveHundredXp": MessageLookupByLibrary.simpleMessage(
       "500 Aura Legend",
     ),
-    "badgeSevenDayStreak": MessageLookupByLibrary.simpleMessage("7-Day Streak"),
+    "badgeSevenWeekStreak": MessageLookupByLibrary.simpleMessage(
+      "7-Week Streak",
+    ),
     "badgeTenChallenges": MessageLookupByLibrary.simpleMessage("10 Challenges"),
-    "badgeThreeDayStreak": MessageLookupByLibrary.simpleMessage("3-Day Streak"),
+    "badgeThreeWeekStreak": MessageLookupByLibrary.simpleMessage(
+      "3-Week Streak",
+    ),
     "badgesLocked": MessageLookupByLibrary.simpleMessage(
       "Keep going to unlock more!",
     ),
@@ -729,22 +733,22 @@ class MessageLookup extends MessageLookupByLibrary {
     "storyXpSmall": m15,
     "streak": MessageLookupByLibrary.simpleMessage("Streak"),
     "streakMilestone100": MessageLookupByLibrary.simpleMessage(
-      "100 days. You\'ve built something extraordinary. Respect.",
+      "100 weeks. You\'ve built something extraordinary. Respect.",
     ),
     "streakMilestone14": MessageLookupByLibrary.simpleMessage(
-      "Two weeks straight. You\'re not the same person you were 14 days ago.",
+      "14 weeks straight. You\'re not the same person you were 14 weeks ago.",
     ),
     "streakMilestone3": MessageLookupByLibrary.simpleMessage(
-      "Three days in a row. You\'re building a habit.",
+      "3 weeks in a row. You\'re building a real habit.",
     ),
     "streakMilestone30": MessageLookupByLibrary.simpleMessage(
-      "30 days. A whole month of showing up. That\'s rare. That\'s powerful.",
+      "30 weeks. Over half a year of showing up. That\'s rare. That\'s powerful.",
     ),
     "streakMilestone60": MessageLookupByLibrary.simpleMessage(
-      "60 days. Most people quit after a week. You didn\'t.",
+      "60 weeks. Most people quit after a month. You didn\'t.",
     ),
     "streakMilestone7": MessageLookupByLibrary.simpleMessage(
-      "A full week! Your comfort zone just got bigger.",
+      "7 weeks! Nearly two months of consistent effort. Your comfort zone has grown.",
     ),
     "streakMilestoneGeneric": m16,
     "streakMilestoneTitle": m17,
@@ -786,6 +790,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Want us to remind you?",
     ),
     "wed": MessageLookupByLibrary.simpleMessage("W"),
+    "weekStreak": MessageLookupByLibrary.simpleMessage("Week Streak"),
+    "weeklyAuraGoalReached": MessageLookupByLibrary.simpleMessage(
+      "Goal reached! This week counts.",
+    ),
+    "weeklyAuraGoalTitle": MessageLookupByLibrary.simpleMessage(
+      "Weekly Aura Goal",
+    ),
     "weeklyChallenges": MessageLookupByLibrary.simpleMessage(
       "Weekly Challenges",
     ),
@@ -795,6 +806,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "weeklyRecapBody": m19,
     "weeklyRecapTitle": MessageLookupByLibrary.simpleMessage("Weekly Recap"),
     "weeklyXpProgress": MessageLookupByLibrary.simpleMessage("Weekly Aura"),
+    "weeksShort": MessageLookupByLibrary.simpleMessage("weeks"),
     "wellDone": MessageLookupByLibrary.simpleMessage("Well done! Keep it up!"),
     "xp": MessageLookupByLibrary.simpleMessage("XP"),
     "xpEarnedThisWeek": MessageLookupByLibrary.simpleMessage(
