@@ -470,10 +470,10 @@ class S {
   }
 
   /// `No challenges found`
-  String get noChalllengesFound {
+  String get noChallengesFound {
     return Intl.message(
       'No challenges found',
-      name: 'noChalllengesFound',
+      name: 'noChallengesFound',
       desc: '',
       args: [],
     );
@@ -1744,20 +1744,20 @@ class S {
     );
   }
 
-  /// `{kilo}k XP earned — you are building something real.`
+  /// `{kilo}k Aura earned — you are building something real.`
   String storyXpKilo(String kilo) {
     return Intl.message(
-      '${kilo}k XP earned — you are building something real.',
+      '${kilo}k Aura earned — you are building something real.',
       name: 'storyXpKilo',
       desc: '',
       args: [kilo],
     );
   }
 
-  /// `{xp} XP earned through genuine action.`
+  /// `{xp} Aura earned through genuine action.`
   String storyXpSmall(int xp) {
     return Intl.message(
-      '$xp XP earned through genuine action.',
+      '$xp Aura earned through genuine action.',
       name: 'storyXpSmall',
       desc: '',
       args: [xp],
@@ -1799,10 +1799,10 @@ class S {
     return Intl.message('Tried', name: 'legendTried', desc: '', args: []);
   }
 
-  /// `XP Earned This Week`
+  /// `Aura Earned This Week`
   String get xpEarnedThisWeek {
     return Intl.message(
-      'XP Earned This Week',
+      'Aura Earned This Week',
       name: 'xpEarnedThisWeek',
       desc: '',
       args: [],
@@ -1834,9 +1834,9 @@ class S {
     return Intl.message('More', name: 'more', desc: '', args: []);
   }
 
-  /// `Total XP`
+  /// `Total Aura`
   String get totalXp {
-    return Intl.message('Total XP', name: 'totalXp', desc: '', args: []);
+    return Intl.message('Total Aura', name: 'totalXp', desc: '', args: []);
   }
 
   /// `Day Streak`
@@ -3084,20 +3084,20 @@ class S {
     );
   }
 
-  /// `100 XP Club`
+  /// `100 Aura Club`
   String get badgeCenturyXp {
     return Intl.message(
-      '100 XP Club',
+      '100 Aura Club',
       name: 'badgeCenturyXp',
       desc: '',
       args: [],
     );
   }
 
-  /// `500 XP Legend`
+  /// `500 Aura Legend`
   String get badgeFiveHundredXp {
     return Intl.message(
-      '500 XP Legend',
+      '500 Aura Legend',
       name: 'badgeFiveHundredXp',
       desc: '',
       args: [],

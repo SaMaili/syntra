@@ -393,7 +393,7 @@ class _LogbookEntryTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '${earned >= 0 ? '+' : ''}$earned XP',
+                    '${earned >= 0 ? '+' : ''}$earned ${S.of(context).auraPoints}',
                     style: TextStyle(
                       color: xpColor,
                       fontWeight: FontWeight.bold,

@@ -53,9 +53,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "You are on a ${days}-day streak. Keep the momentum going.";
 
   static String m14(kilo) =>
-      "${kilo}k XP earned — you are building something real.";
+      "${kilo}k Aura earned — you are building something real.";
 
-  static String m15(xp) => "${xp} XP earned through genuine action.";
+  static String m15(xp) => "${xp} Aura earned through genuine action.";
 
   static String m16(days) =>
       "You\'ve been showing up for ${days} days. Keep going.";
@@ -112,12 +112,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "backToHome": MessageLookupByLibrary.simpleMessage("Back to Home"),
     "bad": MessageLookupByLibrary.simpleMessage("Bad"),
     "badgeBraveMinutes": MessageLookupByLibrary.simpleMessage("60 Min. Brave"),
-    "badgeCenturyXp": MessageLookupByLibrary.simpleMessage("100 XP Club"),
+    "badgeCenturyXp": MessageLookupByLibrary.simpleMessage("100 Aura Club"),
     "badgeFiftyChallenges": MessageLookupByLibrary.simpleMessage(
       "50 Challenges",
     ),
     "badgeFirstStep": MessageLookupByLibrary.simpleMessage("First Step"),
-    "badgeFiveHundredXp": MessageLookupByLibrary.simpleMessage("500 XP Legend"),
+    "badgeFiveHundredXp": MessageLookupByLibrary.simpleMessage(
+      "500 Aura Legend",
+    ),
     "badgeSevenDayStreak": MessageLookupByLibrary.simpleMessage("7-Day Streak"),
     "badgeTenChallenges": MessageLookupByLibrary.simpleMessage("10 Challenges"),
     "badgeThreeDayStreak": MessageLookupByLibrary.simpleMessage("3-Day Streak"),
@@ -477,7 +479,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "nextMotivation1": m7,
     "nextMotivation2": m8,
-    "noChalllengesFound": MessageLookupByLibrary.simpleMessage(
+    "noChallengesFound": MessageLookupByLibrary.simpleMessage(
       "No challenges found",
     ),
     "noEntriesYet": MessageLookupByLibrary.simpleMessage("No Entries Yet"),
@@ -748,7 +750,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Too bad! You aborted the challenge.",
     ),
     "total": MessageLookupByLibrary.simpleMessage("Total"),
-    "totalXp": MessageLookupByLibrary.simpleMessage("Total XP"),
+    "totalXp": MessageLookupByLibrary.simpleMessage("Total Aura"),
     "tryAgainNextTime": MessageLookupByLibrary.simpleMessage(
       "Try again next time!",
     ),
@@ -774,7 +776,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "wellDone": MessageLookupByLibrary.simpleMessage("Well done! Keep it up!"),
     "xp": MessageLookupByLibrary.simpleMessage("XP"),
     "xpEarnedThisWeek": MessageLookupByLibrary.simpleMessage(
-      "XP Earned This Week",
+      "Aura Earned This Week",
     ),
     "yesChallengeStart": MessageLookupByLibrary.simpleMessage(
       "Yes, I completed it",

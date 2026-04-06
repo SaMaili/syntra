@@ -1177,6 +1177,542 @@ Recommended order of work:
   ────────────────────────────────────────────────
   9. [TODO H] Backend + leaderboard — start only after Phase 1 + 2 are done.
 
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 9 — PSYCHOLOGICAL DESIGN ANALYSIS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+This section evaluates what psychological mechanisms the app currently uses,
+which ones work well, and which are missing or misused.
+
+────────────────────────────────────────────────────────────────────────────────
+9.1 WHAT THE APP GETS RIGHT
+────────────────────────────────────────────────────────────────────────────────
+
+GRADUATED EXPOSURE (STRONG)
+The CZL system is a direct implementation of the clinical exposure therapy
+concept: face the least anxiety-provoking situations first, then escalate as
+you habituate. Level 1 ("Micro-interactions") → Level 5 ("High-stakes social
+challenges") exactly mirrors a SUDS (Subjective Units of Distress) hierarchy
+used by therapists treating social anxiety. This is the most psychologically
+credible part of the app. The mechanism is sound.
+
+BEHAVIORAL COMMITMENT (STRONG)
+The 15-second abort lock on the active challenge screen is a well-designed
+implementation of commitment theory. Removing the exit option briefly forces
+the user to sit with discomfort rather than flee immediately. Research on
+exposure therapy shows that brief tolerance of anxiety — not avoidance — is
+what produces habituation. The lock is the right call.
+
+PRIMING / IMPLEMENTATION INTENTIONS (GOOD)
+The PrimingScreen gives users 5 seconds of contextual framing before the
+timer starts (different headlines for flirt/group/quick/hard challenges).
+This loosely mirrors the psychological concept of implementation intentions:
+"I am about to do X in situation Y, and I am prepared." Preparing the mind
+before acting reduces the hesitation that causes avoidance.
+The duration picker on the priming screen also gives a small act of agency,
+which reduces reactance ("I chose how long").
+
+IMMEDIATE REINFORCEMENT LOOP (STRONG)
+Challenge → timer → done → XP count-up animation → coach message → survey.
+The full loop is tight. The XP counter animation is a direct dopamine trigger.
+Reinforcement is most effective when it arrives within seconds of the behavior
+— the app does this correctly.
+
+METACOGNITIVE MOOD TRACKING (GOOD BUT UNDERUSED)
+The post-challenge survey captures feeling and perception (how you actually
+felt, how you think others perceived you). This is metacognitive training:
+users become aware of how they felt, which builds interoceptive awareness of
+their anxiety response. The fact that this is captured per-challenge and shown
+as a history chart in ChallengeDetailScreen is genuinely valuable.
+
+POSITIVE REFRAMING ON ABORT (PARTIAL)
+The "Too bad" heading + meditation icon when aborting is not ideal. The copy
+acknowledges the abort without shame, which is appropriate. But the framing
+is slightly punitive ("+0 Aura Points" as the highlighted message). Attempting
+is itself exposure — even an aborted challenge involved showing up, starting,
+and experiencing the beginning of the situation. The app should frame aborts
+as "you tried, that matters," not as a missed reward.
+
+────────────────────────────────────────────────────────────────────────────────
+9.2 WHAT IS MISSING OR BROKEN
+────────────────────────────────────────────────────────────────────────────────
+
+THE PREDICTION-REALITY GAP (CRITICAL MISSING FEATURE)
+This is the single most evidence-backed mechanism for reducing social anxiety
+that the app does not implement. Research consistently shows that people with
+social anxiety catastrophically over-predict how bad social situations will
+feel ("this will be humiliating, I'll freeze, they'll hate me") and how poorly
+they perform. After the situation, the reality is almost always less bad than
+predicted. Repeating this experience — seeing the gap between expectation and
+reality — is what creates lasting change.
+
+The app captures post-challenge mood but has NO pre-challenge mood anchor.
+Without capturing how anxious the user expected to feel before the challenge,
+there is no data to show the gap afterward. This is a relatively small change:
+add a single "How nervous are you right now? (1–5)" tap on the PrimingScreen,
+store it in the logbook alongside feeling/perception, and show a comparison
+on the done screen ("You expected 4/5 nervousness — you reported 2/5 after.
+You did it again.").
+
+This feature would be the most therapeutically impactful addition possible
+and costs ~1 day of implementation.
+
+NO INSIGHT LAYER ON THE LOGBOOK
+The logbook stores rich data (mood, perception, notes, XP, duration) for every
+attempt, but shows it only as a chronological list. There are no derived
+insights like:
+  - "You complete 85% of solo challenges but only 40% of group ones"
+  - "Your average mood after completing a challenge is 3.8/5"
+  - "Your success rate has improved 30% since you started"
+  - "You haven't tried a Bold challenge in 2 weeks"
+
+These insights would close the self-improvement loop and make the logbook feel
+purposeful rather than archival.
+
+ABORT IS FRAMED AS FAILURE, NOT AS ATTEMPT
+Exposure therapy does not distinguish sharply between "I did the whole thing"
+and "I walked into the situation and then left." Partial exposure still reduces
+anxiety over time. The app's binary success/tried model treats an abort as a
+minor failure. Consider renaming "Tried" to "Attempted" and celebrating the
+attempt more explicitly: "You showed up. That's the hardest part."
+
+SOCIAL PROOF IS FAKE AND INERT
+The "X others have done this challenge" number is a deterministic hash (800–4499).
+It's not harmful, but it's not doing real psychological work. Real social proof
+that reduces social anxiety would be other users' notes: "I did this at a
+coffee shop and the barista actually seemed happy to chat." Short real stories
+from real attempts are far more anxiety-reducing than a number. This requires
+the backend, but the UI slot is already there.
+
+COACH MESSAGES ARE NOT CONTEXTUAL
+7 generic messages hashed to a challenge. A coach message after completing a
+group challenge should be different from one after completing a flirt challenge.
+Currently "Get out of your head — they're not judging you as hard as you think"
+might appear after a "send a funny meme to a coworker" challenge. Easy fix: pool
+messages by challenge type (solo/group/flirt) and draw from the relevant pool.
+
+NO REFLECTION PROMPTS
+The notes field on the survey is a blank text box. Research on self-compassion
+and behavioral experiments suggests that guided reflection ("What was easier
+than you expected?", "What would you do differently?", "How did you feel
+physically?") produces deeper learning than an empty field. Rotating prompt
+suggestions shown as placeholder text would cost almost nothing.
+
+────────────────────────────────────────────────────────────────────────────────
+9.3 THE STREAK SYSTEM — WHY IT IS THE WRONG DESIGN FOR THIS APP
+────────────────────────────────────────────────────────────────────────────────
+
+The current daily streak system is borrowed from Duolingo. This is a category
+error. Social challenges are not language lessons.
+
+WHY DAILY STREAKS WORK FOR DUOLINGO:
+  - A lesson takes 3–5 minutes
+  - Can be done anywhere (couch, bathroom, bus)
+  - Zero social risk — 100% private
+  - No environmental prerequisites
+  - No emotional recovery time needed
+  - Multiple sessions per day cause no harm
+  - The "repetition" model maps perfectly to spaced repetition learning
+
+WHY DAILY STREAKS DO NOT WORK FOR SOCIAL CHALLENGES:
+  - Challenges require being in the right physical environment. If you work
+    from home, "start a conversation with a stranger on transit" is not doable
+    on a given day regardless of motivation.
+  - Social challenges have real emotional cost. Anxiety, adrenaline, and the
+    cognitive load of navigating a real human interaction are depleting. Doing
+    3–5 challenges a day is not possible; 3–5 per week is ambitious.
+  - Social fatigue is real. Pushing yourself socially every single day without
+    recovery is a recipe for burnout and avoidance — the opposite of the app's goal.
+  - Abrupt streak loss is especially demotivating for anxious users. Someone who
+    is already self-critical will interpret a broken streak as another failure,
+    reinforcing the self-defeating narrative the app is trying to dismantle.
+  - A user traveling, sick, or in an environment with no strangers should not
+    be penalized for not doing a social challenge that day.
+
+THE STREAK SYSTEM SHOULD MEASURE SUSTAINABLE CONSISTENCY, NOT DAILY GRIND.
+
+RECOMMENDED DESIGN — WEEKLY SESSIONS MODEL:
+  A "streak week" is any ISO calendar week where you completed at least
+  ONE challenge (success or tried). Consecutive streak weeks = your streak.
+
+  The weekly goal card (already built) drives the daily motivation — "how many
+  challenges this week?" — while the streak measures multi-week consistency.
+  These two systems are complementary: daily/weekly frequency goal + streak
+  as long-term consistency badge.
+
+  Example threshold options:
+    Option A: 1 challenge/week = streak maintained (very forgiving, good for
+              users at CZL 1–2 who are still building the habit)
+    Option B: 2 challenges on different days/week (rewards spreading out
+              practice, which is more effective than bunching)
+    Option C: Earn ≥150 Aura in a week (rewards quality, any mix of challenges)
+
+  Recommendation: Option A with a progressive nudge — celebrate "you've had an
+  active week" when goal is first hit, and show a countdown "X days left in
+  your streak week" to create urgency without daily obligation.
+
+  The "Streak On Ice" shop feature (TODO C) maps cleanly onto this model: one
+  protected week instead of one protected day. At 300 Aura cost per freeze,
+  it's a meaningful spend.
+
+WHAT NOT TO DO:
+  Do NOT simply increase the grace period from "miss today = pending" to
+  "miss 3 days = broken." That is a bandaid on a structural mismatch.
+  The unit of measurement needs to change from day to week.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 10 — GAMIFICATION LAYER RATINGS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Each gamification system is rated 1–10 on:
+  DESIGN  — how well-conceived the mechanism is for this app's goals
+  IMPL    — how well it is currently implemented in code/UX
+
+────────────────────────────────────────────────────────────────────────────────
+LAYER 1: AURA POINTS (XP)
+Design: 6/10  |  Impl: 8/10
+────────────────────────────────────────────────────────────────────────────────
+What works:
+  - Immediate count-up animation on the done screen is satisfying.
+  - Points are proportional to difficulty (XP tied to challenge level).
+  - 10% daily mission bonus incentivizes mission use over random picks.
+  - The Aura branding is distinctive and on-brand.
+
+What's broken:
+  - Aura Points are currently a score, not a currency. They accumulate but
+    cannot be spent. Until the shop exists, they have no instrumental value —
+    only symbolic value. This weakens the reinforcement loop significantly.
+  - There is no Aura milestone celebration (e.g., reaching 500 Aura for the
+    first time). Badges cover some of this but feel passive.
+  - Partial timer completion gives 0.8x XP but the done screen does not
+    communicate this clearly ("you earned 80% because you finished early").
+
+Suggestions:
+  - Add the shop/store immediately (TODO C) to give Aura utility.
+  - Show the XP breakdown on the done screen: base + timer bonus + daily bonus.
+  - Add a brief "milestone" animation at round numbers (100, 250, 500, 1000 Aura).
+
+────────────────────────────────────────────────────────────────────────────────
+LAYER 2: COMFORT ZONE LEVEL (CZL) PROGRESSION
+Design: 9/10  |  Impl: 7/10
+────────────────────────────────────────────────────────────────────────────────
+What works:
+  - The 5-level model is the psychological backbone of the app. It mirrors
+    exposure therapy's graduated hierarchy. Conceptually excellent.
+  - Gating harder challenges behind CZL prevents overwhelm and forces
+    foundational habit-building before escalation.
+  - 3 completions per level is a reasonable threshold — achievable in a few
+    sessions without feeling like a grind.
+  - CZL progress bar at the top of the challenges screen creates ambient
+    awareness of progression.
+
+What's broken:
+  - Level assignment is catalog-relative (percentile-based). Any change to
+    the challenge catalog reshuffles all levels for all users. Unstable.
+  - The level-up dialog exists but there is no confetti, animation, or
+    dramatic moment. "Level Up" is the most powerful reward moment in any
+    progression system — it should feel earned and memorable. Currently it
+    is a plain AlertDialog.
+  - When you unlock a new level, you are not told "You just unlocked 12 new
+    challenges." The content reward should be made explicit.
+  - Users at CZL 5 have no further progression. There is no endgame loop.
+
+Suggestions:
+  - Add explicit level field to challenges.json (fixes instability).
+  - Make the level-up moment dramatic: full-screen animation, confetti, sound,
+    list of newly unlocked challenges.
+  - Add post-CZL-5 endgame: challenge mastery system (e.g., complete each
+    challenge 3 times to "master" it, shown as a fill state on the card).
+
+────────────────────────────────────────────────────────────────────────────────
+LAYER 3: STREAK SYSTEM
+Design: 2/10  |  Impl: 7/10
+────────────────────────────────────────────────────────────────────────────────
+The implementation is technically solid (walk-backwards algorithm, DST-safe
+string comparison, pending state for current day). The design is the problem.
+See Section 9.3 for the full argument.
+Short: daily streaks are the wrong unit for social challenges that require
+real-world environments, social energy, and recovery time.
+
+────────────────────────────────────────────────────────────────────────────────
+LAYER 4: DAILY MISSION BOARD (THREE-TIER)
+Design: 7/10  |  Impl: 7/10
+────────────────────────────────────────────────────────────────────────────────
+What works:
+  - Comfort / Growth / Bold naming is psychologically calibrated — it gives
+    users a mental model of what they're signing up for.
+  - Three options at different difficulty levels means every user finds
+    something approachable on any given day.
+  - The 10% Aura bonus is a small but real incentive.
+  - Daily refresh creates novelty and a reason to open the app.
+
+What's broken:
+  - Tiers are split purely by XP rank (bottom/middle/top third of catalog).
+    This is a content-blind proxy. An XP-heavy challenge might still be
+    socially simple (long timer, comfortable environment). The tier split
+    should be based on the explicit level field, not XP.
+  - No timer or visual indicator showing "resets in 4h 23m." Without urgency
+    the missions feel static, not time-sensitive.
+  - Completing all three missions in a day has no extra reward. A "full board"
+    bonus (e.g., +50 Aura, special animation) would incentivize completion.
+  - Missions don't account for environment. A user riding the metro sees a
+    transit challenge as "Comfort" even if that's their highest-anxiety
+    environment.
+
+Suggestions:
+  - Tier missions by explicit level field once it exists.
+  - Add a mission expiry countdown.
+  - Add a "full board cleared" reward.
+
+────────────────────────────────────────────────────────────────────────────────
+LAYER 5: BADGES
+Design: 4/10  |  Impl: 7/10
+────────────────────────────────────────────────────────────────────────────────
+What works:
+  - The 8 badge definitions cover the main achievement dimensions (quantity,
+    streak, XP, time).
+  - Rendered cleanly in the stats screen with earned/locked distinction.
+
+What's broken:
+  - Badges are flat one-time milestones. No tiered progression (bronze/silver/
+    gold). After earning all 8, the system is dead.
+  - Badge unlocks happen silently. The user has to go to the stats screen to
+    notice they earned a badge. There is zero moment of surprise or celebration.
+  - Badge thresholds are low: 100 Aura and 500 Aura are reached early. After
+    that, no new badges for 1000, 2000, 5000 Aura.
+  - No category-specific badges (e.g., "Street Warrior" for 10 street challenges,
+    "Group Leader" for 10 group challenges). These would incentivize variety.
+
+Suggestions:
+  - Add inline badge unlock toast/animation (triggered in ChallengeDoneScreen
+    after the XP animation, using a diff of earned badges before/after).
+  - Add tiered badges: 10/50/100/250 challenges; 100/500/1000/5000 Aura.
+  - Add category badges for environment and challenge type.
+
+────────────────────────────────────────────────────────────────────────────────
+LAYER 6: WEEKLY GOAL
+Design: 7/10  |  Impl: 7/10
+────────────────────────────────────────────────────────────────────────────────
+What works:
+  - User-configurable (3/5/7) respects different commitment levels.
+  - Progress bar in the stats screen is clear.
+  - The data is there (weeklyProgressProvider).
+
+What's broken:
+  - No celebration when the goal is reached (TODO F).
+  - The weekly goal and the streak are not connected. They should be: streak
+    = consecutive weeks where you hit your weekly goal. Currently they are
+    parallel systems that give redundant, slightly conflicting feedback.
+  - The goal only counts challenge completions, not Aura earned. A user who
+    does 3 very short easy challenges hits their "3/week" goal faster than
+    a user who does 1 hard challenge. Consider an Aura-based threshold as an
+    alternative goal mode.
+
+────────────────────────────────────────────────────────────────────────────────
+LAYER 7: PRIMING SCREEN
+Design: 8/10  |  Impl: 9/10
+────────────────────────────────────────────────────────────────────────────────
+What works:
+  - Countdown ring with animated digit transitions is polished.
+  - Contextual headlines (flirt/group/quick/hard/default) show genuine design
+    thought. The app communicates that it knows what you're about to do.
+  - Duration picker gives agency and reduces reactance.
+  - "Not Now" bail-out is present and non-shaming.
+  - Auto-launches after 5 seconds if user doesn't act.
+
+What could improve:
+  - 5 seconds is too short for genuine mental preparation. It's a ritual, not
+    real priming. Consider making it 8–10 seconds, or making the "I'm Ready"
+    button primary so users don't feel forced to rush.
+  - Add the pre-challenge anxiety rating here (1 tap before launch). Store it
+    alongside post-challenge mood to enable the prediction-reality gap insight.
+  - The subtext is static per challenge type. It could be dynamic: vary it
+    from session to session so users who see the same challenge type often
+    don't read the same words every time.
+
+────────────────────────────────────────────────────────────────────────────────
+LAYER 8: SOCIAL PROOF + COACH MESSAGES
+Design: 3/10  |  Impl: 5/10
+────────────────────────────────────────────────────────────────────────────────
+Social proof number (800–4499 deterministic hash):
+  - Not harmful but does no real psychological work. A number means nothing
+    without context. "4,201 others have done this" is not the same as reading
+    "I did this at a Starbucks and it turned into a 20-minute conversation."
+  - Real anonymized user notes would be far more valuable and anxiety-reducing.
+    This requires the backend but the UI slot is ready.
+
+Coach messages:
+  - 7 messages hashed by challenge ID. Fine as a placeholder.
+  - Not contextual to outcome or challenge type. A flirt challenge and a group
+    challenge get the same pool of messages.
+  - Consider: pool by challenge type, and have separate pools for success vs
+    abort outcomes (currently the abort path shows failureCopy, not a coach
+    message, which is the right call — but success messages should be more
+    specific).
+
+────────────────────────────────────────────────────────────────────────────────
+LAYER 9: LOGBOOK + MOOD HISTORY
+Design: 7/10  |  Impl: 7/10
+────────────────────────────────────────────────────────────────────────────────
+What works:
+  - Storing every attempt with mood, perception, notes, and duration is the
+    right data foundation. The schema is rich.
+  - ChallengeDetailScreen shows a per-challenge mood history chart — this is
+    genuinely useful ("every time I do this challenge I feel better afterward").
+  - The 14-day average mood chart in the stats screen is a good high-level view.
+
+What's broken:
+  - No insight layer. The data is there but no derived conclusions are surfaced.
+  - Logbook list is chronological with no search, filter, or grouping by
+    challenge type, outcome, or time period.
+  - No "You completed this challenge N times" summary on the challenge card or
+    detail screen (completed checkmark exists, count does not).
+
+────────────────────────────────────────────────────────────────────────────────
+LAYER 10: SOUND + HAPTICS
+Design: 8/10  |  Impl: 8/10
+────────────────────────────────────────────────────────────────────────────────
+Well-implemented sensory feedback system. The 10-second timer haptic warning is
+a standout detail — few apps would think to add this. The optional sound effects
+toggle respects user preference. No major issues here.
+
+Missing: badge unlock sound/haptic, weekly goal completion haptic.
+
+────────────────────────────────────────────────────────────────────────────────
+OVERALL GAMIFICATION SCORE: 6.2/10
+────────────────────────────────────────────────────────────────────────────────
+The app has a strong psychological foundation (CZL, priming, mood tracking)
+and a polished core loop. It is held back primarily by:
+  1. The misdesigned daily streak (Section 9.3 — the biggest single issue)
+  2. XP having no spend mechanic yet (no shop)
+  3. Badge unlocks happening silently with no celebration moment
+  4. The prediction-reality gap not being captured (see Section 9.2)
+  5. No insight layer on the logbook data
+
+Fix these five things and the gamification score reaches ~8/10.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 11 — PUBLICATION READINESS REVIEW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Three thresholds are evaluated:
+  A. Internal / closed beta testing (friends, TestFlight internal track)
+  B. Public open beta (TestFlight external / Play Store open testing)
+  C. Production release (App Store + Play Store public listing)
+
+────────────────────────────────────────────────────────────────────────────────
+A. INTERNAL BETA — VERDICT: READY NOW
+────────────────────────────────────────────────────────────────────────────────
+The core loop is complete and functional:
+  - Onboarding → CZL selection → challenge browse → timer → done → XP → streak
+  - DB schema is stable at v4 with all migrations in place
+  - Settings, notifications, sound, haptics all work
+  - Two languages (EN/DE) complete
+  - No known crash bugs (the previously open feeling/perception migration bug
+    is fixed in v3/v4)
+
+The dark mode switch default is a minor cosmetic bug but not a blocker.
+TestFlight internal or Play Store internal testing is appropriate right now.
+Use this phase to validate the content quality of the current challenge catalog
+and get real signal on which challenges feel right vs which feel awkward.
+
+────────────────────────────────────────────────────────────────────────────────
+B. PUBLIC OPEN BETA — VERDICT: NOT YET (3–5 weeks of work needed)
+────────────────────────────────────────────────────────────────────────────────
+Blockers before opening to strangers:
+
+  1. STREAK SYSTEM (CRITICAL)
+     The daily streak will alienate users within the first week. A user who
+     does a hard challenge on Monday and then doesn't have time until Thursday
+     will lose their streak on Wednesday and likely disengage permanently. This
+     is the #1 retention risk. Fix before public beta.
+
+  2. CHALLENGE CONTENT QUALITY
+     The current challenge catalog needs a quality pass. Challenges need to be:
+       - Well-written and clear in intention
+       - Correctly tagged (type, environment, level)
+       - Genuinely varied per category (6+ per level/type combination)
+     A public user seeing repetitive, poorly-tagged, or awkward challenge text
+     will churn immediately. Content is product.
+
+  3. AURA POINTS NEED A SPEND MECHANIC
+     Accumulating XP with no way to spend it creates a "what's the point"
+     feeling after the first few sessions. Even a minimal shop (Streak On Ice
+     only) gives Aura meaning before full beta launch.
+
+  4. BADGE UNLOCK MOMENT IS SILENT
+     A public user earning their first badge who doesn't navigate to the stats
+     screen will never know they earned it. The unlock must be surfaced inline.
+
+  5. DARK MODE BUG
+     Minor but visible. Should be fixed before any public-facing release.
+
+Non-blocking but strongly recommended before open beta:
+  - Weekly goal completion animation (TODO F)
+  - Pre-challenge anxiety rating on PrimingScreen (Section 9.2)
+  - Coach messages segmented by challenge type
+
+────────────────────────────────────────────────────────────────────────────────
+C. PRODUCTION RELEASE — VERDICT: NOT YET (2–4 months of work)
+────────────────────────────────────────────────────────────────────────────────
+In addition to the public beta blockers above, production release requires:
+
+  MUST-HAVE:
+  - All public beta blockers resolved
+  - Privacy policy (even offline-only apps are asked for one by both stores)
+  - App Store / Play Store screenshots and store listing copy
+  - Icon design finalized (not evaluated here, but assume not done)
+  - iOS notification behavior validated on device (flutter_local_notifications
+    UNUserNotificationCenter does not have the same reliability as Android
+    AlarmManager — test on real hardware across iOS 16/17/18)
+  - Thorough device testing: small screen (SE), large screen (Pro Max), tablets
+  - Edge case testing: zero challenges done, offline from day 1, language switch
+    mid-session
+
+  SHOULD-HAVE:
+  - Streak system redesign (weekly model) shipped and validated
+  - Shop/Streak Shield shipped (gives Aura a purpose for Day 1 users)
+  - Insight layer on logbook (or at minimum, the prediction-reality gap feature)
+  - Level-up moment made dramatic
+
+  NICE-TO-HAVE (can ship without):
+  - Backend + leaderboard (can be v2)
+  - iOS aesthetic polish
+  - Environment filter
+  - Additional badge tiers
+
+────────────────────────────────────────────────────────────────────────────────
+SUMMARY TABLE
+────────────────────────────────────────────────────────────────────────────────
+
+  Milestone              Status        ETA estimate
+  ─────────────────────────────────────────────────────────────────────────────
+  Internal beta          READY         Now
+  Public open beta       BLOCKED       ~3–5 weeks (streak + content + shop)
+  App Store production   NOT READY     ~2–4 months (full phase 1+2 roadmap)
+
+────────────────────────────────────────────────────────────────────────────────
+FINAL NOTE
+────────────────────────────────────────────────────────────────────────────────
+
+The technical foundation of Syntra is genuinely solid. The architecture,
+navigation system, data layer, and notification infrastructure are production-
+quality for a v1. The onboarding is thoughtful. The priming screen is a
+standout feature. The mood tracking data model is forward-looking.
+
+What the app lacks right now is product-market fit completeness: the streak
+system creates friction instead of retention, the XP has no spend value yet,
+and the challenge content — the actual core of the product — needs a thorough
+pass. The psychological design is better-reasoned than most social habit apps,
+but the prediction-reality gap feature (the single most impactful feature for
+the target user with social anxiety) is absent.
+
+The gap between "working app" and "ready for public" is mostly content, streak
+redesign, and one retention mechanic (shop). That is achievable quickly.
+
 ================================================================================
 END OF ANALYSIS — 2026-04-05
 ================================================================================

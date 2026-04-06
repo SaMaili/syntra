@@ -54,9 +54,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Du bist auf einem ${days}-Tage-Streak. Bleib dran!";
 
   static String m14(kilo) =>
-      "${kilo}k XP verdient — du baust etwas Echtes auf.";
+      "${kilo}k Aura verdient — du baust etwas Echtes auf.";
 
-  static String m15(xp) => "${xp} XP durch echtes Handeln verdient.";
+  static String m15(xp) => "${xp} Aura durch echtes Handeln verdient.";
 
   static String m16(days) => "Du bist seit ${days} Tagen dabei. Weiter so.";
 
@@ -114,13 +114,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "backToHome": MessageLookupByLibrary.simpleMessage("Zurück zum Hauptmenü"),
     "bad": MessageLookupByLibrary.simpleMessage("Schlecht"),
     "badgeBraveMinutes": MessageLookupByLibrary.simpleMessage("60 Min. mutig"),
-    "badgeCenturyXp": MessageLookupByLibrary.simpleMessage("100-XP-Club"),
+    "badgeCenturyXp": MessageLookupByLibrary.simpleMessage("100-Aura-Club"),
     "badgeFiftyChallenges": MessageLookupByLibrary.simpleMessage(
       "50 Challenges",
     ),
     "badgeFirstStep": MessageLookupByLibrary.simpleMessage("Erster Schritt"),
     "badgeFiveHundredXp": MessageLookupByLibrary.simpleMessage(
-      "500-XP-Legende",
+      "500-Aura-Legende",
     ),
     "badgeSevenDayStreak": MessageLookupByLibrary.simpleMessage(
       "7-Tage-Streak",
@@ -505,7 +505,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "nextMotivation1": m7,
     "nextMotivation2": m8,
-    "noChalllengesFound": MessageLookupByLibrary.simpleMessage(
+    "noChallengesFound": MessageLookupByLibrary.simpleMessage(
       "Keine Challenges gefunden",
     ),
     "noEntriesYet": MessageLookupByLibrary.simpleMessage("Noch keine Einträge"),
@@ -780,7 +780,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Schade! Du hast die Challenge abgebrochen.",
     ),
     "total": MessageLookupByLibrary.simpleMessage("Gesamt"),
-    "totalXp": MessageLookupByLibrary.simpleMessage("Gesamt-XP"),
+    "totalXp": MessageLookupByLibrary.simpleMessage("Gesamt-Aura"),
     "tryAgainNextTime": MessageLookupByLibrary.simpleMessage(
       "Versuch es beim nächsten Mal!",
     ),
@@ -809,7 +809,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Gut gemacht! Mach weiter so!",
     ),
     "xp": MessageLookupByLibrary.simpleMessage("XP"),
-    "xpEarnedThisWeek": MessageLookupByLibrary.simpleMessage("XP diese Woche"),
+    "xpEarnedThisWeek": MessageLookupByLibrary.simpleMessage(
+      "Aura diese Woche",
+    ),
     "yesChallengeStart": MessageLookupByLibrary.simpleMessage(
       "Ja, ich habe sie gemacht",
     ),

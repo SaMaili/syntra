@@ -91,7 +91,7 @@
   "challengeCompletedSnackbar": "Challenge abgeschlossen! Logbuch-Eintrag gespeichert.",
   "wellDone": "Gut gemacht! Mach weiter so!",
   "tryAgainNextTime": "Versuch es beim nächsten Mal!",
-  "noChalllengesFound": "Keine Challenges gefunden",
+  "noChallengesFound": "Keine Challenges gefunden",
   "challengesShuffled": "Challenges gemischt!",
   "challengeCompletedGeneric": "Challenge abgeschlossen!",
   "score": "Punkte:",
@@ -257,11 +257,11 @@
     "placeholders": { "days": { "type": "int" } }
   },
   "storyStreakOne": "Tag 1 eines neuen Streaks. Jeder große Streak hat hier angefangen.",
-  "storyXpKilo": "{kilo}k XP verdient — du baust etwas Echtes auf.",
+  "storyXpKilo": "{kilo}k Aura verdient — du baust etwas Echtes auf.",
   "@storyXpKilo": {
     "placeholders": { "kilo": { "type": "String" } }
   },
-  "storyXpSmall": "{xp} XP durch echtes Handeln verdient.",
+  "storyXpSmall": "{xp} Aura durch echtes Handeln verdient.",
   "@storyXpSmall": {
     "placeholders": { "xp": { "type": "int" } }
   },
@@ -269,12 +269,12 @@
   "chartExplanation": "Jeder Balken ist ein Tag. Grün = geschafft, orange = versucht.",
   "legendCompleted": "Geschafft",
   "legendTried": "Versucht",
-  "xpEarnedThisWeek": "XP diese Woche",
+  "xpEarnedThisWeek": "Aura diese Woche",
   "activity": "Aktivität",
   "activitySubtitle": "jedes Quadrat ist ein Tag",
   "less": "Weniger",
   "more": "Mehr",
-  "totalXp": "Gesamt-XP",
+  "totalXp": "Gesamt-Aura",
   "dayStreak": "Tage-Streak",
   "timesTried": "Mal versucht",
   "minutesBrave": "Min. mutig",
@@ -464,8 +464,8 @@
   "badgeFiftyChallenges": "50 Challenges",
   "badgeThreeDayStreak": "3-Tage-Streak",
   "badgeSevenDayStreak": "7-Tage-Streak",
-  "badgeCenturyXp": "100-XP-Club",
-  "badgeFiveHundredXp": "500-XP-Legende",
+  "badgeCenturyXp": "100-Aura-Club",
+  "badgeFiveHundredXp": "500-Aura-Legende",
   "badgeBraveMinutes": "60 Min. mutig",
   "weeklyGoalTitle": "Wochenziel",
   "weeklyGoalProgress": "{done} von {goal} Challenges diese Woche",
