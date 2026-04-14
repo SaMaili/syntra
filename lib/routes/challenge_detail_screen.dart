@@ -31,11 +31,6 @@ class ChallengeDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          challenge.title,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
         actions: [
           if (isDone)
             Padding(
@@ -53,6 +48,16 @@ class ChallengeDetailScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // ── Title ──────────────────────────────────────────────────
+                  Text(
+                    challenge.title,
+                    style: tt.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      height: 1.2,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+
                   // ── Meta chips ─────────────────────────────────────────────
                   _TagChips(challenge: challenge),
                   const SizedBox(height: AppSpacing.lg),
@@ -137,7 +142,7 @@ class _MoodChart extends ConsumerWidget {
     final async = ref.watch(moodHistoryProvider(challengeId));
     return async.when(
       loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
+      error: (e, st) => const SizedBox.shrink(),
       data: (scores) {
         if (scores.length < 2) return const SizedBox.shrink();
         final cs = Theme.of(context).colorScheme;

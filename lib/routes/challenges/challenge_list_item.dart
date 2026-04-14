@@ -51,6 +51,8 @@ class ChallengeListItem extends StatelessWidget {
                       Expanded(
                         child: Text(
                           challenge.title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                           style: Theme.of(context)
                               .textTheme
                               .titleMedium
@@ -100,24 +102,38 @@ class ChallengeListItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Flexible(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      MetaChip(
-                        icon: Icons.timer_outlined,
-                        label: _formatTime(challenge.time),
-                      ),
-                      const SizedBox(width: AppSpacing.sm),
-                      MetaChip(
-                        icon: Icons.emoji_events_outlined,
-                        label: '${challenge.xp} ${S.of(context).auraPoints}',
-                      ),
-                      const SizedBox(width: AppSpacing.sm),
-                      MetaChip(
-                        icon: _typeIcon(challenge.type),
-                        label: _typeLabel(context, challenge.type),
-                      ),
-                    ],
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final compact = constraints.maxWidth < 190;
+                      return Row(
+                        children: [
+                          Flexible(
+                            child: MetaChip(
+                              icon: Icons.timer_outlined,
+                              label: compact
+                                  ? _formatTimeCompact(challenge.time)
+                                  : _formatTimeFull(challenge.time),
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          Flexible(
+                            child: MetaChip(
+                              icon: Icons.emoji_events_outlined,
+                              label: compact
+                                  ? '${challenge.xp}A'
+                                  : '${challenge.xp} ${S.of(context).auraPoints}',
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          Flexible(
+                            child: MetaChip(
+                              icon: _typeIcon(challenge.type),
+                              label: _typeLabel(context, challenge.type),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
@@ -153,7 +169,13 @@ class ChallengeListItem extends StatelessWidget {
     };
   }
 
-  String _formatTime(int seconds) {
+  String _formatTimeCompact(int seconds) {
+    final m = seconds ~/ 60;
+    final s = seconds % 60;
+    return '$m:${s.toString().padLeft(2, '0')}';
+  }
+
+  String _formatTimeFull(int seconds) {
     if (seconds < 60) return '${seconds}s';
     final m = seconds ~/ 60;
     final s = seconds % 60;
@@ -179,7 +201,6 @@ class MetaChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return Row(
-      mainAxisSize: MainAxisSize.min,
       children: [
         Icon(icon, size: 14, color: cs.outline),
         const SizedBox(width: 3),
@@ -187,6 +208,7 @@ class MetaChip extends StatelessWidget {
           child: Text(
             label,
             overflow: TextOverflow.ellipsis,
+            maxLines: 1,
             style: Theme.of(context)
                 .textTheme
                 .labelSmall

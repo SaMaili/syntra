@@ -58,30 +58,45 @@ class OnboardingPage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Spacer(flex: 2),
-          icon,
-          const SizedBox(height: AppSpacing.xl),
-          Text(
-            headline,
-            style: tt.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
+          // Scrollable content — centers on large screens, scrolls on small ones.
+          Expanded(
+            child: LayoutBuilder(
+              builder: (context, constraints) => SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      icon,
+                      const SizedBox(height: AppSpacing.xl),
+                      Text(
+                        headline,
+                        style: tt.headlineSmall
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      Text(
+                        subtext,
+                        style: tt.bodyLarge?.copyWith(
+                            color: cs.onSurfaceVariant, height: 1.5),
+                        textAlign: TextAlign.center,
+                      ),
+                      if (extra != null) ...[
+                        const SizedBox(height: AppSpacing.xl),
+                        extra!,
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            subtext,
-            style: tt.bodyLarge?.copyWith(color: cs.onSurfaceVariant, height: 1.5),
-            textAlign: TextAlign.center,
-          ),
-          if (extra != null) ...[
-            const SizedBox(height: AppSpacing.xl),
-            extra!,
-          ],
-          const Spacer(flex: 3),
-          SyntraButton(
-            onPressed: onButton,
-            child: Text(buttonLabel),
-          ),
+
+          // Button pinned at the bottom.
+          SyntraButton(onPressed: onButton, child: Text(buttonLabel)),
           const SizedBox(height: AppSpacing.lg),
         ],
       ),
@@ -93,14 +108,15 @@ class OnboardingPage extends StatelessWidget {
 
 Widget iconCircle(BuildContext context, IconData icon, {Color? bg}) {
   final cs = Theme.of(context).colorScheme;
+  final size = (MediaQuery.sizeOf(context).height * 0.15).clamp(72.0, 120.0);
   return Container(
-    width: 120,
-    height: 120,
+    width: size,
+    height: size,
     decoration: BoxDecoration(
       color: bg ?? cs.primaryContainer,
       shape: BoxShape.circle,
     ),
-    child: Icon(icon, size: 64, color: cs.onPrimaryContainer),
+    child: Icon(icon, size: size * 0.53, color: cs.onPrimaryContainer),
   );
 }
 

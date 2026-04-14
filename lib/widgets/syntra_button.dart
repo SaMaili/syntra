@@ -60,7 +60,7 @@ class SyntraButton extends ConsumerStatefulWidget {
         children: [
           Icon(icon, size: height * 0.4),
           const SizedBox(width: 8),
-          label,
+          Flexible(child: label),
         ],
       ),
     );

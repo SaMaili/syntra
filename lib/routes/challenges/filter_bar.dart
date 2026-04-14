@@ -131,7 +131,7 @@ class TypeSelector extends StatelessWidget {
                 width: tabW - 6,
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: cs.secondaryContainer,
+                    color: Color.lerp(cs.secondary, Colors.grey, 0.45),
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
@@ -151,7 +151,7 @@ class TypeSelector extends StatelessWidget {
                               _icons[i],
                               size: 13,
                               color: isSelected
-                                  ? cs.onSecondaryContainer
+                                  ? Colors.white
                                   : cs.onSurfaceVariant,
                             ),
                             const SizedBox(width: 4),
@@ -162,7 +162,7 @@ class TypeSelector extends StatelessWidget {
                                     ? FontWeight.w600
                                     : FontWeight.normal,
                                 color: isSelected
-                                    ? cs.onSecondaryContainer
+                                    ? Colors.white
                                     : cs.onSurfaceVariant,
                               ),
                             ),

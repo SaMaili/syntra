@@ -14,7 +14,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// (e.g. [NotificationManager]) call [SettingsRepository.instance] after
 /// [SettingsRepository.configure] has been called in [main].
 class SettingsRepository {
-  static const _keyDarkMode = 'settings_dark_mode';
+  static const _keyDarkMode = 'settings_dark_mode'; // legacy bool
+  static const _keyThemeMode = 'settings_theme_mode'; // "light" | "dark" | "system"
   static const _keyLanguage = 'settings_language';
   static const _keyNotificationsEnabled = 'notifications_enabled';
   static const _keySoundEffectsEnabled = 'sound_effects_enabled';
@@ -37,6 +38,8 @@ class SettingsRepository {
   /// ISO year-week (e.g. "2026-W15") of the last week where the weekly XP
   /// goal was reached and the flame celebration was shown.
   static const _keyLastGoalWeek = 'last_goal_week';
+  /// Comma-separated badge IDs that have already been celebrated.
+  static const _keySeenBadges = 'seen_badges';
 
   final SharedPreferences _prefs;
 
@@ -61,6 +64,25 @@ class SettingsRepository {
 
   // ─── Theme ────────────────────────────────────────────────────────────────
 
+  /// Returns "light", "dark", or "system". Migrates from the legacy bool key
+  /// on first call after upgrade. Returns null if nothing is stored yet.
+  Future<String?> loadThemeMode() async {
+    final saved = _prefs.getString(_keyThemeMode);
+    if (saved != null) return saved;
+    // Migrate from legacy bool preference.
+    final legacy = _prefs.getBool(_keyDarkMode);
+    if (legacy != null) {
+      final migrated = legacy ? 'dark' : 'light';
+      await _prefs.setString(_keyThemeMode, migrated);
+      return migrated;
+    }
+    return null;
+  }
+
+  Future<void> saveThemeMode(String mode) async =>
+      _prefs.setString(_keyThemeMode, mode);
+
+  // Keep for backwards compat with any remaining callers.
   Future<bool?> loadDarkMode() async => _prefs.getBool(_keyDarkMode);
 
   Future<void> saveDarkMode(bool value) async =>
@@ -161,6 +183,17 @@ class SettingsRepository {
 
   Future<void> saveLastGoalWeek(String isoWeek) async =>
       _prefs.setString(_keyLastGoalWeek, isoWeek);
+
+  // ─── Seen badges ──────────────────────────────────────────────────────────
+
+  Future<Set<String>> loadSeenBadges() async {
+    final raw = _prefs.getString(_keySeenBadges) ?? '';
+    if (raw.isEmpty) return {};
+    return raw.split(',').toSet();
+  }
+
+  Future<void> saveSeenBadges(Set<String> badges) async =>
+      _prefs.setString(_keySeenBadges, badges.join(','));
 
   // ─── Weekly goal ─────────────────────────────────────────────────────────
 

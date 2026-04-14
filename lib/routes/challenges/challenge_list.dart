@@ -8,10 +8,11 @@ import '../../providers/statistics_providers.dart';
 import '../../theme/app_spacing.dart';
 import 'challenge_list_item.dart';
 
-class ChallengeList extends ConsumerWidget {
+/// Sliver version of the challenge list — for use inside a [CustomScrollView].
+class ChallengeListSliver extends ConsumerWidget {
   final void Function(BuildContext, Challenge) onStart;
 
-  const ChallengeList({required this.onStart});
+  const ChallengeListSliver({required this.onStart});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -19,29 +20,70 @@ class ChallengeList extends ConsumerWidget {
     final filters = ref.watch(challengeFiltersProvider);
     final completedIds =
         ref.watch(completedChallengeIdsProvider).valueOrNull ?? {};
+    final completionDates =
+        ref.watch(latestCompletionDatesProvider).valueOrNull ?? {};
 
     return filteredAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text('Error: $e')),
+      loading: () => const SliverFillRemaining(
+        child: Center(child: CircularProgressIndicator()),
+      ),
+      error: (e, _) => SliverFillRemaining(
+        child: Center(child: Text('Error: $e')),
+      ),
       data: (list) {
-        final filtered = filters.showOnlyNotDone
-            ? list.where((c) => !completedIds.contains(c.id)).toList()
-            : list;
+        var filtered = List<Challenge>.from(list);
 
-        if (filtered.isEmpty) return const ChallengesEmptyState();
+        // Completion filter
+        switch (filters.completionFilter) {
+          case CompletionFilter.notDone:
+            filtered =
+                filtered.where((c) => !completedIds.contains(c.id)).toList();
+          case CompletionFilter.done:
+            filtered =
+                filtered.where((c) => completedIds.contains(c.id)).toList();
+          case CompletionFilter.all:
+            break;
+        }
 
-        return ListView.separated(
-          padding: const EdgeInsets.only(
-            left: AppSpacing.md,
-            right: AppSpacing.md,
-            bottom: AppSpacing.xl,
+        // Sort: completion date takes precedence over aura when both are active
+        if (filters.completionSortOrder != CompletionSortOrder.none) {
+          filtered.sort((a, b) {
+            final da = completionDates[a.id];
+            final db = completionDates[b.id];
+            if (da == null && db == null) return 0;
+            if (da == null) return 1; // undone goes to end
+            if (db == null) return -1;
+            return filters.completionSortOrder == CompletionSortOrder.newestFirst
+                ? db.compareTo(da)
+                : da.compareTo(db);
+          });
+        } else if (filters.auraSortOrder != AuraSortOrder.none) {
+          filtered.sort((a, b) => filters.auraSortOrder == AuraSortOrder.asc
+              ? a.xp.compareTo(b.xp)
+              : b.xp.compareTo(a.xp));
+        }
+
+        if (filtered.isEmpty) {
+          return const SliverFillRemaining(
+            hasScrollBody: false,
+            child: Center(child: ChallengesEmptyState()),
+          );
+        }
+
+        final bottomInset = MediaQuery.paddingOf(context).bottom;
+        return SliverPadding(
+          padding: EdgeInsets.fromLTRB(
+            AppSpacing.md, AppSpacing.xs, AppSpacing.md,
+            AppSpacing.xl + bottomInset,
           ),
-          itemCount: filtered.length,
-          separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
-          itemBuilder: (context, i) => ChallengeListItem(
-            challenge: filtered[i],
-            isDone: completedIds.contains(filtered[i].id),
-            onStart: () => onStart(context, filtered[i]),
+          sliver: SliverList.separated(
+            itemCount: filtered.length,
+            separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
+            itemBuilder: (context, i) => ChallengeListItem(
+              challenge: filtered[i],
+              isDone: completedIds.contains(filtered[i].id),
+              onStart: () => onStart(context, filtered[i]),
+            ),
           ),
         );
       },

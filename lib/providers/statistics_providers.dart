@@ -37,6 +37,12 @@ final completedChallengeIdsProvider = FutureProvider<Set<String>>((ref) {
   return LogbookRepository.instance.completedChallengeIds();
 });
 
+final latestCompletionDatesProvider =
+    FutureProvider<Map<String, DateTime>>((ref) {
+  ref.watch(statisticsRefreshProvider);
+  return LogbookRepository.instance.latestCompletionDates();
+});
+
 final weeklyProgressProvider = FutureProvider<int>((ref) {
   ref.watch(statisticsRefreshProvider);
   return LogbookRepository.instance.challengesCompletedThisWeek();

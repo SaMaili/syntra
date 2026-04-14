@@ -5,8 +5,11 @@ import '../../generated/l10n.dart';
 import '../../providers/statistics_providers.dart';
 import '../../theme/app_spacing.dart';
 
-class ChallengesHeader extends ConsumerWidget {
-  const ChallengesHeader();
+/// Scrollable hero header shown at the top of the challenges screen.
+/// Contains the screen title, weekly streak badge, and aura badge.
+/// Scrolls away with the list; only the filter bar below stays pinned.
+class ChallengesHeroHeader extends ConsumerWidget {
+  const ChallengesHeroHeader({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -15,12 +18,9 @@ class ChallengesHeader extends ConsumerWidget {
     final weekStreak = stats.whenOrNull(data: (s) => s['weekStreak']) ?? 0;
     final pendingWeekStreak =
         stats.whenOrNull(data: (s) => s['pendingWeekStreak']) ?? 0;
-    // Active (orange): current week already hit the threshold.
-    // Pending (grey with count): last week qualified but current week not yet —
-    //   one-week grace period, shows previous streak as motivational cue.
-    // Reset (grey 0): two or more consecutive weeks missed.
     final isStreakActive = weekStreak > 0;
     final displayStreak = weekStreak > 0 ? weekStreak : pendingWeekStreak;
+
     final cs = Theme.of(context).colorScheme;
     final l = S.of(context);
 
@@ -28,67 +28,77 @@ class ChallengesHeader extends ConsumerWidget {
       padding: const EdgeInsets.fromLTRB(
           AppSpacing.md, AppSpacing.md, AppSpacing.md, AppSpacing.sm),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Expanded(
-            child: Text(
-              l.navChallenge,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
+          // ── Streak badge ──────────────────────────────────────────────────
+          _StatBadge(
+            icon: Icons.local_fire_department_rounded,
+            label: '$displayStreak ${l.weeksShort}',
+            active: isStreakActive,
+            activeColor: cs.tertiary,
+            inactiveColor: cs.outline,
+            inactiveBg: cs.surfaceContainerHighest,
           ),
-          // Weekly streak badge
-          Container(
-            padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md, vertical: AppSpacing.sm),
-            decoration: BoxDecoration(
-              color: isStreakActive
-                  ? cs.tertiary.withValues(alpha: 0.12)
-                  : cs.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.local_fire_department_rounded,
-                  size: 18,
-                  color: isStreakActive ? cs.tertiary : cs.outline,
-                ),
-                const SizedBox(width: AppSpacing.xs),
-                Text(
-                  '$displayStreak ${l.weeksShort}',
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: isStreakActive ? cs.tertiary : cs.outline,
-                      ),
-                ),
-              ],
-            ),
+
+          const Spacer(),
+
+          // ── Aura badge ────────────────────────────────────────────────────
+          _StatBadge(
+            icon: Icons.emoji_events,
+            label: '$totalXp ${l.auraPoints}',
+            active: true,
+            activeColor: cs.onPrimaryContainer,
+            inactiveColor: cs.onPrimaryContainer,
+            inactiveBg: cs.primaryContainer,
+            activeBg: cs.primaryContainer,
           ),
-          const SizedBox(width: AppSpacing.sm),
-          // Aura badge
-          Container(
-            padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md, vertical: AppSpacing.sm),
-            decoration: BoxDecoration(
-              color: cs.primaryContainer,
-              borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.emoji_events, size: 18, color: cs.onPrimaryContainer),
-                const SizedBox(width: AppSpacing.xs),
-                Text(
-                  '$totalXp ${S.of(context).auraPoints}',
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: cs.onPrimaryContainer,
-                      ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StatBadge extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool active;
+  final Color activeColor;
+  final Color inactiveColor;
+  final Color? activeBg;
+  final Color inactiveBg;
+
+  const _StatBadge({
+    required this.icon,
+    required this.label,
+    required this.active,
+    required this.activeColor,
+    required this.inactiveColor,
+    required this.inactiveBg,
+    this.activeBg,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = active ? activeColor : inactiveColor;
+    final bg = active ? (activeBg ?? Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.12)) : inactiveBg;
+    return Container(
+      padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 18, color: color),
+          const SizedBox(width: AppSpacing.xs),
+          Text(
+            label,
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: color,
                 ),
-              ],
-            ),
           ),
         ],
       ),

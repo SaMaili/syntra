@@ -28,16 +28,26 @@ class ThemeModeNotifier extends StateNotifier<ThemeMode> {
   }
 
   Future<void> _load() async {
-    final dark = await _repo.loadDarkMode();
-    if (dark != null) {
-      state = dark ? ThemeMode.dark : ThemeMode.light;
-    }
+    final saved = await _repo.loadThemeMode();
+    state = _parse(saved);
   }
 
-  Future<void> setDark(bool dark) async {
-    state = dark ? ThemeMode.dark : ThemeMode.light;
-    await _repo.saveDarkMode(dark);
+  Future<void> setMode(ThemeMode mode) async {
+    state = mode;
+    await _repo.saveThemeMode(_serialize(mode));
   }
+
+  static ThemeMode _parse(String? value) => switch (value) {
+        'dark' => ThemeMode.dark,
+        'light' => ThemeMode.light,
+        _ => ThemeMode.system,
+      };
+
+  static String _serialize(ThemeMode mode) => switch (mode) {
+        ThemeMode.dark => 'dark',
+        ThemeMode.light => 'light',
+        _ => 'system',
+      };
 }
 
 // ─── Locale ───────────────────────────────────────────────────────────────────

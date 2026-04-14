@@ -57,19 +57,21 @@ class _AppSettingsCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDark = ref.watch(themeModeProvider) == ThemeMode.dark;
+    final themeMode = ref.watch(themeModeProvider);
     final notificationsEnabled = ref.watch(notificationsEnabledProvider);
     final soundEffectsEnabled = ref.watch(soundEffectsEnabledProvider);
 
     return Card(
       child: Column(
         children: [
-          SwitchListTile(
+          ListTile(
+            leading: const Icon(Icons.dark_mode_outlined),
             title: Text(S.of(context).darkMode),
             subtitle: Text(S.of(context).darkModeSubtitle),
-            secondary: const Icon(Icons.dark_mode_outlined),
-            value: isDark,
-            onChanged: (v) => ref.read(themeModeProvider.notifier).setDark(v),
+            trailing: _ThemeModeDropdown(
+              value: themeMode,
+              onChanged: (m) => ref.read(themeModeProvider.notifier).setMode(m),
+            ),
           ),
           const Divider(indent: 16, endIndent: 16),
           SwitchListTile(
@@ -270,6 +272,45 @@ class _GeneralCard extends ConsumerWidget {
       await NotificationManager.cancelAllNotifications();
       await NotificationManager.scheduleDailyReminders();
     }
+  }
+}
+
+// ─── Theme-mode dropdown ──────────────────────────────────────────────────────
+
+class _ThemeModeDropdown extends StatelessWidget {
+  final ThemeMode value;
+  final ValueChanged<ThemeMode> onChanged;
+  const _ThemeModeDropdown({required this.value, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final l = S.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+      decoration: BoxDecoration(
+        border: Border.all(color: cs.outline.withAlpha(80)),
+        borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
+        color: cs.surfaceContainerHighest,
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<ThemeMode>(
+          value: value,
+          isDense: true,
+          style: Theme.of(context)
+              .textTheme
+              .bodyMedium
+              ?.copyWith(color: cs.onSurface),
+          borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
+          items: [
+            DropdownMenuItem(value: ThemeMode.light, child: Text(l.themeLight)),
+            DropdownMenuItem(value: ThemeMode.dark,  child: Text(l.themeDark)),
+            DropdownMenuItem(value: ThemeMode.system, child: Text(l.themeSystem)),
+          ],
+          onChanged: (v) { if (v != null) onChanged(v); },
+        ),
+      ),
+    );
   }
 }
 

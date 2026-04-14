@@ -315,6 +315,19 @@ class LogbookRepository {
     return {for (final r in rows) r['challenge_id'] as String};
   }
 
+  /// Returns the latest completion timestamp per challenge ID.
+  Future<Map<String, DateTime>> latestCompletionDates() async {
+    final db = await _database;
+    final rows = await db.rawQuery(
+      "SELECT challenge_id, MAX(timestamp) AS latest FROM logbook "
+      "WHERE status = 'success' GROUP BY challenge_id",
+    );
+    return {
+      for (final r in rows)
+        r['challenge_id'] as String: DateTime.parse(r['latest'] as String),
+    };
+  }
+
   // ─── Delete ───────────────────────────────────────────────────────────────
 
   Future<void> deleteEntry(int id) async {

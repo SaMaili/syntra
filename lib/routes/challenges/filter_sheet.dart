@@ -7,7 +7,7 @@ import '../../theme/app_spacing.dart';
 import '../../widgets/syntra_button.dart';
 
 class ChallengesFilterSheet extends ConsumerWidget {
-  const ChallengesFilterSheet();
+  const ChallengesFilterSheet({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -16,20 +16,29 @@ class ChallengesFilterSheet extends ConsumerWidget {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
     final l = S.of(context);
+    
+    final hasResettableFilters = filters.environmentFilter != EnvironmentFilter.all ||
+        filters.completionFilter != CompletionFilter.all ||
+        filters.auraSortOrder != AuraSortOrder.none ||
+        filters.completionSortOrder != CompletionSortOrder.none ||
+        filters.flirtFilter != FlirtFilter.all;
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(
-          AppSpacing.lg, AppSpacing.md, AppSpacing.lg, AppSpacing.xl),
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.85,
+      ),
+      padding: EdgeInsets.fromLTRB(
+          AppSpacing.lg, AppSpacing.md, AppSpacing.lg, AppSpacing.lg + MediaQuery.paddingOf(context).bottom),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Drag handle
           Center(
             child: Container(
               width: 40,
               height: 4,
-              margin: const EdgeInsets.only(bottom: AppSpacing.lg),
+              margin: const EdgeInsets.only(bottom: AppSpacing.md),
               decoration: BoxDecoration(
                 color: cs.outlineVariant,
                 borderRadius: BorderRadius.circular(2),
@@ -41,103 +50,157 @@ class ChallengesFilterSheet extends ConsumerWidget {
               Text(l.filterTitle,
                   style: tt.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
               const Spacer(),
-              if (filters.activeFilterCount > 0)
+              if (hasResettableFilters)
                 TextButton(
                   onPressed: notifier.resetAdvancedFilters,
                   child: Text(l.filterReset),
                 ),
             ],
           ),
-          const SizedBox(height: AppSpacing.lg),
-
-          // ── Challenge type ────────────────────────────────────────────────
-          Text(l.filterTypeLabel,
-              style: tt.labelLarge?.copyWith(fontWeight: FontWeight.w600)),
           const SizedBox(height: AppSpacing.sm),
-          AnimatedChipRow<ChallengeTypeFilter>(
-            items: ChallengeTypeFilter.values,
-            selected: filters.typeFilter,
-            label: (t) => switch (t) {
-              ChallengeTypeFilter.solo => l.solo,
-              ChallengeTypeFilter.group => l.group,
-              ChallengeTypeFilter.coop => l.coop,
-              ChallengeTypeFilter.dare => l.dare,
-              ChallengeTypeFilter.all => l.filterAll,
-            },
-            icon: (t) => switch (t) {
-              ChallengeTypeFilter.solo => Icons.person_rounded,
-              ChallengeTypeFilter.group => Icons.group_rounded,
-              ChallengeTypeFilter.coop => Icons.people_alt_rounded,
-              ChallengeTypeFilter.dare => Icons.bolt_rounded,
-              ChallengeTypeFilter.all => Icons.all_inclusive_rounded,
-            },
-            onSelected: notifier.setTypeFilter,
-          ),
-          const SizedBox(height: AppSpacing.lg),
 
-          // ── Environment ───────────────────────────────────────────────────
-          Text(l.filterEnvLabel,
-              style: tt.labelLarge?.copyWith(fontWeight: FontWeight.w600)),
-          const SizedBox(height: AppSpacing.sm),
-          AnimatedChipRow<EnvironmentFilter>(
-            items: EnvironmentFilter.values,
-            selected: filters.environmentFilter,
-            label: (e) => switch (e) {
-              EnvironmentFilter.all => l.filterAll,
-              EnvironmentFilter.street => l.filterEnvStreet,
-              EnvironmentFilter.transit => l.filterEnvTransit,
-              EnvironmentFilter.cafe => l.filterEnvCafe,
-              EnvironmentFilter.event => l.filterEnvEvent,
-            },
-            icon: (_) => null,
-            onSelected: notifier.setEnvironmentFilter,
-          ),
-          const SizedBox(height: AppSpacing.lg),
+          // Scrollable area for filters
+          Flexible(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: AppSpacing.sm),
 
-          // ── Flirt filter ──────────────────────────────────────────────────
-          Text(l.filterFlirtLabel,
-              style: tt.labelLarge?.copyWith(fontWeight: FontWeight.w600)),
-          const SizedBox(height: AppSpacing.sm),
-          AnimatedChipRow<FlirtFilter>(
-            items: FlirtFilter.values,
-            selected: filters.flirtFilter,
-            label: (f) => switch (f) {
-              FlirtFilter.all => l.filterAll,
-              FlirtFilter.showOnly => l.filterFlirtOnly,
-              FlirtFilter.exclude => l.filterFlirtExclude,
-            },
-            icon: (f) => switch (f) {
-              FlirtFilter.all => Icons.apps_rounded,
-              FlirtFilter.showOnly => Icons.favorite_rounded,
-              FlirtFilter.exclude => Icons.heart_broken_rounded,
-            },
-            onSelected: notifier.setFlirtFilter,
-          ),
-          const SizedBox(height: AppSpacing.lg),
+                  // ── Sorting ───────────────────────────────────────────────────
+                  Text(l.filterOrderLabel,
+                      style: tt.labelMedium?.copyWith(fontWeight: FontWeight.w600)),
+                  const SizedBox(height: AppSpacing.xs),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _OrderButton(
+                          categoryIcon: Icons.emoji_events_outlined,
+                          categoryLabel: l.filterAuraLabel,
+                          stateIcon: switch (filters.auraSortOrder) {
+                            AuraSortOrder.none => Icons.remove_rounded,
+                            AuraSortOrder.asc => Icons.arrow_upward_rounded,
+                            AuraSortOrder.desc => Icons.arrow_downward_rounded,
+                          },
+                          active: filters.auraSortOrder != AuraSortOrder.none,
+                          onTap: () => notifier.setAuraSortOrder(
+                            AuraSortOrder.values[
+                                (filters.auraSortOrder.index + 1) % AuraSortOrder.values.length],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      Expanded(
+                        child: _OrderButton(
+                          categoryIcon: Icons.check_circle_outline_rounded,
+                          categoryLabel: l.filterOrderCompletionLabel,
+                          stateIcon: switch (filters.completionSortOrder) {
+                            CompletionSortOrder.none => Icons.remove_rounded,
+                            CompletionSortOrder.newestFirst => Icons.update_rounded,
+                            CompletionSortOrder.oldestFirst => Icons.history_rounded,
+                          },
+                          active: filters.completionSortOrder != CompletionSortOrder.none,
+                          onTap: () => notifier.setCompletionSortOrder(
+                            CompletionSortOrder.values[
+                                (filters.completionSortOrder.index + 1) %
+                                    CompletionSortOrder.values.length],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.md),
 
-          // ── Not done toggle ───────────────────────────────────────────────
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(l.filterNewOnly,
-                        style: tt.labelLarge
-                            ?.copyWith(fontWeight: FontWeight.w600)),
-                    Text(l.filterNewOnlySubtitle,
-                        style: tt.bodySmall
-                            ?.copyWith(color: cs.onSurfaceVariant)),
-                  ],
-                ),
+                  // ── Challenge type ────────────────────────────────────────────────
+                  Text(l.filterTypeLabel,
+                      style: tt.labelMedium?.copyWith(fontWeight: FontWeight.w600)),
+                  const SizedBox(height: AppSpacing.xs),
+                  AnimatedChipRow<ChallengeTypeFilter>(
+                    items: ChallengeTypeFilter.values,
+                    selected: filters.typeFilter,
+                    label: (t) => switch (t) {
+                      ChallengeTypeFilter.solo => l.solo,
+                      ChallengeTypeFilter.group => l.group,
+                      ChallengeTypeFilter.coop => l.coop,
+                      ChallengeTypeFilter.dare => l.dare,
+                      ChallengeTypeFilter.all => l.filterAll,
+                    },
+                    icon: (t) => switch (t) {
+                      ChallengeTypeFilter.solo => Icons.person_rounded,
+                      ChallengeTypeFilter.group => Icons.group_rounded,
+                      ChallengeTypeFilter.coop => Icons.people_alt_rounded,
+                      ChallengeTypeFilter.dare => Icons.bolt_rounded,
+                      ChallengeTypeFilter.all => Icons.all_inclusive_rounded,
+                    },
+                    onSelected: notifier.setTypeFilter,
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+
+                  // ── Environment ───────────────────────────────────────────────────
+                  Text(l.filterEnvLabel,
+                      style: tt.labelMedium?.copyWith(fontWeight: FontWeight.w600)),
+                  const SizedBox(height: AppSpacing.xs),
+                  AnimatedChipRow<EnvironmentFilter>(
+                    items: EnvironmentFilter.values,
+                    selected: filters.environmentFilter,
+                    label: (e) => switch (e) {
+                      EnvironmentFilter.all => l.filterAll,
+                      EnvironmentFilter.street => l.filterEnvStreet,
+                      EnvironmentFilter.transit => l.filterEnvTransit,
+                      EnvironmentFilter.cafe => l.filterEnvCafe,
+                      EnvironmentFilter.event => l.filterEnvEvent,
+                    },
+                    icon: (_) => null,
+                    onSelected: notifier.setEnvironmentFilter,
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+
+                  // ── Flirt filter ──────────────────────────────────────────────────
+                  Text(l.filterFlirtLabel,
+                      style: tt.labelMedium?.copyWith(fontWeight: FontWeight.w600)),
+                  const SizedBox(height: AppSpacing.xs),
+                  AnimatedChipRow<FlirtFilter>(
+                    items: FlirtFilter.values,
+                    selected: filters.flirtFilter,
+                    label: (f) => switch (f) {
+                      FlirtFilter.all => l.filterAll,
+                      FlirtFilter.showOnly => l.filterFlirtOnly,
+                      FlirtFilter.exclude => l.filterFlirtExclude,
+                    },
+                    icon: (f) => switch (f) {
+                      FlirtFilter.all => Icons.apps_rounded,
+                      FlirtFilter.showOnly => Icons.favorite_rounded,
+                      FlirtFilter.exclude => Icons.heart_broken_rounded,
+                    },
+                    onSelected: notifier.setFlirtFilter,
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+
+                  // ── Completion filter ─────────────────────────────────────────────
+                  Text(l.filterCompletionLabel,
+                      style: tt.labelMedium?.copyWith(fontWeight: FontWeight.w600)),
+                  const SizedBox(height: AppSpacing.xs),
+                  AnimatedChipRow<CompletionFilter>(
+                    items: CompletionFilter.values,
+                    selected: filters.completionFilter,
+                    label: (c) => switch (c) {
+                      CompletionFilter.all => l.filterCompletionAll,
+                      CompletionFilter.done => l.filterCompletionDone,
+                      CompletionFilter.notDone => l.filterCompletionNotDone,
+                    },
+                    icon: (c) => switch (c) {
+                      CompletionFilter.all => Icons.apps_rounded,
+                      CompletionFilter.done => Icons.check_circle_rounded,
+                      CompletionFilter.notDone => Icons.radio_button_unchecked_rounded,
+                    },
+                    onSelected: notifier.setCompletionFilter,
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                ],
               ),
-              Switch(
-                value: filters.showOnlyNotDone,
-                onChanged: notifier.setShowOnlyNotDone,
-              ),
-            ],
+            ),
           ),
-          const SizedBox(height: AppSpacing.xl),
+          const SizedBox(height: AppSpacing.md),
 
           SyntraButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -158,6 +221,7 @@ class AnimatedChipRow<T> extends StatelessWidget {
   final ValueChanged<T> onSelected;
 
   const AnimatedChipRow({
+    super.key,
     required this.items,
     required this.selected,
     required this.label,
@@ -184,7 +248,9 @@ class AnimatedChipRow<T> extends StatelessWidget {
             padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
             decoration: BoxDecoration(
-              color: isSelected ? cs.primary : cs.surfaceContainerHighest,
+              color: isSelected
+                  ? Color.lerp(cs.primary, Colors.grey, 0.45)
+                  : cs.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
               border: isSelected
                   ? null
@@ -197,14 +263,14 @@ class AnimatedChipRow<T> extends StatelessWidget {
                   Icon(
                     chipIcon,
                     size: 14,
-                    color: isSelected ? cs.onPrimary : cs.onSurfaceVariant,
+                    color: isSelected ? Colors.white : cs.onSurfaceVariant,
                   ),
                   const SizedBox(width: 4),
                 ],
                 Text(
                   label(item),
                   style: tt.labelMedium?.copyWith(
-                    color: isSelected ? cs.onPrimary : cs.onSurfaceVariant,
+                    color: isSelected ? Colors.white : cs.onSurfaceVariant,
                     fontWeight:
                         isSelected ? FontWeight.w600 : FontWeight.normal,
                   ),
@@ -214,6 +280,73 @@ class AnimatedChipRow<T> extends StatelessWidget {
           ),
         );
       }).toList(),
+    );
+  }
+}
+
+/// A single tappable button in the Order section.
+/// The button cycles through sort states on each tap.
+class _OrderButton extends StatelessWidget {
+  final IconData categoryIcon;
+  final String categoryLabel;
+  final IconData stateIcon;
+  final bool active;
+  final VoidCallback onTap;
+
+  const _OrderButton({
+    required this.categoryIcon,
+    required this.categoryLabel,
+    required this.stateIcon,
+    required this.active,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
+    final activeColor = Color.lerp(cs.primary, Colors.grey, 0.45)!;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+        decoration: BoxDecoration(
+          color: active ? activeColor : cs.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
+          border: active ? null : Border.all(color: cs.outlineVariant),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(categoryIcon,
+                size: 16, color: active ? Colors.white : cs.onSurfaceVariant),
+            const SizedBox(width: 6),
+            Flexible(
+              child: Text(
+                categoryLabel,
+                style: tt.labelMedium?.copyWith(
+                  color: active ? Colors.white : cs.onSurfaceVariant,
+                  fontWeight: active ? FontWeight.w600 : FontWeight.normal,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(width: 6),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 180),
+              child: Icon(
+                stateIcon,
+                key: ValueKey(stateIcon),
+                size: 18,
+                color: active ? Colors.white : cs.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

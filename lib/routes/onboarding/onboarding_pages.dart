@@ -90,58 +90,65 @@ class Page4StartingPoint extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Spacer(flex: 2),
-          iconCircle(context, Icons.tune_rounded),
-          const SizedBox(height: AppSpacing.xl),
-          Text(
-            l.onboarding4Headline,
-            style: tt.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
+      child: LayoutBuilder(
+        builder: (context, constraints) => SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(child: iconCircle(context, Icons.tune_rounded)),
+                const SizedBox(height: AppSpacing.xl),
+                Text(
+                  l.onboarding4Headline,
+                  style: tt.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  l.onboarding4Subtext,
+                  style: tt.bodyLarge?.copyWith(color: cs.onSurfaceVariant),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: AppSpacing.xl),
+                LevelCard(
+                  level: 1,
+                  title: l.onboarding4Level1Title,
+                  subtitle: l.onboarding4Level1Subtitle,
+                  icon: Icons.self_improvement,
+                  selected: selected == 1,
+                  color: Colors.green,
+                  cs: cs,
+                  onTap: () => onSelect(1),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                LevelCard(
+                  level: 2,
+                  title: l.onboarding4Level2Title,
+                  subtitle: l.onboarding4Level2Subtitle,
+                  icon: Icons.trending_up,
+                  selected: selected == 2,
+                  color: Colors.amber,
+                  cs: cs,
+                  onTap: () => onSelect(2),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                LevelCard(
+                  level: 3,
+                  title: l.onboarding4Level3Title,
+                  subtitle: l.onboarding4Level3Subtitle,
+                  icon: Icons.rocket_launch,
+                  selected: selected == 3,
+                  color: Colors.red,
+                  cs: cs,
+                  onTap: () => onSelect(3),
+                ),
+                const SizedBox(height: AppSpacing.xl),
+              ],
+            ),
           ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            l.onboarding4Subtext,
-            style: tt.bodyLarge?.copyWith(color: cs.onSurfaceVariant),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          LevelCard(
-            level: 1,
-            title: l.onboarding4Level1Title,
-            subtitle: l.onboarding4Level1Subtitle,
-            icon: Icons.self_improvement,
-            selected: selected == 1,
-            color: Colors.green,
-            cs: cs,
-            onTap: () => onSelect(1),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          LevelCard(
-            level: 2,
-            title: l.onboarding4Level2Title,
-            subtitle: l.onboarding4Level2Subtitle,
-            icon: Icons.trending_up,
-            selected: selected == 2,
-            color: Colors.amber,
-            cs: cs,
-            onTap: () => onSelect(2),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          LevelCard(
-            level: 3,
-            title: l.onboarding4Level3Title,
-            subtitle: l.onboarding4Level3Subtitle,
-            icon: Icons.rocket_launch,
-            selected: selected == 3,
-            color: Colors.red,
-            cs: cs,
-            onTap: () => onSelect(3),
-          ),
-          const Spacer(flex: 3),
-        ],
+        ),
       ),
     );
   }
@@ -193,57 +200,72 @@ class Page6Notifications extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Spacer(flex: 2),
-          iconCircle(context, Icons.notifications_active_rounded),
-          const SizedBox(height: AppSpacing.xl),
-          Text(
-            l.wantReminders,
-            style: tt.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            l.reminderExplanation,
-            style: tt.bodyLarge?.copyWith(color: cs.onSurfaceVariant, height: 1.5),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SlotChip(
-                icon: Icons.wb_sunny_rounded,
-                label: l.morning,
-                time: '9:00',
-                selected: selectedSlots.contains(1),
-                color: Colors.orange,
-                cs: cs,
-                onTap: () => onToggleSlot(1),
+          Expanded(
+            child: LayoutBuilder(
+              builder: (context, constraints) => SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      iconCircle(context, Icons.notifications_active_rounded),
+                      const SizedBox(height: AppSpacing.xl),
+                      Text(
+                        l.wantReminders,
+                        style: tt.headlineSmall
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      Text(
+                        l.reminderExplanation,
+                        style: tt.bodyLarge?.copyWith(
+                            color: cs.onSurfaceVariant, height: 1.5),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: AppSpacing.xl),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SlotChip(
+                            icon: Icons.wb_sunny_rounded,
+                            label: l.morning,
+                            time: '9:00',
+                            selected: selectedSlots.contains(1),
+                            color: Colors.orange,
+                            cs: cs,
+                            onTap: () => onToggleSlot(1),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          SlotChip(
+                            icon: Icons.wb_cloudy_rounded,
+                            label: l.afternoon,
+                            time: '14:00',
+                            selected: selectedSlots.contains(2),
+                            color: cs.primary,
+                            cs: cs,
+                            onTap: () => onToggleSlot(2),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          SlotChip(
+                            icon: Icons.nights_stay_rounded,
+                            label: l.evening,
+                            time: '19:00',
+                            selected: selectedSlots.contains(3),
+                            color: Colors.deepPurple,
+                            cs: cs,
+                            onTap: () => onToggleSlot(3),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              const SizedBox(width: AppSpacing.sm),
-              SlotChip(
-                icon: Icons.wb_cloudy_rounded,
-                label: l.afternoon,
-                time: '14:00',
-                selected: selectedSlots.contains(2),
-                color: cs.primary,
-                cs: cs,
-                onTap: () => onToggleSlot(2),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              SlotChip(
-                icon: Icons.nights_stay_rounded,
-                label: l.evening,
-                time: '19:00',
-                selected: selectedSlots.contains(3),
-                color: Colors.deepPurple,
-                cs: cs,
-                onTap: () => onToggleSlot(3),
-              ),
-            ],
+            ),
           ),
-          const Spacer(flex: 3),
           SyntraButton.icon(
             onPressed: requesting ? null : onEnable,
             icon: Icons.notifications_active_rounded,
@@ -251,7 +273,8 @@ class Page6Notifications extends StatelessWidget {
                 ? const SizedBox(
                     width: 18,
                     height: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                    child: CircularProgressIndicator(
+                        strokeWidth: 2, color: Colors.white))
                 : Text(l.enableReminders),
           ),
           const SizedBox(height: AppSpacing.sm),
@@ -291,74 +314,95 @@ class Page7FirstChallenge extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Spacer(flex: 2),
-          iconCircle(context, Icons.flag_rounded, bg: cs.tertiaryContainer),
-          const SizedBox(height: AppSpacing.xl),
-          Text(
-            l.heresYourFirst,
-            style: tt.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            l.firstChallengeDesc,
-            style: tt.bodyLarge?.copyWith(color: cs.onSurfaceVariant),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          if (challenge != null)
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(challenge!.title,
-                              style: tt.titleMedium
-                                  ?.copyWith(fontWeight: FontWeight.bold)),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
-                          decoration: BoxDecoration(
-                            color: cs.primaryContainer,
-                            borderRadius:
-                                BorderRadius.circular(AppSpacing.chipRadius),
+          Expanded(
+            child: LayoutBuilder(
+              builder: (context, constraints) => SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      iconCircle(context, Icons.flag_rounded,
+                          bg: cs.tertiaryContainer),
+                      const SizedBox(height: AppSpacing.xl),
+                      Text(
+                        l.heresYourFirst,
+                        style: tt.headlineSmall
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        l.firstChallengeDesc,
+                        style: tt.bodyLarge
+                            ?.copyWith(color: cs.onSurfaceVariant),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: AppSpacing.xl),
+                      if (challenge != null)
+                        Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(AppSpacing.md),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(challenge!.title,
+                                          style: tt.titleMedium?.copyWith(
+                                              fontWeight: FontWeight.bold)),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: AppSpacing.sm,
+                                          vertical: AppSpacing.xs),
+                                      decoration: BoxDecoration(
+                                        color: cs.primaryContainer,
+                                        borderRadius: BorderRadius.circular(
+                                            AppSpacing.chipRadius),
+                                      ),
+                                      child: Text(
+                                          '+${challenge!.xp} ${l.auraPoints}',
+                                          style: tt.labelSmall?.copyWith(
+                                              color: cs.onPrimaryContainer,
+                                              fontWeight: FontWeight.bold)),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: AppSpacing.sm),
+                                Text(challenge!.description,
+                                    style: tt.bodyMedium?.copyWith(
+                                        color: cs.onSurfaceVariant),
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis),
+                                const SizedBox(height: AppSpacing.sm),
+                                Row(
+                                  children: [
+                                    Icon(Icons.timer_outlined,
+                                        size: 14, color: cs.outline),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      _formatTime(challenge!.time),
+                                      style: tt.labelSmall
+                                          ?.copyWith(color: cs.outline),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                          child: Text('+${challenge!.xp} ${l.auraPoints}',
-                              style: tt.labelSmall?.copyWith(
-                                  color: cs.onPrimaryContainer,
-                                  fontWeight: FontWeight.bold)),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(challenge!.description,
-                        style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis),
-                    const SizedBox(height: AppSpacing.sm),
-                    Row(
-                      children: [
-                        Icon(Icons.timer_outlined, size: 14, color: cs.outline),
-                        const SizedBox(width: 4),
-                        Text(
-                          _formatTime(challenge!.time),
-                          style: tt.labelSmall?.copyWith(color: cs.outline),
-                        ),
-                      ],
-                    ),
-                  ],
+                        )
+                      else
+                        const CircularProgressIndicator(),
+                    ],
+                  ),
                 ),
               ),
-            )
-          else
-            const CircularProgressIndicator(),
-          const Spacer(flex: 3),
+            ),
+          ),
           SyntraButton.icon(
             onPressed: challenge != null ? onStartNow : null,
             icon: Icons.rocket_launch_rounded,
@@ -368,10 +412,7 @@ class Page7FirstChallenge extends StatelessWidget {
           SyntraButton(
             onPressed: onLater,
             color: cs.surfaceContainerHigh,
-            child: Text(
-              l.doItLater,
-              style: TextStyle(color: cs.onSurface),
-            ),
+            child: Text(l.doItLater, style: TextStyle(color: cs.onSurface)),
           ),
           const SizedBox(height: AppSpacing.lg),
         ],

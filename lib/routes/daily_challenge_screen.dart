@@ -10,6 +10,8 @@ import '../router.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/syntra_button.dart';
 import '../widgets/syntra_progress_bar.dart';
+import 'challenge_detail_screen.dart';
+import 'challenges/challenge_list_item.dart' show MetaChip;
 
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
@@ -96,7 +98,8 @@ class _MissionBoard extends ConsumerWidget {
     final cs = Theme.of(context).colorScheme;
 
     return ListView(
-      padding: const EdgeInsets.only(bottom: AppSpacing.xl),
+      padding: EdgeInsets.only(
+          bottom: AppSpacing.xl + MediaQuery.paddingOf(context).bottom),
       children: [
         // ── Header ──────────────────────────────────────────────────────────
         Padding(
@@ -261,33 +264,25 @@ class _DayProgress extends StatelessWidget {
 
 // ─── Mission card ─────────────────────────────────────────────────────────────
 
-class _MissionCard extends StatefulWidget {
+class _MissionCard extends StatelessWidget {
   final DailyMission mission;
   final VoidCallback onStart;
 
   const _MissionCard({required this.mission, required this.onStart});
 
   @override
-  State<_MissionCard> createState() => _MissionCardState();
-}
-
-class _MissionCardState extends State<_MissionCard> {
-  bool _expanded = false;
-
-  @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final m = widget.mission;
-    final c = m.challenge;
-    final tier = m.tier;
-    final done = m.completed;
+    final c = mission.challenge;
+    final tier = mission.tier;
+    final done = mission.completed;
+    final l = S.of(context);
 
     final tierColor = switch (tier) {
       MissionTier.comfort => cs.primary,
       MissionTier.growth => cs.tertiary,
       MissionTier.bold => cs.error,
     };
-    final l = S.of(context);
     final tierLabel = switch (tier) {
       MissionTier.comfort => l.comfortZone,
       MissionTier.growth => l.growthZone,
@@ -299,197 +294,203 @@ class _MissionCardState extends State<_MissionCard> {
       MissionTier.bold => Icons.bolt_rounded,
     };
 
+    final cardColor = done
+        ? Color.lerp(
+            Theme.of(context).cardTheme.color ?? cs.surfaceContainer,
+            const Color(0xFF4CAF50),
+            0.12,
+          )
+        : null;
+
     return AnimatedOpacity(
       opacity: done ? 0.55 : 1.0,
       duration: const Duration(milliseconds: 300),
       child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Tier badge row
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.sm, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: tierColor.withAlpha(30),
-                      borderRadius:
-                          BorderRadius.circular(AppSpacing.chipRadius),
-                      border: Border.all(color: tierColor.withAlpha(100)),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
+        color: cardColor,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ── Tappable title area → opens detail screen ──────────────────
+            InkWell(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(AppSpacing.cardRadius),
+              ),
+              onTap: () => _onInfoTap(context),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.md, AppSpacing.md, AppSpacing.md, AppSpacing.sm),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Tier badge + done check
+                    Row(
                       children: [
-                        Icon(tierIcon, size: 12, color: tierColor),
-                        const SizedBox(width: 4),
-                        Text(
-                          tierLabel,
-                          style: Theme.of(context)
-                              .textTheme
-                              .labelSmall
-                              ?.copyWith(
-                                color: tierColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Spacer(),
-                  if (done)
-                    Icon(Icons.check_circle_rounded,
-                        size: 20, color: cs.primary),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.sm),
-
-              // Title + teaser
-              Text(
-                c.title,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      decoration: done ? TextDecoration.lineThrough : null,
-                    ),
-              ),
-              const SizedBox(height: AppSpacing.xs),
-              Text(
-                c.description,
-                maxLines: _expanded ? null : 2,
-                overflow:
-                    _expanded ? TextOverflow.visible : TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: cs.onSurfaceVariant,
-                    ),
-              ),
-
-              const SizedBox(height: AppSpacing.sm),
-
-              // Meta chips + Start button
-              Row(
-                children: [
-                  _MetaChip(
-                    icon: Icons.timer_outlined,
-                    label: _fmtTime(c.time),
-                  ),
-                  const SizedBox(width: AppSpacing.xs),
-                  _MetaChip(
-                    icon: Icons.emoji_events_outlined,
-                    label: '${c.xp} ${l.auraPoints}',
-                  ),
-                  const SizedBox(width: AppSpacing.xs),
-                  _MetaChip(
-                    icon: c.type == 'group'
-                        ? Icons.group_outlined
-                        : Icons.person_outlined,
-                    label: c.type == 'group' ? l.group : l.solo,
-                  ),
-                  const Spacer(),
-                  if (!done)
-                  SyntraButton.small(
-                    onPressed: widget.onStart,
-                    color: tierColor,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(S.of(context).start),
-                    ),
-                  ),
-                ],
-              ),
-
-              // Details toggle
-              GestureDetector(
-                onTap: () => setState(() => _expanded = !_expanded),
-                child: Padding(
-                  padding: const EdgeInsets.only(top: AppSpacing.xs),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        _expanded
-                            ? Icons.keyboard_arrow_up
-                            : Icons.keyboard_arrow_down,
-                        size: 16,
-                        color: cs.outline,
-                      ),
-                      Text(
-                        _expanded ? l.lessLabel : l.detailsLabel,
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelSmall
-                            ?.copyWith(color: cs.outline),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Expanded hint
-              if (_expanded && c.hints.isNotEmpty) ...[
-                const SizedBox(height: AppSpacing.sm),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(AppSpacing.sm),
-                  decoration: BoxDecoration(
-                    color: cs.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: c.hints
-                        .map((h) => Padding(
-                              padding: const EdgeInsets.only(bottom: 4),
-                              child: Text(
-                                '💬 $h',
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.sm, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: tierColor.withAlpha(30),
+                            borderRadius:
+                                BorderRadius.circular(AppSpacing.chipRadius),
+                            border: Border.all(color: tierColor.withAlpha(100)),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(tierIcon, size: 12, color: tierColor),
+                              const SizedBox(width: 4),
+                              Text(
+                                tierLabel,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodySmall
-                                    ?.copyWith(color: cs.onSurfaceVariant),
+                                    .labelSmall
+                                    ?.copyWith(
+                                      color: tierColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                               ),
-                            ))
-                        .toList(),
-                  ),
+                            ],
+                          ),
+                        ),
+                        if (done)
+                          const Padding(
+                            padding: EdgeInsets.only(left: AppSpacing.xs),
+                            child: Icon(Icons.check_circle_rounded,
+                                size: 16, color: Color(0xFF4CAF50)),
+                          ),
+                        if (c.flirt)
+                          Padding(
+                            padding: const EdgeInsets.only(left: AppSpacing.xs),
+                            child: Icon(Icons.favorite,
+                                size: 16, color: cs.secondary),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    // Title
+                    Text(
+                      c.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    // Description
+                    Text(
+                      c.description,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(color: cs.onSurfaceVariant),
+                    ),
+                  ],
                 ),
-              ],
-            ],
-          ),
+              ),
+            ),
+
+            // ── Chips + button ─────────────────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final compact = constraints.maxWidth < 190;
+                        return Row(
+                          children: [
+                            Flexible(
+                              child: MetaChip(
+                                icon: Icons.timer_outlined,
+                                label: compact
+                                    ? _fmtCompact(c.time)
+                                    : _fmtFull(c.time),
+                              ),
+                            ),
+                            const SizedBox(width: AppSpacing.sm),
+                            Flexible(
+                              child: MetaChip(
+                                icon: Icons.emoji_events_outlined,
+                                label: compact
+                                    ? '${c.xp}A'
+                                    : '${c.xp} ${l.auraPoints}',
+                              ),
+                            ),
+                            const SizedBox(width: AppSpacing.sm),
+                            Flexible(
+                              child: MetaChip(
+                                icon: _typeIcon(c.type),
+                                label: _typeLabel(context, c.type),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  if (!done)
+                    SyntraButton.small(
+                      onPressed: onStart,
+                      color: tierColor,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Text(l.letsGo),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  String _fmtTime(int seconds) {
+  Future<void> _onInfoTap(BuildContext context) async {
+    final start = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => ChallengeDetailScreen(challenge: mission.challenge),
+      ),
+    );
+    if (start == true) onStart();
+  }
+
+  IconData _typeIcon(String type) => switch (type) {
+        'group' => Icons.group_outlined,
+        'coop' => Icons.people_alt_outlined,
+        'dare' => Icons.bolt_outlined,
+        _ => Icons.person_outlined,
+      };
+
+  String _typeLabel(BuildContext context, String type) {
+    final l = S.of(context);
+    return switch (type) {
+      'group' => l.group,
+      'coop' => l.coop,
+      'dare' => l.dare,
+      _ => l.solo,
+    };
+  }
+
+  String _fmtCompact(int seconds) {
+    final m = seconds ~/ 60;
+    final s = seconds % 60;
+    return '$m:${s.toString().padLeft(2, '0')}';
+  }
+
+  String _fmtFull(int seconds) {
     if (seconds < 60) return '${seconds}s';
     final m = seconds ~/ 60;
     final s = seconds % 60;
     return s == 0 ? '${m}m' : '${m}m ${s}s';
-  }
-}
-
-class _MetaChip extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  const _MetaChip({required this.icon, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 12, color: cs.outline),
-        const SizedBox(width: 2),
-        Text(
-          label,
-          style: Theme.of(context)
-              .textTheme
-              .labelSmall
-              ?.copyWith(color: cs.outline),
-        ),
-      ],
-    );
   }
 }
 

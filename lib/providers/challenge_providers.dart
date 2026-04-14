@@ -37,6 +37,12 @@ enum FlirtFilter { all, showOnly, exclude }
 
 enum EnvironmentFilter { all, street, transit, cafe, event }
 
+enum CompletionFilter { all, done, notDone }
+
+enum AuraSortOrder { none, asc, desc }
+
+enum CompletionSortOrder { none, newestFirst, oldestFirst }
+
 /// Persisted filter state for the challenges screen.
 final challengeFiltersProvider =
     StateNotifierProvider<ChallengeFiltersNotifier, ChallengeFilters>(
@@ -48,12 +54,18 @@ class ChallengeFilters {
   final FlirtFilter flirtFilter;
   final EnvironmentFilter environmentFilter;
   final bool showOnlyNotDone;
+  final CompletionFilter completionFilter;
+  final AuraSortOrder auraSortOrder;
+  final CompletionSortOrder completionSortOrder;
 
   const ChallengeFilters({
     this.typeFilter = ChallengeTypeFilter.solo,
     this.flirtFilter = FlirtFilter.all,
     this.environmentFilter = EnvironmentFilter.all,
     this.showOnlyNotDone = false,
+    this.completionFilter = CompletionFilter.all,
+    this.auraSortOrder = AuraSortOrder.none,
+    this.completionSortOrder = CompletionSortOrder.none,
   });
 
   ChallengeFilters copyWith({
@@ -61,12 +73,18 @@ class ChallengeFilters {
     FlirtFilter? flirtFilter,
     EnvironmentFilter? environmentFilter,
     bool? showOnlyNotDone,
+    CompletionFilter? completionFilter,
+    AuraSortOrder? auraSortOrder,
+    CompletionSortOrder? completionSortOrder,
   }) =>
       ChallengeFilters(
         typeFilter: typeFilter ?? this.typeFilter,
         flirtFilter: flirtFilter ?? this.flirtFilter,
         environmentFilter: environmentFilter ?? this.environmentFilter,
         showOnlyNotDone: showOnlyNotDone ?? this.showOnlyNotDone,
+        completionFilter: completionFilter ?? this.completionFilter,
+        auraSortOrder: auraSortOrder ?? this.auraSortOrder,
+        completionSortOrder: completionSortOrder ?? this.completionSortOrder,
       );
 
   /// Number of non-default advanced filters active (shown as badge on tune button).
@@ -76,7 +94,9 @@ class ChallengeFilters {
     if (typeFilter == ChallengeTypeFilter.group ||
         typeFilter == ChallengeTypeFilter.dare) n++;
     if (environmentFilter != EnvironmentFilter.all) n++;
-    if (showOnlyNotDone) n++;
+    if (completionFilter != CompletionFilter.all) n++;
+    if (auraSortOrder != AuraSortOrder.none) n++;
+    if (completionSortOrder != CompletionSortOrder.none) n++;
     return n;
   }
 }
@@ -92,12 +112,19 @@ class ChallengeFiltersNotifier extends StateNotifier<ChallengeFilters> {
   static const _keyFlirtV2 = 'filter_flirt_v2';
   static const _keyNotDone = 'filter_not_done';
   static const _keyEnv = 'filter_env';
+  static const _keyCompletion = 'filter_completion';
+  static const _keyAuraSort = 'filter_aura_sort';
+  static const _keyCompletionSort = 'filter_completion_sort';
 
   void _load() {
     final typeIdx = _prefs.getInt(_keyType) ?? 0;
     final flirtIdx = _prefs.getInt(_keyFlirtV2) ?? 0;
     final notDone = _prefs.getBool(_keyNotDone) ?? false;
     final envIdx = _prefs.getInt(_keyEnv) ?? 0;
+    final completionIdx = _prefs.getInt(_keyCompletion) ??
+        (notDone ? CompletionFilter.notDone.index : 0);
+    final auraSortIdx = _prefs.getInt(_keyAuraSort) ?? 0;
+    final completionSortIdx = _prefs.getInt(_keyCompletionSort) ?? 0;
     state = ChallengeFilters(
       typeFilter: ChallengeTypeFilter.values[
           typeIdx.clamp(0, ChallengeTypeFilter.values.length - 1)],
@@ -105,7 +132,12 @@ class ChallengeFiltersNotifier extends StateNotifier<ChallengeFilters> {
           FlirtFilter.values[flirtIdx.clamp(0, FlirtFilter.values.length - 1)],
       environmentFilter: EnvironmentFilter.values[
           envIdx.clamp(0, EnvironmentFilter.values.length - 1)],
-      showOnlyNotDone: notDone,
+      completionFilter: CompletionFilter.values[
+          completionIdx.clamp(0, CompletionFilter.values.length - 1)],
+      auraSortOrder: AuraSortOrder.values[
+          auraSortIdx.clamp(0, AuraSortOrder.values.length - 1)],
+      completionSortOrder: CompletionSortOrder.values[
+          completionSortIdx.clamp(0, CompletionSortOrder.values.length - 1)],
     );
   }
 
@@ -129,15 +161,36 @@ class ChallengeFiltersNotifier extends StateNotifier<ChallengeFilters> {
     await _prefs.setBool(_keyNotDone, value);
   }
 
+  Future<void> setCompletionFilter(CompletionFilter filter) async {
+    state = state.copyWith(completionFilter: filter);
+    await _prefs.setInt(_keyCompletion, filter.index);
+  }
+
+  Future<void> setAuraSortOrder(AuraSortOrder order) async {
+    state = state.copyWith(auraSortOrder: order);
+    await _prefs.setInt(_keyAuraSort, order.index);
+  }
+
+  Future<void> setCompletionSortOrder(CompletionSortOrder order) async {
+    state = state.copyWith(completionSortOrder: order);
+    await _prefs.setInt(_keyCompletionSort, order.index);
+  }
+
   Future<void> resetAdvancedFilters() async {
     state = state.copyWith(
       flirtFilter: FlirtFilter.all,
       environmentFilter: EnvironmentFilter.all,
       showOnlyNotDone: false,
+      completionFilter: CompletionFilter.all,
+      auraSortOrder: AuraSortOrder.none,
+      completionSortOrder: CompletionSortOrder.none,
     );
     await _prefs.setInt(_keyFlirtV2, 0);
     await _prefs.setInt(_keyEnv, 0);
     await _prefs.setBool(_keyNotDone, false);
+    await _prefs.setInt(_keyCompletion, 0);
+    await _prefs.setInt(_keyAuraSort, 0);
+    await _prefs.setInt(_keyCompletionSort, 0);
   }
 }
 

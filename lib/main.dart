@@ -127,6 +127,17 @@ class SyntraApp extends ConsumerWidget {
       ],
       supportedLocales: const [Locale('en'), Locale('de')],
       routerConfig: appRouter,
+      // Clamp the system font-size scaler so large accessibility settings
+      // don't break layouts, while still allowing mild scaling.
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(
+          textScaler: MediaQuery.of(context).textScaler.clamp(
+            minScaleFactor: 1.0,
+            maxScaleFactor: 1.3,
+          ),
+        ),
+        child: child!,
+      ),
     );
   }
 }

@@ -113,20 +113,45 @@ class MessageLookup extends MessageLookupByLibrary {
     "backToHome": MessageLookupByLibrary.simpleMessage("Back to Home"),
     "bad": MessageLookupByLibrary.simpleMessage("Bad"),
     "badgeBraveMinutes": MessageLookupByLibrary.simpleMessage("60 Min. Brave"),
+    "badgeBraveMinutesDesc": MessageLookupByLibrary.simpleMessage(
+      "Spend 60 minutes being brave",
+    ),
     "badgeCenturyXp": MessageLookupByLibrary.simpleMessage("100 Aura Club"),
+    "badgeCenturyXpDesc": MessageLookupByLibrary.simpleMessage(
+      "Earn 100 Aura points",
+    ),
     "badgeFiftyChallenges": MessageLookupByLibrary.simpleMessage(
       "50 Challenges",
     ),
+    "badgeFiftyChallengesDesc": MessageLookupByLibrary.simpleMessage(
+      "Complete 50 challenges",
+    ),
     "badgeFirstStep": MessageLookupByLibrary.simpleMessage("First Step"),
+    "badgeFirstStepDesc": MessageLookupByLibrary.simpleMessage(
+      "Complete your first challenge",
+    ),
     "badgeFiveHundredXp": MessageLookupByLibrary.simpleMessage(
       "500 Aura Legend",
     ),
+    "badgeFiveHundredXpDesc": MessageLookupByLibrary.simpleMessage(
+      "Earn 500 Aura points",
+    ),
+    "badgeLocked": MessageLookupByLibrary.simpleMessage("Locked"),
     "badgeSevenWeekStreak": MessageLookupByLibrary.simpleMessage(
       "7-Week Streak",
     ),
+    "badgeSevenWeekStreakDesc": MessageLookupByLibrary.simpleMessage(
+      "Build a 7-week streak",
+    ),
     "badgeTenChallenges": MessageLookupByLibrary.simpleMessage("10 Challenges"),
+    "badgeTenChallengesDesc": MessageLookupByLibrary.simpleMessage(
+      "Complete 10 challenges",
+    ),
     "badgeThreeWeekStreak": MessageLookupByLibrary.simpleMessage(
       "3-Week Streak",
+    ),
+    "badgeThreeWeekStreakDesc": MessageLookupByLibrary.simpleMessage(
+      "Build a 3-week streak",
     ),
     "badgesLocked": MessageLookupByLibrary.simpleMessage(
       "Keep going to unlock more!",
@@ -249,9 +274,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Get reminded to complete challenges",
     ),
     "dare": MessageLookupByLibrary.simpleMessage("Dare"),
-    "darkMode": MessageLookupByLibrary.simpleMessage("Dark Mode"),
+    "darkMode": MessageLookupByLibrary.simpleMessage("Theme"),
     "darkModeSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Switch to dark theme",
+      "Choose your preferred appearance",
     ),
     "date": MessageLookupByLibrary.simpleMessage("Date"),
     "dayStreak": MessageLookupByLibrary.simpleMessage("Day Streak"),
@@ -318,6 +343,14 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "feeling": MessageLookupByLibrary.simpleMessage("Feeling"),
     "filterAll": MessageLookupByLibrary.simpleMessage("All"),
+    "filterAuraHigh": MessageLookupByLibrary.simpleMessage("High"),
+    "filterAuraLabel": MessageLookupByLibrary.simpleMessage("Aura Points"),
+    "filterAuraLow": MessageLookupByLibrary.simpleMessage("Low"),
+    "filterAuraMedium": MessageLookupByLibrary.simpleMessage("Medium"),
+    "filterCompletionAll": MessageLookupByLibrary.simpleMessage("All"),
+    "filterCompletionDone": MessageLookupByLibrary.simpleMessage("Completed"),
+    "filterCompletionLabel": MessageLookupByLibrary.simpleMessage("Completion"),
+    "filterCompletionNotDone": MessageLookupByLibrary.simpleMessage("New only"),
     "filterEnvCafe": MessageLookupByLibrary.simpleMessage("☕ Café"),
     "filterEnvEvent": MessageLookupByLibrary.simpleMessage("🎉 Event"),
     "filterEnvLabel": MessageLookupByLibrary.simpleMessage("Location"),
@@ -334,6 +367,24 @@ class MessageLookup extends MessageLookupByLibrary {
     "filterNewOnlySubtitle": MessageLookupByLibrary.simpleMessage(
       "Hide challenges you\'ve already completed",
     ),
+    "filterOrderAuraAsc": MessageLookupByLibrary.simpleMessage(
+      "Aura: Low → High",
+    ),
+    "filterOrderAuraDesc": MessageLookupByLibrary.simpleMessage(
+      "Aura: High → Low",
+    ),
+    "filterOrderCompletionLabel": MessageLookupByLibrary.simpleMessage(
+      "Completion",
+    ),
+    "filterOrderCompletionNewest": MessageLookupByLibrary.simpleMessage(
+      "Newest first",
+    ),
+    "filterOrderCompletionNone": MessageLookupByLibrary.simpleMessage("Any"),
+    "filterOrderCompletionOldest": MessageLookupByLibrary.simpleMessage(
+      "Oldest first",
+    ),
+    "filterOrderDefault": MessageLookupByLibrary.simpleMessage("Default"),
+    "filterOrderLabel": MessageLookupByLibrary.simpleMessage("Order"),
     "filterReset": MessageLookupByLibrary.simpleMessage("Reset"),
     "filterSortBy": MessageLookupByLibrary.simpleMessage("Sort by"),
     "filterSortEasiest": MessageLookupByLibrary.simpleMessage("Easiest first"),
@@ -756,6 +807,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "thankYouFeedback": MessageLookupByLibrary.simpleMessage(
       "Thank you for your feedback!",
     ),
+    "themeDark": MessageLookupByLibrary.simpleMessage("Dark"),
+    "themeLight": MessageLookupByLibrary.simpleMessage("Light"),
+    "themeSystem": MessageLookupByLibrary.simpleMessage("System"),
     "threeChallengesTodo": MessageLookupByLibrary.simpleMessage(
       "Three challenges. Any order. All count.",
     ),

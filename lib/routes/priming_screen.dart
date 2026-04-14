@@ -27,7 +27,7 @@ class PrimingScreen extends StatefulWidget {
 
 class _PrimingScreenState extends State<PrimingScreen>
     with SingleTickerProviderStateMixin {
-  static const _totalSeconds = 5;
+  static const _totalSeconds = 10;
   int _secondsLeft = _totalSeconds;
   Timer? _timer;
   bool _isExiting = false;
@@ -114,69 +114,85 @@ class _PrimingScreenState extends State<PrimingScreen>
     final cs = Theme.of(context).colorScheme;
     final l = S.of(context);
 
+    final ringSize =
+        (MediaQuery.sizeOf(context).height * 0.15).clamp(80.0, 120.0);
+
     return Scaffold(
       backgroundColor: cs.surface,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.xl),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Spacer(),
+              // ── Scrollable content ────────────────────────────────────
+              Expanded(
+                child: LayoutBuilder(
+                  builder: (context, constraints) => SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints:
+                          BoxConstraints(minHeight: constraints.maxHeight),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // ── Animated countdown ring + number ──────────
+                          _CountdownRing(
+                            arcController: _arcController,
+                            secondsLeft: _secondsLeft,
+                            size: ringSize,
+                          ),
 
-              // ── Animated countdown ring + number ──────────────────────
-              _CountdownRing(
-                arcController: _arcController,
-                secondsLeft: _secondsLeft,
-              ),
+                          const SizedBox(height: AppSpacing.xl),
 
-              const SizedBox(height: AppSpacing.xl),
+                          // ── Headline ──────────────────────────────────
+                          Text(
+                            _headline(l),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(
+                                    fontWeight: FontWeight.bold, height: 1.3),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          Text(
+                            _subtext(l),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge
+                                ?.copyWith(
+                                    color: cs.onSurfaceVariant, height: 1.6),
+                            textAlign: TextAlign.center,
+                          ),
 
-              // ── Headline ──────────────────────────────────────────────
-              Text(
-                _headline(l),
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      height: 1.3,
+                          const SizedBox(height: AppSpacing.lg),
+
+                          // ── Pre-challenge anxiety picker ───────────────
+                          _AnxietyPicker(
+                            selected: _preAnxiety,
+                            onChanged: (v) =>
+                                setState(() => _preAnxiety = v),
+                          ),
+
+                          const SizedBox(height: AppSpacing.lg),
+
+                          // ── Duration picker ───────────────────────────
+                          _DurationPicker(
+                            challengeTime: widget.challenge.time,
+                            selected: _selectedTime,
+                            onChanged: (t) =>
+                                setState(() => _selectedTime = t),
+                          ),
+                        ],
+                      ),
                     ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppSpacing.md),
-              Text(
-                _subtext(l),
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: cs.onSurfaceVariant,
-                      height: 1.6,
-                    ),
-                textAlign: TextAlign.center,
-              ),
-
-              const SizedBox(height: AppSpacing.lg),
-
-              // ── Pre-challenge anxiety picker ──────────────────────────
-              _AnxietyPicker(
-                selected: _preAnxiety,
-                onChanged: (v) => setState(() => _preAnxiety = v),
-              ),
-
-              const SizedBox(height: AppSpacing.lg),
-
-              // ── Duration picker ───────────────────────────────────────
-              _DurationPicker(
-                challengeTime: widget.challenge.time,
-                selected: _selectedTime,
-                onChanged: (t) => setState(() => _selectedTime = t),
-              ),
-
-              const Spacer(),
-
-              // ── Actions ───────────────────────────────────────────────
-              SizedBox(
-                width: double.infinity,
-                child: SyntraButton(
-                  onPressed: _launch,
-                  child: Text(l.imReady),
+                  ),
                 ),
               ),
+
+              // ── Actions pinned at bottom ──────────────────────────────
+              const SizedBox(height: AppSpacing.lg),
+              SyntraButton(onPressed: _launch, child: Text(l.imReady)),
               const SizedBox(height: AppSpacing.sm),
               TextButton(
                 onPressed: () {
@@ -203,10 +219,12 @@ class _PrimingScreenState extends State<PrimingScreen>
 class _CountdownRing extends StatelessWidget {
   final AnimationController arcController;
   final int secondsLeft;
+  final double size;
 
   const _CountdownRing({
     required this.arcController,
     required this.secondsLeft,
+    this.size = 120,
   });
 
   @override
@@ -223,8 +241,8 @@ class _CountdownRing extends StatelessWidget {
       children: [
         // ── Circular arc ──
         SizedBox(
-          width: 120,
-          height: 120,
+          width: size,
+          height: size,
           child: AnimatedBuilder(
             animation: arcValue,
             builder: (_, child) => CircularProgressIndicator(

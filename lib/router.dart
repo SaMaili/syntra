@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import 'challenge.dart';
 import 'home_bar.dart';
+import 'logic/badges_logic.dart';
 import 'providers/router_notifier.dart';
 import 'routes/about_page.dart';
 import 'routes/active_challenge_screen.dart';
@@ -11,6 +12,8 @@ import 'routes/logbook_detail_page.dart';
 import 'routes/logbook_page.dart';
 import 'routes/onboarding_screen.dart';
 import 'routes/priming_screen.dart';
+import 'routes/badge_unlocked_screen.dart';
+import 'routes/level_up_screen.dart';
 import 'routes/streak_celebration_screen.dart';
 
 /// All named routes in the app.
@@ -24,6 +27,8 @@ abstract class AppRoutes {
   static const about = '/about';
   static const priming = '/priming';
   static const streakCelebration = '/streak_celebration';
+  static const levelUp = '/level_up';
+  static const badgeUnlocked = '/badge_unlocked';
 }
 
 final appRouter = GoRouter(
@@ -105,6 +110,20 @@ final appRouter = GoRouter(
         );
       },
     ),
+    GoRoute(
+      path: AppRoutes.levelUp,
+      builder: (context, state) {
+        final args = state.extra as _LevelUpArgs;
+        return LevelUpScreen(newLevel: args.newLevel);
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.badgeUnlocked,
+      builder: (context, state) {
+        final args = state.extra as _BadgeUnlockedArgs;
+        return BadgeUnlockedScreen(badge: args.badge);
+      },
+    ),
   ],
 );
 
@@ -148,6 +167,16 @@ class _StreakCelebrationArgs {
   final int streak;
   final bool isMilestone;
   const _StreakCelebrationArgs(this.streak, this.isMilestone);
+}
+
+class _LevelUpArgs {
+  final int newLevel;
+  const _LevelUpArgs(this.newLevel);
+}
+
+class _BadgeUnlockedArgs {
+  final AppBadge badge;
+  const _BadgeUnlockedArgs(this.badge);
 }
 
 /// Type-safe helpers so callers never deal with raw strings or dynamic casts.
@@ -231,5 +260,17 @@ extension AppNavigation on BuildContext {
       GoRouter.of(this).push<void>(
         AppRoutes.streakCelebration,
         extra: _StreakCelebrationArgs(streak, isMilestone),
+      );
+
+  Future<void> goLevelUp(int newLevel) =>
+      GoRouter.of(this).push<void>(
+        AppRoutes.levelUp,
+        extra: _LevelUpArgs(newLevel),
+      );
+
+  Future<void> goBadgeUnlocked(AppBadge badge) =>
+      GoRouter.of(this).push<void>(
+        AppRoutes.badgeUnlocked,
+        extra: _BadgeUnlockedArgs(badge),
       );
 }

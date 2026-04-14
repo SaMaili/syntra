@@ -79,19 +79,34 @@ class S {
     );
   }
 
-  /// `Dark Mode`
+  /// `Theme`
   String get darkMode {
-    return Intl.message('Dark Mode', name: 'darkMode', desc: '', args: []);
+    return Intl.message('Theme', name: 'darkMode', desc: '', args: []);
   }
 
-  /// `Switch to dark theme`
+  /// `Choose your preferred appearance`
   String get darkModeSubtitle {
     return Intl.message(
-      'Switch to dark theme',
+      'Choose your preferred appearance',
       name: 'darkModeSubtitle',
       desc: '',
       args: [],
     );
+  }
+
+  /// `Light`
+  String get themeLight {
+    return Intl.message('Light', name: 'themeLight', desc: '', args: []);
+  }
+
+  /// `Dark`
+  String get themeDark {
+    return Intl.message('Dark', name: 'themeDark', desc: '', args: []);
+  }
+
+  /// `System`
+  String get themeSystem {
+    return Intl.message('System', name: 'themeSystem', desc: '', args: []);
   }
 
   /// `Sound Effects`
@@ -3014,6 +3029,141 @@ class S {
     );
   }
 
+  /// `Completion`
+  String get filterCompletionLabel {
+    return Intl.message(
+      'Completion',
+      name: 'filterCompletionLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All`
+  String get filterCompletionAll {
+    return Intl.message('All', name: 'filterCompletionAll', desc: '', args: []);
+  }
+
+  /// `Completed`
+  String get filterCompletionDone {
+    return Intl.message(
+      'Completed',
+      name: 'filterCompletionDone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New only`
+  String get filterCompletionNotDone {
+    return Intl.message(
+      'New only',
+      name: 'filterCompletionNotDone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aura Points`
+  String get filterAuraLabel {
+    return Intl.message(
+      'Aura Points',
+      name: 'filterAuraLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Low`
+  String get filterAuraLow {
+    return Intl.message('Low', name: 'filterAuraLow', desc: '', args: []);
+  }
+
+  /// `Medium`
+  String get filterAuraMedium {
+    return Intl.message('Medium', name: 'filterAuraMedium', desc: '', args: []);
+  }
+
+  /// `High`
+  String get filterAuraHigh {
+    return Intl.message('High', name: 'filterAuraHigh', desc: '', args: []);
+  }
+
+  /// `Order`
+  String get filterOrderLabel {
+    return Intl.message('Order', name: 'filterOrderLabel', desc: '', args: []);
+  }
+
+  /// `Default`
+  String get filterOrderDefault {
+    return Intl.message(
+      'Default',
+      name: 'filterOrderDefault',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aura: Low → High`
+  String get filterOrderAuraAsc {
+    return Intl.message(
+      'Aura: Low → High',
+      name: 'filterOrderAuraAsc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aura: High → Low`
+  String get filterOrderAuraDesc {
+    return Intl.message(
+      'Aura: High → Low',
+      name: 'filterOrderAuraDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Completion`
+  String get filterOrderCompletionLabel {
+    return Intl.message(
+      'Completion',
+      name: 'filterOrderCompletionLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Any`
+  String get filterOrderCompletionNone {
+    return Intl.message(
+      'Any',
+      name: 'filterOrderCompletionNone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Newest first`
+  String get filterOrderCompletionNewest {
+    return Intl.message(
+      'Newest first',
+      name: 'filterOrderCompletionNewest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Oldest first`
+  String get filterOrderCompletionOldest {
+    return Intl.message(
+      'Oldest first',
+      name: 'filterOrderCompletionOldest',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Sort by`
   String get filterSortBy {
     return Intl.message('Sort by', name: 'filterSortBy', desc: '', args: []);
@@ -3142,6 +3292,91 @@ class S {
       desc: '',
       args: [],
     );
+  }
+
+  /// `Complete your first challenge`
+  String get badgeFirstStepDesc {
+    return Intl.message(
+      'Complete your first challenge',
+      name: 'badgeFirstStepDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Complete 10 challenges`
+  String get badgeTenChallengesDesc {
+    return Intl.message(
+      'Complete 10 challenges',
+      name: 'badgeTenChallengesDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Complete 50 challenges`
+  String get badgeFiftyChallengesDesc {
+    return Intl.message(
+      'Complete 50 challenges',
+      name: 'badgeFiftyChallengesDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Build a 3-week streak`
+  String get badgeThreeWeekStreakDesc {
+    return Intl.message(
+      'Build a 3-week streak',
+      name: 'badgeThreeWeekStreakDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Build a 7-week streak`
+  String get badgeSevenWeekStreakDesc {
+    return Intl.message(
+      'Build a 7-week streak',
+      name: 'badgeSevenWeekStreakDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Earn 100 Aura points`
+  String get badgeCenturyXpDesc {
+    return Intl.message(
+      'Earn 100 Aura points',
+      name: 'badgeCenturyXpDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Earn 500 Aura points`
+  String get badgeFiveHundredXpDesc {
+    return Intl.message(
+      'Earn 500 Aura points',
+      name: 'badgeFiveHundredXpDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Spend 60 minutes being brave`
+  String get badgeBraveMinutesDesc {
+    return Intl.message(
+      'Spend 60 minutes being brave',
+      name: 'badgeBraveMinutesDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Locked`
+  String get badgeLocked {
+    return Intl.message('Locked', name: 'badgeLocked', desc: '', args: []);
   }
 
   /// `Weekly Goal`

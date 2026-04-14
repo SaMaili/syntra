@@ -76,17 +76,51 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
 
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const ChallengesHeader(),
-            ChallengesFilterBar(onGiveMeOne: () => _onGiveMeOne(context)),
-            Expanded(
-              child: ChallengeList(onStart: _startChallenge),
+        child: CustomScrollView(
+          slivers: [
+            // Title + streak + aura — scrolls away with content
+            const SliverToBoxAdapter(child: ChallengesHeroHeader()),
+
+            // Filter bar — stays pinned once the header scrolls out of view
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: _FilterBarDelegate(
+                onGiveMeOne: () => _onGiveMeOne(context),
+              ),
             ),
+
+            // Challenge cards
+            ChallengeListSliver(onStart: _startChallenge),
           ],
         ),
       ),
     );
   }
+}
+
+// ─── Sticky filter bar delegate ───────────────────────────────────────────────
+
+class _FilterBarDelegate extends SliverPersistentHeaderDelegate {
+  final VoidCallback onGiveMeOne;
+  _FilterBarDelegate({required this.onGiveMeOne});
+
+  // IconButton height (48) + vertical padding (xs*2 = 8)
+  static const _height = 56.0;
+
+  @override
+  double get minExtent => _height;
+  @override
+  double get maxExtent => _height;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return ColoredBox(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: ChallengesFilterBar(onGiveMeOne: onGiveMeOne),
+    );
+  }
+
+  @override
+  bool shouldRebuild(_FilterBarDelegate other) => true;
 }

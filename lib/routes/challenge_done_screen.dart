@@ -11,6 +11,7 @@ import '../logic/weekly_streak_logic.dart';
 import '../generated/l10n.dart';
 import '../providers/settings_providers.dart';
 import '../providers/statistics_providers.dart' show refreshStatistics;
+import '../logic/badges_logic.dart';
 import '../router.dart';
 import '../services/sound_service.dart';
 import '../services/vibration_service.dart';
@@ -18,7 +19,6 @@ import '../static.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/syntra_button.dart';
 import '../widgets/syntra_progress_bar.dart';
-import 'challenge_done/level_up_dialog.dart';
 import 'challenge_done/survey_widget.dart';
 
 int socialProofCount(String challengeId) {
@@ -360,13 +360,34 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
 
     if (newLevel != null && context.mounted) {
       SoundService.playSuccess(enabled: ref.read(soundEffectsEnabledProvider));
-      await VibrationService.milestone();
       if (!context.mounted) return;
-      await showDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        builder: (_) => LevelUpDialog(newLevel: newLevel!),
-      );
+      await context.goLevelUp(newLevel);
+    }
+
+    // ── Badge celebration ─────────────────────────────────────────────────────
+    if (!_isAborted && context.mounted) {
+      final stats = await LogbookRepository.instance.overviewStats();
+      final storedBest =
+          await SettingsRepository.instance.loadBestWeeklyStreak();
+      // Use whichever is higher: the stored best or the current streak
+      // (the stored value is updated later in the streak block below).
+      final bestStreak =
+          storedBest > (stats['weekStreak'] ?? 0) ? storedBest : (stats['weekStreak'] ?? 0);
+      final earnedNow = BadgesLogic.computeEarned(stats, bestStreak);
+      final seenBadges = await SettingsRepository.instance.loadSeenBadges();
+
+      final newBadges = BadgesLogic.all
+          .where((b) => earnedNow.contains(b.id) && !seenBadges.contains(b.id))
+          .toList();
+
+      if (newBadges.isNotEmpty) {
+        await SettingsRepository.instance
+            .saveSeenBadges({...seenBadges, ...newBadges.map((b) => b.id)});
+        for (final badge in newBadges) {
+          if (!context.mounted) break;
+          await context.goBadgeUnlocked(badge);
+        }
+      }
     }
 
     if (!_isAborted && context.mounted) {
