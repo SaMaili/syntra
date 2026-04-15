@@ -23,10 +23,9 @@ class ChallengeCard extends StatelessWidget {
   });
 
   String _fmtDuration(int seconds) {
-    if (seconds < 60) return '${seconds}s';
     final m = seconds ~/ 60;
     final s = seconds % 60;
-    return s == 0 ? '${m}m' : '${m}m ${s}s';
+    return '$m:${s.toString().padLeft(2, '0')}';
   }
 
   @override
@@ -103,30 +102,38 @@ class ChallengeCard extends StatelessWidget {
               AppSpacing.xs,
             ),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                _MetaChip(
-                  icon: Icons.timer_outlined,
-                  label: _fmtDuration(challenge.time),
-                ),
-                const SizedBox(width: AppSpacing.xs),
-                _MetaChip(
-                  icon: challenge.type == 'group'
-                      ? Icons.group_outlined
-                      : Icons.person_outlined,
-                  label: challenge.type == 'group' ? l.group : l.solo,
-                ),
-                if (showXP) ...[
-                  const SizedBox(width: AppSpacing.xs),
-                  _MetaChip(
-                    icon: Icons.star_rounded,
-                    label: '+${challenge.xp} ${l.auraPoints}',
+                Expanded(
+                  child: Wrap(
+                    spacing: AppSpacing.sm,
+                    runSpacing: AppSpacing.xs,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      _MetaChip(
+                        icon: Icons.timer_outlined,
+                        label: _fmtDuration(challenge.time),
+                      ),
+                      _MetaChip(
+                        icon: challenge.type == 'group'
+                            ? Icons.group_outlined
+                            : Icons.person_outlined,
+                        label: challenge.type == 'group' ? l.group : l.solo,
+                      ),
+                      if (showXP)
+                        _MetaChip(
+                          icon: Icons.star_rounded,
+                          label: '+${challenge.xp} ${l.auraPoints}',
+                        ),
+                    ],
                   ),
-                ],
-                const Spacer(),
+                ),
                 IconButton(
                   icon: Icon(Icons.info_outline,
                       color: cs.onSurfaceVariant, size: 22),
                   visualDensity: VisualDensity.compact,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
                   tooltip: l.challengeInformation,
                   onPressed: onInfoPressed ??
                       () => ChallengeInfoNotification
@@ -164,8 +171,8 @@ class _MetaChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 13, color: cs.onSurfaceVariant),
-          const SizedBox(width: 3),
+          Icon(icon, size: 16, color: cs.onSurfaceVariant),
+          const SizedBox(width: AppSpacing.xs),
           Text(
             label,
             style: tt.labelSmall?.copyWith(
