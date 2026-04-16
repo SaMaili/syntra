@@ -10,7 +10,6 @@ import '../data/settings_repository.dart';
 import '../logic/weekly_streak_logic.dart';
 import '../generated/l10n.dart';
 import '../providers/settings_providers.dart';
-import '../providers/shop_providers.dart' show applyStreakFreezesIfNeeded;
 import '../providers/statistics_providers.dart' show refreshStatistics;
 import '../logic/badges_logic.dart';
 import '../router.dart';
@@ -363,11 +362,6 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
       SoundService.playSuccess(enabled: ref.read(soundEffectsEnabledProvider));
       if (!context.mounted) return;
       await context.goLevelUp(newLevel);
-    }
-
-    // ── Auto-apply streak freezes for any missed weeks ────────────────────────
-    if (!_isAborted) {
-      await applyStreakFreezesIfNeeded(ref);
     }
 
     // ── Badge celebration ─────────────────────────────────────────────────────

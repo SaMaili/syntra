@@ -5,6 +5,7 @@ import '../data/challenge_repository.dart';
 import '../data/settings_repository.dart';
 import '../generated/l10n.dart';
 import '../logic/comfort_zone_logic.dart';
+import '../logic/weekly_streak_logic.dart';
 import '../logic/notification_manager.dart';
 import '../providers/challenge_providers.dart';
 import '../providers/settings_providers.dart';
@@ -138,6 +139,11 @@ class _ShopCard extends ConsumerWidget {
 
     await ref.read(spentAuraProvider.notifier).spend(kStreakFreezePrice);
     await ref.read(streakFreezesProvider.notifier).add();
+    // Lock the freeze to the current week at purchase time — it cannot be
+    // applied retroactively to past weeks.
+    final currentWeek = WeeklyStreakLogic.isoYearWeek(DateTime.now());
+    final frozenWeeks = await SettingsRepository.instance.loadFrozenWeeks();
+    await SettingsRepository.instance.saveFrozenWeeks({...frozenWeeks, currentWeek});
 
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

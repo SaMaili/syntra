@@ -47,6 +47,7 @@ class SettingsRepository {
   /// Comma-separated ISO year-week keys (e.g. "2026-W10,2026-W14") of weeks
   /// that have been protected by a streak freeze.
   static const _keyFrozenWeeks = 'shop_frozen_weeks';
+  static const _keyLastReviewRequest = 'last_review_request_ms';
 
   final SharedPreferences _prefs;
 
@@ -236,6 +237,21 @@ class SettingsRepository {
 
   Future<void> saveFrozenWeeks(Set<String> weeks) async =>
       _prefs.setString(_keyFrozenWeeks, weeks.join(','));
+
+  // ─── In-app review gate ───────────────────────────────────────────────────
+
+  /// Returns true and records now if at least 30 days have passed since the
+  /// last review request (or if it has never been requested).
+  Future<bool> checkAndMarkReviewRequest() async {
+    final last = _prefs.getInt(_keyLastReviewRequest);
+    final now = DateTime.now().millisecondsSinceEpoch;
+    if (last != null &&
+        now - last < const Duration(days: 30).inMilliseconds) {
+      return false;
+    }
+    await _prefs.setInt(_keyLastReviewRequest, now);
+    return true;
+  }
 
   // ─── Helpers ──────────────────────────────────────────────────────────────
 

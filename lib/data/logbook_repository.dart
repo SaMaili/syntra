@@ -18,66 +18,42 @@ class LogbookRepository {
   Future<Database> get _database async {
     if (_db != null) return _db!;
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'challenge_database.db');
+    final path = join(dbPath, 'logbook.db');
     _db = await openDatabase(
       path,
-      version: 5,
-      onUpgrade: (db, oldVersion, newVersion) async {
-        if (oldVersion < 2) {
-          await db.execute(
-            'ALTER TABLE logbook ADD COLUMN duration_seconds INTEGER',
-          );
-        }
-        if (oldVersion < 3) {
-          // Guard against devices where these columns were added outside of a
-          // proper migration (e.g. during development on an earlier build).
-          try {
-            await db.execute(
-              'ALTER TABLE logbook ADD COLUMN feeling INTEGER',
-            );
-          } catch (_) {}
-          try {
-            await db.execute(
-              'ALTER TABLE logbook ADD COLUMN perception INTEGER',
-            );
-          } catch (_) {}
-        }
-        if (oldVersion < 4) {
-          // Rebuild the table to change challenge_id from INTEGER to TEXT.
-          // SQLite does not support ALTER COLUMN, so we use the recommended
-          // rename-copy-drop pattern.
-          await db.execute('''
-            CREATE TABLE logbook_new (
-              id               INTEGER PRIMARY KEY AUTOINCREMENT,
-              challenge_id     TEXT,
-              status           TEXT,
-              earned           INTEGER,
-              timestamp        DATETIME,
-              notes            TEXT,
-              feeling          INTEGER,
-              perception       INTEGER,
-              duration_seconds INTEGER
-            )
-          ''');
-          // Use explicit column names so order mismatches never cause failures.
-          await db.execute('''
-            INSERT INTO logbook_new
-              (id, challenge_id, status, earned, timestamp, notes,
-               feeling, perception, duration_seconds)
-            SELECT id, challenge_id, status, earned, timestamp, notes,
-               feeling, perception, duration_seconds
-            FROM logbook
-          ''');
-          await db.execute('DROP TABLE logbook');
-          await db.execute('ALTER TABLE logbook_new RENAME TO logbook');
-        }
-        if (oldVersion < 5) {
-          try {
-            await db.execute(
-              'ALTER TABLE logbook ADD COLUMN pre_anxiety INTEGER',
-            );
-          } catch (_) {}
-        }
+      version: 1,
+      onDowngrade: (db, oldVersion, newVersion) async {
+        await db.execute('DROP TABLE IF EXISTS logbook');
+        await db.execute('''
+          CREATE TABLE logbook (
+            id               INTEGER PRIMARY KEY AUTOINCREMENT,
+            challenge_id     TEXT,
+            status           TEXT,
+            earned           INTEGER,
+            timestamp        DATETIME,
+            notes            TEXT,
+            feeling          INTEGER,
+            perception       INTEGER,
+            duration_seconds INTEGER,
+            pre_anxiety      INTEGER
+          )
+        ''');
+      },
+      onCreate: (db, version) async {
+        await db.execute('''
+          CREATE TABLE IF NOT EXISTS logbook (
+            id               INTEGER PRIMARY KEY AUTOINCREMENT,
+            challenge_id     TEXT,
+            status           TEXT,
+            earned           INTEGER,
+            timestamp        DATETIME,
+            notes            TEXT,
+            feeling          INTEGER,
+            perception       INTEGER,
+            duration_seconds INTEGER,
+            pre_anxiety      INTEGER
+          )
+        ''');
       },
     );
     return _db!;
@@ -338,6 +314,11 @@ class LogbookRepository {
   Future<void> deleteEntry(int id) async {
     final db = await _database;
     await db.delete('logbook', where: 'id = ?', whereArgs: [id]);
+    final count = Sqflite.firstIntValue(
+        await db.rawQuery('SELECT COUNT(*) FROM logbook'));
+    if (count == 0) {
+      await SettingsRepository.instance.saveFrozenWeeks({});
+    }
   }
 
   Future<List<List<int>>> weeklyChallengeCounts({int days = 7}) async {
