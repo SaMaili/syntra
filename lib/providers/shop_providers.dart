@@ -5,7 +5,7 @@ import '../data/settings_repository.dart';
 import '../logic/weekly_streak_logic.dart';
 import '../providers/statistics_providers.dart';
 
-const int kStreakFreezePrice = 600;
+const int kStreakFreezePrice = 500;
 const int kMaxStreakFreezes = 2;
 
 // ─── Spent Aura ───────────────────────────────────────────────────────────────

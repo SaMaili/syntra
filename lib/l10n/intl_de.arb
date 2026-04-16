@@ -67,6 +67,11 @@
   "@shopBuyFor": {
     "placeholders": { "price": { "type": "int" } }
   },
+  "shopConfirmTitle": "Kauf bestätigen",
+  "shopConfirmBody": "Streak Freeze für {price} Aura kaufen?",
+  "@shopConfirmBody": {
+    "placeholders": { "price": { "type": "int" } }
+  },
   "shopMaxOwned": "Maximum erreicht",
   "shopNotEnoughAura": "Nicht genug Aura",
   "shopPurchased": "Gekauft!",

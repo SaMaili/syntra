@@ -49,6 +49,11 @@
   "@shopBuyFor": {
     "placeholders": { "price": { "type": "int" } }
   },
+  "shopConfirmTitle": "Confirm purchase",
+  "shopConfirmBody": "Buy a Streak Freeze for {price} Aura?",
+  "@shopConfirmBody": {
+    "placeholders": { "price": { "type": "int" } }
+  },
   "shopMaxOwned": "Max owned",
   "shopNotEnoughAura": "Not enough Aura",
   "shopPurchased": "Purchased!",

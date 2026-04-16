@@ -80,6 +80,62 @@ class _ShopCard extends ConsumerWidget {
       return;
     }
 
+    final confirmed = await showModalBottomSheet<bool>(
+      context: context,
+      useRootNavigator: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) {
+        final cs = Theme.of(ctx).colorScheme;
+        final tt = Theme.of(ctx).textTheme;
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+                AppSpacing.md, AppSpacing.lg, AppSpacing.md, AppSpacing.md),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: Colors.blue.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
+                  ),
+                  child: const Icon(Icons.ac_unit_rounded,
+                      color: Colors.blue, size: 24),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                Text(l.shopConfirmTitle,
+                    style:
+                        tt.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  l.shopConfirmBody(kStreakFreezePrice),
+                  style: tt.bodyMedium
+                      ?.copyWith(color: cs.onSurfaceVariant),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                SyntraButton(
+                  onPressed: () => Navigator.pop(ctx, true),
+                  child: Text(l.shopBuyFor(kStreakFreezePrice)),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                SyntraButton(
+                  onPressed: () => Navigator.pop(ctx, false),
+                  color: Colors.grey,
+                  child: Text(l.cancel),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+    if (confirmed != true || !context.mounted) return;
+
     await ref.read(spentAuraProvider.notifier).spend(kStreakFreezePrice);
     await ref.read(streakFreezesProvider.notifier).add();
 
@@ -216,15 +272,11 @@ class _ShopCard extends ConsumerWidget {
             const SizedBox(height: AppSpacing.md),
 
             // ── Buy button ────────────────────────────────────────────────────
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton.tonal(
-                onPressed:
-                    canBuy ? () => _buyStreakFreeze(context, ref) : null,
-                child: Text(freezes >= kMaxStreakFreezes
-                    ? l.shopMaxOwned
-                    : l.shopBuyFor(kStreakFreezePrice)),
-              ),
+            SyntraButton(
+              onPressed: canBuy ? () => _buyStreakFreeze(context, ref) : null,
+              child: Text(freezes >= kMaxStreakFreezes
+                  ? l.shopMaxOwned
+                  : l.shopBuyFor(kStreakFreezePrice)),
             ),
           ],
         ),

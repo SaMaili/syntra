@@ -259,6 +259,26 @@ class S {
     );
   }
 
+  /// `Confirm purchase`
+  String get shopConfirmTitle {
+    return Intl.message(
+      'Confirm purchase',
+      name: 'shopConfirmTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Buy a Streak Freeze for {price} Aura?`
+  String shopConfirmBody(int price) {
+    return Intl.message(
+      'Buy a Streak Freeze for $price Aura?',
+      name: 'shopConfirmBody',
+      desc: '',
+      args: [price],
+    );
+  }
+
   /// `Max owned`
   String get shopMaxOwned {
     return Intl.message('Max owned', name: 'shopMaxOwned', desc: '', args: []);
