@@ -2,18 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../generated/l10n.dart';
-import '../../logic/weekly_streak_logic.dart';
 import '../../providers/statistics_providers.dart';
 import '../../theme/app_spacing.dart';
 
 class StatsOverviewGrid extends ConsumerWidget {
-  const StatsOverviewGrid();
+  const StatsOverviewGrid({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final async = ref.watch(overviewStatsProvider);
     final bestStreakAsync = ref.watch(personalBestStreakProvider);
-    final currentWeekXpAsync = ref.watch(currentWeekXpProvider);
 
     return async.when(
       loading: () => const StatsShimmer(),
@@ -22,21 +20,12 @@ class StatsOverviewGrid extends ConsumerWidget {
         final l = S.of(context);
         final cs = Theme.of(context).colorScheme;
         final bestStreak = bestStreakAsync.valueOrNull ?? 0;
-        final currentWeekXp = currentWeekXpAsync.valueOrNull ?? 0;
-        final weekProgress =
-            (currentWeekXp / kWeeklyXpThreshold).clamp(0.0, 1.0);
         final weekStreak = stats['weekStreak'] ?? 0;
         final pendingWeekStreak = stats['pendingWeekStreak'] ?? 0;
         final displayStreak = weekStreak > 0 ? weekStreak : pendingWeekStreak;
         final isStreakActive = weekStreak > 0;
         return Column(
           children: [
-            // ── Weekly Aura progress card ────────────────────────────────
-            _WeeklyAuraCard(
-              currentXp: currentWeekXp,
-              progress: weekProgress,
-            ),
-            const SizedBox(height: AppSpacing.sm),
             // ── Stats grid ───────────────────────────────────────────────
             GridView.count(
               crossAxisCount: 2,
@@ -89,75 +78,6 @@ class StatsOverviewGrid extends ConsumerWidget {
           ],
         );
       },
-    );
-  }
-}
-
-class _WeeklyAuraCard extends StatelessWidget {
-  final int currentXp;
-  final double progress; // 0.0–1.0
-
-  const _WeeklyAuraCard({required this.currentXp, required this.progress});
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
-    final l = S.of(context);
-    final isComplete = progress >= 1.0;
-
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  isComplete
-                      ? Icons.check_circle_rounded
-                      : Icons.local_fire_department_outlined,
-                  size: 18,
-                  color: isComplete ? Colors.green : cs.primary,
-                ),
-                const SizedBox(width: AppSpacing.xs),
-                Text(
-                  l.weeklyAuraGoalTitle,
-                  style: tt.titleSmall
-                      ?.copyWith(fontWeight: FontWeight.bold),
-                ),
-                const Spacer(),
-                Text(
-                  '$currentXp / $kWeeklyXpThreshold ${l.auraPoints}',
-                  style: tt.labelSmall
-                      ?.copyWith(color: cs.onSurfaceVariant),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: LinearProgressIndicator(
-                value: progress,
-                minHeight: 8,
-                backgroundColor: cs.surfaceContainerHighest,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  isComplete ? Colors.green : cs.primary,
-                ),
-              ),
-            ),
-            if (isComplete) ...[
-              const SizedBox(height: AppSpacing.xs),
-              Text(
-                l.weeklyAuraGoalReached,
-                style: tt.labelSmall
-                    ?.copyWith(color: Colors.green),
-              ),
-            ],
-          ],
-        ),
-      ),
     );
   }
 }
@@ -225,7 +145,7 @@ class StatCard extends StatelessWidget {
 }
 
 class StatsShimmer extends StatelessWidget {
-  const StatsShimmer();
+  const StatsShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {
