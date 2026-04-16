@@ -28,6 +28,7 @@ class StatsOverviewGrid extends ConsumerWidget {
           children: [
             // ── Stats grid ───────────────────────────────────────────────
             GridView.count(
+              padding: EdgeInsets.zero,
               crossAxisCount: 2,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -101,6 +102,7 @@ class StatCard extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final iconColor = color ?? cs.primary;
     return Card(
+      margin: EdgeInsets.zero,
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,

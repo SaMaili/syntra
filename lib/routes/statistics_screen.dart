@@ -32,8 +32,12 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen>
       body: RefreshIndicator(
         onRefresh: () async => refreshStatistics(ref),
         child: ListView(
-          padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+          padding: EdgeInsets.only(
+            left: AppSpacing.md,
+            right: AppSpacing.md,
+            top: AppSpacing.sm,
+            bottom: AppSpacing.bottomNavBarHeight(context) + AppSpacing.md,
+          ),
           children: [
             const StatsOverviewGrid(),
             const SizedBox(height: AppSpacing.md),
@@ -52,7 +56,6 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen>
             const WeeklyXpChart(),
             const SizedBox(height: AppSpacing.md),
             const AverageMoodCard(),
-            const SizedBox(height: AppSpacing.xl),
           ],
         ),
       ),

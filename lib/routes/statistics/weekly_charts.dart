@@ -16,6 +16,7 @@ class WeeklyXpChart extends ConsumerWidget {
     final async = ref.watch(weeklyXpProvider);
 
     return Card(
+      margin: EdgeInsets.zero,
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(

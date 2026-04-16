@@ -70,11 +70,12 @@ class ChallengeListSliver extends ConsumerWidget {
           );
         }
 
-        final bottomInset = MediaQuery.paddingOf(context).bottom;
         return SliverPadding(
           padding: EdgeInsets.fromLTRB(
-            AppSpacing.md, AppSpacing.xs, AppSpacing.md,
-            AppSpacing.xl + bottomInset,
+            AppSpacing.md,
+            AppSpacing.xs,
+            AppSpacing.md,
+            AppSpacing.bottomNavBarHeight(context) + AppSpacing.md,
           ),
           sliver: SliverList.separated(
             itemCount: filtered.length,

@@ -99,7 +99,7 @@ class _MissionBoard extends ConsumerWidget {
 
     return ListView(
       padding: EdgeInsets.only(
-          bottom: AppSpacing.xl + MediaQuery.paddingOf(context).bottom),
+          bottom: AppSpacing.bottomNavBarHeight(context) + AppSpacing.md),
       children: [
         // ── Header ──────────────────────────────────────────────────────────
         Padding(
@@ -306,6 +306,7 @@ class _MissionCard extends StatelessWidget {
       opacity: done ? 0.55 : 1.0,
       duration: const Duration(milliseconds: 300),
       child: Card(
+        margin: EdgeInsets.zero,
         color: cardColor,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -403,32 +404,25 @@ class _MissionCard extends StatelessWidget {
                   Flexible(
                     child: LayoutBuilder(
                       builder: (context, constraints) {
-                        final compact = constraints.maxWidth < 190;
+                        final compact = constraints.maxWidth < 155;
                         return Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            Flexible(
-                              child: MetaChip(
-                                icon: Icons.timer_outlined,
-                                label: compact
-                                    ? _fmtCompact(c.time)
-                                    : _fmtFull(c.time),
-                              ),
+                            MetaChip(
+                              icon: Icons.timer_outlined,
+                              label: _fmtCompact(c.time),
                             ),
                             const SizedBox(width: AppSpacing.sm),
-                            Flexible(
-                              child: MetaChip(
-                                icon: Icons.emoji_events_outlined,
-                                label: compact
-                                    ? '${c.xp}A'
-                                    : '${c.xp} ${l.auraPoints}',
-                              ),
+                            MetaChip(
+                              icon: Icons.emoji_events_outlined,
+                              label: compact
+                                  ? '${c.xp}A'
+                                  : '${c.xp} ${l.auraPoints}',
                             ),
                             const SizedBox(width: AppSpacing.sm),
-                            Flexible(
-                              child: MetaChip(
-                                icon: _typeIcon(c.type),
-                                label: _typeLabel(context, c.type),
-                              ),
+                            MetaChip(
+                              icon: _typeIcon(c.type),
+                              label: _typeLabel(context, c.type),
                             ),
                           ],
                         );
@@ -486,11 +480,5 @@ class _MissionCard extends StatelessWidget {
     return '$m:${s.toString().padLeft(2, '0')}';
   }
 
-  String _fmtFull(int seconds) {
-    if (seconds < 60) return '${seconds}s';
-    final m = seconds ~/ 60;
-    final s = seconds % 60;
-    return s == 0 ? '${m}m' : '${m}m ${s}s';
-  }
 }
 
