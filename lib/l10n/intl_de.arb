@@ -55,8 +55,29 @@
   "comingSoon": "Kommt bald",
   "navChallenge": "Challenge",
   "navDaily": "Täglich",
-  "navStats": "Statistik",
+  "navProfile": "Profil",
   "navSettings": "Einstellungen",
+  "profileTitle": "Profil",
+  "shopTitle": "Shop",
+  "shopAvailableAura": "Verfügbar: {aura} Aura",
+  "@shopAvailableAura": {
+    "placeholders": { "aura": { "type": "int" } }
+  },
+  "shopBuyFor": "Kaufen · {price} Aura",
+  "@shopBuyFor": {
+    "placeholders": { "price": { "type": "int" } }
+  },
+  "shopMaxOwned": "Maximum erreicht",
+  "shopNotEnoughAura": "Nicht genug Aura",
+  "shopPurchased": "Gekauft!",
+  "shopStreakFreezeDesc": "Schütze eine Woche, wenn du das Ziel nicht erreichst.",
+  "shopInInventory": "{count} / {max} im Inventar",
+  "@shopInInventory": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "max": { "type": "int" }
+    }
+  },
   "timeRemaining": "Verbleibende Zeit",
   "notSureWhatToSay": "Nicht sicher was du sagen sollst?",
   "doneExcited": "GESCHAFFT!",

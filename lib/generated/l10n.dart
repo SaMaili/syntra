@@ -219,14 +219,89 @@ class S {
     return Intl.message('Daily', name: 'navDaily', desc: '', args: []);
   }
 
-  /// `Stats`
-  String get navStats {
-    return Intl.message('Stats', name: 'navStats', desc: '', args: []);
+  /// `Profile`
+  String get navProfile {
+    return Intl.message('Profile', name: 'navProfile', desc: '', args: []);
   }
 
   /// `Settings`
   String get navSettings {
     return Intl.message('Settings', name: 'navSettings', desc: '', args: []);
+  }
+
+  /// `Profile`
+  String get profileTitle {
+    return Intl.message('Profile', name: 'profileTitle', desc: '', args: []);
+  }
+
+  /// `Shop`
+  String get shopTitle {
+    return Intl.message('Shop', name: 'shopTitle', desc: '', args: []);
+  }
+
+  /// `Available: {aura} Aura`
+  String shopAvailableAura(int aura) {
+    return Intl.message(
+      'Available: $aura Aura',
+      name: 'shopAvailableAura',
+      desc: '',
+      args: [aura],
+    );
+  }
+
+  /// `Buy · {price} Aura`
+  String shopBuyFor(int price) {
+    return Intl.message(
+      'Buy · $price Aura',
+      name: 'shopBuyFor',
+      desc: '',
+      args: [price],
+    );
+  }
+
+  /// `Max owned`
+  String get shopMaxOwned {
+    return Intl.message('Max owned', name: 'shopMaxOwned', desc: '', args: []);
+  }
+
+  /// `Not enough Aura`
+  String get shopNotEnoughAura {
+    return Intl.message(
+      'Not enough Aura',
+      name: 'shopNotEnoughAura',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Purchased!`
+  String get shopPurchased {
+    return Intl.message(
+      'Purchased!',
+      name: 'shopPurchased',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Protect one week when you can't reach the goal.`
+  String get shopStreakFreezeDesc {
+    return Intl.message(
+      'Protect one week when you can\'t reach the goal.',
+      name: 'shopStreakFreezeDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} / {max} in inventory`
+  String shopInInventory(int count, int max) {
+    return Intl.message(
+      '$count / $max in inventory',
+      name: 'shopInInventory',
+      desc: '',
+      args: [count, max],
+    );
   }
 
   /// `Time Remaining`

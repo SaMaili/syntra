@@ -42,29 +42,35 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m9(period, time) => "⏰ ${period} reminder updated to ${time}";
 
-  static String m10(seconds) => "Blocked ${seconds} seconds";
+  static String m10(aura) => "Available: ${aura} Aura";
 
-  static String m11(minutes) => "${minutes} minutes spent being brave.";
+  static String m11(price) => "Buy · ${price} Aura";
 
-  static String m12(count) =>
+  static String m12(count, max) => "${count} / ${max} in inventory";
+
+  static String m13(seconds) => "Blocked ${seconds} seconds";
+
+  static String m14(minutes) => "${minutes} minutes spent being brave.";
+
+  static String m15(count) =>
       "You have stepped outside your comfort zone ${count} times.";
 
-  static String m13(days) =>
+  static String m16(days) =>
       "You are on a ${days}-day streak. Keep the momentum going.";
 
-  static String m14(kilo) =>
+  static String m17(kilo) =>
       "${kilo}k Aura earned — you are building something real.";
 
-  static String m15(xp) => "${xp} Aura earned through genuine action.";
+  static String m18(xp) => "${xp} Aura earned through genuine action.";
 
-  static String m16(days) =>
+  static String m19(days) =>
       "You\'ve been showing up for ${days} weeks. Keep going.";
 
-  static String m17(days) => "${days}-Week Streak!";
+  static String m20(days) => "${days}-Week Streak!";
 
-  static String m18(done, goal) => "${done} of ${goal} challenges this week";
+  static String m21(done, goal) => "${done} of ${goal} challenges this week";
 
-  static String m19(n) =>
+  static String m22(n) =>
       "This week you completed ${n} challenges. Keep up the great work!";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -538,8 +544,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "navChallenge": MessageLookupByLibrary.simpleMessage("Challenge"),
     "navDaily": MessageLookupByLibrary.simpleMessage("Daily"),
+    "navProfile": MessageLookupByLibrary.simpleMessage("Profile"),
     "navSettings": MessageLookupByLibrary.simpleMessage("Settings"),
-    "navStats": MessageLookupByLibrary.simpleMessage("Stats"),
     "negative": MessageLookupByLibrary.simpleMessage("Negative"),
     "neutral": MessageLookupByLibrary.simpleMessage("Neutral"),
     "newChallenge": MessageLookupByLibrary.simpleMessage("New Challenge"),
@@ -689,6 +695,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "primingSubQuick": MessageLookupByLibrary.simpleMessage(
       "Under a minute of action. The discomfort fades faster than you think.",
     ),
+    "profileTitle": MessageLookupByLibrary.simpleMessage("Profile"),
     "quote1": MessageLookupByLibrary.simpleMessage(
       "\"The only limit to our realization of tomorrow will be our doubts of today.\"",
     ),
@@ -740,6 +747,18 @@ class MessageLookup extends MessageLookupByLibrary {
       "Set difficulty manually",
     ),
     "settingsTitle": MessageLookupByLibrary.simpleMessage("Settings"),
+    "shopAvailableAura": m10,
+    "shopBuyFor": m11,
+    "shopInInventory": m12,
+    "shopMaxOwned": MessageLookupByLibrary.simpleMessage("Max owned"),
+    "shopNotEnoughAura": MessageLookupByLibrary.simpleMessage(
+      "Not enough Aura",
+    ),
+    "shopPurchased": MessageLookupByLibrary.simpleMessage("Purchased!"),
+    "shopStreakFreezeDesc": MessageLookupByLibrary.simpleMessage(
+      "Protect one week when you can\'t reach the goal.",
+    ),
+    "shopTitle": MessageLookupByLibrary.simpleMessage("Shop"),
     "showReminderNotifications": MessageLookupByLibrary.simpleMessage(
       "Show reminder notifications",
     ),
@@ -767,21 +786,21 @@ class MessageLookup extends MessageLookupByLibrary {
     "stayCurious": MessageLookupByLibrary.simpleMessage(
       "Stay curious and open-minded",
     ),
-    "stillSecondsLeft": m10,
+    "stillSecondsLeft": m13,
     "storyFirstChallenge": MessageLookupByLibrary.simpleMessage(
       "Your story starts with the first challenge you complete.",
     ),
-    "storyMinutesBrave": m11,
-    "storyNTimes": m12,
+    "storyMinutesBrave": m14,
+    "storyNTimes": m15,
     "storyOnce": MessageLookupByLibrary.simpleMessage(
       "You have stepped outside your comfort zone once. That takes courage.",
     ),
-    "storyStreakMany": m13,
+    "storyStreakMany": m16,
     "storyStreakOne": MessageLookupByLibrary.simpleMessage(
       "Day 1 of a new streak. Every big streak started here.",
     ),
-    "storyXpKilo": m14,
-    "storyXpSmall": m15,
+    "storyXpKilo": m17,
+    "storyXpSmall": m18,
     "streak": MessageLookupByLibrary.simpleMessage("Streak"),
     "streakMilestone100": MessageLookupByLibrary.simpleMessage(
       "100 weeks. You\'ve built something extraordinary. Respect.",
@@ -801,8 +820,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "streakMilestone7": MessageLookupByLibrary.simpleMessage(
       "7 weeks! Nearly two months of consistent effort. Your comfort zone has grown.",
     ),
-    "streakMilestoneGeneric": m16,
-    "streakMilestoneTitle": m17,
+    "streakMilestoneGeneric": m19,
+    "streakMilestoneTitle": m20,
     "sun": MessageLookupByLibrary.simpleMessage("S"),
     "thankYouFeedback": MessageLookupByLibrary.simpleMessage(
       "Thank you for your feedback!",
@@ -854,10 +873,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "weeklyChallenges": MessageLookupByLibrary.simpleMessage(
       "Weekly Challenges",
     ),
-    "weeklyGoalProgress": m18,
+    "weeklyGoalProgress": m21,
     "weeklyGoalSetLabel": MessageLookupByLibrary.simpleMessage("Set goal:"),
     "weeklyGoalTitle": MessageLookupByLibrary.simpleMessage("Weekly Goal"),
-    "weeklyRecapBody": m19,
+    "weeklyRecapBody": m22,
     "weeklyRecapTitle": MessageLookupByLibrary.simpleMessage("Weekly Recap"),
     "weeklyXpProgress": MessageLookupByLibrary.simpleMessage("Weekly Aura"),
     "weeksShort": MessageLookupByLibrary.simpleMessage("weeks"),

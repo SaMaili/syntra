@@ -40,6 +40,13 @@ class SettingsRepository {
   static const _keyLastGoalWeek = 'last_goal_week';
   /// Comma-separated badge IDs that have already been celebrated.
   static const _keySeenBadges = 'seen_badges';
+  /// Total Aura spent in the shop (lifetime).
+  static const _keySpentAura = 'shop_spent_aura';
+  /// Number of streak freezes currently in the user's inventory (0–2).
+  static const _keyStreakFreezes = 'shop_streak_freezes';
+  /// Comma-separated ISO year-week keys (e.g. "2026-W10,2026-W14") of weeks
+  /// that have been protected by a streak freeze.
+  static const _keyFrozenWeeks = 'shop_frozen_weeks';
 
   final SharedPreferences _prefs;
 
@@ -206,6 +213,29 @@ class SettingsRepository {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_keyWeeklyGoal, goal);
   }
+
+  // ─── Shop ─────────────────────────────────────────────────────────────────
+
+  Future<int> loadSpentAura() async =>
+      _prefs.getInt(_keySpentAura) ?? 0;
+
+  Future<void> saveSpentAura(int amount) async =>
+      _prefs.setInt(_keySpentAura, amount);
+
+  Future<int> loadStreakFreezes() async =>
+      _prefs.getInt(_keyStreakFreezes) ?? 0;
+
+  Future<void> saveStreakFreezes(int count) async =>
+      _prefs.setInt(_keyStreakFreezes, count);
+
+  Future<Set<String>> loadFrozenWeeks() async {
+    final raw = _prefs.getString(_keyFrozenWeeks) ?? '';
+    if (raw.isEmpty) return {};
+    return raw.split(',').toSet();
+  }
+
+  Future<void> saveFrozenWeeks(Set<String> weeks) async =>
+      _prefs.setString(_keyFrozenWeeks, weeks.join(','));
 
   // ─── Helpers ──────────────────────────────────────────────────────────────
 

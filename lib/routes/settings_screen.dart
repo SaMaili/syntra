@@ -8,6 +8,7 @@ import '../logic/comfort_zone_logic.dart';
 import '../logic/notification_manager.dart';
 import '../providers/challenge_providers.dart';
 import '../providers/settings_providers.dart';
+import '../providers/shop_providers.dart';
 import '../providers/statistics_providers.dart' show czlCompletionsProvider;
 import '../services/syntra_notification_service.dart';
 import '../theme/app_spacing.dart';
@@ -36,7 +37,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
         padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.md, vertical: AppSpacing.sm),
         children: const [
-          _ComfortZoneLevelCard(),
+          _ShopCard(),
           SizedBox(height: AppSpacing.md),
           _AppSettingsCard(),
           SizedBox(height: AppSpacing.md),
@@ -45,6 +46,181 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
           _GeneralCard(),
           SizedBox(height: AppSpacing.xl),
         ],
+      ),
+    );
+  }
+}
+
+// ─── Shop ─────────────────────────────────────────────────────────────────────
+
+class _ShopCard extends ConsumerWidget {
+  const _ShopCard();
+
+  Future<void> _buyStreakFreeze(BuildContext context, WidgetRef ref) async {
+    final available = ref.read(availableAuraProvider);
+    final freezes = ref.read(streakFreezesProvider);
+    final l = S.of(context);
+
+    if (freezes >= kMaxStreakFreezes) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l.shopMaxOwned)),
+      );
+      return;
+    }
+    if (available == null || available < kStreakFreezePrice) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l.shopNotEnoughAura)),
+      );
+      return;
+    }
+
+    await ref.read(spentAuraProvider.notifier).spend(kStreakFreezePrice);
+    await ref.read(streakFreezesProvider.notifier).add();
+
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l.shopPurchased)),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
+    final l = S.of(context);
+
+    final available = ref.watch(availableAuraProvider);
+    final freezes = ref.watch(streakFreezesProvider);
+
+    final canBuy = available != null &&
+        available >= kStreakFreezePrice &&
+        freezes < kMaxStreakFreezes;
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ── Header ────────────────────────────────────────────────────────
+            Row(
+              children: [
+                Icon(Icons.storefront_outlined, color: cs.primary),
+                const SizedBox(width: AppSpacing.sm),
+                Text(
+                  l.shopTitle,
+                  style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                ),
+                const Spacer(),
+                // Available Aura chip
+                if (available != null)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.sm, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: cs.primaryContainer,
+                      borderRadius:
+                          BorderRadius.circular(AppSpacing.chipRadius),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.emoji_events,
+                            size: 14, color: cs.onPrimaryContainer),
+                        const SizedBox(width: 4),
+                        Text(
+                          l.shopAvailableAura(available),
+                          style: tt.labelSmall?.copyWith(
+                            color: cs.onPrimaryContainer,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.md),
+            const Divider(height: 1),
+            const SizedBox(height: AppSpacing.md),
+
+            // ── Streak Freeze item ────────────────────────────────────────────
+            Row(
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: cs.tertiary.withValues(alpha: 0.12),
+                    borderRadius:
+                        BorderRadius.circular(AppSpacing.chipRadius),
+                  ),
+                  child: Icon(Icons.ac_unit_rounded,
+                      color: cs.tertiary, size: 24),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            'Streak Freeze',
+                            style: tt.bodyMedium
+                                ?.copyWith(fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          // Inventory badge
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 1),
+                            decoration: BoxDecoration(
+                              color: freezes > 0
+                                  ? cs.tertiary.withValues(alpha: 0.15)
+                                  : cs.surfaceContainerHighest,
+                              borderRadius: BorderRadius.circular(
+                                  AppSpacing.chipRadius),
+                            ),
+                            child: Text(
+                              l.shopInInventory(freezes, kMaxStreakFreezes),
+                              style: tt.labelSmall?.copyWith(
+                                color: freezes > 0
+                                    ? cs.tertiary
+                                    : cs.onSurfaceVariant,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        l.shopStreakFreezeDesc,
+                        style: tt.bodySmall
+                            ?.copyWith(color: cs.onSurfaceVariant),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.md),
+
+            // ── Buy button ────────────────────────────────────────────────────
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.tonal(
+                onPressed:
+                    canBuy ? () => _buyStreakFreeze(context, ref) : null,
+                child: Text(freezes >= kMaxStreakFreezes
+                    ? l.shopMaxOwned
+                    : l.shopBuyFor(kStreakFreezePrice)),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -407,8 +583,8 @@ class _LevelDownDialog extends ConsumerWidget {
 
 // ─── Comfort Zone Level progress card ────────────────────────────────────────
 
-class _ComfortZoneLevelCard extends ConsumerWidget {
-  const _ComfortZoneLevelCard();
+class ComfortZoneLevelCard extends ConsumerWidget {
+  const ComfortZoneLevelCard({super.key});
 
   Future<void> _onSetLevel(
       BuildContext context, WidgetRef ref, int targetLevel) async {
