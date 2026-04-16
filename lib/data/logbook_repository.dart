@@ -1,6 +1,7 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../data/settings_repository.dart';
 import '../logic/weekly_streak_logic.dart';
 
 /// All reads and writes to the logbook SQLite table go through this class.
@@ -187,12 +188,16 @@ class LogbookRepository {
     final totalSeconds = (row['totalSeconds'] as int?) ?? 0;
     final now = DateTime.now();
     final xpByWeek = await weeklyXpByWeek(weeks: 52);
-    final weekStreak = WeeklyStreakLogic.countStreak(xpByWeek, now);
+    final frozenWeeks = await SettingsRepository.instance.loadFrozenWeeks();
+    final weekStreak =
+        WeeklyStreakLogic.countStreak(xpByWeek, now, frozenWeeks: frozenWeeks);
     // pendingWeekStreak: streak from last week — shown in grey when the current
     // week hasn't reached the threshold yet (grace period motivational cue).
     // Resets to 0 only when two or more consecutive weeks were missed.
-    final pendingWeekStreak =
-        weekStreak == 0 ? WeeklyStreakLogic.countPendingStreak(xpByWeek, now) : 0;
+    final pendingWeekStreak = weekStreak == 0
+        ? WeeklyStreakLogic.countPendingStreak(xpByWeek, now,
+            frozenWeeks: frozenWeeks)
+        : 0;
 
     return {
       'totalXp': (row['totalXp'] as int?) ?? 0,

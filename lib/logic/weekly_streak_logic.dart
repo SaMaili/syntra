@@ -41,10 +41,14 @@ class WeeklyStreakLogic {
   ///
   /// [xpByWeek] maps ISO year-week strings (e.g. `"2026-W14"`) to total XP
   /// earned that week. Missing weeks are treated as 0 XP.
+  ///
+  /// [frozenWeeks] is the set of ISO week keys that have been protected by a
+  /// streak freeze — they are treated as having met the threshold.
   static int countStreak(
     Map<String, int> xpByWeek,
     DateTime today, {
     int threshold = kWeeklyXpThreshold,
+    Set<String> frozenWeeks = const {},
   }) {
     final currentWeekMonday = startOfIsoWeek(today);
     int streak = 0;
@@ -59,7 +63,7 @@ class WeeklyStreakLogic {
       );
       final weekKey = isoYearWeek(weekStart);
       final xp = xpByWeek[weekKey] ?? 0;
-      if (xp >= threshold) {
+      if (xp >= threshold || frozenWeeks.contains(weekKey)) {
         streak++;
       } else {
         break;
@@ -79,6 +83,7 @@ class WeeklyStreakLogic {
     Map<String, int> xpByWeek,
     DateTime today, {
     int threshold = kWeeklyXpThreshold,
+    Set<String> frozenWeeks = const {},
   }) {
     final currentWeekMonday = startOfIsoWeek(today);
     int streak = 0;
@@ -91,7 +96,7 @@ class WeeklyStreakLogic {
       );
       final weekKey = isoYearWeek(weekStart);
       final xp = xpByWeek[weekKey] ?? 0;
-      if (xp >= threshold) {
+      if (xp >= threshold || frozenWeeks.contains(weekKey)) {
         streak++;
       } else {
         break;
@@ -99,6 +104,57 @@ class WeeklyStreakLogic {
     }
 
     return streak;
+  }
+
+  /// Walks the streak backwards from today and automatically applies available
+  /// freeze charges to consecutive missed past weeks — exactly like Duolingo's
+  /// streak freeze.
+  ///
+  /// Only past weeks (weeksBack ≥ 1) are eligible for a freeze; the current
+  /// in-progress week (weeksBack == 0) must qualify on its own XP.  A freeze
+  /// is never applied if the current week hasn't reached the threshold yet,
+  /// because the streak counter starts at 0 and never reaches the gap check.
+  ///
+  /// Returns the resulting streak count **and** the list of newly-frozen week
+  /// keys (so the caller can persist them and decrement the freeze inventory).
+  /// Already-frozen weeks in [alreadyFrozenWeeks] are counted but not re-added
+  /// to the returned list.
+  static ({int streak, List<String> newlyFrozenWeeks}) countStreakAutoFreeze(
+    Map<String, int> xpByWeek,
+    DateTime today, {
+    int threshold = kWeeklyXpThreshold,
+    Set<String> alreadyFrozenWeeks = const {},
+    int availableFreezes = 0,
+  }) {
+    final currentWeekMonday = startOfIsoWeek(today);
+    int streak = 0;
+    int remainingFreezes = availableFreezes;
+    final newlyFrozen = <String>[];
+
+    for (int weeksBack = 0; weeksBack <= 200; weeksBack++) {
+      final weekStart = DateTime(
+        currentWeekMonday.year,
+        currentWeekMonday.month,
+        currentWeekMonday.day - weeksBack * 7,
+      );
+      final weekKey = isoYearWeek(weekStart);
+      final xp = xpByWeek[weekKey] ?? 0;
+      final isFrozen =
+          alreadyFrozenWeeks.contains(weekKey) || newlyFrozen.contains(weekKey);
+
+      if (xp >= threshold || isFrozen) {
+        streak++;
+      } else if (weeksBack > 0 && remainingFreezes > 0) {
+        // Auto-apply a freeze to this missed past week.
+        remainingFreezes--;
+        newlyFrozen.add(weekKey);
+        streak++;
+      } else {
+        break;
+      }
+    }
+
+    return (streak: streak, newlyFrozenWeeks: newlyFrozen);
   }
 
   /// Returns whether the current week is on track (XP ≥ threshold already

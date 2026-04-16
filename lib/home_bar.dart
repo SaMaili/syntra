@@ -11,8 +11,8 @@ import 'providers/statistics_providers.dart' show homeTabIndexProvider;
 import 'router.dart';
 import 'routes/challenges_screen.dart';
 import 'routes/daily_challenge_screen.dart';
+import 'routes/profile_screen.dart';
 import 'routes/settings_screen.dart';
-import 'routes/statistics_screen.dart';
 import 'services/sound_service.dart';
 import 'static.dart';
 
@@ -34,7 +34,7 @@ class _HomeBarState extends ConsumerState<HomeBar> {
   static const _screens = <Widget>[
     ChallengesScreen(),
     DailyChallengeScreen(),
-    StatisticsScreen(),
+    ProfileScreen(),
     SettingsScreen(),
   ];
 
@@ -202,9 +202,9 @@ class _HomeBarState extends ConsumerState<HomeBar> {
                 label: S.of(context).navDaily,
               ),
               NavigationDestination(
-                icon: const Icon(Icons.bar_chart_outlined),
-                selectedIcon: const Icon(Icons.bar_chart),
-                label: S.of(context).navStats,
+                icon: const Icon(Icons.person_outline),
+                selectedIcon: const Icon(Icons.person),
+                label: S.of(context).navProfile,
               ),
               NavigationDestination(
                 icon: const Icon(Icons.settings_outlined),

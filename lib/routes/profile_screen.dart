@@ -6,20 +6,21 @@ import '../providers/statistics_providers.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/syntra_button.dart';
 import 'logbook_page.dart';
+import 'settings_screen.dart' show ComfortZoneLevelCard;
 import 'statistics/activity_calendar.dart';
 import 'statistics/average_mood_card.dart';
 import 'statistics/badges_section.dart';
 import 'statistics/overview_grid.dart';
 import 'statistics/weekly_charts.dart';
 
-class StatisticsScreen extends ConsumerStatefulWidget {
-  const StatisticsScreen({super.key});
+class ProfileScreen extends ConsumerStatefulWidget {
+  const ProfileScreen({super.key});
 
   @override
-  ConsumerState<StatisticsScreen> createState() => _StatisticsScreenState();
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _StatisticsScreenState extends ConsumerState<StatisticsScreen>
+class _ProfileScreenState extends ConsumerState<ProfileScreen>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
@@ -28,13 +29,15 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      appBar: AppBar(title: Text(S.of(context).yourStatistics)),
+      appBar: AppBar(title: Text(S.of(context).profileTitle)),
       body: RefreshIndicator(
         onRefresh: () async => refreshStatistics(ref),
         child: ListView(
           padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.md, vertical: AppSpacing.sm),
           children: [
+            const ComfortZoneLevelCard(),
+            const SizedBox(height: AppSpacing.md),
             const StatsOverviewGrid(),
             const SizedBox(height: AppSpacing.md),
             const BadgesSection(),
