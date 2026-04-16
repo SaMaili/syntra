@@ -91,8 +91,12 @@ class _StreakProgressPillState extends State<_StreakProgressPill>
     with SingleTickerProviderStateMixin {
   late AnimationController _ctrl;
 
-  // True only while the bar is visually moving.
+  // True only while the bar is visually moving (or in the post-completion delay).
   bool _isAnimating = false;
+
+  // Tracks the current animation "generation" to prevent stale delays
+  // from clearing _isAnimating when a newer animation has taken over.
+  int _animGeneration = 0;
 
   @override
   void initState() {
@@ -112,6 +116,10 @@ class _StreakProgressPillState extends State<_StreakProgressPill>
   }
 
   Future<void> _animateTo(double target) async {
+    final gen = ++_animGeneration;
+    // Brief pause before the bar moves so the user notices the change.
+    await Future.delayed(const Duration(seconds: 1));
+    if (gen != _animGeneration || !mounted) return;
     setState(() => _isAnimating = true);
     try {
       await _ctrl
@@ -121,7 +129,16 @@ class _StreakProgressPillState extends State<_StreakProgressPill>
             curve: Curves.easeInOut,
           )
           .orCancel;
-      if (mounted) setState(() => _isAnimating = false);
+
+      // After every animation hold the x/300 label for 3 seconds so the user
+      // can read the new value before it flips back to the streak label.
+      if (mounted) {
+        await Future.delayed(const Duration(seconds: 3));
+      }
+
+      // After the hold: only clear _isAnimating if no newer call has taken over.
+      if (gen != _animGeneration || !mounted) return;
+      setState(() => _isAnimating = false);
     } on TickerCanceled {
       // A newer _animateTo call took over; it manages _isAnimating.
     }
@@ -143,18 +160,20 @@ class _StreakProgressPillState extends State<_StreakProgressPill>
         final bg = cs.surfaceContainerHighest;
 
         // ── Colors per state ────────────────────────────────────────────────
-        // full     : isActive         → hard orange fill, full orange fg
-        // filling  : _isAnimating     → light orange fill, soft orange fg
-        // idle     : settled, not full → no fill, grey fg
+        // _isAnimating takes priority so the filling style is held for the
+        // entire animation + 2 s delay, even if isActive flips mid-flight.
+        // full  : settled + isActive  → amber
+        // filling: _isAnimating       → soft orange
+        // idle  : settled, not full   → grey
         final Color fgColor;
         final Color fillColor;
 
-        if (widget.isActive) {
-          fgColor = Colors.amber.shade800;
-          fillColor = Colors.amber.withValues(alpha: 0.25);
-        } else if (_isAnimating) {
+        if (_isAnimating) {
           fgColor = cs.tertiary.withValues(alpha: 0.65);
           fillColor = cs.tertiary.withValues(alpha: 0.22);
+        } else if (widget.isActive) {
+          fgColor = Colors.amber.shade800;
+          fillColor = Colors.amber.withValues(alpha: 0.25);
         } else {
           fgColor = cs.onSurfaceVariant;
           fillColor = cs.tertiary.withValues(alpha: 0.14);
@@ -178,18 +197,18 @@ class _StreakProgressPillState extends State<_StreakProgressPill>
         }
 
         // ── Label ───────────────────────────────────────────────────────────
+        // filling  → "x/300" (takes precedence so animation is always visible)
         // full     → "x weeks" (new streak count) in orange
-        // filling  → "x/300"
         // idle     → "x weeks" (current/pending streak) in grey
         final String labelText;
         final ValueKey<String> labelKey;
 
-        if (widget.isActive) {
-          labelText = widget.streakLabel;
-          labelKey = const ValueKey('full');
-        } else if (_isAnimating) {
+        if (_isAnimating) {
           labelText = '${(p * kWeeklyXpThreshold).round()}/$kWeeklyXpThreshold';
           labelKey = const ValueKey('filling');
+        } else if (widget.isActive) {
+          labelText = widget.streakLabel;
+          labelKey = const ValueKey('full');
         } else {
           labelText = widget.streakLabel;
           labelKey = const ValueKey('idle');

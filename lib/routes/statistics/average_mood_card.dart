@@ -38,6 +38,7 @@ class AverageMoodCard extends ConsumerWidget {
       data: (points) {
         if (points.isEmpty) {
           return Card(
+            margin: EdgeInsets.zero,
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.md),
               child: Column(
@@ -73,6 +74,7 @@ class AverageMoodCard extends ConsumerWidget {
         final labelStep = (points.length / 4).ceil().clamp(1, 99);
 
         return Card(
+          margin: EdgeInsets.zero,
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.md),
             child: Column(

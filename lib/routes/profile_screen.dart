@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../generated/l10n.dart';
 import '../providers/statistics_providers.dart';
 import '../theme/app_spacing.dart';
+import '../widgets/syntra_blur_app_bar.dart';
 import '../widgets/syntra_button.dart';
 import 'logbook_page.dart';
 import 'settings_screen.dart' show ComfortZoneLevelCard;
@@ -29,12 +30,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      appBar: AppBar(title: Text(S.of(context).profileTitle)),
+      extendBodyBehindAppBar: true,
+      appBar: SyntraBlurAppBar(title: Text(S.of(context).profileTitle)),
       body: RefreshIndicator(
         onRefresh: () async => refreshStatistics(ref),
         child: ListView(
-          padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+          padding: EdgeInsets.fromLTRB(
+            AppSpacing.md,
+            SyntraBlurAppBar.topPadding(context) + AppSpacing.sm,
+            AppSpacing.md,
+            AppSpacing.bottomNavBarHeight(context) + AppSpacing.md,
+          ),
           children: [
             const ComfortZoneLevelCard(),
             const SizedBox(height: AppSpacing.md),
@@ -55,7 +61,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
             const WeeklyXpChart(),
             const SizedBox(height: AppSpacing.md),
             const AverageMoodCard(),
-            const SizedBox(height: AppSpacing.xl),
           ],
         ),
       ),

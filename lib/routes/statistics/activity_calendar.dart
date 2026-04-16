@@ -15,6 +15,7 @@ class ActivityCalendar extends ConsumerWidget {
     final tt = Theme.of(context).textTheme;
 
     return Card(
+      margin: EdgeInsets.zero,
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(

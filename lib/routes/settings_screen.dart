@@ -12,6 +12,7 @@ import '../providers/shop_providers.dart';
 import '../providers/statistics_providers.dart' show czlCompletionsProvider;
 import '../services/syntra_notification_service.dart';
 import '../theme/app_spacing.dart';
+import '../widgets/syntra_blur_app_bar.dart';
 import '../widgets/syntra_button.dart';
 import '../widgets/syntra_progress_bar.dart';
 import 'about_page.dart';
@@ -31,11 +32,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
     return Scaffold(
-      appBar: AppBar(title: Text(S.of(context).settingsTitle)),
+      extendBodyBehindAppBar: true,
+      appBar: SyntraBlurAppBar(title: Text(S.of(context).settingsTitle)),
       body: ListView(
-        padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+        padding: EdgeInsets.fromLTRB(
+          AppSpacing.md,
+          SyntraBlurAppBar.topPadding(context) + AppSpacing.sm,
+          AppSpacing.md,
+          AppSpacing.bottomNavBarHeight(context) + AppSpacing.md,
+        ),
         children: const [
           _ShopCard(),
           SizedBox(height: AppSpacing.md),
@@ -44,7 +51,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
           _NotificationScheduleCard(),
           SizedBox(height: AppSpacing.md),
           _GeneralCard(),
-          SizedBox(height: AppSpacing.xl),
         ],
       ),
     );
@@ -98,6 +104,7 @@ class _ShopCard extends ConsumerWidget {
         freezes < kMaxStreakFreezes;
 
     return Card(
+      margin: EdgeInsets.zero,
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
@@ -238,6 +245,7 @@ class _AppSettingsCard extends ConsumerWidget {
     final soundEffectsEnabled = ref.watch(soundEffectsEnabledProvider);
 
     return Card(
+      margin: EdgeInsets.zero,
       child: Column(
         children: [
           ListTile(
@@ -250,7 +258,7 @@ class _AppSettingsCard extends ConsumerWidget {
             ),
           ),
           const Divider(indent: 16, endIndent: 16),
-          SwitchListTile(
+          SwitchListTile.adaptive(
             title: Text(S.of(context).notifications),
             subtitle: Text(S.of(context).notificationsSubtitle),
             secondary: const Icon(Icons.notifications_outlined),
@@ -258,7 +266,7 @@ class _AppSettingsCard extends ConsumerWidget {
             onChanged: (v) => _onNotificationsToggle(context, ref, v),
           ),
           const Divider(indent: 16, endIndent: 16),
-          SwitchListTile(
+          SwitchListTile.adaptive(
             title: Text(S.of(context).soundEffects),
             subtitle: Text(S.of(context).soundEffectsSubtitle),
             secondary: const Icon(Icons.volume_up_outlined),
@@ -304,6 +312,7 @@ class _NotificationScheduleCard extends ConsumerWidget {
     final slots = ref.watch(notificationSlotsProvider);
 
     return Card(
+      margin: EdgeInsets.zero,
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
@@ -371,7 +380,7 @@ class _NotificationSlotTile extends ConsumerWidget {
           ),
         ),
       ),
-      trailing: Switch(
+      trailing: Switch.adaptive(
         value: slot.enabled,
         onChanged: (v) => _onToggle(ref, v),
       ),
@@ -416,6 +425,7 @@ class _GeneralCard extends ConsumerWidget {
     final lang = ref.watch(activeLocaleProvider);
 
     return Card(
+      margin: EdgeInsets.zero,
       child: Column(
         children: [
           ListTile(
@@ -618,6 +628,7 @@ class ComfortZoneLevelCard extends ConsumerWidget {
     final levelIcon = ComfortZoneLogic.levelIcons[level.clamp(1, ComfortZoneLogic.levelIcons.length - 1)];
 
     return Card(
+      margin: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

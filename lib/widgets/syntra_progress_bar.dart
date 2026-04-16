@@ -58,17 +58,20 @@ class _SyntraXpBarState extends ConsumerState<SyntraXpBar>
 
     final initialValue = widget.value.clamp(0.0, 1.0);
     _sweepFrom = 0.0;
-    // Play feedback on init when bar actually has something to fill.
     _feedbackActive = !widget.silent && initialValue > 0.001;
 
     _anim = Tween<double>(begin: 0.0, end: initialValue)
         .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
-    _ctrl.forward();
 
-    if (_feedbackActive) {
-      SoundService.playXpProgress(
-          enabled: ref.read(soundEffectsEnabledProvider));
-    }
+    // 2-second lead-in so the user sees the empty bar before it fills.
+    Future.delayed(const Duration(milliseconds: 50), () {
+      if (!mounted) return;
+      _ctrl.forward();
+      if (_feedbackActive) {
+        SoundService.playXpProgress(
+            enabled: ref.read(soundEffectsEnabledProvider));
+      }
+    });
   }
 
   @override
@@ -133,7 +136,7 @@ class _SyntraXpBarState extends ConsumerState<SyntraXpBar>
       borderRadius: BorderRadius.circular(4),
       child: AnimatedBuilder(
         animation: _anim,
-        builder: (_, __) => LinearProgressIndicator(
+        builder: (context, _) => LinearProgressIndicator(
           value: _anim.value,
           minHeight: widget.minHeight,
           backgroundColor:

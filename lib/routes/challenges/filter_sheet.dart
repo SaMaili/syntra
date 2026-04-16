@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -115,25 +117,85 @@ class ChallengesFilterSheet extends ConsumerWidget {
                   Text(l.filterTypeLabel,
                       style: tt.labelMedium?.copyWith(fontWeight: FontWeight.w600)),
                   const SizedBox(height: AppSpacing.xs),
-                  AnimatedChipRow<ChallengeTypeFilter>(
-                    items: ChallengeTypeFilter.values,
-                    selected: filters.typeFilter,
-                    label: (t) => switch (t) {
-                      ChallengeTypeFilter.solo => l.solo,
-                      ChallengeTypeFilter.group => l.group,
-                      ChallengeTypeFilter.coop => l.coop,
-                      ChallengeTypeFilter.dare => l.dare,
-                      ChallengeTypeFilter.all => l.filterAll,
-                    },
-                    icon: (t) => switch (t) {
-                      ChallengeTypeFilter.solo => Icons.person_rounded,
-                      ChallengeTypeFilter.group => Icons.group_rounded,
-                      ChallengeTypeFilter.coop => Icons.people_alt_rounded,
-                      ChallengeTypeFilter.dare => Icons.bolt_rounded,
-                      ChallengeTypeFilter.all => Icons.all_inclusive_rounded,
-                    },
-                    onSelected: notifier.setTypeFilter,
-                  ),
+                  if (Platform.isIOS)
+                    SizedBox(
+                      width: double.infinity,
+                      child: CupertinoSlidingSegmentedControl<ChallengeTypeFilter>(
+                        groupValue: filters.typeFilter,
+                        onValueChanged: (v) {
+                          if (v != null) notifier.setTypeFilter(v);
+                        },
+                        children: {
+                          for (final t in ChallengeTypeFilter.values)
+                            t: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    switch (t) {
+                                      ChallengeTypeFilter.solo =>
+                                        Icons.person_rounded,
+                                      ChallengeTypeFilter.group =>
+                                        Icons.group_rounded,
+                                      ChallengeTypeFilter.coop =>
+                                        Icons.people_alt_rounded,
+                                      ChallengeTypeFilter.dare =>
+                                        Icons.bolt_rounded,
+                                      ChallengeTypeFilter.all =>
+                                        Icons.all_inclusive_rounded,
+                                    },
+                                    size: 14,
+                                    color: filters.typeFilter == t
+                                        ? cs.onSurface
+                                        : cs.onSurfaceVariant,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    switch (t) {
+                                      ChallengeTypeFilter.solo => l.solo,
+                                      ChallengeTypeFilter.group => l.group,
+                                      ChallengeTypeFilter.coop => l.coop,
+                                      ChallengeTypeFilter.dare => l.dare,
+                                      ChallengeTypeFilter.all => l.filterAll,
+                                    },
+                                    style: tt.labelSmall?.copyWith(
+                                      fontSize: 11,
+                                      fontWeight: filters.typeFilter == t
+                                          ? FontWeight.w600
+                                          : FontWeight.normal,
+                                      color: filters.typeFilter == t
+                                          ? cs.onSurface
+                                          : cs.onSurfaceVariant,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                        },
+                      ),
+                    )
+                  else
+                    AnimatedChipRow<ChallengeTypeFilter>(
+                      items: ChallengeTypeFilter.values,
+                      selected: filters.typeFilter,
+                      label: (t) => switch (t) {
+                        ChallengeTypeFilter.solo => l.solo,
+                        ChallengeTypeFilter.group => l.group,
+                        ChallengeTypeFilter.coop => l.coop,
+                        ChallengeTypeFilter.dare => l.dare,
+                        ChallengeTypeFilter.all => l.filterAll,
+                      },
+                      icon: (t) => switch (t) {
+                        ChallengeTypeFilter.solo => Icons.person_rounded,
+                        ChallengeTypeFilter.group => Icons.group_rounded,
+                        ChallengeTypeFilter.coop => Icons.people_alt_rounded,
+                        ChallengeTypeFilter.dare => Icons.bolt_rounded,
+                        ChallengeTypeFilter.all => Icons.all_inclusive_rounded,
+                      },
+                      onSelected: notifier.setTypeFilter,
+                    ),
                   const SizedBox(height: AppSpacing.md),
 
                   // ── Environment ───────────────────────────────────────────────────

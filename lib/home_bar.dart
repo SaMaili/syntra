@@ -1,3 +1,7 @@
+import 'dart:io';
+import 'dart:ui';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -160,61 +164,120 @@ class _HomeBarState extends ConsumerState<HomeBar> {
     }
   }
 
+  // ─── Bottom nav ──────────────────────────────────────────────────────────────
+
+  Widget _buildNavBar(BuildContext context) {
+    final l = S.of(context);
+
+    if (Platform.isIOS) {
+      // CupertinoTabBar — iOS 26 automatically renders it as liquid glass.
+      return Listener(
+        onPointerDown: (_) {
+          HapticFeedback.selectionClick();
+          SoundService.playClick(
+              enabled: ref.read(soundEffectsEnabledProvider));
+        },
+        child: CupertinoTabBar(
+          currentIndex: _index,
+          onTap: _onDestinationSelected,
+          items: [
+            BottomNavigationBarItem(
+              icon: const Icon(CupertinoIcons.compass),
+              activeIcon: const Icon(CupertinoIcons.compass_fill),
+              label: l.navChallenge,
+            ),
+            BottomNavigationBarItem(
+              icon: const Icon(CupertinoIcons.calendar),
+              activeIcon: const Icon(CupertinoIcons.calendar_today),
+              label: l.navDaily,
+            ),
+            BottomNavigationBarItem(
+              icon: const Icon(CupertinoIcons.person),
+              activeIcon: const Icon(CupertinoIcons.person_fill),
+              label: l.navProfile,
+            ),
+            BottomNavigationBarItem(
+              icon: const Icon(CupertinoIcons.settings),
+              activeIcon: const Icon(CupertinoIcons.settings_solid),
+              label: l.navSettings,
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Android — tinted frosted glass NavigationBar.
+    final cs = Theme.of(context).colorScheme;
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
+        child: Listener(
+          onPointerDown: (_) {
+            HapticFeedback.selectionClick();
+            SoundService.playClick(
+                enabled: ref.read(soundEffectsEnabledProvider));
+          },
+          child: Theme(
+            data: Theme.of(context).copyWith(
+              navigationBarTheme: NavigationBarThemeData(
+                backgroundColor:
+                    cs.surface.withValues(alpha: 0.35),
+                surfaceTintColor: cs.surfaceTint.withValues(alpha: 0.15),
+                elevation: 0,
+                shadowColor: Colors.transparent,
+              ),
+              tooltipTheme: const TooltipThemeData(
+                triggerMode: TooltipTriggerMode.manual,
+                waitDuration: Duration(days: 365),
+                showDuration: Duration.zero,
+              ),
+            ),
+            child: NavigationBar(
+              selectedIndex: _index,
+              onDestinationSelected: _onDestinationSelected,
+              destinations: [
+                NavigationDestination(
+                  icon: const Icon(Icons.explore_outlined),
+                  selectedIcon: const Icon(Icons.explore),
+                  label: l.navChallenge,
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.calendar_today_outlined),
+                  selectedIcon: const Icon(Icons.calendar_today),
+                  label: l.navDaily,
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.person_outline),
+                  selectedIcon: const Icon(Icons.person),
+                  label: l.navProfile,
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.settings_outlined),
+                  selectedIcon: const Icon(Icons.settings),
+                  label: l.navSettings,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       body: PageView(
         controller: _pageController,
         onPageChanged: (i) {
-          // Skip updates during programmatic animation to avoid nav bar
-          // briefly highlighting intermediate tabs.
           if (_isProgrammatic) return;
           if (_index != i) setState(() => _index = i);
         },
         physics: const BouncingScrollPhysics(),
         children: _screens,
       ),
-      bottomNavigationBar: Listener(
-        onPointerDown: (_) {
-          HapticFeedback.selectionClick();
-          SoundService.playClick(enabled: ref.read(soundEffectsEnabledProvider));
-        },
-        child: Theme(
-          data: Theme.of(context).copyWith(
-            tooltipTheme: const TooltipThemeData(
-              triggerMode: TooltipTriggerMode.manual,
-              waitDuration: Duration(days: 365),
-              showDuration: Duration.zero,
-            ),
-          ),
-          child: NavigationBar(
-            selectedIndex: _index,
-            onDestinationSelected: _onDestinationSelected,
-            destinations: [
-              NavigationDestination(
-                icon: const Icon(Icons.explore_outlined),
-                selectedIcon: const Icon(Icons.explore),
-                label: S.of(context).navChallenge,
-              ),
-              NavigationDestination(
-                icon: const Icon(Icons.calendar_today_outlined),
-                selectedIcon: const Icon(Icons.calendar_today),
-                label: S.of(context).navDaily,
-              ),
-              NavigationDestination(
-                icon: const Icon(Icons.person_outline),
-                selectedIcon: const Icon(Icons.person),
-                label: S.of(context).navProfile,
-              ),
-              NavigationDestination(
-                icon: const Icon(Icons.settings_outlined),
-                selectedIcon: const Icon(Icons.settings),
-                label: S.of(context).navSettings,
-              ),
-            ],
-          ),
-        ),
-      ),
+      bottomNavigationBar: _buildNavBar(context),
     );
   }
 }

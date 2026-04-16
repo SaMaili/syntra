@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -110,6 +112,47 @@ class TypeSelector extends StatelessWidget {
         ? selected
         : ChallengeTypeFilter.all;
     final selectedIdx = _mainBarValues.indexOf(display);
+
+    if (Platform.isIOS) {
+      return SizedBox(
+        height: 36,
+        child: CupertinoSlidingSegmentedControl<ChallengeTypeFilter>(
+          groupValue: display,
+          onValueChanged: (v) {
+            if (v != null) onChanged(v);
+          },
+          children: {
+            for (int i = 0; i < _mainBarValues.length; i++)
+              _mainBarValues[i]: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    _icons[i],
+                    size: 14,
+                    color: _mainBarValues[i] == display
+                        ? cs.onSurface
+                        : cs.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    labels[i],
+                    style: tt.labelSmall?.copyWith(
+                      fontSize: 11,
+                      fontWeight: _mainBarValues[i] == display
+                          ? FontWeight.w600
+                          : FontWeight.normal,
+                      color: _mainBarValues[i] == display
+                          ? cs.onSurface
+                          : cs.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+          },
+        ),
+      );
+    }
 
     return LayoutBuilder(
       builder: (context, constraints) {

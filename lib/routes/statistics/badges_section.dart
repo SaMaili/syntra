@@ -139,6 +139,7 @@ class BadgesSection extends ConsumerWidget {
       data: (stats) {
         final earned = BadgesLogic.computeEarned(stats, stats['weekStreak'] ?? 0);
         return Card(
+          margin: EdgeInsets.zero,
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.md),
             child: Column(
