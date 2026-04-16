@@ -152,12 +152,12 @@ class _ShopCard extends ConsumerWidget {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: cs.tertiary.withValues(alpha: 0.12),
+                    color: Colors.blue.withValues(alpha: 0.12),
                     borderRadius:
                         BorderRadius.circular(AppSpacing.chipRadius),
                   ),
                   child: Icon(Icons.ac_unit_rounded,
-                      color: cs.tertiary, size: 24),
+                      color: Colors.blue, size: 24),
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
@@ -178,7 +178,7 @@ class _ShopCard extends ConsumerWidget {
                                 horizontal: 6, vertical: 1),
                             decoration: BoxDecoration(
                               color: freezes > 0
-                                  ? cs.tertiary.withValues(alpha: 0.15)
+                                  ? Colors.blue.withValues(alpha: 0.15)
                                   : cs.surfaceContainerHighest,
                               borderRadius: BorderRadius.circular(
                                   AppSpacing.chipRadius),
@@ -187,7 +187,7 @@ class _ShopCard extends ConsumerWidget {
                               l.shopInInventory(freezes, kMaxStreakFreezes),
                               style: tt.labelSmall?.copyWith(
                                 color: freezes > 0
-                                    ? cs.tertiary
+                                    ? Colors.blue
                                     : cs.onSurfaceVariant,
                                 fontWeight: FontWeight.bold,
                               ),

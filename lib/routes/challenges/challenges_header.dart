@@ -150,8 +150,8 @@ class _StreakProgressPillState extends State<_StreakProgressPill>
         final Color fillColor;
 
         if (widget.isActive) {
-          fgColor = cs.tertiary;
-          fillColor = cs.tertiary.withValues(alpha: 0.50);
+          fgColor = Colors.amber.shade800;
+          fillColor = Colors.amber.withValues(alpha: 0.25);
         } else if (_isAnimating) {
           fgColor = cs.tertiary.withValues(alpha: 0.65);
           fillColor = cs.tertiary.withValues(alpha: 0.22);

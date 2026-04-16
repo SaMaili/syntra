@@ -40,10 +40,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
             const SizedBox(height: AppSpacing.md),
             const StatsOverviewGrid(),
             const SizedBox(height: AppSpacing.md),
-            const BadgesSection(),
-            const SizedBox(height: AppSpacing.md),
-            const ActivityCalendar(),
-            const SizedBox(height: AppSpacing.md),
             SyntraButton.icon(
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const LogbookPage()),
@@ -51,6 +47,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
               icon: Icons.history,
               label: Text(S.of(context).challengeLogbook),
             ),
+            const SizedBox(height: AppSpacing.md),
+            const BadgesSection(),
+            const SizedBox(height: AppSpacing.md),
+            const ActivityCalendar(),
             const SizedBox(height: AppSpacing.md),
             const WeeklyXpChart(),
             const SizedBox(height: AppSpacing.md),

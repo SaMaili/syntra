@@ -37,7 +37,9 @@ class SyntraXpBar extends ConsumerStatefulWidget {
 }
 
 class _SyntraXpBarState extends ConsumerState<SyntraXpBar>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   late AnimationController _ctrl;
   late Animation<double> _anim;
 
@@ -125,6 +127,7 @@ class _SyntraXpBarState extends ConsumerState<SyntraXpBar>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final cs = Theme.of(context).colorScheme;
     return ClipRRect(
       borderRadius: BorderRadius.circular(4),
