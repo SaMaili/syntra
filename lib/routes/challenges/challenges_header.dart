@@ -14,7 +14,7 @@ class ChallengesHeroHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final stats = ref.watch(overviewStatsProvider);
-    final totalXp = stats.whenOrNull(data: (s) => s['totalXp']) ?? 0;
+    final availableXp = ref.watch(availableAuraProvider) ?? 0;
     final weekStreak = stats.whenOrNull(data: (s) => s['weekStreak']) ?? 0;
     final pendingWeekStreak =
         stats.whenOrNull(data: (s) => s['pendingWeekStreak']) ?? 0;
@@ -58,7 +58,7 @@ class ChallengesHeroHeader extends ConsumerWidget {
           // ── Aura badge ────────────────────────────────────────────────────
           _StatBadge(
             icon: Icons.emoji_events,
-            label: '$totalXp ${l.auraPoints}',
+            label: '$availableXp ${l.auraPoints}',
             color: cs.onPrimaryContainer,
             bg: cs.primaryContainer,
           ),
