@@ -597,74 +597,161 @@ class _LanguageDropdown extends StatelessWidget {
   }
 }
 
-// ─── Level-down confirmation dialog ──────────────────────────────────────────
-
-class _LevelDownDialog extends ConsumerWidget {
-  const _LevelDownDialog();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l = S.of(context);
-    final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
-
-    return Dialog(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.cardRadius)),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              l.levelDownTitle,
-              style: tt.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              l.levelDownBody,
-              style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            // Neon red cancel — visually dominant to discourage downgrade
-            SyntraButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              color: const Color(0xFFFF1744),
-              child: Text(l.levelDownCancel),
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            // Subtle confirm — available but not calling for attention
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text(
-                l.levelDownConfirm,
-                style: TextStyle(color: cs.onSurfaceVariant, fontSize: 13),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 // ─── Comfort Zone Level progress card ────────────────────────────────────────
 
 class ComfortZoneLevelCard extends ConsumerWidget {
   const ComfortZoneLevelCard({super.key});
 
-  Future<void> _onSetLevel(
-      BuildContext context, WidgetRef ref, int targetLevel) async {
-    final currentLevel = ref.read(comfortZoneLevelProvider);
-    if (targetLevel >= currentLevel) return;
+  String _levelName(S l, int level) => switch (level) {
+        1 => l.levelName1,
+        2 => l.levelName2,
+        3 => l.levelName3,
+        4 => l.levelName4,
+        5 => l.levelName5,
+        6 => l.levelName6,
+        7 => l.levelName7,
+        8 => l.levelName8,
+        9 => l.levelName9,
+        _ => l.levelName10,
+      };
 
-    final confirmed = await showDialog<bool>(
+  String _levelDesc(S l, int level) => switch (level) {
+        1 => l.levelDesc1,
+        2 => l.levelDesc2,
+        3 => l.levelDesc3,
+        4 => l.levelDesc4,
+        5 => l.levelDesc5,
+        6 => l.levelDesc6,
+        7 => l.levelDesc7,
+        8 => l.levelDesc8,
+        9 => l.levelDesc9,
+        _ => l.levelDesc10,
+      };
+
+  Future<void> _showLevelInfo(
+      BuildContext context, WidgetRef ref, int level,
+      {int? goDownTo}) async {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
+    final l = S.of(context);
+    final gradient = ComfortZoneLogic.levelGradient(level);
+    final icon = ComfortZoneLogic.levelIcons[
+        level.clamp(1, ComfortZoneLogic.levelIcons.length - 1)];
+    final name = _levelName(l, level);
+    final desc = _levelDesc(l, level);
+    final canGoDown = goDownTo != null;
+
+    final goDown = await showDialog<bool>(
       context: context,
-      builder: (_) => const _LevelDownDialog(),
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSpacing.cardRadius * 2),
+        ),
+        contentPadding:
+            const EdgeInsets.fromLTRB(24, 24, 24, 16),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // ── Icon ────────────────────────────────────────────────────
+            Center(
+              child: Container(
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: gradient.colors,
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: Icon(icon, size: 36, color: Colors.white),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+
+            // ── Name ────────────────────────────────────────────────────
+            Text(
+              name,
+              style: tt.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppSpacing.xs),
+
+            // ── Level chip ───────────────────────────────────────────────
+            Center(
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm, vertical: 3),
+                decoration: BoxDecoration(
+                  gradient: gradient,
+                  borderRadius:
+                      BorderRadius.circular(AppSpacing.chipRadius),
+                ),
+                child: Text(
+                  l.levelN(level),
+                  style: tt.labelSmall?.copyWith(
+                      color: Colors.white, fontWeight: FontWeight.w600),
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+
+            // ── Description ──────────────────────────────────────────────
+            Text(
+              desc,
+              style: tt.bodyMedium
+                  ?.copyWith(color: cs.onSurfaceVariant, height: 1.5),
+              textAlign: TextAlign.center,
+            ),
+
+            // ── Back-down section (only when level > 1) ──────────────────
+            if (canGoDown) ...[
+              const SizedBox(height: AppSpacing.md),
+              Divider(color: cs.outlineVariant),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                l.levelDownTitle,
+                style: tt.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                l.levelDownBody,
+                style: tt.bodySmall?.copyWith(
+                    color: cs.onSurfaceVariant, height: 1.4),
+                textAlign: TextAlign.center,
+              ),
+            ],
+
+            const SizedBox(height: AppSpacing.lg),
+
+            // ── Primary action ───────────────────────────────────────────
+            SyntraButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: Text(canGoDown ? l.levelDownCancel : l.letsGoButton),
+            ),
+
+            // ── Step-back action (only when level > 1) ───────────────────
+            if (canGoDown) ...[
+              const SizedBox(height: AppSpacing.xs),
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(true),
+                child: Text(
+                  l.levelDownConfirm,
+                  style: TextStyle(
+                      color: cs.onSurfaceVariant, fontSize: 13),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
     );
-    if (confirmed == true && context.mounted) {
-      await ref.read(comfortZoneLevelProvider.notifier).setLevel(targetLevel);
+
+    if (goDown == true && context.mounted) {
+      await ref.read(comfortZoneLevelProvider.notifier).setLevel(goDownTo!);
     }
   }
 
@@ -691,37 +778,44 @@ class ComfortZoneLevelCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Gradient header band ─────────────────────────────────────────
-          Container(
-            width: double.infinity,
-            decoration: BoxDecoration(gradient: gradient),
-            padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md, vertical: AppSpacing.sm),
-            child: Row(
-              children: [
-                Icon(levelIcon, color: Colors.white, size: 22),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: Text(
-                    levelName,
-                    style: tt.titleSmall?.copyWith(
-                        fontWeight: FontWeight.bold, color: Colors.white),
+          // ── Gradient header band (tappable → level info popup) ───────────
+          InkWell(
+            onTap: () => _showLevelInfo(context, ref, level),
+            child: Container(
+              width: double.infinity,
+              decoration: BoxDecoration(gradient: gradient),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+              child: Row(
+                children: [
+                  Icon(levelIcon, color: Colors.white, size: 22),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: Text(
+                      levelName,
+                      style: tt.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold, color: Colors.white),
+                    ),
                   ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.sm, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: Colors.white24,
-                    borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.sm, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.white24,
+                      borderRadius:
+                          BorderRadius.circular(AppSpacing.chipRadius),
+                    ),
+                    child: Text(
+                      S.of(context).levelN(level),
+                      style: tt.labelSmall?.copyWith(
+                          fontWeight: FontWeight.bold, color: Colors.white),
+                    ),
                   ),
-                  child: Text(
-                    S.of(context).levelN(level),
-                    style: tt.labelSmall?.copyWith(
-                        fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
-                ),
-              ],
+                  const SizedBox(width: AppSpacing.xs),
+                  const Icon(Icons.info_outline_rounded,
+                      color: Colors.white70, size: 16),
+                ],
+              ),
             ),
           ),
           // ── Body ──────────────────────────────────────────────────────────
@@ -770,7 +864,12 @@ class ComfortZoneLevelCard extends ConsumerWidget {
                               left: col == 0 ? 0 : AppSpacing.xs / 2,
                               right: col == 4 ? 0 : AppSpacing.xs / 2),
                           child: GestureDetector(
-                            onTap: locked ? null : () => _onSetLevel(context, ref, lvl),
+                            onTap: locked
+                                ? () => _showLevelInfo(context, ref, lvl)
+                                : selected
+                                    ? () => _showLevelInfo(context, ref, lvl)
+                                    : () => _showLevelInfo(context, ref, lvl,
+                                          goDownTo: lvl),
                             child: AnimatedContainer(
                               duration: const Duration(milliseconds: 150),
                               padding:

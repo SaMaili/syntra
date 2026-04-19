@@ -1,11 +1,29 @@
 import 'package:audioplayers/audioplayers.dart';
 
 /// Centralized sound effect service for Syntra.
-/// 
+///
 /// Uses a pool of players to allow overlapping sounds without cutting each other off.
 abstract class SoundService {
   static final List<AudioPlayer> _pool = List.generate(6, (_) => AudioPlayer());
   static int _poolIndex = 0;
+
+  /// Call once at app startup so sound effects mix with background music
+  /// (Spotify, podcasts, etc.) instead of interrupting it.
+  static Future<void> init() async {
+    await AudioPlayer.global.setAudioContext(AudioContext(
+      android: const AudioContextAndroid(
+        isSpeakerphoneOn: false,
+        stayAwake: false,
+        contentType: AndroidContentType.sonification,
+        usageType: AndroidUsageType.notificationEvent,
+        audioFocus: AndroidAudioFocus.none,
+      ),
+      iOS: AudioContextIOS(
+        // ambient: mixes with other audio, silenced by ring/silent switch
+        category: AVAudioSessionCategory.ambient,
+      ),
+    ));
+  }
 
   static const String click = 'skyscraper_seven-click-buttons-ui-menu-sounds-effects-button-2-203594.mp3';
   static const String ding = 'ding-126626.mp3';

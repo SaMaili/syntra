@@ -15,6 +15,7 @@ import 'providers/router_notifier.dart';
 import 'providers/settings_providers.dart';
 import 'providers/shared_preferences_provider.dart';
 import 'router.dart';
+import 'services/sound_service.dart';
 import 'services/syntra_notification_service.dart';
 import 'theme/app_theme.dart';
 
@@ -32,6 +33,7 @@ void main() async {
   final onboardingDone =
       await SettingsRepository.instance.loadOnboardingComplete();
   routerNotifier = RouterNotifier(onboardingDone);
+  await SoundService.init();
   await SyntraNotificationService.instance.initialize();
   runApp(ProviderScope(
     overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],

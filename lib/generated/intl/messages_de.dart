@@ -503,6 +503,36 @@ class MessageLookup extends MessageLookupByLibrary {
     "lessLabel": MessageLookupByLibrary.simpleMessage("Weniger"),
     "letsGo": MessageLookupByLibrary.simpleMessage("LOS GEHT\'S!"),
     "letsGoButton": MessageLookupByLibrary.simpleMessage("Los geht\'s"),
+    "levelDesc1": MessageLookupByLibrary.simpleMessage(
+      "Micro-Interaktionen — geringer Einsatz, hohe Wirkung",
+    ),
+    "levelDesc10": MessageLookupByLibrary.simpleMessage(
+      "Meisterliche soziale Kompetenz — nichts hält dich auf",
+    ),
+    "levelDesc2": MessageLookupByLibrary.simpleMessage(
+      "Kurze Begegnungen mit echten Menschen",
+    ),
+    "levelDesc3": MessageLookupByLibrary.simpleMessage(
+      "Anhaltende Gespräche und Präsenz",
+    ),
+    "levelDesc4": MessageLookupByLibrary.simpleMessage(
+      "Verletzlichkeit, Komplimente, Selbstbehauptung",
+    ),
+    "levelDesc5": MessageLookupByLibrary.simpleMessage(
+      "Soziale Herausforderungen mit hohem Einsatz",
+    ),
+    "levelDesc6": MessageLookupByLibrary.simpleMessage(
+      "Interaktionen selbstbewusst führen",
+    ),
+    "levelDesc7": MessageLookupByLibrary.simpleMessage(
+      "In jeder Situation Aufmerksamkeit erzeugen",
+    ),
+    "levelDesc8": MessageLookupByLibrary.simpleMessage(
+      "Soziale Grenzen mühelos verschieben",
+    ),
+    "levelDesc9": MessageLookupByLibrary.simpleMessage(
+      "Volle Exposition ohne Zögern annehmen",
+    ),
     "levelDownBody": MessageLookupByLibrary.simpleMessage(
       "Du kannst nur manuell runterleveln — wieder hochzukommen erfordert erneut Abschlüsse zu sammeln.",
     ),
@@ -516,6 +546,16 @@ class MessageLookup extends MessageLookupByLibrary {
       "Einen Schritt zurück?",
     ),
     "levelN": m5,
+    "levelName1": MessageLookupByLibrary.simpleMessage("Aufwärmen"),
+    "levelName10": MessageLookupByLibrary.simpleMessage("Unberührbar"),
+    "levelName2": MessageLookupByLibrary.simpleMessage("Das Eis brechen"),
+    "levelName3": MessageLookupByLibrary.simpleMessage("Im Mittelpunkt stehen"),
+    "levelName4": MessageLookupByLibrary.simpleMessage("Risiken eingehen"),
+    "levelName5": MessageLookupByLibrary.simpleMessage("Die mutige Zone"),
+    "levelName6": MessageLookupByLibrary.simpleMessage("Eine Stufe höher"),
+    "levelName7": MessageLookupByLibrary.simpleMessage("Den Raum beherrschen"),
+    "levelName8": MessageLookupByLibrary.simpleMessage("Sozialer Athlet"),
+    "levelName9": MessageLookupByLibrary.simpleMessage("Furchtlos"),
     "levelUnlocked": m6,
     "logbook": MessageLookupByLibrary.simpleMessage("Logbuch"),
     "logbookEntry": MessageLookupByLibrary.simpleMessage("Logbuch-Eintrag"),

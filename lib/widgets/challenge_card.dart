@@ -102,7 +102,7 @@ class ChallengeCard extends StatelessWidget {
               AppSpacing.xs,
             ),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
                   child: Wrap(
