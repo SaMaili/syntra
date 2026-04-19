@@ -113,3 +113,13 @@ flutter:
   # see https://flutter.dev/to/font-from-package
 flutter_intl:
   enabled: true
+
+flutter_launcher_icons:
+  ios: true
+  image_path_ios: "assets/icon/icon_ios.png"
+  image_path_ios_dark_transparent: "assets/icon/icon_android_foreground.png"
+  android: true
+  image_path_android: "assets/icon/icon_ios.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/icon/icon_android_foreground.png"
+

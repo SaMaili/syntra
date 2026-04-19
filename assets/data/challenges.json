@@ -1,1145 +1,1127 @@
 [
   {
     "id": 0,
-    "timer": 240,
-    "xp": 100,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 1
+    "timer": 240,
+    "flirt": false,
+    "level": 3,
+    "xp": 100,
+    "type": "solo"
   },
   {
     "id": 1,
-    "timer": 45,
-    "xp": 50,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 1
+    "timer": 45,
+    "flirt": false,
+    "level": 1,
+    "xp": 50,
+    "type": "solo"
   },
   {
     "id": 3,
-    "timer": 240,
-    "xp": 100,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 1
+    "timer": 240,
+    "flirt": true,
+    "level": 2,
+    "xp": 80,
+    "type": "solo"
   },
   {
     "id": 4,
-    "timer": 210,
-    "xp": 80,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 1
+    "timer": 210,
+    "flirt": true,
+    "level": 3,
+    "xp": 100,
+    "type": "solo"
   },
   {
     "id": 5,
-    "timer": 270,
-    "xp": 120,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 1
+    "timer": 270,
+    "flirt": false,
+    "level": 3,
+    "xp": 120,
+    "type": "solo"
   },
   {
     "id": 6,
+    "environment": "street",
     "timer": 200,
-    "xp": 150,
-    "type": "solo",
     "flirt": true,
-    "environment": "all",
-    "level": 2
+    "level": 3,
+    "xp": 120,
+    "type": "solo"
   },
   {
     "id": 7,
+    "environment": "cafe",
     "timer": 210,
-    "xp": 80,
-    "type": "solo",
     "flirt": true,
-    "environment": "all",
-    "level": 1
+    "level": 2,
+    "xp": 80,
+    "type": "solo"
   },
   {
     "id": 8,
-    "timer": 225,
-    "xp": 200,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 3
+    "timer": 225,
+    "flirt": true,
+    "level": 4,
+    "xp": 180,
+    "type": "solo"
   },
   {
     "id": 9,
-    "timer": 225,
-    "xp": 250,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 3
+    "timer": 225,
+    "flirt": true,
+    "level": 3,
+    "xp": 120,
+    "type": "solo"
   },
   {
     "id": 11,
-    "timer": 240,
-    "xp": 100,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 1
+    "timer": 240,
+    "flirt": true,
+    "level": 2,
+    "xp": 75,
+    "type": "solo"
   },
   {
     "id": 12,
-    "timer": 270,
-    "xp": 300,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 3
+    "timer": 270,
+    "flirt": true,
+    "level": 4,
+    "xp": 200,
+    "type": "solo"
   },
   {
     "id": 13,
-    "timer": 220,
-    "xp": 150,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 2
+    "timer": 220,
+    "flirt": false,
+    "level": 3,
+    "xp": 130,
+    "type": "solo"
   },
   {
     "id": 16,
-    "timer": 210,
-    "xp": 120,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 1
+    "timer": 210,
+    "flirt": true,
+    "level": 3,
+    "xp": 110,
+    "type": "solo"
   },
   {
     "id": 17,
-    "timer": 210,
-    "xp": 80,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 1
+    "timer": 210,
+    "flirt": false,
+    "level": 2,
+    "xp": 75,
+    "type": "solo"
   },
   {
     "id": 18,
-    "timer": 200,
-    "xp": 400,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 4
+    "timer": 200,
+    "flirt": true,
+    "level": 5,
+    "xp": 220,
+    "type": "solo"
   },
   {
     "id": 20,
-    "timer": 210,
-    "xp": 200,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 3
+    "timer": 210,
+    "flirt": true,
+    "level": 3,
+    "xp": 130,
+    "type": "solo"
   },
   {
     "id": 21,
-    "timer": 230,
-    "xp": 850,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 5
+    "timer": 230,
+    "flirt": true,
+    "level": 7,
+    "xp": 350,
+    "type": "solo"
   },
   {
     "id": 22,
-    "timer": 270,
-    "xp": 500,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 4
+    "timer": 270,
+    "flirt": true,
+    "level": 6,
+    "xp": 270,
+    "type": "coop"
   },
   {
     "id": 25,
-    "timer": 270,
-    "xp": 700,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 5
+    "timer": 270,
+    "flirt": true,
+    "level": 6,
+    "xp": 270,
+    "type": "group"
   },
   {
     "id": 26,
-    "timer": 260,
-    "xp": 650,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 5
+    "timer": 260,
+    "flirt": true,
+    "level": 5,
+    "xp": 250,
+    "type": "group"
   },
   {
     "id": 27,
-    "timer": 230,
-    "xp": 550,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 4
+    "timer": 230,
+    "flirt": true,
+    "level": 5,
+    "xp": 250,
+    "type": "group"
   },
   {
     "id": 28,
-    "timer": 250,
-    "xp": 500,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 4
+    "timer": 250,
+    "flirt": true,
+    "level": 5,
+    "xp": 240,
+    "type": "group"
   },
   {
     "id": 29,
-    "timer": 230,
-    "xp": 750,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 5
+    "timer": 230,
+    "flirt": true,
+    "level": 6,
+    "xp": 280,
+    "type": "group"
   },
   {
     "id": 30,
-    "timer": 270,
-    "xp": 600,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 4
+    "timer": 270,
+    "flirt": true,
+    "level": 6,
+    "xp": 290,
+    "type": "group"
   },
   {
     "id": 31,
-    "timer": 240,
-    "xp": 500,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 4
+    "timer": 240,
+    "flirt": true,
+    "level": 5,
+    "xp": 250,
+    "type": "group"
   },
   {
     "id": 32,
-    "timer": 270,
-    "xp": 850,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 5
+    "timer": 270,
+    "flirt": true,
+    "level": 6,
+    "xp": 290,
+    "type": "group"
   },
   {
     "id": 33,
-    "timer": 250,
-    "xp": 700,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 5
+    "timer": 250,
+    "flirt": true,
+    "level": 5,
+    "xp": 260,
+    "type": "group"
   },
   {
     "id": 34,
-    "timer": 260,
-    "xp": 600,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 4
+    "timer": 260,
+    "flirt": true,
+    "level": 5,
+    "xp": 250,
+    "type": "group"
   },
   {
     "id": 35,
-    "timer": 240,
-    "xp": 550,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 4
+    "timer": 240,
+    "flirt": true,
+    "level": 5,
+    "xp": 240,
+    "type": "group"
   },
   {
     "id": 36,
-    "timer": 250,
-    "xp": 700,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 5
+    "timer": 250,
+    "flirt": true,
+    "level": 5,
+    "xp": 260,
+    "type": "group"
   },
   {
     "id": 37,
-    "timer": 230,
-    "xp": 750,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 5
+    "timer": 230,
+    "flirt": true,
+    "level": 6,
+    "xp": 270,
+    "type": "group"
   },
   {
     "id": 38,
-    "timer": 240,
-    "xp": 500,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 4
+    "timer": 240,
+    "flirt": true,
+    "level": 5,
+    "xp": 250,
+    "type": "group"
   },
   {
     "id": 39,
-    "timer": 270,
-    "xp": 950,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 5
+    "timer": 270,
+    "flirt": true,
+    "level": 7,
+    "xp": 400,
+    "type": "dare"
   },
   {
     "id": 40,
-    "timer": 250,
-    "xp": 800,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 5
+    "timer": 250,
+    "flirt": true,
+    "level": 5,
+    "xp": 260,
+    "type": "group"
   },
   {
     "id": 42,
-    "timer": 220,
-    "xp": 150,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 2
+    "timer": 220,
+    "flirt": true,
+    "level": 3,
+    "xp": 140,
+    "type": "solo"
   },
   {
     "id": 44,
-    "timer": 240,
-    "xp": 350,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 4
+    "timer": 240,
+    "flirt": true,
+    "level": 5,
+    "xp": 250,
+    "type": "solo"
   },
   {
     "id": 45,
-    "timer": 230,
-    "xp": 320,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 4
+    "timer": 230,
+    "flirt": true,
+    "level": 5,
+    "xp": 240,
+    "type": "solo"
   },
   {
     "id": 46,
-    "timer": 230,
-    "xp": 250,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 3
+    "timer": 230,
+    "flirt": true,
+    "level": 4,
+    "xp": 200,
+    "type": "solo"
   },
   {
     "id": 47,
-    "timer": 250,
-    "xp": 300,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 3
+    "timer": 250,
+    "flirt": true,
+    "level": 4,
+    "xp": 180,
+    "type": "solo"
   },
   {
     "id": 48,
-    "timer": 210,
-    "xp": 400,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 4
+    "timer": 210,
+    "flirt": true,
+    "level": 5,
+    "xp": 230,
+    "type": "solo"
   },
   {
     "id": 49,
-    "timer": 270,
-    "xp": 600,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 4
+    "timer": 270,
+    "flirt": true,
+    "level": 5,
+    "xp": 270,
+    "type": "solo"
   },
   {
     "id": 52,
-    "timer": 230,
-    "xp": 300,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 3
+    "timer": 230,
+    "flirt": true,
+    "level": 4,
+    "xp": 200,
+    "type": "solo"
   },
   {
     "id": 54,
-    "timer": 240,
-    "xp": 700,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 5
+    "timer": 240,
+    "flirt": true,
+    "level": 6,
+    "xp": 290,
+    "type": "solo"
   },
   {
     "id": 56,
-    "timer": 240,
-    "xp": 900,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 5
+    "timer": 240,
+    "flirt": true,
+    "level": 7,
+    "xp": 380,
+    "type": "solo"
   },
   {
     "id": 57,
-    "timer": 230,
-    "xp": 800,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 5
+    "timer": 230,
+    "flirt": true,
+    "level": 6,
+    "xp": 290,
+    "type": "solo"
   },
   {
     "id": 58,
-    "timer": 260,
-    "xp": 1000,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 5
+    "timer": 260,
+    "flirt": true,
+    "level": 6,
+    "xp": 280,
+    "type": "group"
   },
   {
     "id": 60,
-    "timer": 250,
-    "xp": 600,
-    "type": "either",
-    "flirt": false,
     "environment": "all",
-    "level": 4
+    "timer": 250,
+    "flirt": false,
+    "level": 5,
+    "xp": 250,
+    "type": "either"
   },
   {
     "id": 61,
-    "timer": 260,
-    "xp": 500,
-    "type": "either",
-    "flirt": false,
     "environment": "all",
-    "level": 4
+    "timer": 260,
+    "flirt": false,
+    "level": 5,
+    "xp": 250,
+    "type": "either"
   },
   {
     "id": 62,
-    "timer": 250,
-    "xp": 600,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 4
+    "timer": 250,
+    "flirt": true,
+    "level": 5,
+    "xp": 260,
+    "type": "group"
   },
   {
     "id": 63,
-    "timer": 240,
-    "xp": 500,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 4
+    "timer": 240,
+    "flirt": true,
+    "level": 5,
+    "xp": 250,
+    "type": "group"
   },
   {
     "id": 64,
-    "timer": 230,
-    "xp": 650,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 5
+    "timer": 230,
+    "flirt": true,
+    "level": 5,
+    "xp": 270,
+    "type": "group"
   },
   {
     "id": 65,
-    "timer": 260,
-    "xp": 850,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 5
+    "timer": 260,
+    "flirt": true,
+    "level": 7,
+    "xp": 390,
+    "type": "dare"
   },
   {
     "id": 66,
-    "timer": 240,
-    "xp": 700,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 5
+    "timer": 240,
+    "flirt": true,
+    "level": 5,
+    "xp": 270,
+    "type": "group"
   },
   {
     "id": 67,
-    "timer": 270,
-    "xp": 900,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 5
+    "timer": 270,
+    "flirt": true,
+    "level": 7,
+    "xp": 380,
+    "type": "coop"
   },
   {
     "id": 68,
-    "timer": 250,
-    "xp": 750,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 5
+    "timer": 250,
+    "flirt": true,
+    "level": 5,
+    "xp": 260,
+    "type": "group"
   },
   {
     "id": 69,
+    "environment": "street",
     "timer": 270,
-    "xp": 1000,
-    "type": "group",
     "flirt": true,
-    "environment": "all",
-    "level": 5
+    "level": 6,
+    "xp": 290,
+    "type": "dare"
   },
   {
     "id": 70,
-    "timer": 250,
-    "xp": 600,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 4
+    "timer": 250,
+    "flirt": true,
+    "level": 4,
+    "xp": 200,
+    "type": "group"
   },
   {
     "id": 71,
-    "timer": 260,
-    "xp": 700,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 5
+    "timer": 260,
+    "flirt": true,
+    "level": 5,
+    "xp": 260,
+    "type": "group"
   },
   {
     "id": 72,
-    "timer": 250,
-    "xp": 800,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 5
+    "timer": 250,
+    "flirt": true,
+    "level": 6,
+    "xp": 290,
+    "type": "group"
   },
   {
     "id": 73,
-    "timer": 270,
-    "xp": 300,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 3
+    "timer": 270,
+    "flirt": false,
+    "level": 3,
+    "xp": 110,
+    "type": "solo"
   },
   {
     "id": 74,
-    "timer": 260,
-    "xp": 250,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 3
+    "timer": 260,
+    "flirt": false,
+    "level": 3,
+    "xp": 110,
+    "type": "solo"
   },
   {
     "id": 75,
+    "environment": "street",
     "timer": 280,
-    "xp": 200,
-    "type": "solo",
     "flirt": false,
-    "environment": "all",
-    "level": 3
+    "level": 2,
+    "xp": 65,
+    "type": "solo"
   },
   {
     "id": 76,
-    "timer": 270,
-    "xp": 350,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 4
+    "timer": 270,
+    "flirt": true,
+    "level": 4,
+    "xp": 170,
+    "type": "solo"
   },
   {
     "id": 77,
-    "timer": 480,
-    "xp": 200,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 3
+    "timer": 480,
+    "flirt": false,
+    "level": 2,
+    "xp": 65,
+    "type": "solo"
   },
   {
     "id": 78,
-    "timer": 270,
-    "xp": 300,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 3
+    "timer": 270,
+    "flirt": true,
+    "level": 4,
+    "xp": 180,
+    "type": "solo"
   },
   {
     "id": 79,
-    "timer": 250,
-    "xp": 250,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 3
+    "timer": 250,
+    "flirt": false,
+    "level": 3,
+    "xp": 130,
+    "type": "solo"
   },
   {
     "id": 80,
-    "timer": 260,
-    "xp": 400,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 4
+    "timer": 260,
+    "flirt": false,
+    "level": 4,
+    "xp": 180,
+    "type": "solo"
   },
   {
     "id": 81,
-    "timer": 260,
-    "xp": 350,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 4
+    "timer": 260,
+    "flirt": false,
+    "level": 4,
+    "xp": 170,
+    "type": "solo"
   },
   {
     "id": 82,
+    "environment": "cafe",
     "timer": 240,
-    "xp": 300,
-    "type": "solo",
-    "flirt": true,
-    "environment": "all",
-    "level": 3
+    "flirt": false,
+    "level": 4,
+    "xp": 170,
+    "type": "solo"
   },
   {
     "id": 83,
-    "timer": 270,
-    "xp": 400,
-    "type": "group",
-    "flirt": false,
     "environment": "all",
-    "level": 4
+    "timer": 270,
+    "flirt": false,
+    "level": 4,
+    "xp": 210,
+    "type": "group"
   },
   {
     "id": 84,
-    "timer": 270,
-    "xp": 250,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 3
+    "timer": 270,
+    "flirt": false,
+    "level": 3,
+    "xp": 130,
+    "type": "solo"
   },
   {
     "id": 91,
-    "timer": 270,
-    "xp": 1000,
-    "type": "group",
-    "flirt": true,
     "environment": "all",
-    "level": 5
+    "timer": 270,
+    "flirt": true,
+    "level": 6,
+    "xp": 290,
+    "type": "group"
   },
   {
     "id": 122,
-    "timer": 30,
-    "xp": 150,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 2
+    "timer": 30,
+    "flirt": true,
+    "level": 3,
+    "xp": 110,
+    "type": "solo"
   },
   {
     "id": 123,
-    "timer": 45,
-    "xp": 180,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 3
+    "timer": 45,
+    "flirt": false,
+    "level": 3,
+    "xp": 100,
+    "type": "solo"
   },
   {
     "id": 124,
-    "timer": 60,
-    "xp": 200,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 3
+    "timer": 60,
+    "flirt": true,
+    "level": 3,
+    "xp": 100,
+    "type": "solo"
   },
   {
     "id": 125,
-    "timer": 60,
-    "xp": 170,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 3
+    "timer": 60,
+    "flirt": false,
+    "level": 3,
+    "xp": 110,
+    "type": "solo"
   },
   {
     "id": 126,
-    "timer": 50,
-    "xp": 140,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 1
+    "timer": 50,
+    "flirt": false,
+    "level": 2,
+    "xp": 65,
+    "type": "solo"
   },
   {
     "id": 127,
-    "timer": 45,
-    "xp": 130,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 1
+    "timer": 45,
+    "flirt": false,
+    "level": 2,
+    "xp": 65,
+    "type": "solo"
   },
   {
     "id": 128,
-    "timer": 50,
-    "xp": 150,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 2
+    "timer": 50,
+    "flirt": true,
+    "level": 3,
+    "xp": 100,
+    "type": "solo"
   },
   {
     "id": 129,
-    "timer": 50,
-    "xp": 160,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 3
+    "timer": 50,
+    "flirt": false,
+    "level": 3,
+    "xp": 100,
+    "type": "solo"
   },
   {
     "id": 130,
-    "timer": 40,
-    "xp": 140,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 1
+    "timer": 40,
+    "flirt": true,
+    "level": 3,
+    "xp": 100,
+    "type": "solo"
   },
   {
     "id": 131,
-    "timer": 30,
-    "xp": 130,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 1
+    "timer": 30,
+    "flirt": false,
+    "level": 2,
+    "xp": 50,
+    "type": "solo"
   },
   {
     "id": 132,
-    "timer": 40,
-    "xp": 160,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 3
+    "timer": 40,
+    "flirt": true,
+    "level": 3,
+    "xp": 100,
+    "type": "solo"
   },
   {
     "id": 133,
-    "timer": 40,
-    "xp": 150,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 2
+    "timer": 40,
+    "flirt": true,
+    "level": 2,
+    "xp": 70,
+    "type": "solo"
   },
   {
     "id": 134,
+    "environment": "cafe",
     "timer": 50,
-    "xp": 140,
-    "type": "solo",
     "flirt": false,
-    "environment": "all",
-    "level": 1
+    "level": 2,
+    "xp": 70,
+    "type": "solo"
   },
   {
     "id": 135,
-    "timer": 60,
-    "xp": 170,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 3
+    "timer": 60,
+    "flirt": false,
+    "level": 3,
+    "xp": 100,
+    "type": "solo"
   },
   {
     "id": 136,
-    "timer": 40,
-    "xp": 130,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 1
+    "timer": 40,
+    "flirt": true,
+    "level": 2,
+    "xp": 70,
+    "type": "solo"
   },
   {
     "id": 137,
-    "timer": 40,
-    "xp": 140,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 1
+    "timer": 40,
+    "flirt": false,
+    "level": 2,
+    "xp": 70,
+    "type": "solo"
   },
   {
     "id": 138,
-    "timer": 50,
-    "xp": 180,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 3
+    "timer": 50,
+    "flirt": true,
+    "level": 3,
+    "xp": 120,
+    "type": "solo"
   },
   {
     "id": 139,
-    "timer": 40,
-    "xp": 140,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 1
+    "timer": 40,
+    "flirt": false,
+    "level": 4,
+    "xp": 130,
+    "type": "solo"
   },
   {
     "id": 140,
-    "timer": 40,
-    "xp": 150,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 2
+    "timer": 40,
+    "flirt": true,
+    "level": 2,
+    "xp": 70,
+    "type": "solo"
   },
   {
     "id": 141,
-    "timer": 50,
-    "xp": 130,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 1
+    "timer": 50,
+    "flirt": false,
+    "level": 3,
+    "xp": 120,
+    "type": "solo"
   },
   {
     "id": 142,
-    "timer": 40,
-    "xp": 150,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 2
+    "timer": 40,
+    "flirt": true,
+    "level": 2,
+    "xp": 70,
+    "type": "solo"
   },
   {
     "id": 143,
-    "timer": 40,
-    "xp": 130,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 1
+    "timer": 120,
+    "flirt": false,
+    "level": 3,
+    "xp": 80,
+    "type": "solo"
   },
   {
     "id": 144,
-    "timer": 40,
-    "xp": 150,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 2
+    "timer": 40,
+    "flirt": false,
+    "level": 2,
+    "xp": 70,
+    "type": "solo"
   },
   {
     "id": 145,
-    "timer": 40,
-    "xp": 160,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 3
+    "timer": 40,
+    "flirt": true,
+    "level": 2,
+    "xp": 70,
+    "type": "solo"
   },
   {
     "id": 148,
-    "timer": 40,
-    "xp": 150,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 2
+    "timer": 40,
+    "flirt": true,
+    "level": 2,
+    "xp": 70,
+    "type": "solo"
   },
   {
     "id": 149,
-    "timer": 50,
-    "xp": 170,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 3
+    "timer": 50,
+    "flirt": true,
+    "level": 3,
+    "xp": 110,
+    "type": "solo"
   },
   {
     "id": 150,
-    "timer": 40,
-    "xp": 140,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 1
+    "timer": 40,
+    "flirt": false,
+    "level": 4,
+    "xp": 160,
+    "type": "solo"
   },
   {
     "id": 151,
-    "timer": 40,
-    "xp": 160,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 3
+    "timer": 40,
+    "flirt": true,
+    "level": 3,
+    "xp": 100,
+    "type": "solo"
   },
   {
     "id": 152,
-    "timer": 480,
-    "xp": 160,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 3
+    "timer": 480,
+    "flirt": false,
+    "level": 3,
+    "xp": 110,
+    "type": "solo"
   },
   {
     "id": 153,
-    "timer": 480,
-    "xp": 150,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 2
+    "timer": 480,
+    "flirt": true,
+    "level": 2,
+    "xp": 70,
+    "type": "solo"
   },
   {
     "id": 155,
-    "timer": 480,
-    "xp": 150,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 2
+    "timer": 480,
+    "flirt": false,
+    "level": 2,
+    "xp": 70,
+    "type": "solo"
   },
   {
     "id": 156,
-    "timer": 210,
-    "xp": 140,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 1
+    "timer": 210,
+    "flirt": false,
+    "level": 2,
+    "xp": 70,
+    "type": "solo"
   },
   {
     "id": 157,
-    "timer": 480,
-    "xp": 130,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 1
+    "timer": 480,
+    "flirt": false,
+    "level": 4,
+    "xp": 40,
+    "type": "solo"
   },
   {
     "id": 159,
-    "timer": 480,
-    "xp": 150,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 2
+    "timer": 480,
+    "flirt": false,
+    "level": 2,
+    "xp": 80,
+    "type": "solo"
   },
   {
     "id": 160,
-    "timer": 210,
-    "xp": 140,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 1
+    "timer": 210,
+    "flirt": true,
+    "level": 2,
+    "xp": 70,
+    "type": "solo"
   },
   {
     "id": 161,
-    "timer": 480,
-    "xp": 130,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 1
+    "timer": 210,
+    "flirt": false,
+    "level": 3,
+    "xp": 100,
+    "type": "solo"
   },
   {
     "id": 162,
-    "timer": 210,
-    "xp": 150,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 2
+    "timer": 210,
+    "flirt": false,
+    "level": 2,
+    "xp": 80,
+    "type": "solo"
   },
   {
     "id": 163,
-    "timer": 480,
-    "xp": 140,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 1
+    "timer": 480,
+    "flirt": true,
+    "level": 2,
+    "xp": 65,
+    "type": "solo"
   },
   {
     "id": 164,
-    "timer": 480,
-    "xp": 150,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 2
+    "timer": 480,
+    "flirt": false,
+    "level": 2,
+    "xp": 80,
+    "type": "solo"
   },
   {
     "id": 165,
-    "timer": 480,
-    "xp": 160,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 3
-  },
-  {
-    "id": 166,
     "timer": 480,
-    "xp": 140,
-    "type": "solo",
     "flirt": true,
-    "environment": "all",
-    "level": 1
+    "level": 3,
+    "xp": 100,
+    "type": "solo"
   },
   {
     "id": 167,
-    "timer": 210,
-    "xp": 170,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 3
+    "timer": 210,
+    "flirt": true,
+    "level": 3,
+    "xp": 110,
+    "type": "solo"
   },
   {
     "id": 168,
-    "timer": 480,
-    "xp": 130,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 1
+    "timer": 300,
+    "flirt": false,
+    "level": 3,
+    "xp": 65,
+    "type": "solo"
   },
   {
     "id": 169,
-    "timer": 480,
-    "xp": 140,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 1
+    "timer": 480,
+    "flirt": false,
+    "level": 2,
+    "xp": 65,
+    "type": "solo"
   },
   {
     "id": 170,
-    "timer": 480,
-    "xp": 150,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 2
+    "timer": 480,
+    "flirt": false,
+    "level": 2,
+    "xp": 60,
+    "type": "solo"
   },
   {
     "id": 171,
-    "timer": 480,
-    "xp": 140,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 1
+    "timer": 330,
+    "flirt": true,
+    "level": 4,
+    "xp": 184,
+    "type": "solo"
   },
   {
     "id": 172,
-    "timer": 480,
-    "xp": 160,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 3
+    "timer": 480,
+    "flirt": false,
+    "level": 3,
+    "xp": 100,
+    "type": "solo"
   },
   {
     "id": 173,
+    "environment": "all",
     "timer": 480,
-    "xp": 160,
-    "type": "solo",
     "flirt": true,
-    "environment": "all",
-    "level": 3
-  },
-  {
-    "id": 175,
-    "timer": 480,
-    "xp": 130,
-    "type": "solo",
-    "flirt": false,
-    "environment": "all",
-    "level": 1
+    "level": 3,
+    "xp": 100,
+    "type": "solo"
   },
   {
     "id": 176,
-    "timer": 480,
-    "xp": 150,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 2
+    "timer": 480,
+    "flirt": false,
+    "level": 2,
+    "xp": 60,
+    "type": "solo"
   },
   {
     "id": 177,
-    "timer": 480,
-    "xp": 140,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 1
+    "timer": 480,
+    "flirt": true,
+    "level": 2,
+    "xp": 65,
+    "type": "solo"
   },
   {
     "id": 178,
-    "timer": 480,
-    "xp": 130,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 1
+    "timer": 240,
+    "flirt": false,
+    "level": 3,
+    "xp": 100,
+    "type": "solo"
   },
   {
     "id": 179,
-    "timer": 210,
-    "xp": 150,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 2
+    "timer": 210,
+    "flirt": false,
+    "level": 2,
+    "xp": 60,
+    "type": "solo"
   },
   {
     "id": 180,
-    "timer": 480,
-    "xp": 160,
-    "type": "solo",
-    "flirt": true,
     "environment": "all",
-    "level": 3
+    "timer": 480,
+    "flirt": true,
+    "level": 3,
+    "xp": 100,
+    "type": "solo"
   },
   {
     "id": 181,
-    "timer": 480,
-    "xp": 130,
-    "type": "solo",
-    "flirt": false,
     "environment": "all",
-    "level": 1
+    "timer": 300,
+    "flirt": false,
+    "level": 3,
+    "xp": 100,
+    "type": "solo"
   }
 ]
