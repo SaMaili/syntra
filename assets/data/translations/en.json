@@ -1,7 +1,7 @@
 {
   "0": {
     "title": "Million Dollar Question",
-    "description": "Ask: \"What would you do if you won a million right now?\"",
+    "description": "Ask a stranger: \"What would you do if you won a million right now?\"",
     "hints": [
       "\"What would you do immediately?\"",
       "\"What's at the top of your list?\"",
@@ -19,16 +19,16 @@
   },
   "3": {
     "title": "Style compliment",
-    "description": "Ask a woman where she got her dress or shoes.",
+    "description": "Ask someone where they got their outfit or shoes.",
     "hints": [
-      "\"Where did you get that dress?\"",
-      "\"Your shoes are amazing, where did you get them?\"",
+      "\"Where did you get that?\"",
+      "\"Those shoes are amazing, where did you get them?\"",
       "\"May I ask where you bought that?\""
     ]
   },
   "4": {
     "title": "Sympathy compliment",
-    "description": "Tell a woman that she has a pleasant charisma.",
+    "description": "Tell someone that they have a pleasant charisma.",
     "hints": [
       "\"You really have a pleasant charisma.\"",
       "\"It's easy to tell that you spread good cheer.\"",
@@ -37,7 +37,7 @@
   },
   "5": {
     "title": "Small talk for directions",
-    "description": "Ask a woman for directions and then have 2-3 sentences of small talk.",
+    "description": "Ask someone for directions and then have 2-3 sentences of small talk.",
     "hints": [
       "\"Excuse me, can you help me for a moment?\"",
       "\"Are you from around here?\"",
@@ -46,7 +46,7 @@
   },
   "6": {
     "title": "Traffic light compliment",
-    "description": "Tell a woman at the traffic light that she is beaming and wish her a nice day.",
+    "description": "Tell someone at the traffic light that they're beaming and wish them a nice day.",
     "hints": [
       "\"I wish you a nice day!\"",
       "\"You are really beaming.\"",
@@ -55,7 +55,7 @@
   },
   "7": {
     "title": "Smile at server",
-    "description": "Compliment the server on her smile.",
+    "description": "Compliment the server on their smile.",
     "hints": [
       "\"Your smile is contagious.\"",
       "\"Thank you, you really have a beautiful smile.\"",
@@ -64,7 +64,7 @@
   },
   "8": {
     "title": "Love at first sight",
-    "description": "Ask a woman if she believes in love at first sight.",
+    "description": "Ask someone if they believe in love at first sight.",
     "hints": [
       "\"Do you believe in love at first sight?\"",
       "\"Or rather team slow love?\"",
@@ -73,7 +73,7 @@
   },
   "9": {
     "title": "Lost Bet Ice Cream",
-    "description": "Say you lost a bet and have to ask her about her favorite ice cream flavor.",
+    "description": "Say you lost a bet and have to ask them about their favorite ice cream flavor.",
     "hints": [
       "\"I lost a bet... what's your favorite flavor?\"",
       "\"Help me please, otherwise I'll have to do more nonsense.\"",
@@ -82,7 +82,7 @@
   },
   "11": {
     "title": "Headphone Music",
-    "description": "Ask a woman what she's listening to on her headphones.",
+    "description": "Ask someone what they're listening to on their headphones.",
     "hints": [
       "\"May I ask what you're listening to?\"",
       "\"Good vibe, what's up?\"",
@@ -109,7 +109,7 @@
   },
   "16": {
     "title": "Perfume compliment",
-    "description": "Tell a woman that her perfume smells good. You could be in a cafe near her.",
+    "description": "Tell someone that their perfume smells amazing. Works best when you're sitting nearby.",
     "hints": [
       "\"Wow, your perfume smells really good.\"",
       "\"You have to tell me.\"",
@@ -150,7 +150,7 @@
   },
   "22": {
     "title": "Wingman Mission",
-    "description": "Go up to a group of girls with a friend and introduce yourselves charmingly.",
+    "description": "Go up to a group of people with a friend and introduce yourselves charmingly.",
     "hints": [
       "\"Hi, we wanted to get to know you.\"",
       "\"You look nice, thought we'd say hi.\"",
@@ -159,7 +159,7 @@
   },
   "25": {
     "title": "Dance Challenge",
-    "description": "Challenge a group of women to a short TikTok dance.",
+    "description": "Challenge a group of people to a short TikTok dance.",
     "hints": [
       "\"Are you in?\"",
       "\"Who has the best moves?\"",
@@ -168,10 +168,10 @@
   },
   "26": {
     "title": "Group Instagram",
-    "description": "Go up to several girls and ask if you can take a group photo for Insta.",
+    "description": "Go up to a group of people and ask if you can take a group photo for Insta.",
     "hints": [
       "\"Can we take a group photo for Insta?\"",
-      "\"You would make us prettier.\"",
+      "\"You would make us look better.\"",
       "\"Will be legendary.\""
     ]
   },
@@ -188,7 +188,7 @@
     "title": "Beauty Jury",
     "description": "Pretend you are judges and award points for outfits.",
     "hints": [
-      "\"10 points for the dress.\"",
+      "\"10 points for the outfit.\"",
       "\"Oh, that's almost unfair.\"",
       "\"We're only kidding.\""
     ]
@@ -204,7 +204,7 @@
   },
   "30": {
     "title": "Mobile Phone Roulette",
-    "description": "Let the girls take one of your phones and stalk you on Insta.",
+    "description": "Let someone from the group take one of your phones and stalk you on Insta.",
     "hints": [
       "\"Here, stalk my Insta.\"",
       "\"Believe me, you want to see this.\"",
@@ -212,7 +212,7 @@
     ]
   },
   "31": {
-    "title": "Have your friend judge",
+    "title": "Have your friend judged",
     "description": "Introduce a friend: \"On a scale of 1-10, how cute is he?\"",
     "hints": [
       "\"Honestly.\"",
@@ -240,7 +240,7 @@
   },
   "34": {
     "title": "Selfie Battle",
-    "description": "Have a selfie competition: Whoever takes the funniest picture with the group.",
+    "description": "Have a selfie competition: whoever takes the funniest picture with the group wins.",
     "hints": [
       "\"Funniest one wins.\"",
       "\"Come closer.\"",
@@ -285,7 +285,7 @@
   },
   "39": {
     "title": "Spontaneous Karaoke",
-    "description": "Start singing and invite the group to join in.",
+    "description": "Start singing out loud and invite the group to join in.",
     "hints": [
       "\"Come on, sing along.\"",
       "\"You already know the chorus.\"",
@@ -341,7 +341,7 @@
     "title": "Guess your Insta handle",
     "description": "Play a guessing game: \"I'm going to guess your Insta handle. If I'm wrong, you owe me a coffee.\"",
     "hints": [
-      "I'm guessing @sunshinegirl.\"",
+      "\"I'm guessing @sunshinegirl.\"",
       "\"Wrong? Coffee then.\"",
       "\"Let me guess: something with adventure.\""
     ]
@@ -384,7 +384,7 @@
   },
   "56": {
     "title": "Type in phone number",
-    "description": "Type your number into her phone in the middle of a conversation: \"Trust me, this is the best thing that's happened to you today.\"",
+    "description": "Type your number into their phone in the middle of a conversation: \"Trust me, this is the best thing that's happened to you today.\"",
     "hints": [
       "\"Write that down.\"",
       "\"Trust me.\"",
@@ -402,10 +402,10 @@
   },
   "58": {
     "title": "Address a group",
-    "description": "Go to a women's group and introduce yourself to everyone at once.",
+    "description": "Walk up to a group and introduce yourself to everyone at once.",
     "hints": [
       "\"Hi, I'm [Name].\"",
-      "\"You look nice.\"",
+      "\"You all look nice.\"",
       "\"Had to meet you.\""
     ]
   },
@@ -429,7 +429,7 @@
   },
   "62": {
     "title": "Handshake Poker",
-    "description": "Play rock-paper-scissors with a group of women. The loser has to reveal a secret.",
+    "description": "Play rock-paper-scissors with a group. The loser has to reveal a secret.",
     "hints": [
       "\"Okay, who goes first?\"",
       "\"Only fair, whoever loses has to deliver.\"",
@@ -446,8 +446,8 @@
     ]
   },
   "64": {
-    "title": "Find the greatest flirt queen",
-    "description": "Ask: \"Who of you is the greatest flirt queen?\"",
+    "title": "Find the best flirt",
+    "description": "Ask: \"Who of you is the best at flirting?\"",
     "hints": [
       "\"Be honest.\"",
       "\"We have bets going.\"",
@@ -456,7 +456,7 @@
   },
   "65": {
     "title": "Fake Wedding Photo",
-    "description": "Take a posed \"bride and groom\" photo with a woman, the group as the audience.",
+    "description": "Take a posed \"couple\" photo with someone you meet, with the group as the audience.",
     "hints": [
       "\"We need you as our wedding party.\"",
       "\"Smile for the album.\"",
@@ -465,7 +465,7 @@
   },
   "66": {
     "title": "In love? Test",
-    "description": "Asks: \"What would a guy have to do to make you fall in love instantly?\"",
+    "description": "Ask: \"What would someone have to do to make you fall in love instantly?\"",
     "hints": [
       "\"Just hypothetical.\"",
       "\"We need tips.\"",
@@ -501,7 +501,7 @@
   },
   "70": {
     "title": "Spontaneous friend request",
-    "description": "Says: \"You look so cool, we have to be official friends now.\"",
+    "description": "Say: \"You look so cool, we have to be official friends now.\"",
     "hints": [
       "\"Hand on it?\"",
       "\"Get Instagram ready?\"",
@@ -536,7 +536,7 @@
     ]
   },
   "74": {
-    "title": "Ask about your calling",
+    "title": "Ask about their calling",
     "description": "Ask: \"You look interesting, what do you do for a living?\" and then ask two questions about it.",
     "hints": [
       "\"How did you get into this?\"",
@@ -636,7 +636,7 @@
   },
   "91": {
     "title": "Group Courage",
-    "description": "Approach a group of women and introduce yourself to everyone at once: \"Hi, I'm [Name], you look so nice, I had to meet you.\"",
+    "description": "Approach a group and introduce yourself to everyone at once: \"Hi, I'm [Name], you all look so nice, I had to meet you.\"",
     "hints": [
       "\"What's your name?\"",
       "\"You're totally glowing.\"",
@@ -645,7 +645,7 @@
   },
   "122": {
     "title": "Say great smile",
-    "description": "Say to a woman as you walk past: \"Sorry, but I just have to tell you: you have a really great smile.\"",
+    "description": "Say to someone as you walk past: \"Sorry, but I just have to tell you: you have a really great smile.\"",
     "hints": [
       "\"Hey, your smile is really great.\"",
       "\"Sorry, I just had to say that.\"",
@@ -663,7 +663,7 @@
   },
   "124": {
     "title": "Praise phone outfit",
-    "description": "Talk to a woman who is on the phone after she's finished: \"Sorry, I had to wait... I think your outfit is great.\"",
+    "description": "Talk to someone who is on the phone after they're done: \"Sorry, I had to wait... I think your outfit is great.\"",
     "hints": [
       "\"Hey, I really like your outfit.\"",
       "\"Sorry, I had to wait until you were finished.\"",
@@ -698,8 +698,8 @@
     ]
   },
   "128": {
-    "title": "Praise red hair",
-    "description": "Say to a woman with red hair: \"Okay, your hair is amazing, I had to get that off my chest.\"",
+    "title": "Praise striking hair",
+    "description": "Say to someone with striking red hair: \"Okay, your hair is amazing, I had to get that off my chest.\"",
     "hints": [
       "\"Your hair is really great.\"",
       "\"A color like that looks fantastic.\"",
@@ -708,7 +708,7 @@
   },
   "129": {
     "title": "Ask a skateboard trick",
-    "description": "Ask a guy with a skateboard: \"Can you do a trick? I'll give you a standing ovation.\"",
+    "description": "Ask someone with a skateboard: \"Can you do a trick? I'll give you a standing ovation.\"",
     "hints": [
       "\"Show me a trick.\"",
       "\"That skateboard looks cool.\"",
@@ -716,21 +716,21 @@
     ]
   },
   "130": {
-    "title": "Dress Compliment",
-    "description": "Say to a woman in a dress: \"It's only a short one, but that dress suits you incredibly well.\"",
+    "title": "Outfit Compliment",
+    "description": "Say to someone in a standout outfit: \"It's only a quick one, but that looks incredibly good on you.\"",
     "hints": [
-      "\"Your dress looks great.\"",
+      "\"Your outfit looks great.\"",
       "\"It really suits you.\"",
       "\"Really elegant today.\""
     ]
   },
   "131": {
-    "title": "Ask a dog to pet",
-    "description": "Go up to someone with a dog and ask: \"He's really cute, can I pet him for a moment?\"",
+    "title": "Ask to pet a dog",
+    "description": "Go up to someone with a dog and ask if you could pet their dog.",
     "hints": [
       "\"Can I pet your dog?\"",
       "\"What a sweet dog.\"",
-      "\"He looks really friendly.\""
+      "\"They look really friendly.\""
     ]
   },
   "132": {
@@ -753,7 +753,7 @@
   },
   "134": {
     "title": "Coffee-to-go question",
-    "description": "Go to a woman with a coffee-to-go cup: \"Is this the best coffee in town, or just decoration?\"",
+    "description": "Go to someone with a coffee-to-go cup: \"Is this the best coffee in town, or just decoration?\"",
     "hints": [
       "\"Does the coffee here really taste that good?\"",
       "\"Where are you from?\"",
@@ -771,7 +771,7 @@
   },
   "136": {
     "title": "Elegance despite haste",
-    "description": "Say to a woman who is hurrying: \"Don't worry, you are still elegance personified.\"",
+    "description": "Say to someone who is hurrying: \"Don't worry, you are still elegance personified.\"",
     "hints": [
       "\"You look really elegant.\"",
       "\"Haste is no problem for you.\"",
@@ -780,7 +780,7 @@
   },
   "137": {
     "title": "Football Shirt Question",
-    "description": "Ask a guy wearing a football shirt: \"Do you play the game yourself or are you just a passionate couch potato?\"",
+    "description": "Ask someone wearing a football shirt: \"Do you play the game yourself or are you just a passionate couch fan?\"",
     "hints": [
       "\"Are you a player or a fan?\"",
       "\"Which club?\"",
@@ -807,7 +807,7 @@
   },
   "140": {
     "title": "Praise large earrings",
-    "description": "Stop a woman with particularly large earrings and say: \"Can I say that your earrings are a real statement?\"",
+    "description": "Stop someone with particularly large earrings and say: \"Can I say that your earrings are a real statement?\"",
     "hints": [
       "\"Your earrings are eye-catching.\"",
       "\"Really bold.\"",
@@ -825,7 +825,7 @@
   },
   "142": {
     "title": "Praise dream hair",
-    "description": "Say to a woman with long hair: \"Sorry, but your hair is a dream.\"",
+    "description": "Say to someone with long hair: \"Sorry, but your hair is a dream.\"",
     "hints": [
       "\"Your hair looks great.\"",
       "\"Properly cared for.\"",
@@ -834,7 +834,7 @@
   },
   "143": {
     "title": "Read a jute bag",
-    "description": "Go up to someone with a jute bag and say: \"I have to read what it says - can I?\"",
+    "description": "Go up to someone with a jute bag and say something about the bag",
     "hints": [
       "\"What does it say?\"",
       "\"Cool saying.\"",
@@ -843,7 +843,7 @@
   },
   "144": {
     "title": "Praise a full beard",
-    "description": "Stop a guy with a full beard: \"Bro, Viking vibes. I was just going to say that.\"",
+    "description": "Stop someone with a full beard: \"Bro, Viking vibes. I was just going to say that.\"",
     "hints": [
       "\"Your beard looks wild.\"",
       "\"Really cool.\"",
@@ -852,7 +852,7 @@
   },
   "145": {
     "title": "Praise neon colors",
-    "description": "Say to a woman wearing neon colors: \"Okay, wow, you're really adding color here.\"",
+    "description": "Say to someone wearing neon colors: \"Okay, wow, you're really adding color here.\"",
     "hints": [
       "\"Your colors are awesome.\"",
       "\"You're the center of attention.\"",
@@ -861,7 +861,7 @@
   },
   "148": {
     "title": "Praise laughter",
-    "description": "Say to a woman who is laughing: \"Your laughter is contagious, please keep going.\"",
+    "description": "Say to someone who is laughing: \"Your laughter is contagious, please keep going.\"",
     "hints": [
       "\"Such a beautiful laugh.\"",
       "\"Puts you in a good mood.\"",
@@ -883,6 +883,7 @@
     "hints": [
       "\"Looks really cool.\"",
       "\"Was that painful?\"",
+      "\"Cool Piercing!\"",
       "\"I wouldn't do that.\""
     ]
   },
@@ -906,7 +907,7 @@
   },
   "153": {
     "title": "Compliment eye-catching jewelry",
-    "description": "Find a woman with eye-catching jewelry (e.g. large earrings) and compliment her.",
+    "description": "Find someone with eye-catching jewelry (e.g. large earrings or a bold necklace) and compliment them.",
     "hints": [
       "\"Your jewelry is really great.\"",
       "\"You make such a statement.\"",
@@ -932,7 +933,7 @@
     ]
   },
   "157": {
-    "title": "Sneaker Origin",
+    "title": "Sneakers from ...?",
     "description": "Find a person with colored sneakers and ask where they got them.",
     "hints": [
       "\"Where did you get those sneakers?\"",
@@ -951,7 +952,7 @@
   },
   "160": {
     "title": "Lipstick Compliment",
-    "description": "Spot a woman wearing bright red lipstick and tell her the color looks amazing.",
+    "description": "Spot someone wearing bold, bright lipstick and tell them the color looks amazing.",
     "hints": [
       "\"That lipstick suits you amazingly.\"",
       "\"That color looks really great.\"",
@@ -978,7 +979,7 @@
   },
   "163": {
     "title": "Care tips for long hair",
-    "description": "Find a woman with very long hair and ask if she has any tips on how to care for it.",
+    "description": "Find someone with very long hair and ask if they have any tips on how to care for it.",
     "hints": [
       "\"How do you care for your hair?\"",
       "\"So long, it must be a lot of work.\"",
@@ -1001,15 +1002,6 @@
       "\"What does it say? Haha, that's good!\"",
       "\"I've never seen a shirt like that before.\"",
       "\"Let's laugh together.\""
-    ]
-  },
-  "166": {
-    "title": "Nose Piercing Pain Question",
-    "description": "Find someone with a nose piercing and ask if it hurt.",
-    "hints": [
-      "\"Was that painful?\"",
-      "\"I wouldn't have dared.\"",
-      "\"It looks great.\""
     ]
   },
   "167": {
@@ -1054,7 +1046,7 @@
     "hints": [
       "\"Cool nail color!\"",
       "\"It looks really good on you.\"",
-      "\"So well-groomed.\""
+      "\"So well-groomed. Did you get them recently?\""
     ]
   },
   "172": {
@@ -1075,27 +1067,18 @@
       "\"You guys are really funny!\""
     ]
   },
-  "175": {
-    "title": "Read out the saying on a jute bag",
-    "description": "Find a person with a jute bag and read out loud what it says.",
-    "hints": [
-      "\"What does it say?\"",
-      "\"Cool saying.\"",
-      "\"I had to read that.\""
-    ]
-  },
   "176": {
     "title": "Praise barefoot on a meadow",
     "description": "Find someone who is walking barefoot on a meadow and say: \"Being barefoot is the best feeling, isn't it?\"",
     "hints": [
-      "Walking barefoot is so liberating.\"",
+      "\"Walking barefoot is so liberating.\"",
       "\"Do you enjoy it too?\"",
       "\"It's really beautiful out here.\""
     ]
   },
   "177": {
     "title": "Summer Flower Compliment",
-    "description": "Find a woman with a floral pattern on her dress or scarf and say: \"You really bring summer vibes with you.\"",
+    "description": "Find someone with a floral pattern on their dress, scarf, or shirt and say: \"You really bring summer vibes with you.\"",
     "hints": [
       "\"A pattern like that is awesome.\"",
       "\"Really summery today.\"",
@@ -1134,7 +1117,7 @@
     "description": "Find someone who eats ice cream and ask what their favorite flavor is.",
     "hints": [
       "\"Which ice cream flavor do you like best?\"",
-      "\"Looking for inspiration.\"",
+      "\"Where did you get that from?\"",
       "\"That looks delicious.\""
     ]
   }
