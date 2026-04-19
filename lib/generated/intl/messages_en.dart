@@ -487,6 +487,36 @@ class MessageLookup extends MessageLookupByLibrary {
     "lessLabel": MessageLookupByLibrary.simpleMessage("Less"),
     "letsGo": MessageLookupByLibrary.simpleMessage("LET\'S GO!"),
     "letsGoButton": MessageLookupByLibrary.simpleMessage("Let\'s go"),
+    "levelDesc1": MessageLookupByLibrary.simpleMessage(
+      "Micro-interactions — low stakes, high growth",
+    ),
+    "levelDesc10": MessageLookupByLibrary.simpleMessage(
+      "Elite social mastery — nothing holds you back",
+    ),
+    "levelDesc2": MessageLookupByLibrary.simpleMessage(
+      "Brief exchanges with real humans",
+    ),
+    "levelDesc3": MessageLookupByLibrary.simpleMessage(
+      "Sustained conversations and presence",
+    ),
+    "levelDesc4": MessageLookupByLibrary.simpleMessage(
+      "Vulnerability, compliments, assertiveness",
+    ),
+    "levelDesc5": MessageLookupByLibrary.simpleMessage(
+      "High-stakes social challenges",
+    ),
+    "levelDesc6": MessageLookupByLibrary.simpleMessage(
+      "Leading interactions with confidence",
+    ),
+    "levelDesc7": MessageLookupByLibrary.simpleMessage(
+      "Commanding attention in any setting",
+    ),
+    "levelDesc8": MessageLookupByLibrary.simpleMessage(
+      "Pushing social limits with ease",
+    ),
+    "levelDesc9": MessageLookupByLibrary.simpleMessage(
+      "Embracing full exposure without hesitation",
+    ),
     "levelDownBody": MessageLookupByLibrary.simpleMessage(
       "You can only level down manually — going back up requires grinding through completions again.",
     ),
@@ -494,6 +524,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "levelDownConfirm": MessageLookupByLibrary.simpleMessage("Yes, step back"),
     "levelDownTitle": MessageLookupByLibrary.simpleMessage("Take a step back?"),
     "levelN": m5,
+    "levelName1": MessageLookupByLibrary.simpleMessage("Warming Up"),
+    "levelName10": MessageLookupByLibrary.simpleMessage("Untouchable"),
+    "levelName2": MessageLookupByLibrary.simpleMessage("Breaking the Ice"),
+    "levelName3": MessageLookupByLibrary.simpleMessage("Holding the Floor"),
+    "levelName4": MessageLookupByLibrary.simpleMessage("Taking Risks"),
+    "levelName5": MessageLookupByLibrary.simpleMessage("The Bold Zone"),
+    "levelName6": MessageLookupByLibrary.simpleMessage("Stepping Up"),
+    "levelName7": MessageLookupByLibrary.simpleMessage("Owning the Room"),
+    "levelName8": MessageLookupByLibrary.simpleMessage("Social Athlete"),
+    "levelName9": MessageLookupByLibrary.simpleMessage("Fearless"),
     "levelUnlocked": m6,
     "logbook": MessageLookupByLibrary.simpleMessage("Logbook"),
     "logbookEntry": MessageLookupByLibrary.simpleMessage("Logbook Entry"),

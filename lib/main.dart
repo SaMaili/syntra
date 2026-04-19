@@ -3,13 +3,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
 import 'data/settings_repository.dart';
@@ -18,13 +15,13 @@ import 'providers/router_notifier.dart';
 import 'providers/settings_providers.dart';
 import 'providers/shared_preferences_provider.dart';
 import 'router.dart';
+import 'services/sound_service.dart';
 import 'services/syntra_notification_service.dart';
 import 'theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
-  await _copyDatabaseIfNeeded();
 
   // Initialize SharedPreferences once at startup.
   // configure() makes it available to non-Riverpod code (NotificationManager).
@@ -36,6 +33,7 @@ void main() async {
   final onboardingDone =
       await SettingsRepository.instance.loadOnboardingComplete();
   routerNotifier = RouterNotifier(onboardingDone);
+  await SoundService.init();
   await SyntraNotificationService.instance.initialize();
   runApp(ProviderScope(
     overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
@@ -44,17 +42,6 @@ void main() async {
 }
 
 // ─── Boot helpers ─────────────────────────────────────────────────────────────
-
-Future<void> _copyDatabaseIfNeeded() async {
-  final dbPath = await getDatabasesPath();
-  final path = p.join(dbPath, 'challenge_database.db');
-  if (await databaseExists(path)) return;
-  final data = await rootBundle.load('assets/challenge_database.db');
-  await File(path).writeAsBytes(
-    data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes),
-    flush: true,
-  );
-}
 
 /// One-time migration: if settings.json still exists from a previous install,
 /// copy its values into SharedPreferences then delete the file.

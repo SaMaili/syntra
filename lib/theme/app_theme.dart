@@ -107,12 +107,14 @@ abstract class AppTheme {
   static ThemeData dark() {
     return ThemeData(
       useMaterial3: true,
+      scaffoldBackgroundColor: Colors.black,
       colorScheme: ColorScheme.fromSeed(
         seedColor: seedColor,
         brightness: Brightness.dark,
         primary: seedColor,
         secondary: const Color(0xFFFF2626),
         tertiary: const Color(0xFFFF6D00),
+        surface: const Color(0xFF0D0D0D),
       ),
       brightness: Brightness.dark,
       textTheme: const TextTheme(

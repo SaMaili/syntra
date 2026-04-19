@@ -2,6 +2,8 @@ import 'dart:math' show Random;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:in_app_review/in_app_review.dart';
+import 'package:syntra/data/settings_repository.dart';
 import 'package:syntra/challenge.dart';
 import 'package:syntra/generated/l10n.dart';
 import 'package:syntra/providers/challenge_providers.dart';
@@ -26,7 +28,14 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
   @override
   bool get wantKeepAlive => true;
 
-  void _onChallengeFinished() => refreshStatistics(ref);
+  Future<void> _onChallengeFinished() async {
+    refreshStatistics(ref);
+    final allowed =
+        await SettingsRepository.instance.checkAndMarkReviewRequest();
+    if (!allowed) return;
+    final review = InAppReview.instance;
+    if (await review.isAvailable()) review.requestReview();
+  }
 
   Future<void> _startChallenge(BuildContext context, Challenge challenge) async {
     SoundService.playDing(enabled: ref.read(soundEffectsEnabledProvider));

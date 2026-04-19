@@ -2999,6 +2999,181 @@ class S {
     );
   }
 
+  /// `Warming Up`
+  String get levelName1 {
+    return Intl.message('Warming Up', name: 'levelName1', desc: '', args: []);
+  }
+
+  /// `Breaking the Ice`
+  String get levelName2 {
+    return Intl.message(
+      'Breaking the Ice',
+      name: 'levelName2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Holding the Floor`
+  String get levelName3 {
+    return Intl.message(
+      'Holding the Floor',
+      name: 'levelName3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Taking Risks`
+  String get levelName4 {
+    return Intl.message('Taking Risks', name: 'levelName4', desc: '', args: []);
+  }
+
+  /// `The Bold Zone`
+  String get levelName5 {
+    return Intl.message(
+      'The Bold Zone',
+      name: 'levelName5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stepping Up`
+  String get levelName6 {
+    return Intl.message('Stepping Up', name: 'levelName6', desc: '', args: []);
+  }
+
+  /// `Owning the Room`
+  String get levelName7 {
+    return Intl.message(
+      'Owning the Room',
+      name: 'levelName7',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Social Athlete`
+  String get levelName8 {
+    return Intl.message(
+      'Social Athlete',
+      name: 'levelName8',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fearless`
+  String get levelName9 {
+    return Intl.message('Fearless', name: 'levelName9', desc: '', args: []);
+  }
+
+  /// `Untouchable`
+  String get levelName10 {
+    return Intl.message('Untouchable', name: 'levelName10', desc: '', args: []);
+  }
+
+  /// `Micro-interactions — low stakes, high growth`
+  String get levelDesc1 {
+    return Intl.message(
+      'Micro-interactions — low stakes, high growth',
+      name: 'levelDesc1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Brief exchanges with real humans`
+  String get levelDesc2 {
+    return Intl.message(
+      'Brief exchanges with real humans',
+      name: 'levelDesc2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sustained conversations and presence`
+  String get levelDesc3 {
+    return Intl.message(
+      'Sustained conversations and presence',
+      name: 'levelDesc3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vulnerability, compliments, assertiveness`
+  String get levelDesc4 {
+    return Intl.message(
+      'Vulnerability, compliments, assertiveness',
+      name: 'levelDesc4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `High-stakes social challenges`
+  String get levelDesc5 {
+    return Intl.message(
+      'High-stakes social challenges',
+      name: 'levelDesc5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Leading interactions with confidence`
+  String get levelDesc6 {
+    return Intl.message(
+      'Leading interactions with confidence',
+      name: 'levelDesc6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Commanding attention in any setting`
+  String get levelDesc7 {
+    return Intl.message(
+      'Commanding attention in any setting',
+      name: 'levelDesc7',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pushing social limits with ease`
+  String get levelDesc8 {
+    return Intl.message(
+      'Pushing social limits with ease',
+      name: 'levelDesc8',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Embracing full exposure without hesitation`
+  String get levelDesc9 {
+    return Intl.message(
+      'Embracing full exposure without hesitation',
+      name: 'levelDesc9',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Elite social mastery — nothing holds you back`
+  String get levelDesc10 {
+    return Intl.message(
+      'Elite social mastery — nothing holds you back',
+      name: 'levelDesc10',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Challenge Information`
   String get challengeInformation {
     return Intl.message(
