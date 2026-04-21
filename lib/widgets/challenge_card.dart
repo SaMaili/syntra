@@ -120,6 +120,10 @@ class ChallengeCard extends StatelessWidget {
                             : Icons.person_outlined,
                         label: challenge.type == 'group' ? l.group : l.solo,
                       ),
+                      _MetaChip(
+                        icon: Icons.shield_outlined,
+                        label: 'L${challenge.level}',
+                      ),
                       if (showXP)
                         _MetaChip(
                           icon: Icons.star_rounded,

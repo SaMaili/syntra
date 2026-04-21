@@ -54,7 +54,7 @@
     ]
   },
   "7": {
-    "title": "Smile at server",
+    "title": "Waitress' smile",
     "description": "Compliment the server on their smile.",
     "hints": [
       "\"Your smile is contagious.\"",
@@ -86,7 +86,7 @@
     "hints": [
       "\"May I ask what you're listening to?\"",
       "\"Good vibe, what's up?\"",
-      "\"Playlist recommendation?\""
+      "\"You know these YoutTube videos?\""
     ]
   },
   "12": {
@@ -114,15 +114,6 @@
       "\"Wow, your perfume smells really good.\"",
       "\"You have to tell me.\"",
       "\"What scent is that?\""
-    ]
-  },
-  "17": {
-    "title": "Coffee or cocktail",
-    "description": "Ask: \"Are you more of a coffee or a cocktail person?\"",
-    "hints": [
-      "\"Team coffee or cocktail?\"",
-      "\"What do you usually order?\"",
-      "\"I'm guessing a cocktail.\""
     ]
   },
   "18": {
@@ -545,7 +536,7 @@
     ]
   },
   "75": {
-    "title": "Hello to strangers",
+    "title": "Hello to 5 strangers",
     "description": "Say hello to 5 strangers as they pass by. Smile and maintain eye contact.",
     "hints": [
       "\"Hello!\"",
@@ -670,27 +661,9 @@
       "\"You have great style.\""
     ]
   },
-  "125": {
-    "title": "Approach a laughing group",
-    "description": "Go to a group that is laughing and ask: \"Hey, I want to laugh too, what was so funny?\"",
-    "hints": [
-      "\"What's going on here?\"",
-      "\"Do you want to tell me the secret?\"",
-      "\"I need something to laugh about too.\""
-    ]
-  },
-  "126": {
-    "title": "Ask someone who listens to music",
-    "description": "Say to someone with headphones: \"Just a quick break: what are you listening to? Maybe I'll discover a new hit.\"",
-    "hints": [
-      "\"What's on with you?\"",
-      "\"I'm looking for new music, do you have any tips?\"",
-      "\"Cool sound, what's that?\""
-    ]
-  },
   "127": {
     "title": "Praise a bag",
-    "description": "Say to someone with a colorful bag: \"May I compliment you on your bag? It's really cool.\"",
+    "description": "Say to someone with a colorful bag that you like teir bag",
     "hints": [
       "\"Your bag is really cool.\"",
       "\"Where did you get it?\"",
@@ -724,15 +697,6 @@
       "\"Really elegant today.\""
     ]
   },
-  "131": {
-    "title": "Ask to pet a dog",
-    "description": "Go up to someone with a dog and ask if you could pet their dog.",
-    "hints": [
-      "\"Can I pet your dog?\"",
-      "\"What a sweet dog.\"",
-      "\"They look really friendly.\""
-    ]
-  },
   "132": {
     "title": "Couple newly in love",
     "description": "Speak to a couple: \"Sorry, I just had to say you look like you're newly in love.\"",
@@ -760,15 +724,6 @@
       "\"I'm always looking for the best coffee.\""
     ]
   },
-  "135": {
-    "title": "Tattoo Story",
-    "description": "Talk to someone with a tattoo on their arm: \"That looks awesome, does it have a story?\"",
-    "hints": [
-      "\"That tattoo is really cool.\"",
-      "\"What does it mean?\"",
-      "\"Was it painful?\""
-    ]
-  },
   "136": {
     "title": "Elegance despite haste",
     "description": "Say to someone who is hurrying: \"Don't worry, you are still elegance personified.\"",
@@ -776,15 +731,6 @@
       "\"You look really elegant.\"",
       "\"Haste is no problem for you.\"",
       "\"You look great.\""
-    ]
-  },
-  "137": {
-    "title": "Football Shirt Question",
-    "description": "Ask someone wearing a football shirt: \"Do you play the game yourself or are you just a passionate couch fan?\"",
-    "hints": [
-      "\"Are you a player or a fan?\"",
-      "\"Which club?\"",
-      "\"Favorite position?\""
     ]
   },
   "138": {
@@ -839,15 +785,6 @@
       "\"What does it say?\"",
       "\"Cool saying.\"",
       "\"I just had to look.\""
-    ]
-  },
-  "144": {
-    "title": "Praise a full beard",
-    "description": "Stop someone with a full beard: \"Bro, Viking vibes. I was just going to say that.\"",
-    "hints": [
-      "\"Your beard looks wild.\"",
-      "\"Really cool.\"",
-      "\"Great Viking style.\""
     ]
   },
   "145": {
@@ -983,7 +920,7 @@
     "hints": [
       "\"How do you care for your hair?\"",
       "\"So long, it must be a lot of work.\"",
-      "\"Are there any insider tips?\""
+      "\"My friend is looking for a new hair routine?\""
     ]
   },
   "164": {
@@ -1020,15 +957,6 @@
       "\"Cool shoes, you're ready for summer.\"",
       "\"Looks like a vacation.\"",
       "\"Flip-flops are pure summer.\""
-    ]
-  },
-  "169": {
-    "title": "Headphones Music Question",
-    "description": "Find a person with headphones and ask what they are listening to.",
-    "hints": [
-      "\"What's playing on your phone right now?\"",
-      "\"Looking for some new songs.\"",
-      "\"Cool sound.\""
     ]
   },
   "170": {
@@ -1099,7 +1027,7 @@
     "description": "Find a group where someone plays guitar or makes music and listen for a bit.",
     "hints": [
       "\"Can I listen?\"",
-      "\"Cool music, do you play it often?\"",
+      "\"I'm just enjoying.\"",
       "\"Do you have a band?\""
     ]
   },

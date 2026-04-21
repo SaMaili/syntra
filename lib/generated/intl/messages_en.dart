@@ -488,34 +488,34 @@ class MessageLookup extends MessageLookupByLibrary {
     "letsGo": MessageLookupByLibrary.simpleMessage("LET\'S GO!"),
     "letsGoButton": MessageLookupByLibrary.simpleMessage("Let\'s go"),
     "levelDesc1": MessageLookupByLibrary.simpleMessage(
-      "Micro-interactions — low stakes, high growth",
+      "The discomfort is purely internal: ego, self-consciousness, the fear of being seen. No words required. Small on the outside, real on the inside.",
     ),
     "levelDesc10": MessageLookupByLibrary.simpleMessage(
-      "Elite social mastery — nothing holds you back",
+      "For things that sit just outside what feels acceptable. Not dangerous, not harmful, not illegal — but the kind of thing that makes a bystander stop and look twice. You feel the weight of it. You go anyway.",
     ),
     "levelDesc2": MessageLookupByLibrary.simpleMessage(
-      "Brief exchanges with real humans",
+      "One sentence, one stranger: someone who\'s already there and somewhat expects interaction (cashier, barista, receptionist). You initiate but the social script is familiar. The discomfort is in speaking first.",
     ),
     "levelDesc3": MessageLookupByLibrary.simpleMessage(
-      "Sustained conversations and presence",
+      "You approach someone who has no particular reason to expect you. Brief but real: 2 to 3 exchanges. You start it and hold it for at least one follow-up. The discomfort is in staying present once the opener lands.",
     ),
     "levelDesc4": MessageLookupByLibrary.simpleMessage(
-      "Vulnerability, compliments, assertiveness",
+      "You put something of yourself into the interaction: a genuine compliment, a personal opinion, a small act of assertiveness. The discomfort is in saying something that reveals what you notice or think.",
     ),
     "levelDesc5": MessageLookupByLibrary.simpleMessage(
-      "High-stakes social challenges",
+      "You approach someone with no social cover: no reason, no service context. Rejection is possible and visible. A sustained interaction or a bold opener that requires real confidence to deliver.",
     ),
     "levelDesc6": MessageLookupByLibrary.simpleMessage(
-      "Leading interactions with confidence",
+      "More eyes, higher stakes. You approach a group or lead the interaction: asking multiple people, making a request that\'s slightly unusual. The discomfort is in being the one who started something visible.",
     ),
     "levelDesc7": MessageLookupByLibrary.simpleMessage(
-      "Commanding attention in any setting",
+      "You declare something about yourself or your interest in another person: directly, clearly, without softening it. Or you do something that draws the attention of multiple people at once. Vulnerable and public.",
     ),
     "levelDesc8": MessageLookupByLibrary.simpleMessage(
-      "Pushing social limits with ease",
+      "You do something that takes real nerve to follow through on. Physical boldness, deliberate awkwardness owned completely, or deeply personal disclosure to a stranger. A controlled, confident push into discomfort.",
     ),
     "levelDesc9": MessageLookupByLibrary.simpleMessage(
-      "Embracing full exposure without hesitation",
+      "You become the spectacle. You do something that draws a sustained audience or requires speaking loudly, performing, or behaving in a way that makes strangers turn around. The whole point is the exposure: being looked at and owning every second of it.",
     ),
     "levelDownBody": MessageLookupByLibrary.simpleMessage(
       "You can only level down manually — going back up requires grinding through completions again.",

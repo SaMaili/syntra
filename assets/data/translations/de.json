@@ -19,7 +19,7 @@
   },
   "3": {
     "title": "Style-Kompliment",
-    "description": "Frag eine Person, woher sie ihr Kleid oder ihre Schuhe hat.",
+    "description": "Frag eine Person die dir gefällt, woher sie ihr Kleid oder ihre Schuhe hat.",
     "hints": [
       "\"Wo hast du dieses Kleid her?\"",
       "\"Deine Schuhe sind mega, woher?\"",
@@ -54,7 +54,7 @@
     ]
   },
   "7": {
-    "title": "Lächeln an Bedienung",
+    "title": "Lächeln der Bedienung",
     "description": "Mache der Bedienung ein Kompliment für ihr Lächeln.",
     "hints": [
       "\"Dein Lächeln steckt an.\"",
@@ -86,7 +86,7 @@
     "hints": [
       "\"Darf ich fragen, was du gerade hörst?\"",
       "\"Guter Vibe, was läuft bei dir?\"",
-      "\"Playlist Empfehlung?\""
+      "\"Kennst du diese YouTube-Videos?\""
     ]
   },
   "12": {
@@ -114,15 +114,6 @@
       "\"Wow, dein Parfum riecht echt gut.\"",
       "\"Musst du mir verraten.\"",
       "\"Welcher Duft ist das?\""
-    ]
-  },
-  "17": {
-    "title": "Kaffee oder Cocktail",
-    "description": "Frag eine Person: „Bist du eher Kaffee- oder Cocktail-Typ?“",
-    "hints": [
-      "\"Team Kaffee oder Cocktail?\"",
-      "\"Was bestellst du meistens?\"",
-      "\"Ich tipp auf Cocktail.\""
     ]
   },
   "18": {
@@ -545,7 +536,7 @@
     ]
   },
   "75": {
-    "title": "Hallo zu Fremden",
+    "title": "Hallo zu 5 Fremden",
     "description": "Sag Hallo zu 5 Fremden beim Vorbeigehen. Lächle und halte Augenkontakt.",
     "hints": [
       "\"Hallo!\"",
@@ -582,10 +573,10 @@
   },
   "79": {
     "title": "Style-Komplimente",
-    "description": "Mach ein Kompliment für den Style einer Person und eines Mannes.",
+    "description": "Mach ein Kompliment für den Style von 2 Personen.",
     "hints": [
       "\"Mega Jacke!\"",
-      "\"Dein Outfit rockt.\"",
+      "\"Dein Outfit steht dir richtig!\"",
       "\"Sehr stimmig alles.\""
     ]
   },
@@ -670,27 +661,9 @@
       "\"Mega Style hast du.\""
     ]
   },
-  "125": {
-    "title": "Lachende Gruppe ansprechen",
-    "description": "Geh zu einer Gruppe, die lacht, und frag: „Ey, ich will auch lachen, was war so lustig?“",
-    "hints": [
-      "\"Was geht hier ab?\"",
-      "\"Wollt ihr mir das Geheimnis verraten?\"",
-      "\"Ich brauch auch was zum Lachen.\""
-    ]
-  },
-  "126": {
-    "title": "Musik hören fragen",
-    "description": "Sag zu jemandem mit Kopfhörern: „Kurz Pause: was hörst du grad? Vielleicht entdeck ich nen neuen Hit.“",
-    "hints": [
-      "\"Was läuft da bei dir?\"",
-      "\"Ich suche neue Musik, hast du Tipps?\"",
-      "\"Cooler Sound, was ist das?\""
-    ]
-  },
   "127": {
     "title": "Tasche loben",
-    "description": "Sag zu jemandem mit bunter Tasche: „Darf ich dir ein Kompliment für deine Tasche machen? Die ist richtig cool.“",
+    "description": "Sag zu jemandem mit bunter Tasche, dass du sie cool findest",
     "hints": [
       "\"Deine Tasche ist echt cool.\"",
       "\"Wo hast du die her?\"",
@@ -724,15 +697,6 @@
       "\"Richtig elegant heute.\""
     ]
   },
-  "131": {
-    "title": "Hund streicheln fragen",
-    "description": "Geh auf jemanden mit Hund zu und frag: „Der ist ja goldig, darf ich kurz streicheln?“",
-    "hints": [
-      "\"Darf ich deinen Hund streicheln?\"",
-      "\"Was für ein süßer Hund.\"",
-      "\"Er sieht richtig freundlich aus.\""
-    ]
-  },
   "132": {
     "title": "Paar frisch verliebt",
     "description": "Sprich ein Paar an: „Sorry, ihr seht aus wie frisch verliebt, musste ich kurz sagen.“",
@@ -760,15 +724,6 @@
       "\"Ich such immer den besten Kaffee.\""
     ]
   },
-  "135": {
-    "title": "Tattoo Story",
-    "description": "Sprich jemanden mit Tattoo am Arm an: „Sieht krass aus, hat das eine Story?“",
-    "hints": [
-      "\"Das Tattoo ist echt cool.\"",
-      "\"Was bedeutet es?\"",
-      "\"War das schmerzhaft?\""
-    ]
-  },
   "136": {
     "title": "Eleganz trotz Eile",
     "description": "Sag zu einer Person, die eilig läuft: „Keine Sorge, du bist trotzdem die Eleganz in Person.“",
@@ -776,15 +731,6 @@
       "\"Du siehst richtig elegant aus.\"",
       "\"Eile ist kein Problem für dich.\"",
       "\"Siehst toll aus.\""
-    ]
-  },
-  "137": {
-    "title": "Fußballtrikot Frage",
-    "description": "Frag einen Typen/Person mit Fußballtrikot: „Spielst du selbst oder nur passionierter Couch-Fan?“",
-    "hints": [
-      "\"Bist du Spieler oder Fan?\"",
-      "\"Welcher Verein?\"",
-      "\"Lieblingsposition?\""
     ]
   },
   "138": {
@@ -839,15 +785,6 @@
       "\"Was steht da drauf?\"",
       "\"Cooler Spruch.\"",
       "\"Ich kann das irgendwie nicht lesen.\""
-    ]
-  },
-  "144": {
-    "title": "Vollbart loben",
-    "description": "Stoppe einen Typen/Person mit Vollbart: „Bro, Wikinger-Vibes. Das wollte ich einfach sagen.“",
-    "hints": [
-      "\"Dein Bart sieht wild aus.\"",
-      "\"Richtig cool.\"",
-      "\"Wikinger-Style top.\""
     ]
   },
   "145": {
@@ -907,7 +844,7 @@
   },
   "153": {
     "title": "Kompliment auffälliger Schmuck",
-    "description": "Finde eine Person mit auffälligem Schmuck (z. B. große Ohrringe) und mach ihr ein Kompliment.",
+    "description": "Finde eine Person, die dir gefällt, mit auffälligem Schmuck (z. B. große Ohrringe) und mach ihr ein Kompliment.",
     "hints": [
       "\"Dein Schmuck ist richtig toll.\"",
       "\"So ein Statement hast du drauf.\"",
@@ -983,7 +920,7 @@
     "hints": [
       "\"Wie pflegst du deine Haare?\"",
       "\"So lang, das muss viel Arbeit sein.\"",
-      "\"Gibt’s Geheimtipps?\""
+      "\"Meine Freundin sucht nach einer neuen Routine \""
     ]
   },
   "164": {
@@ -1001,7 +938,7 @@
     "hints": [
       "\"Was steht da? Haha, das ist gut!\"",
       "\"So ein Shirt hab ich noch nie gesehen.\"",
-      "\"Lass uns zusammen lachen.\""
+      "\"Wo bekommt man sowas her Haha?\""
     ]
   },
   "167": {
@@ -1020,15 +957,6 @@
       "\"Coole Schuhe, du bist bereit für den Sommer.\"",
       "\"Sieht nach Urlaub aus.\"",
       "\"Flip-Flops sind Sommer pur.\""
-    ]
-  },
-  "169": {
-    "title": "Kopfhörer Musikfrage",
-    "description": "Finde eine Person mit Kopfhörern und frag, was sie gerade hört.",
-    "hints": [
-      "\"Was läuft bei dir gerade?\"",
-      "\"Such noch neue Songs.\"",
-      "\"Cooler Sound.\""
     ]
   },
   "170": {
@@ -1099,7 +1027,7 @@
     "description": "Such eine Gruppe, in der jemand Gitarre spielt oder Musik macht, und höre kurz zu.",
     "hints": [
       "\"Darf ich zuhören?\"",
-      "\"Coole Musik, spielt ihr oft?\"",
+      "\"Ich genieße es nur.\"",
       "\"Habt ihr eine Band?\""
     ]
   },

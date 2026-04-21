@@ -449,11 +449,7 @@ class _MissionCard extends StatelessWidget {
   }
 
   Future<void> _onInfoTap(BuildContext context) async {
-    final start = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(
-        builder: (_) => ChallengeDetailScreen(challenge: mission.challenge),
-      ),
-    );
+    final start = await showChallengeDetailSheet(context, mission.challenge);
     if (start == true) onStart();
   }
 
