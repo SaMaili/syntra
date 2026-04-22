@@ -48,8 +48,8 @@ class ChallengesHeroHeader extends ConsumerWidget {
             _StatBadge(
               icon: Icons.ac_unit_rounded,
               label: '×$freezes',
-              color: cs.tertiary,
-              bg: cs.tertiary.withValues(alpha: 0.12),
+              color: Colors.white,
+              bg: const Color(0xFF0288D1),
             ),
           ],
 
@@ -169,14 +169,14 @@ class _StreakProgressPillState extends State<_StreakProgressPill>
         final Color fillColor;
 
         if (_isAnimating) {
-          fgColor = cs.tertiary.withValues(alpha: 0.65);
-          fillColor = cs.tertiary.withValues(alpha: 0.22);
+          fgColor = cs.tertiary;
+          fillColor = cs.tertiaryContainer;
         } else if (widget.isActive) {
           fgColor = Colors.amber.shade800;
-          fillColor = Colors.amber.withValues(alpha: 0.25);
+          fillColor = Colors.amber.shade200;
         } else {
           fgColor = cs.onSurfaceVariant;
-          fillColor = cs.tertiary.withValues(alpha: 0.14);
+          fillColor = cs.surfaceContainer;
         }
 
         // ── Decoration ──────────────────────────────────────────────────────

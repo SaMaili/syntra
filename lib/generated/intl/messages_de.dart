@@ -504,34 +504,34 @@ class MessageLookup extends MessageLookupByLibrary {
     "letsGo": MessageLookupByLibrary.simpleMessage("LOS GEHT\'S!"),
     "letsGoButton": MessageLookupByLibrary.simpleMessage("Los geht\'s"),
     "levelDesc1": MessageLookupByLibrary.simpleMessage(
-      "Micro-Interaktionen — geringer Einsatz, hohe Wirkung",
+      "Das Unbehagen ist rein innerlich: Ego, Selbstbewusstsein, die Angst, gesehen zu werden. Keine Worte nötig. Klein von außen, echt von innen.",
     ),
     "levelDesc10": MessageLookupByLibrary.simpleMessage(
-      "Meisterliche soziale Kompetenz — nichts hält dich auf",
+      "Für Dinge, die sich gerade außerhalb des Akzeptablen anfühlen. Nicht gefährlich, nicht schädlich, nicht illegal — aber die Art von Ding, die einen Passanten zweimal hinschauen lässt. Du spürst das Gewicht davon. Du gehst trotzdem.",
     ),
     "levelDesc2": MessageLookupByLibrary.simpleMessage(
-      "Kurze Begegnungen mit echten Menschen",
+      "Ein Satz, ein Fremder: jemand, der bereits dort ist und in gewisser Weise eine Interaktion erwartet (Kassiererin, Barista, Rezeptionist). Du initiierst, aber das soziale Skript ist vertraut. Das Unbehagen liegt darin, zuerst zu sprechen.",
     ),
     "levelDesc3": MessageLookupByLibrary.simpleMessage(
-      "Anhaltende Gespräche und Präsenz",
+      "Du sprichst jemanden an, der keinen besonderen Grund hat, dich zu erwarten. Kurz, aber echt: 2 bis 3 Austausche. Du beginnst und hältst mindestens einen weiteren Austausch aufrecht. Das Unbehagen liegt darin, präsent zu bleiben, wenn der Einstieg geklappt hat.",
     ),
     "levelDesc4": MessageLookupByLibrary.simpleMessage(
-      "Verletzlichkeit, Komplimente, Selbstbehauptung",
+      "Du bringst etwas von dir in die Interaktion ein: ein echtes Kompliment, eine persönliche Meinung, einen kleinen Akt der Selbstbehauptung. Das Unbehagen liegt darin, etwas zu sagen, das zeigt, was du bemerkst oder denkst.",
     ),
     "levelDesc5": MessageLookupByLibrary.simpleMessage(
-      "Soziale Herausforderungen mit hohem Einsatz",
+      "Du sprichst jemanden ohne soziale Absicherung an: keinen Grund, keinen Servicekontext. Ablehnung ist möglich und sichtbar. Eine anhaltende Interaktion oder ein mutiger Einstieg, der echtes Selbstvertrauen erfordert.",
     ),
     "levelDesc6": MessageLookupByLibrary.simpleMessage(
-      "Interaktionen selbstbewusst führen",
+      "Mehr Augen, höhere Einsätze. Du sprichst eine Gruppe an oder führst die Interaktion: mehrere Personen befragen, eine ungewöhnliche Bitte stellen. Das Unbehagen liegt darin, derjenige zu sein, der sichtbar etwas gestartet hat.",
     ),
     "levelDesc7": MessageLookupByLibrary.simpleMessage(
-      "In jeder Situation Aufmerksamkeit erzeugen",
+      "Du erklärst etwas über dich selbst oder dein Interesse an einer anderen Person: direkt, klar, ohne es zu verwässern. Oder du tust etwas, das die Aufmerksamkeit mehrerer Menschen auf einmal zieht. Verletzlich und öffentlich.",
     ),
     "levelDesc8": MessageLookupByLibrary.simpleMessage(
-      "Soziale Grenzen mühelos verschieben",
+      "Du tust etwas, das echten Mut braucht. Körperliche Kühnheit, bewusste Unbeholfenheit vollständig gelebt oder tiefe persönliche Offenbarung gegenüber einem Fremden. Ein kontrollierter, selbstbewusster Schritt in Unbehagen.",
     ),
     "levelDesc9": MessageLookupByLibrary.simpleMessage(
-      "Volle Exposition ohne Zögern annehmen",
+      "Du wirst zum Spektakel. Du tust etwas, das ein anhaltendes Publikum anzieht oder erfordert, laut zu sprechen, aufzutreten oder dich so zu verhalten, dass Fremde sich umdrehen. Der Kern ist die Exposition: angeschaut werden und jeden Moment davon besitzen.",
     ),
     "levelDownBody": MessageLookupByLibrary.simpleMessage(
       "Du kannst nur manuell runterleveln — wieder hochzukommen erfordert erneut Abschlüsse zu sammeln.",

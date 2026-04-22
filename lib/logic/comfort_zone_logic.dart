@@ -54,16 +54,16 @@ class ComfortZoneLogic {
 
   static const levelDescriptions = [
     '',
-    'Micro-interactions — low stakes, high growth',      // 1
-    'Brief exchanges with real humans',                  // 2
-    'Sustained conversations and presence',              // 3
-    'Vulnerability, compliments, assertiveness',         // 4
-    'High-stakes social challenges',                     // 5
-    'Leading interactions with confidence',              // 6
-    'Commanding attention in any setting',               // 7
-    'Pushing social limits with ease',                   // 8
-    'Embracing full exposure without hesitation',        // 9
-    'Elite social mastery — nothing holds you back',     // 10
+    'The discomfort is purely internal: ego, self-consciousness, the fear of being seen. No words required. Small on the outside, real on the inside.', // 1
+    'One sentence, one stranger: someone who\'s already there and somewhat expects interaction (cashier, barista, receptionist). You initiate but the social script is familiar. The discomfort is in speaking first.', // 2
+    'You approach someone who has no particular reason to expect you. Brief but real: 2 to 3 exchanges. You start it and hold it for at least one follow-up. The discomfort is in staying present once the opener lands.', // 3
+    'You put something of yourself into the interaction: a genuine compliment, a personal opinion, a small act of assertiveness. The discomfort is in saying something that reveals what you notice or think.', // 4
+    'You approach someone with no social cover: no reason, no service context. Rejection is possible and visible. A sustained interaction or a bold opener that requires real confidence to deliver.', // 5
+    'More eyes, higher stakes. You approach a group or lead the interaction: asking multiple people, making a request that\'s slightly unusual. The discomfort is in being the one who started something visible.', // 6
+    'You declare something about yourself or your interest in another person: directly, clearly, without softening it. Or you do something that draws the attention of multiple people at once. Vulnerable and public.', // 7
+    'You do something that takes real nerve to follow through on. Physical boldness, deliberate awkwardness owned completely, or deeply personal disclosure to a stranger. A controlled, confident push into discomfort.', // 8
+    'You become the spectacle. You do something that draws a sustained audience or requires speaking loudly, performing, or behaving in a way that makes strangers turn around. The whole point is the exposure: being looked at and owning every second of it.', // 9
+    'For things that sit just outside what feels acceptable. Not dangerous, not harmful, not illegal — but the kind of thing that makes a bystander stop and look twice. You feel the weight of it. You go anyway.', // 10
   ];
 
   static const levelIcons = <IconData>[

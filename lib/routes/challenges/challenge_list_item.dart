@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:syntra/challenge.dart';
 
 import '../../generated/l10n.dart';
+import '../../logic/comfort_zone_logic.dart';
 import '../../routes/challenge_detail_screen.dart';
 // TODO: re-enable when backend is available: import '../../routes/challenge_done_screen.dart' show socialProofCount;
 import '../../theme/app_spacing.dart';
@@ -57,6 +58,24 @@ class ChallengeListItem extends StatelessWidget {
                               .textTheme
                               .titleMedium
                               ?.copyWith(fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6, vertical: 2),
+                        margin: const EdgeInsets.only(left: AppSpacing.sm),
+                        decoration: BoxDecoration(
+                          gradient: ComfortZoneLogic.levelGradient(
+                              challenge.level),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          'L${challenge.level}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                       if (isDone)
@@ -169,11 +188,7 @@ class ChallengeListItem extends StatelessWidget {
   }
 
   Future<void> _onInfoTap(BuildContext context) async {
-    final start = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(
-        builder: (_) => ChallengeDetailScreen(challenge: challenge),
-      ),
-    );
+    final start = await showChallengeDetailSheet(context, challenge);
     if (start == true) onStart();
   }
 }

@@ -8,12 +8,27 @@ import '../providers/statistics_providers.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/syntra_button.dart';
 
-/// Full-screen challenge detail view — replaces the modal bottom sheet used
-/// in [ChallengeCard]. Pushed as a [MaterialPageRoute] from [_onInfoTap].
-class ChallengeDetailScreen extends ConsumerWidget {
+/// Shows the challenge detail as a slide-up modal bottom sheet.
+Future<bool?> showChallengeDetailSheet(
+  BuildContext context,
+  Challenge challenge,
+) {
+  return showModalBottomSheet<bool>(
+    context: context,
+    isScrollControlled: true,
+    useSafeArea: true,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (_) => ChallengeDetailSheet(challenge: challenge),
+  );
+}
+
+/// Slide-up panel showing full challenge details.
+class ChallengeDetailSheet extends ConsumerWidget {
   final Challenge challenge;
 
-  const ChallengeDetailScreen({
+  const ChallengeDetailSheet({
     super.key,
     required this.challenge,
   });
@@ -29,46 +44,66 @@ class ChallengeDetailScreen extends ConsumerWidget {
         ?.contains(challenge.id) ??
         false;
 
-    return Scaffold(
-      appBar: AppBar(
-        actions: [
-          if (isDone)
-            Padding(
-              padding: const EdgeInsets.only(right: AppSpacing.md),
-              child: Icon(Icons.check_circle_rounded,
-                  color: const Color(0xFF4CAF50), size: 22),
-            ),
-        ],
-      ),
-      body: Column(
+    return DraggableScrollableSheet(
+      expand: false,
+      initialChildSize: 0.85,
+      minChildSize: 0.5,
+      maxChildSize: 0.95,
+      builder: (context, scrollController) => Column(
         children: [
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // ── Title ──────────────────────────────────────────────────
-                  Text(
+          // ── Drag handle ─────────────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+            child: Container(
+              width: 36,
+              height: 4,
+              decoration: BoxDecoration(
+                color: cs.onSurfaceVariant.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+
+          // ── Header row ──────────────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
                     challenge.title,
-                    style: tt.headlineMedium?.copyWith(
+                    style: tt.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       height: 1.2,
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.md),
+                ),
+                if (isDone) ...[
+                  const SizedBox(width: AppSpacing.sm),
+                  const Icon(Icons.check_circle_rounded,
+                      color: Color(0xFF4CAF50), size: 22),
+                ],
+              ],
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
 
-                  // ── Meta chips ─────────────────────────────────────────────
+          // ── Scrollable body ─────────────────────────────────────────────
+          Expanded(
+            child: SingleChildScrollView(
+              controller: scrollController,
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   _TagChips(challenge: challenge),
                   const SizedBox(height: AppSpacing.lg),
 
-                  // ── Description ────────────────────────────────────────────
                   Text(
                     challenge.description,
                     style: tt.bodyLarge?.copyWith(height: 1.6),
                   ),
 
-                  // ── Not sure what to say ───────────────────────────────────
                   if (challenge.hints.isNotEmpty) ...[
                     const SizedBox(height: AppSpacing.xl),
                     Text(
@@ -108,14 +143,13 @@ class ChallengeDetailScreen extends ConsumerWidget {
             ),
           ),
 
-          // ── Pinned launch button ───────────────────────────────────────────
+          // ── Pinned launch button ─────────────────────────────────────────
           Padding(
             padding: EdgeInsets.fromLTRB(
               AppSpacing.lg,
               AppSpacing.sm,
               AppSpacing.lg,
-              AppSpacing.lg +
-                  MediaQuery.viewPaddingOf(context).bottom,
+              AppSpacing.lg + MediaQuery.viewPaddingOf(context).bottom,
             ),
             child: SyntraButton.icon(
               onPressed: () => Navigator.of(context).pop(true),
@@ -245,6 +279,11 @@ class _TagChips extends StatelessWidget {
         icon: Icons.emoji_events_outlined,
         label: '+${challenge.xp} ${l.auraPoints}',
         bg: cs.primaryContainer
+      ),
+      (
+        icon: Icons.shield_outlined,
+        label: 'L${challenge.level}',
+        bg: cs.surfaceContainerHighest
       ),
       (
         icon: switch (challenge.type) {

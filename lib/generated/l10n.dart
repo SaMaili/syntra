@@ -3074,100 +3074,100 @@ class S {
     return Intl.message('Untouchable', name: 'levelName10', desc: '', args: []);
   }
 
-  /// `Micro-interactions — low stakes, high growth`
+  /// `The discomfort is purely internal: ego, self-consciousness, the fear of being seen. No words required. Small on the outside, real on the inside.`
   String get levelDesc1 {
     return Intl.message(
-      'Micro-interactions — low stakes, high growth',
+      'The discomfort is purely internal: ego, self-consciousness, the fear of being seen. No words required. Small on the outside, real on the inside.',
       name: 'levelDesc1',
       desc: '',
       args: [],
     );
   }
 
-  /// `Brief exchanges with real humans`
+  /// `One sentence, one stranger: someone who's already there and somewhat expects interaction (cashier, barista, receptionist). You initiate but the social script is familiar. The discomfort is in speaking first.`
   String get levelDesc2 {
     return Intl.message(
-      'Brief exchanges with real humans',
+      'One sentence, one stranger: someone who\'s already there and somewhat expects interaction (cashier, barista, receptionist). You initiate but the social script is familiar. The discomfort is in speaking first.',
       name: 'levelDesc2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Sustained conversations and presence`
+  /// `You approach someone who has no particular reason to expect you. Brief but real: 2 to 3 exchanges. You start it and hold it for at least one follow-up. The discomfort is in staying present once the opener lands.`
   String get levelDesc3 {
     return Intl.message(
-      'Sustained conversations and presence',
+      'You approach someone who has no particular reason to expect you. Brief but real: 2 to 3 exchanges. You start it and hold it for at least one follow-up. The discomfort is in staying present once the opener lands.',
       name: 'levelDesc3',
       desc: '',
       args: [],
     );
   }
 
-  /// `Vulnerability, compliments, assertiveness`
+  /// `You put something of yourself into the interaction: a genuine compliment, a personal opinion, a small act of assertiveness. The discomfort is in saying something that reveals what you notice or think.`
   String get levelDesc4 {
     return Intl.message(
-      'Vulnerability, compliments, assertiveness',
+      'You put something of yourself into the interaction: a genuine compliment, a personal opinion, a small act of assertiveness. The discomfort is in saying something that reveals what you notice or think.',
       name: 'levelDesc4',
       desc: '',
       args: [],
     );
   }
 
-  /// `High-stakes social challenges`
+  /// `You approach someone with no social cover: no reason, no service context. Rejection is possible and visible. A sustained interaction or a bold opener that requires real confidence to deliver.`
   String get levelDesc5 {
     return Intl.message(
-      'High-stakes social challenges',
+      'You approach someone with no social cover: no reason, no service context. Rejection is possible and visible. A sustained interaction or a bold opener that requires real confidence to deliver.',
       name: 'levelDesc5',
       desc: '',
       args: [],
     );
   }
 
-  /// `Leading interactions with confidence`
+  /// `More eyes, higher stakes. You approach a group or lead the interaction: asking multiple people, making a request that's slightly unusual. The discomfort is in being the one who started something visible.`
   String get levelDesc6 {
     return Intl.message(
-      'Leading interactions with confidence',
+      'More eyes, higher stakes. You approach a group or lead the interaction: asking multiple people, making a request that\'s slightly unusual. The discomfort is in being the one who started something visible.',
       name: 'levelDesc6',
       desc: '',
       args: [],
     );
   }
 
-  /// `Commanding attention in any setting`
+  /// `You declare something about yourself or your interest in another person: directly, clearly, without softening it. Or you do something that draws the attention of multiple people at once. Vulnerable and public.`
   String get levelDesc7 {
     return Intl.message(
-      'Commanding attention in any setting',
+      'You declare something about yourself or your interest in another person: directly, clearly, without softening it. Or you do something that draws the attention of multiple people at once. Vulnerable and public.',
       name: 'levelDesc7',
       desc: '',
       args: [],
     );
   }
 
-  /// `Pushing social limits with ease`
+  /// `You do something that takes real nerve to follow through on. Physical boldness, deliberate awkwardness owned completely, or deeply personal disclosure to a stranger. A controlled, confident push into discomfort.`
   String get levelDesc8 {
     return Intl.message(
-      'Pushing social limits with ease',
+      'You do something that takes real nerve to follow through on. Physical boldness, deliberate awkwardness owned completely, or deeply personal disclosure to a stranger. A controlled, confident push into discomfort.',
       name: 'levelDesc8',
       desc: '',
       args: [],
     );
   }
 
-  /// `Embracing full exposure without hesitation`
+  /// `You become the spectacle. You do something that draws a sustained audience or requires speaking loudly, performing, or behaving in a way that makes strangers turn around. The whole point is the exposure: being looked at and owning every second of it.`
   String get levelDesc9 {
     return Intl.message(
-      'Embracing full exposure without hesitation',
+      'You become the spectacle. You do something that draws a sustained audience or requires speaking loudly, performing, or behaving in a way that makes strangers turn around. The whole point is the exposure: being looked at and owning every second of it.',
       name: 'levelDesc9',
       desc: '',
       args: [],
     );
   }
 
-  /// `Elite social mastery — nothing holds you back`
+  /// `For things that sit just outside what feels acceptable. Not dangerous, not harmful, not illegal — but the kind of thing that makes a bystander stop and look twice. You feel the weight of it. You go anyway.`
   String get levelDesc10 {
     return Intl.message(
-      'Elite social mastery — nothing holds you back',
+      'For things that sit just outside what feels acceptable. Not dangerous, not harmful, not illegal — but the kind of thing that makes a bystander stop and look twice. You feel the weight of it. You go anyway.',
       name: 'levelDesc10',
       desc: '',
       args: [],
