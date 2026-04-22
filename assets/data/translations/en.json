@@ -123,10 +123,10 @@
   },
   "20": {
     "title": "If we meet again",
-    "description": "Say: \"If I see you again, I owe you an ice cream.\"",
+    "description": "Tell a person you like that you would owe them an ice cream should you ever happen to cross paths again.",
     "hints": [
       "\"Deal? If I see you again, ice cream on me.\"",
-      "\"Deal, okay?\"",
+      "\"By the way, what's your name?\"",
       "\"Well then, see you soon.\""
     ]
   },
@@ -166,15 +166,6 @@
       "\"Will be legendary.\""
     ]
   },
-  "27": {
-    "title": "Wedding invitation",
-    "description": "Say to a group for fun: \"We're getting married soon, pick your seats now!\"",
-    "hints": [
-      "\"Where do you want to sit?\"",
-      "\"Any ideas for your dress?\"",
-      "\"Table arrangement is important.\""
-    ]
-  },
   "28": {
     "title": "Beauty Jury",
     "description": "Pretend you are judges and award points for outfits.",
@@ -193,15 +184,6 @@
       "\"Don't worry, just kidding.\""
     ]
   },
-  "30": {
-    "title": "Mobile Phone Roulette",
-    "description": "Let someone from the group take one of your phones and stalk you on Insta.",
-    "hints": [
-      "\"Here, stalk my Insta.\"",
-      "\"Believe me, you want to see this.\"",
-      "\"Only fair, then show yours.\""
-    ]
-  },
   "31": {
     "title": "Have your friend judged",
     "description": "Introduce a friend: \"On a scale of 1-10, how cute is he?\"",
@@ -209,15 +191,6 @@
       "\"Honestly.\"",
       "\"I can take it.\"",
       "\"Don't worry, he'll only cry for a moment.\""
-    ]
-  },
-  "32": {
-    "title": "Dance-Off",
-    "description": "Challenge a group to a dance-off – whoever loses pays ice cream.",
-    "hints": [
-      "\"Loser pays.\"",
-      "\"Are you ready?\"",
-      "\"Only 10 seconds.\""
     ]
   },
   "33": {
@@ -235,7 +208,7 @@
     "hints": [
       "\"Funniest one wins.\"",
       "\"Come closer.\"",
-      "\"Make a face.\""
+      "\"How about a Challenge?\""
     ]
   },
   "35": {
@@ -283,18 +256,9 @@
       "\"It's not that embarrassing.\""
     ]
   },
-  "40": {
-    "title": "Brave Excuse",
-    "description": "Go to a group: \"We lost a courage challenge, we were allowed to choose you.\"",
-    "hints": [
-      "\"So now you have to go through with it.\"",
-      "\"Unfortunately, that was the task.\"",
-      "\"We don't want to either.\""
-    ]
-  },
   "42": {
     "title": "Flirt Scale",
-    "description": "Ask: \"On a scale of 1 to 10 – how well can you flirt?\"",
+    "description": "Ask a person you like how they would rate their own flirting skills on a scale of 1 to 10.",
     "hints": [
       "\"How well can you flirt? 1 to 10?\"",
       "\"Self-assessment, please.\"",
@@ -303,16 +267,16 @@
   },
   "44": {
     "title": "WhatsApp now",
-    "description": "Say: \"You have a really cool way of being. It would be a shame if this were the last conversation... do you have WhatsApp?\"",
+    "description": "Tell someone they had a really cool vibe and that it would be a shame if that were the last conversation, then finish by asking if they had WhatsApp.",
     "hints": [
       "\"Do you have WhatsApp?\"",
       "\"I'd like to meet again.\"",
-      "\"Let's write.\""
+      "\"Let's text and do something.\""
     ]
   },
   "45": {
     "title": "Send something later",
-    "description": "Say: \"Can I send you something funny later? Give me your number.\"",
+    "description": "Ask someone if you could send them something funny later and ask them to give you their number.",
     "hints": [
       "\"Give me your number, send you something funny later.\"",
       "\"You have to see this.\"",
@@ -321,25 +285,16 @@
   },
   "46": {
     "title": "We should see each other again",
-    "description": "Say: \"I bet you're someone we should see more often. What do you think?\"",
+    "description": "Tell someone you would bet they were someone who should be seen more often and ask them what they thought about that.",
     "hints": [
       "\"We should see each other again.\"",
       "\"What do you mean, a coffee?\"",
       "\"I think we could have fun.\""
     ]
   },
-  "47": {
-    "title": "Guess your Insta handle",
-    "description": "Play a guessing game: \"I'm going to guess your Insta handle. If I'm wrong, you owe me a coffee.\"",
-    "hints": [
-      "\"I'm guessing @sunshinegirl.\"",
-      "\"Wrong? Coffee then.\"",
-      "\"Let me guess: something with adventure.\""
-    ]
-  },
   "48": {
     "title": "Music video",
-    "description": "Say as you walk by: \"Holy shit, you look like you came straight out of a music video.\"",
+    "description": "Tell someone as you walk past that they looked like they had stepped straight out of a music video.",
     "hints": [
       "\"You look like you're in a music video.\"",
       "\"Just wanted to say.\"",
@@ -348,7 +303,7 @@
   },
   "49": {
     "title": "Spontaneous Date",
-    "description": "Ask: \"What are you doing right now? Let's spontaneously get a coffee somewhere.\"",
+    "description": "Ask someone what they were doing right now and suggest getting a coffee somewhere together spontaneously.",
     "hints": [
       "\"Do you have time right now?\"",
       "\"Come on, let's get some coffee.\"",
@@ -357,7 +312,7 @@
   },
   "52": {
     "title": "Give me a compliment",
-    "description": "Say: \"Give me a compliment. I just deserved one.\"",
+    "description": "Tell someone to give you a compliment, as you had just earned one.",
     "hints": [
       "\"Come on, give me a compliment.\"",
       "\"I just took a risk, reward me.\"",
@@ -375,7 +330,7 @@
   },
   "56": {
     "title": "Type in phone number",
-    "description": "Type your number into their phone in the middle of a conversation: \"Trust me, this is the best thing that's happened to you today.\"",
+    "description": "Hand the person your phone in the middle of a conversation and tell them to trust you that this was the best thing that had happened to them all day as they typed in their number.",
     "hints": [
       "\"Write that down.\"",
       "\"Trust me.\"",
@@ -429,7 +384,7 @@
   },
   "63": {
     "title": "Give a nickname",
-    "description": "Give everyone in the group a spontaneous, funny nickname.",
+    "description": "Spontaneously give everyone in the group a funny nickname. You are assigning different identities. This is an extremely dominant social act.",
     "hints": [
       "\"You are now Sunny.\"",
       "\"I've thought of something dangerous for you.\"",
@@ -438,7 +393,7 @@
   },
   "64": {
     "title": "Find the best flirt",
-    "description": "Ask: \"Who of you is the best at flirting?\"",
+    "description": "Ask: \"Who of you is the best at flirting?\". You're throwing a provoking question into a group.",
     "hints": [
       "\"Be honest.\"",
       "\"We have bets going.\"",
@@ -456,7 +411,7 @@
   },
   "66": {
     "title": "In love? Test",
-    "description": "Ask: \"What would someone have to do to make you fall in love instantly?\"",
+    "description": "Ask a person you like what someone would have to do for them to fall in love instantly.",
     "hints": [
       "\"Just hypothetical.\"",
       "\"We need tips.\"",
@@ -492,7 +447,7 @@
   },
   "70": {
     "title": "Spontaneous friend request",
-    "description": "Say: \"You look so cool, we have to be official friends now.\"",
+    "description": "Tell someone they looked so cool that you two had to be official friends now.",
     "hints": [
       "\"Hand on it?\"",
       "\"Get Instagram ready?\"",
@@ -512,14 +467,14 @@
     "title": "Instagram Swap",
     "description": "Give each other your phones and follow each other directly on Insta.",
     "hints": [
-      "\"Here, I'll give you mine.\"",
+      "\"Follow for follow in real life.\"",
       "\"What does it say? Insta police.\"",
       "\"Now it's your turn.\""
     ]
   },
   "73": {
     "title": "Introduce Syntra",
-    "description": "Go to someone and introduce Syntra. Ask what they think of the concept.",
+    "description": "Approach someone to introduce Syntra and ask for their thoughts on the concept, with the option to showcase the app and complete the challenge once you are together.",
     "hints": [
       "\"Do you know social apps like Syntra?\"",
       "\"What do you think of a courage challenge app like this?\"",
@@ -527,7 +482,7 @@
     ]
   },
   "74": {
-    "title": "Ask about their calling",
+    "title": "Ask about their work",
     "description": "Ask: \"You look interesting, what do you do for a living?\" and then ask two questions about it.",
     "hints": [
       "\"How did you get into this?\"",
@@ -586,7 +541,7 @@
     "hints": [
       "\"Are you having a mother-daughter day?\"",
       "\"You two are glowing.\"",
-      "\"Just wanted to say hi.\""
+      "\"Just wanted to say hi to your daughter.\""
     ]
   },
   "81": {
@@ -600,11 +555,11 @@
   },
   "82": {
     "title": "Restaurant compliment",
-    "description": "Go to a table outside and say: \"You are the best-looking table here. Enjoy your meal!\"",
+    "description": "Walk up to an outdoor table and tell the people that they were the best-looking table there and that you wanted to wish them a pleasant meal.",
     "hints": [
       "\"I just had to get that off my chest.\"",
       "\"Definitely table number 1.\"",
-      "\"Have a nice evening!\""
+      "\"Do with that info what you want.\""
     ]
   },
   "83": {
@@ -635,8 +590,8 @@
     ]
   },
   "122": {
-    "title": "Say great smile",
-    "description": "Say to someone as you walk past: \"Sorry, but I just have to tell you: you have a really great smile.\"",
+    "title": "Tell them they have great smile",
+    "description": "Tell someone as you walk past that you simply had to let them know they have a truly great smile.",
     "hints": [
       "\"Hey, your smile is really great.\"",
       "\"Sorry, I just had to say that.\"",
@@ -645,7 +600,7 @@
   },
   "123": {
     "title": "Admire a beard",
-    "description": "Stop a guy with a beard and ask: \"Would you tell me how long it took you to grow that beard? I'm jealous.\"",
+    "description": "Stop a person with a beard and ask if they would tell you how long it took them to grow it, because you were envious.",
     "hints": [
       "\"Hey, your beard looks great.\"",
       "\"How long did it take you?\"",
@@ -653,8 +608,8 @@
     ]
   },
   "124": {
-    "title": "Praise phone outfit",
-    "description": "Talk to someone who is on the phone after they're done: \"Sorry, I had to wait... I think your outfit is great.\"",
+    "title": "Waiting Game Compliment",
+    "description": "Approach someone after they have finished their phone call and tell them that you had to wait because you just had to let them know you thought their outfit was great.",
     "hints": [
       "\"Hey, I really like your outfit.\"",
       "\"Sorry, I had to wait until you were finished.\"",
@@ -663,7 +618,7 @@
   },
   "127": {
     "title": "Praise a bag",
-    "description": "Say to someone with a colorful bag that you like teir bag",
+    "description": "Say to someone with a colorful bag that you like their bag",
     "hints": [
       "\"Your bag is really cool.\"",
       "\"Where did you get it?\"",
@@ -672,7 +627,7 @@
   },
   "128": {
     "title": "Praise striking hair",
-    "description": "Say to someone with striking red hair: \"Okay, your hair is amazing, I had to get that off my chest.\"",
+    "description": "Approach a red-haired person and tell them that their hair was amazing and you simply had to let that out.",
     "hints": [
       "\"Your hair is really great.\"",
       "\"A color like that looks fantastic.\"",
@@ -699,7 +654,7 @@
   },
   "132": {
     "title": "Couple newly in love",
-    "description": "Speak to a couple: \"Sorry, I just had to say you look like you're newly in love.\"",
+    "description": "Approach a couple and tell them you just had to say they looked like they were newly in love.",
     "hints": [
       "\"You look totally happy.\"",
       "\"So newly in love, aren't you?\"",
@@ -717,7 +672,7 @@
   },
   "134": {
     "title": "Coffee-to-go question",
-    "description": "Go to someone with a coffee-to-go cup: \"Is this the best coffee in town, or just decoration?\"",
+    "description": "Approach someone with a coffee-to-go cup and ask them if that was the best coffee in town or if the cup was just for show.",
     "hints": [
       "\"Does the coffee here really taste that good?\"",
       "\"Where are you from?\"",
@@ -735,16 +690,16 @@
   },
   "138": {
     "title": "Ask to Adopt",
-    "description": "Say to a group: \"Could you adopt me for a moment? You look like you're having fun.\"",
+    "description": "Approach a group and ask if they could adopt you for a moment, as they looked like they were having a lot of fun.",
     "hints": [
-      "\"I want to be part of this group too.\"",
+      "\"I'm about to meet with a friend\"",
       "\"You're livening things up.\"",
       "\"Please adopt me.\""
     ]
   },
   "139": {
     "title": "Praise a funny shirt",
-    "description": "Say to someone wearing a funny shirt: \"Awesome shirt! Where can you get one of those?\"",
+    "description": "Approach someone with a funny shirt and tell them that their shirt was awesome, then ask where one could get something like that.",
     "hints": [
       "\"Cool shirt.\"",
       "\"Where did you get that?\"",
@@ -780,7 +735,7 @@
   },
   "143": {
     "title": "Read a jute bag",
-    "description": "Go up to someone with a jute bag and say something about the bag",
+    "description": "Approach someone with a tote bag and ask if you could take a moment to read what was written on it, as you were curious to see what it said.",
     "hints": [
       "\"What does it say?\"",
       "\"Cool saying.\"",
@@ -807,7 +762,7 @@
   },
   "149": {
     "title": "Secret Group",
-    "description": "Stop a group: \"You look like you have a secret. What's your plan today?\"",
+    "description": "Stop a group and tell them they looked like they had a secret, then ask what their plan for the day was.",
     "hints": [
       "\"What are you planning?\"",
       "\"Can I join in?\"",
@@ -826,9 +781,9 @@
   },
   "151": {
     "title": "Spontaneous wisdom",
-    "description": "Ask a stranger: \"Can I buy a piece of spontaneous wisdom from you?\"",
+    "description": "Ask a stranger if you could buy a piece of spontaneous wisdom from them.",
     "hints": [
-      "\"I have something for you.\"",
+      "\"Do you have a spontaneous piece of wisdom for me?\"",
       "\"Hold on tight.\"",
       "\"It can be funny too.\""
     ]
@@ -897,7 +852,7 @@
     ]
   },
   "161": {
-    "title": "Ask the dog and pet it",
+    "title": "Pet the dog",
     "description": "Find someone with a dog, ask what its name is and if you can pet the dog.",
     "hints": [
       "\"What's your dog's name?\"",
@@ -952,7 +907,7 @@
   },
   "168": {
     "title": "Flip-Flops Summer Saying",
-    "description": "Find someone wearing flip-flops and say: \"You're really living summer!\"",
+    "description": "Find someone wearing flip-flops and tell them that they were truly living the summer vibe.",
     "hints": [
       "\"Cool shoes, you're ready for summer.\"",
       "\"Looks like a vacation.\"",
@@ -979,7 +934,7 @@
   },
   "172": {
     "title": "Waiting on the Phone",
-    "description": "Find someone who is on the phone, wait until they finish, and say: \"You looked like it was an important call!\"",
+    "description": "Find someone who is currently on the phone, wait until they are finished, and tell them they looked as though they were having a very important conversation.",
     "hints": [
       "\"Looks important, everything OK?\"",
       "\"Thanks for waiting, I needed to talk to you.\"",
