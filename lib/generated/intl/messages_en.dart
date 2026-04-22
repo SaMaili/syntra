@@ -30,7 +30,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m3(done, needed, next) =>
       "${done} / ${needed} completions to Level ${next}";
 
-  static String m4(streak) => "Week ${streak} — keep it going.";
+  static String m4(streak) => "Week ${streak}! Keep it going.";
 
   static String m5(level) => "Level ${level}";
 
