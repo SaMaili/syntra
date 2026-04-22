@@ -2069,10 +2069,10 @@ class S {
     );
   }
 
-  /// `Week {streak} — keep it going.`
+  /// `Week {streak}! Keep it going.`
   String greetingStreak(int streak) {
     return Intl.message(
-      'Week $streak — keep it going.',
+      'Week $streak! Keep it going.',
       name: 'greetingStreak',
       desc: '',
       args: [streak],

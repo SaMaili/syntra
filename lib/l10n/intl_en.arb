@@ -326,7 +326,7 @@
   "sun": "S",
   "greetingLongTime": "Long time. No worries — your progress is still here.",
   "greetingFresh": "Welcome back. Ready to start fresh today?",
-  "greetingStreak": "Week {streak} — keep it going.",
+  "greetingStreak": "Week {streak}! Keep it going.",
   "@greetingStreak": {
     "placeholders": { "streak": { "type": "int" } }
   },

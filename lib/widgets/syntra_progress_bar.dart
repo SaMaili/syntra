@@ -5,15 +5,13 @@ import '../providers/settings_providers.dart';
 import '../services/sound_service.dart';
 import '../services/vibration_service.dart';
 
-/// An animated progress bar with XP sounds and haptic feedback.
+/// An animated, gamified progress bar with a 3-D cartoonish look.
 ///
-/// Animates from the previous value to the new [value] every time [value]
-/// changes. On upward changes: plays [SoundService.xpProgress] and fires
-/// light haptic ticks at 25 / 50 / 75 % milestones. When [value] reaches 1.0
-/// it plays [SoundService.xpComplete] and triggers [VibrationService.milestone].
+/// Renders a chunky capsule with depth gradients, a looping shimmer sweep,
+/// a tip glow, and subtle segment dividers. Audio/haptic feedback fires at
+/// 25/50/75 % milestones; a completion chime plays when [value] reaches 1.0.
 ///
-/// Set [silent] = true for timer / countdown bars where audio feedback is
-/// unwanted (e.g. challenge timer, dismiss bars).
+/// Set [silent] = true for timer / countdown bars where audio is unwanted.
 class SyntraXpBar extends ConsumerStatefulWidget {
   final double value;
   final double minHeight;
@@ -25,7 +23,7 @@ class SyntraXpBar extends ConsumerStatefulWidget {
   const SyntraXpBar({
     super.key,
     required this.value,
-    this.minHeight = 6,
+    this.minHeight = 10,
     this.color,
     this.backgroundColor,
     this.duration = const Duration(milliseconds: 2300),
@@ -37,15 +35,15 @@ class SyntraXpBar extends ConsumerStatefulWidget {
 }
 
 class _SyntraXpBarState extends ConsumerState<SyntraXpBar>
-    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+
   late AnimationController _ctrl;
   late Animation<double> _anim;
+  late AnimationController _shimmerCtrl;
 
-  /// Where the current animation sweep started (for milestone gating).
   double _sweepFrom = 0.0;
-  /// True while a fill animation is in progress and audio/haptic is wanted.
   bool _feedbackActive = false;
   final Set<int> _milestonesFired = {};
 
@@ -56,6 +54,11 @@ class _SyntraXpBarState extends ConsumerState<SyntraXpBar>
     _ctrl.addListener(_onTick);
     _ctrl.addStatusListener(_onStatus);
 
+    _shimmerCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1800),
+    )..repeat();
+
     final initialValue = widget.value.clamp(0.0, 1.0);
     _sweepFrom = 0.0;
     _feedbackActive = !widget.silent && initialValue > 0.001;
@@ -63,7 +66,6 @@ class _SyntraXpBarState extends ConsumerState<SyntraXpBar>
     _anim = Tween<double>(begin: 0.0, end: initialValue)
         .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
 
-    // 2-second lead-in so the user sees the empty bar before it fills.
     Future.delayed(const Duration(milliseconds: 50), () {
       if (!mounted) return;
       _ctrl.forward();
@@ -116,15 +118,16 @@ class _SyntraXpBarState extends ConsumerState<SyntraXpBar>
       return;
     }
     _feedbackActive = false;
-    // Completion chime only when the bar actually reaches 100%.
     if (widget.value >= 1.0) {
-      SoundService.playXpComplete(enabled: ref.read(soundEffectsEnabledProvider));
+      SoundService.playXpComplete(
+          enabled: ref.read(soundEffectsEnabledProvider));
     }
   }
 
   @override
   void dispose() {
     _ctrl.dispose();
+    _shimmerCtrl.dispose();
     super.dispose();
   }
 
@@ -132,19 +135,114 @@ class _SyntraXpBarState extends ConsumerState<SyntraXpBar>
   Widget build(BuildContext context) {
     super.build(context);
     final cs = Theme.of(context).colorScheme;
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(4),
-      child: AnimatedBuilder(
-        animation: _anim,
-        builder: (context, _) => LinearProgressIndicator(
-          value: _anim.value,
-          minHeight: widget.minHeight,
-          backgroundColor:
-              widget.backgroundColor ?? cs.surfaceContainerHighest,
-          valueColor:
-              AlwaysStoppedAnimation<Color>(widget.color ?? cs.primary),
+    final fillColor = widget.color ?? cs.primary;
+    final trackColor = widget.backgroundColor ?? cs.surfaceContainerHighest;
+
+    return AnimatedBuilder(
+      animation: Listenable.merge([_anim, _shimmerCtrl]),
+      builder: (context, _) => SizedBox(
+        height: widget.minHeight,
+        child: CustomPaint(
+          painter: _CartoonBarPainter(
+            value: _anim.value,
+            fillColor: fillColor,
+            trackColor: trackColor,
+            shimmerProgress: _shimmerCtrl.value,
+          ),
+          child: const SizedBox.expand(),
         ),
       ),
     );
   }
+}
+
+class _CartoonBarPainter extends CustomPainter {
+  final double value;
+  final Color fillColor;
+  final Color trackColor;
+  final double shimmerProgress;
+
+  const _CartoonBarPainter({
+    required this.value,
+    required this.fillColor,
+    required this.trackColor,
+    required this.shimmerProgress,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final h = size.height;
+    final w = size.width;
+    final r = h / 2;
+    final outlineW = (h * 0.13).clamp(1.0, 2.5);
+
+    final trackRRect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(0, 0, w, h),
+      Radius.circular(r),
+    );
+
+    // ── Track ─────────────────────────────────────────────────────────────
+    canvas.drawRRect(trackRRect, Paint()..color = trackColor);
+
+    // ── Segment dividers ──────────────────────────────────────────────────
+    if (h >= 8) {
+      final segPaint = Paint()
+        ..color = Colors.black.withValues(alpha: 0.14)
+        ..strokeWidth = 1.0;
+      for (final pct in [0.25, 0.50, 0.75]) {
+        final x = w * pct;
+        canvas.drawLine(Offset(x, h * 0.12), Offset(x, h * 0.88), segPaint);
+      }
+    }
+
+    // ── Fill ──────────────────────────────────────────────────────────────
+    if (value > 0.004) {
+      final fillW = (w * value).clamp(0.0, w);
+      final fillRRect = RRect.fromRectAndRadius(
+        Rect.fromLTWH(0, 0, fillW, h),
+        Radius.circular(r),
+      );
+
+      canvas.drawRRect(fillRRect, Paint()..color = fillColor);
+
+      // Shimmer sweep (clipped to fill shape)
+      canvas.save();
+      canvas.clipRRect(fillRRect);
+
+      final shimW = (h * 3.5).clamp(14.0, 48.0);
+      final shimX = fillW * (shimmerProgress * 1.2 - 0.1);
+      canvas.drawRect(
+        Rect.fromLTWH(shimX - shimW / 2, 0, shimW, h),
+        Paint()
+          ..shader = LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [
+              Colors.white.withValues(alpha: 0.0),
+              Colors.white.withValues(alpha: 0.30),
+              Colors.white.withValues(alpha: 0.0),
+            ],
+            stops: const [0.0, 0.5, 1.0],
+          ).createShader(Rect.fromLTWH(shimX - shimW / 2, 0, shimW, h)),
+      );
+
+      canvas.restore();
+    }
+
+    // ── Cartoon outline ───────────────────────────────────────────────────
+    canvas.drawRRect(
+      trackRRect,
+      Paint()
+        ..color = Colors.black.withValues(alpha: 0.24)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = outlineW,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_CartoonBarPainter old) =>
+      old.value != value ||
+      old.shimmerProgress != shimmerProgress ||
+      old.fillColor != fillColor ||
+      old.trackColor != trackColor;
 }

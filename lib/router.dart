@@ -23,7 +23,6 @@ abstract class AppRoutes {
   static const activeChallenge = '/active_challenge';
   static const challengeDone = '/challenge_done';
   static const logbook = '/logbook';
-  static const logbookDetail = '/logbook_detail';
   static const about = '/about';
   static const priming = '/priming';
   static const streakCelebration = '/streak_celebration';
@@ -90,13 +89,6 @@ final appRouter = GoRouter(
       builder: (context, state) => const LogbookPage(),
     ),
     GoRoute(
-      path: AppRoutes.logbookDetail,
-      builder: (context, state) {
-        final args = state.extra as _LogbookDetailArgs;
-        return LogbookDetailPage(entry: args.entry, title: args.title);
-      },
-    ),
-    GoRoute(
       path: AppRoutes.about,
       builder: (context, state) => const AboutNotePage(),
     ),
@@ -155,12 +147,6 @@ class _ChallengeDoneArgs {
     this.isDailyMission = false,
     this.preAnxiety,
   });
-}
-
-class _LogbookDetailArgs {
-  final Map<String, dynamic> entry;
-  final String title;
-  const _LogbookDetailArgs(this.entry, this.title);
 }
 
 class _StreakCelebrationArgs {
@@ -249,10 +235,7 @@ extension AppNavigation on BuildContext {
   void goLogbook() => GoRouter.of(this).push(AppRoutes.logbook);
 
   Future<bool?> goLogbookDetail(Map<String, dynamic> entry, String title) =>
-      GoRouter.of(this).push<bool>(
-        AppRoutes.logbookDetail,
-        extra: _LogbookDetailArgs(entry, title),
-      );
+      LogbookDetailPage.show(this, entry, title);
 
   void goAbout() => GoRouter.of(this).push(AppRoutes.about);
 
