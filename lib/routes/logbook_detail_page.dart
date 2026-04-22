@@ -10,7 +10,6 @@ import '../widgets/syntra_button.dart';
 
 class LogbookDetailPage extends ConsumerStatefulWidget {
   final Map<String, dynamic> entry;
-  /// Pre-resolved challenge title passed from the logbook list.
   final String title;
 
   const LogbookDetailPage({
@@ -18,6 +17,20 @@ class LogbookDetailPage extends ConsumerStatefulWidget {
     required this.entry,
     required this.title,
   });
+
+  static Future<bool?> show(
+    BuildContext context,
+    Map<String, dynamic> entry,
+    String title,
+  ) {
+    return showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => LogbookDetailPage(entry: entry, title: title),
+    );
+  }
 
   @override
   ConsumerState<LogbookDetailPage> createState() => _LogbookDetailPageState();
@@ -33,7 +46,7 @@ class _LogbookDetailPageState extends ConsumerState<LogbookDetailPage>
     super.initState();
     _fadeController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 400),
+      duration: const Duration(milliseconds: 350),
     );
     _fadeAnimation = CurvedAnimation(parent: _fadeController, curve: Curves.easeOut);
     _fadeController.forward();
@@ -146,8 +159,8 @@ class _LogbookDetailPageState extends ConsumerState<LogbookDetailPage>
       await LogbookRepository.instance.deleteEntry(widget.entry['id'] as int);
       if (mounted) {
         refreshStatistics(ref);
-        Navigator.of(context).pop();
-        Navigator.of(context).pop(true);
+        Navigator.of(context).pop(); // close dialog
+        Navigator.of(context).pop(true); // close sheet with result
       }
     } catch (e) {
       if (mounted) {
@@ -163,61 +176,113 @@ class _LogbookDetailPageState extends ConsumerState<LogbookDetailPage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(S.of(context).logbookEntry),
-      ),
-      body: SafeArea(
-        child: FadeTransition(
-          opacity: _fadeAnimation,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(AppSpacing.md),
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.92,
+      minChildSize: 0.5,
+      maxChildSize: 0.97,
+      expand: false,
+      builder: (context, scrollController) => ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        child: Material(
+          color: cs.surface,
+          child: FadeTransition(
+            opacity: _fadeAnimation,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _HeroCard(
-                  title: widget.title,
-                  earned: widget.entry['earned'] ?? 0,
-                  status: widget.entry['status']?.toString(),
-                  timestamp: widget.entry['timestamp']?.toString(),
-                  rewardFactor: widget.entry['reward_factor'],
-                  statusColor: _statusColor(context),
-                  isSuccess: _isSuccess,
-                  formatDate: _formatDate,
-                  localizedStatus: _localizedStatus,
-                ),
-                const SizedBox(height: AppSpacing.md),
-                _FeelingsRow(
-                  feeling: widget.entry['feeling'] as int?,
-                  perception: widget.entry['perception'] as int?,
-                  emotionIcon: _emotionIcon,
-                  emotionColor: _emotionColor,
-                  emotionText: _emotionText,
-                ),
-                if (widget.entry['pre_anxiety'] != null &&
-                    widget.entry['feeling'] != null) ...[
-                  const SizedBox(height: AppSpacing.md),
-                  _PredictionRealityGapCard(
-                    preAnxiety: widget.entry['pre_anxiety'] as int,
-                    feeling: widget.entry['feeling'] as int,
-                    emotionIcon: _emotionIcon,
-                    emotionColor: _emotionColor,
-                    emotionText: _emotionText,
+                // ── Sheet header ──────────────────────────────────────────
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.md, AppSpacing.sm, AppSpacing.xs, 0),
+                  child: Row(
+                    children: [
+                      const SizedBox(width: 40), // balance close button
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Container(
+                              width: 40,
+                              height: 4,
+                              decoration: BoxDecoration(
+                                color: cs.outlineVariant,
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacing.sm),
+                            Text(
+                              S.of(context).logbookEntry,
+                              style: tt.titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    ],
                   ),
-                ],
-                if (widget.entry['notes'] != null &&
-                    widget.entry['notes'].toString().isNotEmpty) ...[
-                  const SizedBox(height: AppSpacing.md),
-                  _NotesCard(notes: widget.entry['notes'].toString()),
-                ],
-                const SizedBox(height: AppSpacing.md),
-                _MoodCard(
-                  challengeId: widget.entry['challenge_id']?.toString() ?? '',
                 ),
-                const SizedBox(height: AppSpacing.xl),
-                _buildDeleteButton(),
-                const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.sm),
+                const Divider(height: 1),
+                // ── Scrollable content ────────────────────────────────────
+                Expanded(
+                  child: SingleChildScrollView(
+                    controller: scrollController,
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _HeroCard(
+                          title: widget.title,
+                          earned: widget.entry['earned'] ?? 0,
+                          status: widget.entry['status']?.toString(),
+                          timestamp: widget.entry['timestamp']?.toString(),
+                          rewardFactor: widget.entry['reward_factor'],
+                          statusColor: _statusColor(context),
+                          isSuccess: _isSuccess,
+                          formatDate: _formatDate,
+                          localizedStatus: _localizedStatus,
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        _FeelingsRow(
+                          feeling: widget.entry['feeling'] as int?,
+                          perception: widget.entry['perception'] as int?,
+                          emotionIcon: _emotionIcon,
+                          emotionColor: _emotionColor,
+                          emotionText: _emotionText,
+                        ),
+                        if (widget.entry['pre_anxiety'] != null &&
+                            widget.entry['feeling'] != null) ...[
+                          const SizedBox(height: AppSpacing.md),
+                          _PredictionRealityGapCard(
+                            preAnxiety: widget.entry['pre_anxiety'] as int,
+                            feeling: widget.entry['feeling'] as int,
+                            emotionIcon: _emotionIcon,
+                            emotionColor: _emotionColor,
+                            emotionText: _emotionText,
+                          ),
+                        ],
+                        if (widget.entry['notes'] != null &&
+                            widget.entry['notes'].toString().isNotEmpty) ...[
+                          const SizedBox(height: AppSpacing.md),
+                          _NotesCard(notes: widget.entry['notes'].toString()),
+                        ],
+                        const SizedBox(height: AppSpacing.md),
+                        _MoodCard(
+                          challengeId:
+                              widget.entry['challenge_id']?.toString() ?? '',
+                        ),
+                        const SizedBox(height: AppSpacing.xl),
+                        _buildDeleteButton(),
+                        const SizedBox(height: AppSpacing.lg),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -233,7 +298,8 @@ class _LogbookDetailPageState extends ConsumerState<LogbookDetailPage>
       label: Text(S.of(context).deleteEntry),
       style: TextButton.styleFrom(
         foregroundColor: cs.error,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
       onPressed: _showDeleteDialog,
     );
@@ -276,7 +342,6 @@ class _HeroCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Accent strip
           Container(
             height: 4,
             color: statusColor,
@@ -286,7 +351,6 @@ class _HeroCard extends StatelessWidget {
                 AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.md),
             child: Column(
               children: [
-                // Icon
                 Container(
                   width: 64,
                   height: 64,
@@ -303,14 +367,12 @@ class _HeroCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.md),
-                // Title
                 Text(
                   title,
                   style: tt.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppSpacing.sm),
-                // Date + status
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -319,7 +381,8 @@ class _HeroCard extends StatelessWidget {
                     const SizedBox(width: 4),
                     Text(
                       formatDate(timestamp),
-                      style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
+                      style:
+                          tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     Container(
@@ -342,7 +405,6 @@ class _HeroCard extends StatelessWidget {
               ],
             ),
           ),
-          // XP + reward factor row
           Container(
             color: cs.surfaceContainerHighest,
             padding: const EdgeInsets.symmetric(
@@ -550,9 +612,7 @@ class _NotesCard extends StatelessWidget {
 // ─── Prediction-reality gap card ──────────────────────────────────────────────
 
 class _PredictionRealityGapCard extends StatelessWidget {
-  /// 1–5: 1 = gar nicht nervös, 5 = sehr nervös
   final int preAnxiety;
-  /// 0–4: 0 = sehr schlecht, 4 = sehr gut
   final int feeling;
   final IconData Function(int?) emotionIcon;
   final Color Function(int?) emotionColor;
@@ -566,8 +626,6 @@ class _PredictionRealityGapCard extends StatelessWidget {
     required this.emotionText,
   });
 
-  // Convert pre_anxiety (1–5, nervousness) to the 0–4 feeling scale for comparison.
-  // pre_anxiety=1 (gar nicht) → feeling=4 (sehr gut), pre_anxiety=5 (sehr nervös) → feeling=0 (sehr schlecht)
   int get _anxietyAsFeelingScale => (5 - preAnxiety).clamp(0, 4);
 
   @override
@@ -576,7 +634,6 @@ class _PredictionRealityGapCard extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
     final l = S.of(context);
 
-    // Positive gap: felt better than feared. Negative: worse than feared.
     final gap = feeling - _anxietyAsFeelingScale;
     final String insight;
     if (gap > 0) {
@@ -611,7 +668,6 @@ class _PredictionRealityGapCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // Before
                 Column(
                   children: [
                     Text(l.beforeLabel,
@@ -625,20 +681,18 @@ class _PredictionRealityGapCard extends StatelessWidget {
                         color: beforeColor.withValues(alpha: 0.12),
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(
-                          emotionIcon(_anxietyAsFeelingScale),
-                          color: beforeColor,
-                          size: 26),
+                      child: Icon(emotionIcon(_anxietyAsFeelingScale),
+                          color: beforeColor, size: 26),
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(emotionText(_anxietyAsFeelingScale),
-                        style: tt.labelSmall
-                            ?.copyWith(color: beforeColor, fontWeight: FontWeight.bold)),
+                        style: tt.labelSmall?.copyWith(
+                            color: beforeColor,
+                            fontWeight: FontWeight.bold)),
                   ],
                 ),
                 Icon(Icons.arrow_forward_rounded,
                     color: cs.outlineVariant, size: 20),
-                // After
                 Column(
                   children: [
                     Text(l.afterLabel,
@@ -658,7 +712,8 @@ class _PredictionRealityGapCard extends StatelessWidget {
                     const SizedBox(height: AppSpacing.xs),
                     Text(emotionText(feeling),
                         style: tt.labelSmall?.copyWith(
-                            color: afterColor, fontWeight: FontWeight.bold)),
+                            color: afterColor,
+                            fontWeight: FontWeight.bold)),
                   ],
                 ),
               ],
@@ -674,8 +729,8 @@ class _PredictionRealityGapCard extends StatelessWidget {
               ),
               child: Text(
                 insight,
-                style: tt.bodySmall?.copyWith(
-                    color: cs.onSurfaceVariant, height: 1.4),
+                style: tt.bodySmall
+                    ?.copyWith(color: cs.onSurfaceVariant, height: 1.4),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -699,7 +754,7 @@ class _MoodCard extends ConsumerWidget {
     final async = ref.watch(moodHistoryProvider(challengeId));
     return async.when(
       loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
+      error: (e, st) => const SizedBox.shrink(),
       data: (scores) {
         if (scores.length < 2) return const SizedBox.shrink();
         final cs = Theme.of(context).colorScheme;

@@ -48,7 +48,7 @@ class StatsOverviewGrid extends ConsumerWidget {
                   label: l.weekStreak,
                   color: isStreakActive
                       ? const Color(0xFFFF6D00)
-                      : null, // null → grey (pending or reset)
+                      : cs.onSurfaceVariant,
                 ),
                 StatCard(
                   icon: Icons.directions_run_rounded,
