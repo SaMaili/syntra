@@ -3,36 +3,49 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../generated/l10n.dart';
 import '../../logic/badges_logic.dart';
+import '../../logic/comfort_zone_logic.dart';
+import '../../providers/settings_providers.dart';
 import '../../providers/statistics_providers.dart';
 import '../../theme/app_spacing.dart';
-import '../../widgets/syntra_button.dart';
-
 class BadgesSection extends ConsumerWidget {
-  const BadgesSection();
+  const BadgesSection({super.key});
 
-  String _badgeLabel(S l, String id) => switch (id) {
-        'first_step' => l.badgeFirstStep,
-        'ten_challenges' => l.badgeTenChallenges,
-        'fifty_challenges' => l.badgeFiftyChallenges,
-        'three_week_streak' => l.badgeThreeWeekStreak,
-        'seven_week_streak' => l.badgeSevenWeekStreak,
-        'century_xp' => l.badgeCenturyXp,
-        'five_hundred_xp' => l.badgeFiveHundredXp,
-        'brave_minutes' => l.badgeBraveMinutes,
-        String other => other,
-      };
+  String _badgeLabel(S l, String id) {
+    final lvl = _levelFromId(id);
+    if (lvl != null) return 'Level $lvl: ${ComfortZoneLogic.levelNames[lvl]}';
+    return switch (id) {
+      'first_step' => l.badgeFirstStep,
+      'ten_challenges' => l.badgeTenChallenges,
+      'fifty_challenges' => l.badgeFiftyChallenges,
+      'three_week_streak' => l.badgeThreeWeekStreak,
+      'seven_week_streak' => l.badgeSevenWeekStreak,
+      'century_xp' => l.badgeCenturyXp,
+      'five_hundred_xp' => l.badgeFiveHundredXp,
+      'brave_minutes' => l.badgeBraveMinutes,
+      String other => other,
+    };
+  }
 
-  String _badgeDesc(S l, String id) => switch (id) {
-        'first_step' => l.badgeFirstStepDesc,
-        'ten_challenges' => l.badgeTenChallengesDesc,
-        'fifty_challenges' => l.badgeFiftyChallengesDesc,
-        'three_week_streak' => l.badgeThreeWeekStreakDesc,
-        'seven_week_streak' => l.badgeSevenWeekStreakDesc,
-        'century_xp' => l.badgeCenturyXpDesc,
-        'five_hundred_xp' => l.badgeFiveHundredXpDesc,
-        'brave_minutes' => l.badgeBraveMinutesDesc,
-        String() => '',
-      };
+  String _badgeDesc(S l, String id) {
+    final lvl = _levelFromId(id);
+    if (lvl != null) return 'Reach Level $lvl in your Comfort Zone journey.';
+    return switch (id) {
+      'first_step' => l.badgeFirstStepDesc,
+      'ten_challenges' => l.badgeTenChallengesDesc,
+      'fifty_challenges' => l.badgeFiftyChallengesDesc,
+      'three_week_streak' => l.badgeThreeWeekStreakDesc,
+      'seven_week_streak' => l.badgeSevenWeekStreakDesc,
+      'century_xp' => l.badgeCenturyXpDesc,
+      'five_hundred_xp' => l.badgeFiveHundredXpDesc,
+      'brave_minutes' => l.badgeBraveMinutesDesc,
+      String() => '',
+    };
+  }
+
+  int? _levelFromId(String id) {
+    if (!id.startsWith('level_')) return null;
+    return int.tryParse(id.substring(6));
+  }
 
   void _showBadgeInfo(
     BuildContext context,
@@ -40,95 +53,116 @@ class BadgesSection extends ConsumerWidget {
     AppBadge badge,
     bool isEarned,
   ) {
-    final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
     final name = _badgeLabel(l, badge.id);
     final desc = _badgeDesc(l, badge.id);
 
-    showDialog<void>(
+    showModalBottomSheet<void>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.cardRadius * 2),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // ── Badge icon ────────────────────────────────────────────────
-            Container(
-              width: 72,
-              height: 72,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: isEarned
-                    ? badge.color.withValues(alpha: 0.15)
-                    : cs.surfaceContainerHighest,
-                border: isEarned
-                    ? Border.all(color: badge.color, width: 2)
-                    : null,
-              ),
-              child: Icon(
-                badge.icon,
-                size: 36,
-                color: isEarned ? badge.color : cs.outlineVariant,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-
-            // ── Name ──────────────────────────────────────────────────────
-            Text(
-              name,
-              style: tt.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppSpacing.xs),
-
-            // ── Status chip ───────────────────────────────────────────────
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.sm,
-                vertical: 3,
-              ),
-              decoration: BoxDecoration(
-                color: isEarned
-                    ? badge.color.withValues(alpha: 0.12)
-                    : cs.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
-              ),
-              child: Text(
-                isEarned ? '✓ ${l.badgesTitle}' : l.badgeLocked,
-                style: tt.labelSmall?.copyWith(
-                  color: isEarned ? badge.color : cs.onSurfaceVariant,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-
-            // ── Description ───────────────────────────────────────────────
-            Text(
-              desc,
-              style: tt.bodyMedium?.copyWith(
-                color: cs.onSurfaceVariant,
-                height: 1.5,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-        actions: [
-          SyntraButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: Text(l.letsGoButton),
+      isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        final cs = Theme.of(ctx).colorScheme;
+        final tt = Theme.of(ctx).textTheme;
+        return Container(
+          decoration: BoxDecoration(
+            color: cs.surfaceContainerLow,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
           ),
-        ],
-      ),
+          child: SafeArea(
+            top: false,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // ── Handle ─────────────────────────────────────────────────
+                const SizedBox(height: 12),
+                Center(
+                  child: Container(
+                    width: 36,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: cs.onSurfaceVariant.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xl),
+  
+                // ── Badge icon ─────────────────────────────────────────────
+                Container(
+                  width: 88,
+                  height: 88,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: isEarned
+                        ? badge.color.withValues(alpha: 0.15)
+                        : cs.surfaceContainerHighest,
+                    border: isEarned
+                        ? Border.all(color: badge.color, width: 2.5)
+                        : null,
+                  ),
+                  child: Icon(
+                    badge.icon,
+                    size: 44,
+                    color: isEarned ? badge.color : cs.outlineVariant,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+  
+                // ── Name ───────────────────────────────────────────────────
+                Text(
+                  name,
+                  style: tt.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: AppSpacing.xs),
+  
+                // ── Status chip ────────────────────────────────────────────
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.sm, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: isEarned
+                        ? badge.color.withValues(alpha: 0.12)
+                        : cs.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
+                  ),
+                  child: Text(
+                    isEarned ? '✓ ${l.badgesTitle}' : l.badgeLocked,
+                    style: tt.labelSmall?.copyWith(
+                      color: isEarned ? badge.color : cs.onSurfaceVariant,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+  
+                // ── Description ────────────────────────────────────────────
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+                  child: Text(
+                    desc,
+                    style: tt.bodyMedium?.copyWith(
+                      color: cs.onSurfaceVariant,
+                      height: 1.5,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xxl),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final statsAsync = ref.watch(overviewStatsProvider);
+    final currentLevel = ref.watch(comfortZoneLevelProvider);
     final l = S.of(context);
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
@@ -137,7 +171,8 @@ class BadgesSection extends ConsumerWidget {
       loading: () => const SizedBox.shrink(),
       error: (e, st) => const SizedBox.shrink(),
       data: (stats) {
-        final earned = BadgesLogic.computeEarned(stats, stats['weekStreak'] ?? 0);
+        final enrichedStats = {...stats, 'czlLevel': currentLevel};
+        final earned = BadgesLogic.computeEarned(enrichedStats, enrichedStats['weekStreak'] ?? 0);
         return Card(
           margin: EdgeInsets.zero,
           child: Padding(

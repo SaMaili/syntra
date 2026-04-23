@@ -10,7 +10,7 @@ import 'filter_sheet.dart';
 
 class ChallengesFilterBar extends ConsumerWidget {
   final VoidCallback onGiveMeOne;
-  const ChallengesFilterBar({required this.onGiveMeOne});
+  const ChallengesFilterBar({super.key, required this.onGiveMeOne});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -37,7 +37,6 @@ class ChallengesFilterBar extends ConsumerWidget {
               onChanged: notifier.setTypeFilter,
               labels: [
                 S.of(context).solo,
-                S.of(context).coop,
                 S.of(context).filterAll,
               ],
             ),
@@ -70,26 +69,33 @@ class ChallengesFilterBar extends ConsumerWidget {
     );
   }
 
-  void _openFilterSheet(BuildContext context) {
+  static void openSheet(BuildContext context) {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      builder: (_) => const ChallengesFilterSheet(),
+      builder: (_) => DraggableScrollableSheet(
+        initialChildSize: 0.7,
+        minChildSize: 0.4,
+        maxChildSize: 1.0,
+        expand: false,
+        builder: (context, scrollController) =>
+            ChallengesFilterSheet(scrollController: scrollController),
+      ),
     );
   }
+
+  void _openFilterSheet(BuildContext context) => openSheet(context);
 }
 
 /// Three-tab bar (Solo | Coop | All) with a sliding pill indicator.
 class TypeSelector extends StatelessWidget {
   static const _mainBarValues = [
     ChallengeTypeFilter.solo,
-    ChallengeTypeFilter.coop,
     ChallengeTypeFilter.all,
   ];
   static const _icons = [
     Icons.person_rounded,
-    Icons.people_alt_rounded,
     Icons.all_inclusive_rounded,
   ];
 
@@ -98,6 +104,7 @@ class TypeSelector extends StatelessWidget {
   final List<String> labels;
 
   const TypeSelector({
+    super.key,
     required this.selected,
     required this.onChanged,
     required this.labels,
@@ -174,7 +181,7 @@ class TypeSelector extends StatelessWidget {
                 width: tabW - 6,
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: Color.lerp(cs.secondary, Colors.grey, 0.45),
+                    color: cs.primaryContainer,
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
@@ -194,7 +201,7 @@ class TypeSelector extends StatelessWidget {
                               _icons[i],
                               size: 13,
                               color: isSelected
-                                  ? Colors.white
+                                  ? cs.onPrimaryContainer
                                   : cs.onSurfaceVariant,
                             ),
                             const SizedBox(width: 4),
@@ -205,7 +212,7 @@ class TypeSelector extends StatelessWidget {
                                     ? FontWeight.w600
                                     : FontWeight.normal,
                                 color: isSelected
-                                    ? Colors.white
+                                    ? cs.onPrimaryContainer
                                     : cs.onSurfaceVariant,
                               ),
                             ),

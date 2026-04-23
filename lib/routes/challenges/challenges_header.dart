@@ -6,8 +6,9 @@ import '../../logic/weekly_streak_logic.dart';
 import '../../providers/shop_providers.dart';
 import '../../providers/statistics_providers.dart';
 import '../../theme/app_spacing.dart';
+import '../../widgets/syntra_progress_bar.dart';
 
-/// Scrollable hero header shown at the top of the challenges screen.
+/// Hero header shown at the top of the challenges screen.
 class ChallengesHeroHeader extends ConsumerWidget {
   const ChallengesHeroHeader({super.key});
 
@@ -26,41 +27,70 @@ class ChallengesHeroHeader extends ConsumerWidget {
     final progress = (currentWeekXp / kWeeklyXpThreshold).clamp(0.0, 1.0);
 
     final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
     final l = S.of(context);
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(
-          AppSpacing.md, AppSpacing.md, AppSpacing.md, AppSpacing.sm),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+      padding: EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        MediaQuery.paddingOf(context).top + AppSpacing.sm,
+        AppSpacing.md,
+        AppSpacing.xs,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Streak progress pill ──────────────────────────────────────────
-          _StreakProgressPill(
+          // ── Title + inline stat counts ──────────────────────────────────────
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                l.navChallenge,
+                style: tt.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+              ),
+              const Spacer(),
+              Icon(Icons.emoji_events_rounded, size: 16, color: cs.primary),
+              const SizedBox(width: 3),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 350),
+                transitionBuilder: (child, animation) => FadeTransition(
+                  opacity: animation,
+                  child: SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(0, 0.5),
+                      end: Offset.zero,
+                    ).animate(CurvedAnimation(
+                        parent: animation, curve: Curves.easeOut)),
+                    child: child,
+                  ),
+                ),
+                child: Text(
+                  '$availableXp',
+                  key: ValueKey(availableXp),
+                  style: tt.labelLarge?.copyWith(
+                      fontWeight: FontWeight.bold, color: cs.primary),
+                ),
+              ),
+              if (freezes > 0) ...[
+                const SizedBox(width: AppSpacing.md),
+                Icon(Icons.ac_unit_rounded, size: 14, color: cs.tertiary),
+                const SizedBox(width: 2),
+                Text(
+                  '×$freezes',
+                  style: tt.labelMedium?.copyWith(
+                      fontWeight: FontWeight.bold, color: cs.tertiary),
+                ),
+              ],
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm),
+
+          // ── Full-width streak bar ───────────────────────────────────────────
+          StreakBar(
             isActive: isStreakActive,
             progress: progress,
             currentWeekXp: currentWeekXp,
             streakLabel: '$displayStreak ${l.weeksShort}',
-          ),
-
-          // ── Freeze badge (only when user owns at least one) ───────────────
-          if (freezes > 0) ...[
-            const SizedBox(width: AppSpacing.sm),
-            _StatBadge(
-              icon: Icons.ac_unit_rounded,
-              label: '×$freezes',
-              color: Colors.white,
-              bg: const Color(0xFF0288D1),
-            ),
-          ],
-
-          const Spacer(),
-
-          // ── Aura badge ────────────────────────────────────────────────────
-          _StatBadge(
-            icon: Icons.emoji_events,
-            label: '$availableXp ${l.auraPoints}',
-            color: cs.onPrimaryContainer,
-            bg: cs.primaryContainer,
           ),
         ],
       ),
@@ -68,226 +98,88 @@ class ChallengesHeroHeader extends ConsumerWidget {
   }
 }
 
-// ─── Streak progress pill ─────────────────────────────────────────────────────
+// ─── Streak bar ───────────────────────────────────────────────────────────────
 
-class _StreakProgressPill extends StatefulWidget {
+class StreakBar extends StatefulWidget {
   final bool isActive;
-  final double progress; // 0.0–1.0  (currentWeekXp / kWeeklyXpThreshold)
+  final double progress;
   final int currentWeekXp;
-  final String streakLabel; // e.g. "4 weeks"
+  final String streakLabel;
+  final double labelOpacity;
 
-  const _StreakProgressPill({
+  const StreakBar({
+    super.key,
     required this.isActive,
     required this.progress,
     required this.currentWeekXp,
     required this.streakLabel,
+    this.labelOpacity = 1.0,
   });
 
   @override
-  State<_StreakProgressPill> createState() => _StreakProgressPillState();
+  State<StreakBar> createState() => _StreakBarState();
 }
 
-class _StreakProgressPillState extends State<_StreakProgressPill>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _ctrl;
-
-  // True only while the bar is visually moving (or in the post-completion delay).
-  bool _isAnimating = false;
-
-  // Tracks the current animation "generation" to prevent stale delays
-  // from clearing _isAnimating when a newer animation has taken over.
-  int _animGeneration = 0;
+class _StreakBarState extends State<StreakBar> {
+  int _prevXp = 0;
 
   @override
-  void initState() {
-    super.initState();
-    _ctrl = AnimationController(vsync: this)
-      // Start at the current value so the first render is correct without
-      // an animation.
-      ..value = widget.progress;
-  }
-
-  @override
-  void didUpdateWidget(_StreakProgressPill old) {
+  void didUpdateWidget(StreakBar old) {
     super.didUpdateWidget(old);
-    if ((old.progress - widget.progress).abs() > 0.001) {
-      _animateTo(widget.progress);
+    if (old.currentWeekXp != widget.currentWeekXp) {
+      setState(() => _prevXp = old.currentWeekXp);
     }
-  }
-
-  Future<void> _animateTo(double target) async {
-    final gen = ++_animGeneration;
-    // Brief pause before the bar moves so the user notices the change.
-    await Future.delayed(const Duration(seconds: 1));
-    if (gen != _animGeneration || !mounted) return;
-    setState(() => _isAnimating = true);
-    try {
-      await _ctrl
-          .animateTo(
-            target,
-            duration: const Duration(milliseconds: 1400),
-            curve: Curves.easeInOut,
-          )
-          .orCancel;
-
-      // After every animation hold the x/300 label for 3 seconds so the user
-      // can read the new value before it flips back to the streak label.
-      if (mounted) {
-        await Future.delayed(const Duration(seconds: 3));
-      }
-
-      // After the hold: only clear _isAnimating if no newer call has taken over.
-      if (gen != _animGeneration || !mounted) return;
-      setState(() => _isAnimating = false);
-    } on TickerCanceled {
-      // A newer _animateTo call took over; it manages _isAnimating.
-    }
-  }
-
-  @override
-  void dispose() {
-    _ctrl.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _ctrl,
-      builder: (context, _) {
-        final p = _ctrl.value;
-        final cs = Theme.of(context).colorScheme;
-        final bg = cs.surfaceContainerHighest;
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
 
-        // ── Colors per state ────────────────────────────────────────────────
-        // _isAnimating takes priority so the filling style is held for the
-        // entire animation + 2 s delay, even if isActive flips mid-flight.
-        // full  : settled + isActive  → amber
-        // filling: _isAnimating       → soft orange
-        // idle  : settled, not full   → grey
-        final Color fgColor;
-        final Color fillColor;
+    final labelColor = widget.isActive ? const Color(0xFFFF6D00) : cs.onSurfaceVariant;
+    final barColor = cs.primary;
 
-        if (_isAnimating) {
-          fgColor = cs.tertiary;
-          fillColor = cs.tertiaryContainer;
-        } else if (widget.isActive) {
-          fgColor = Colors.amber.shade800;
-          fillColor = Colors.amber.shade200;
-        } else {
-          fgColor = cs.onSurfaceVariant;
-          fillColor = cs.surfaceContainer;
-        }
-
-        // ── Decoration ──────────────────────────────────────────────────────
-        final BoxDecoration decoration;
-        if (p < 0.005) {
-          decoration = BoxDecoration(
-            color: bg,
-            borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
-          );
-        } else {
-          decoration = BoxDecoration(
-            borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
-            gradient: LinearGradient(
-              stops: [0.0, p, p, 1.0],
-              colors: [fillColor, fillColor, bg, bg],
-            ),
-          );
-        }
-
-        // ── Label ───────────────────────────────────────────────────────────
-        // filling  → "x/300" (takes precedence so animation is always visible)
-        // full     → "x weeks" (new streak count) in orange
-        // idle     → "x weeks" (current/pending streak) in grey
-        final String labelText;
-        final ValueKey<String> labelKey;
-
-        if (_isAnimating) {
-          labelText = '${(p * kWeeklyXpThreshold).round()}/$kWeeklyXpThreshold';
-          labelKey = const ValueKey('filling');
-        } else if (widget.isActive) {
-          labelText = widget.streakLabel;
-          labelKey = const ValueKey('full');
-        } else {
-          labelText = widget.streakLabel;
-          labelKey = const ValueKey('idle');
-        }
-
-        return Container(
-          padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md, vertical: AppSpacing.sm),
-          decoration: decoration,
-          child: Row(
+    return Opacity(
+      opacity: widget.labelOpacity,
+      child: Row(
+        children: [
+          // Fire icon + streak label
+          Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.local_fire_department_rounded,
-                  size: 18, color: fgColor),
+              Icon(Icons.local_fire_department_rounded, size: 15, color: labelColor),
               const SizedBox(width: AppSpacing.xs),
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 350),
-                transitionBuilder: (child, anim) => FadeTransition(
-                  opacity: anim,
-                  child: SlideTransition(
-                    position: Tween<Offset>(
-                      begin: const Offset(0, 0.3),
-                      end: Offset.zero,
-                    ).animate(anim),
-                    child: child,
-                  ),
-                ),
-                child: Text(
-                  labelText,
-                  key: labelKey,
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: fgColor,
-                      ),
-                ),
+              Text(
+                widget.streakLabel,
+                style: tt.labelMedium?.copyWith(fontWeight: FontWeight.bold, color: labelColor),
               ),
+              const SizedBox(width: AppSpacing.sm),
             ],
           ),
-        );
-      },
-    );
-  }
-}
 
-// ─── Generic stat badge ───────────────────────────────────────────────────────
+          // Animated progress track
+          Expanded(
+            child: SyntraXpBar(
+              value: widget.progress,
+              initialValue: (_prevXp / kWeeklyXpThreshold).clamp(0.0, 1.0),
+              minHeight: 5,
+              color: barColor,
+              backgroundColor: cs.surfaceContainerHighest,
+              silent: true,
+            ),
+          ),
 
-class _StatBadge extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final Color color;
-  final Color bg;
-
-  const _StatBadge({
-    required this.icon,
-    required this.label,
-    required this.color,
-    required this.bg,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md, vertical: AppSpacing.sm),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 18, color: color),
-          const SizedBox(width: AppSpacing.xs),
-          Text(
-            label,
-            style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: color,
-                ),
+          // XP counter — counts up from previous value
+          const SizedBox(width: AppSpacing.sm),
+          TweenAnimationBuilder<int>(
+            key: ValueKey('$_prevXp→${widget.currentWeekXp}'),
+            tween: IntTween(begin: _prevXp, end: widget.currentWeekXp),
+            duration: const Duration(milliseconds: 1500),
+            curve: Curves.easeOutCubic,
+            builder: (context, value, _) => Text(
+              '$value/$kWeeklyXpThreshold',
+              style: tt.labelSmall?.copyWith(color: cs.outline),
+            ),
           ),
         ],
       ),

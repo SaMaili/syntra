@@ -19,6 +19,7 @@ import '../static.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/syntra_button.dart';
 import '../widgets/syntra_progress_bar.dart';
+import '../widgets/syntra_blur_app_bar.dart';
 import 'challenge_done/survey_widget.dart';
 
 int socialProofCount(String challengeId) {
@@ -64,6 +65,9 @@ class ChallengeDoneScreen extends ConsumerStatefulWidget {
 
 class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
   final _surveyKey = GlobalKey<SurveyWidgetState>();
+  int _oldWeeklyXp = 0;
+  int _displayWeeklyXp = 0;
+  bool _xpLoaded = false;
 
   bool get _isAborted => widget.rewardFactor < 0;
   int get _earnedXp =>
@@ -80,6 +84,29 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
       unawaited(VibrationService.abort());
     } else {
       unawaited(VibrationService.success());
+    }
+    _loadXp();
+  }
+
+  Future<void> _loadXp() async {
+    final latestXp = await LogbookRepository.instance.currentWeekXp();
+    if (mounted) {
+      setState(() {
+        _oldWeeklyXp = latestXp;
+        _displayWeeklyXp = latestXp;
+        _xpLoaded = true;
+      });
+      // Sequence:
+      // 1. Wait for screen fade-in (400ms)
+      // 2. Start Aura Point (+X) counting up (begins at 400ms)
+      // 3. Start Weekly Bar growing (begins at 1000ms)
+      Future.delayed(const Duration(milliseconds: 1000), () {
+        if (mounted) {
+          setState(() {
+            _displayWeeklyXp = _oldWeeklyXp + _totalXp;
+          });
+        }
+      });
     }
   }
 
@@ -104,9 +131,10 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
         : AppSpacing.lg + MediaQuery.viewPaddingOf(context).bottom;
 
     return Scaffold(
-      appBar: AppBar(
+      extendBodyBehindAppBar: true,
+      appBar: SyntraBlurAppBar(
         title: Text(_isAborted ? l.challengeAborted : l.challengeCompleted),
-        automaticallyImplyLeading: false,
+        leading: const SizedBox.shrink(), // hide back button
       ),
       body: Column(
         children: [
@@ -115,7 +143,7 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
             child: SingleChildScrollView(
               padding: EdgeInsets.fromLTRB(
                 AppSpacing.lg,
-                gapXl,
+                SyntraBlurAppBar.topPadding(context) + gapMd,
                 AppSpacing.lg,
                 gapMd,
               ),
@@ -188,11 +216,12 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
                   SizedBox(height: gapXl),
 
                   // ── Aura chip — number counts up from 0 on appear ──────
-                  TweenAnimationBuilder<int>(
-                    tween: IntTween(begin: 0, end: _totalXp),
-                    duration: const Duration(milliseconds: 900),
-                    curve: Curves.easeOutCubic,
-                    builder: (_, value, child) => Container(
+                  if (_xpLoaded)
+                    TweenAnimationBuilder<int>(
+                      tween: IntTween(begin: 0, end: _totalXp),
+                      duration: const Duration(milliseconds: 900),
+                      curve: Curves.easeOutCubic,
+                      builder: (_, value, child) => Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: AppSpacing.lg,
                           vertical: AppSpacing.md),
@@ -231,12 +260,38 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
                   ),
 
                   // ── Aura progress bar ──────────────────────────────────
-                  if (!_isAborted) ...[
+                  if (!_isAborted && _xpLoaded) ...[
                     SizedBox(height: gapMd),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          l.weeklyGoalTitle,
+                          style: tt.labelMedium?.copyWith(
+                            color: cs.onSurfaceVariant,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TweenAnimationBuilder<int>(
+                          tween: IntTween(begin: _oldWeeklyXp, end: _displayWeeklyXp),
+                          duration: const Duration(milliseconds: 1500),
+                          curve: Curves.easeOutCubic,
+                          builder: (context, value, child) => Text(
+                            '$value / $kWeeklyXpThreshold',
+                            style: tt.labelMedium?.copyWith(
+                              color: cs.onSurfaceVariant,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
                     SyntraXpBar(
-                      value: widget.rewardFactor.clamp(0.0, 1.0),
-                      minHeight: 8,
-                      duration: const Duration(milliseconds: 2300),
+                      value: (_displayWeeklyXp / kWeeklyXpThreshold).clamp(0.0, 1.0),
+                      initialValue: (_oldWeeklyXp / kWeeklyXpThreshold).clamp(0.0, 1.0),
+                      minHeight: 12,
+                      duration: const Duration(milliseconds: 1500),
                     ),
                   ],
 
@@ -373,7 +428,9 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
       // (the stored value is updated later in the streak block below).
       final bestStreak =
           storedBest > (stats['weekStreak'] ?? 0) ? storedBest : (stats['weekStreak'] ?? 0);
-      final earnedNow = BadgesLogic.computeEarned(stats, bestStreak);
+      final currentLevel = ref.read(comfortZoneLevelProvider);
+      final enrichedStats = {...stats, 'czlLevel': currentLevel};
+      final earnedNow = BadgesLogic.computeEarned(enrichedStats, bestStreak);
       final seenBadges = await SettingsRepository.instance.loadSeenBadges();
 
       final newBadges = BadgesLogic.all

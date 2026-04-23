@@ -2004,6 +2004,16 @@ class S {
     return Intl.message('Done Today', name: 'doneToday', desc: '', args: []);
   }
 
+  /// `Privacy Policy`
+  String get privacyPolicy {
+    return Intl.message(
+      'Privacy Policy',
+      name: 'privacyPolicy',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `{minutes} minutes spent being brave.`
   String storyMinutesBrave(int minutes) {
     return Intl.message(

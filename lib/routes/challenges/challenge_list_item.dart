@@ -26,7 +26,7 @@ class ChallengeListItem extends StatelessWidget {
     final cardColor = isDone
         ? Color.lerp(
             Theme.of(context).cardTheme.color ?? cs.surfaceContainer,
-            const Color(0xFF4CAF50),
+            const Color(0xFF10B981),
             0.12,
           )
         : null;
@@ -82,7 +82,7 @@ class ChallengeListItem extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(left: AppSpacing.xs),
                           child: const Icon(Icons.check_circle_rounded,
-                              size: 16, color: Color(0xFF4CAF50)),
+                              size: 16, color: Color(0xFF10B981)),
                         ),
                       if (challenge.flirt)
                         Padding(

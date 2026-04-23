@@ -765,6 +765,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "primingSubQuick": MessageLookupByLibrary.simpleMessage(
       "Unter einer Minute Aktion. Das Unbehagen verfliegt schneller als du denkst.",
     ),
+    "privacyPolicy": MessageLookupByLibrary.simpleMessage(
+      "Datenschutzerklärung",
+    ),
     "profileTitle": MessageLookupByLibrary.simpleMessage("Profil"),
     "quote1": MessageLookupByLibrary.simpleMessage(
       "\"Die einzige Grenze für die Verwirklichung von morgen werden unsere Zweifel von heute sein.\"",

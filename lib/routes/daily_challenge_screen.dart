@@ -8,6 +8,7 @@ import '../providers/shared_preferences_provider.dart';
 import '../providers/statistics_providers.dart';
 import '../router.dart';
 import '../theme/app_spacing.dart';
+import '../widgets/syntra_blur_app_bar.dart';
 import '../widgets/syntra_button.dart';
 import '../widgets/syntra_progress_bar.dart';
 import 'challenge_detail_screen.dart';
@@ -64,17 +65,46 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
     final streak = stats.whenOrNull(data: (s) => s['streak']) ?? 0;
     final completedToday = stats.whenOrNull(data: (s) => s['completedToday']) ?? 0;
 
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
+    final l = S.of(context);
+
     return Scaffold(
-      body: SafeArea(
-        child: async.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, _) => Center(child: Text('Error: $e')),
-          data: (missions) => _MissionBoard(
-            missions: missions,
-            streak: streak,
-            completedToday: completedToday,
-          ),
-        ),
+      extendBodyBehindAppBar: true,
+      appBar: SyntraBlurAppBar(
+        title: Text(l.dailyChallenge),
+        actions: streak > 0
+            ? [
+                Padding(
+                  padding: const EdgeInsets.only(right: AppSpacing.md),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.local_fire_department_rounded,
+                          size: 18,
+                          color: completedToday > 0
+                              ? cs.tertiary
+                              : cs.onSurfaceVariant),
+                      const SizedBox(width: 3),
+                      Text(
+                        '$streak',
+                        style: tt.labelLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: completedToday > 0
+                              ? cs.tertiary
+                              : cs.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ]
+            : null,
+      ),
+      body: async.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (e, _) => Center(child: Text('Error: $e')),
+        data: (missions) => _MissionBoard(missions: missions),
       ),
     );
   }
@@ -84,14 +114,8 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
 
 class _MissionBoard extends ConsumerWidget {
   final List<DailyMission> missions;
-  final int streak;
-  final int completedToday;
 
-  const _MissionBoard({
-    required this.missions,
-    required this.streak,
-    required this.completedToday,
-  });
+  const _MissionBoard({required this.missions});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -99,40 +123,19 @@ class _MissionBoard extends ConsumerWidget {
 
     return ListView(
       padding: EdgeInsets.only(
-          bottom: AppSpacing.bottomNavBarHeight(context) + AppSpacing.md),
+        top: SyntraBlurAppBar.topPadding(context) + AppSpacing.sm,
+        bottom: AppSpacing.bottomNavBarHeight(context) + AppSpacing.md,
+      ),
       children: [
-        // ── Header ──────────────────────────────────────────────────────────
+        // ── Subtitle ─────────────────────────────────────────────────────────
         Padding(
           padding: const EdgeInsets.fromLTRB(
-              AppSpacing.md, AppSpacing.md, AppSpacing.md, AppSpacing.sm),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      S.of(context).todaysMissions,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineSmall
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      S.of(context).threeChallengesTodo,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: cs.onSurfaceVariant,
-                          ),
-                    ),
-                  ],
+              AppSpacing.md, 0, AppSpacing.md, AppSpacing.sm),
+          child: Text(
+            S.of(context).threeChallengesTodo,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: cs.onSurfaceVariant,
                 ),
-              ),
-              if (streak > 0)
-                _StreakBadge(
-                  streak: streak,
-                  isActiveToday: completedToday > 0,
-                ),
-            ],
           ),
         ),
 
@@ -183,51 +186,6 @@ class _MissionBoard extends ConsumerWidget {
       ref.read(dailyMissionsProvider.notifier).markCompleted(mission.tier);
       refreshStatistics(ref);
     }
-  }
-}
-
-// ─── Streak badge ─────────────────────────────────────────────────────────────
-
-class _StreakBadge extends StatelessWidget {
-  final int streak;
-  final bool isActiveToday;
-
-  const _StreakBadge({required this.streak, this.isActiveToday = true});
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final color = isActiveToday ? cs.tertiary : cs.outline;
-    final bgColor = isActiveToday
-        ? cs.tertiary.withValues(alpha: 0.1)
-        : cs.surfaceContainerHighest;
-    final borderColor = isActiveToday
-        ? cs.tertiary.withValues(alpha: 0.3)
-        : cs.outlineVariant;
-
-    return Container(
-      padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md, vertical: AppSpacing.sm),
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
-        border: Border.all(color: borderColor),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.local_fire_department, size: 16, color: color),
-          const SizedBox(width: 4),
-          Text(
-            '$streak day${streak == 1 ? '' : 's'}',
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: color,
-                ),
-          ),
-        ],
-      ),
-    );
   }
 }
 
@@ -297,7 +255,7 @@ class _MissionCard extends StatelessWidget {
     final cardColor = done
         ? Color.lerp(
             Theme.of(context).cardTheme.color ?? cs.surfaceContainer,
-            const Color(0xFF4CAF50),
+            const Color(0xFF10B981),
             0.12,
           )
         : null;
@@ -328,7 +286,7 @@ class _MissionCard extends StatelessWidget {
                       children: [
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.sm, vertical: 3),
+                              horizontal: AppSpacing.sm, vertical: 4),
                           decoration: BoxDecoration(
                             color: tierColor.withAlpha(30),
                             borderRadius:
@@ -338,7 +296,7 @@ class _MissionCard extends StatelessWidget {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(tierIcon, size: 12, color: tierColor),
+                              Icon(tierIcon, size: 14, color: tierColor),
                               const SizedBox(width: 4),
                               Text(
                                 tierLabel,
@@ -357,7 +315,7 @@ class _MissionCard extends StatelessWidget {
                           const Padding(
                             padding: EdgeInsets.only(left: AppSpacing.xs),
                             child: Icon(Icons.check_circle_rounded,
-                                size: 16, color: Color(0xFF4CAF50)),
+                                size: 16, color: Color(0xFF10B981)),
                           ),
                         if (c.flirt)
                           Padding(
@@ -399,38 +357,30 @@ class _MissionCard extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(
                   AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Flexible(
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        final compact = constraints.maxWidth < 155;
-                        return Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            MetaChip(
-                              icon: Icons.timer_outlined,
-                              label: _fmtCompact(c.time),
-                            ),
-                            const SizedBox(width: AppSpacing.sm),
-                            MetaChip(
-                              icon: Icons.emoji_events_outlined,
-                              label: compact
-                                  ? '${c.xp}A'
-                                  : '${c.xp} ${l.auraPoints}',
-                            ),
-                            const SizedBox(width: AppSpacing.sm),
-                            MetaChip(
-                              icon: _typeIcon(c.type),
-                              label: _typeLabel(context, c.type),
-                            ),
-                          ],
-                        );
-                      },
+                  Expanded(
+                    child: Wrap(
+                      spacing: AppSpacing.xs,
+                      runSpacing: AppSpacing.xs,
+                      children: [
+                        MetaChip(
+                          icon: Icons.timer_outlined,
+                          label: _fmtCompact(c.time),
+                        ),
+                        MetaChip(
+                          icon: Icons.emoji_events_outlined,
+                          label: '${c.xp} ${l.auraPoints}',
+                        ),
+                        MetaChip(
+                          icon: _typeIcon(c.type),
+                          label: _typeLabel(context, c.type),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(width: AppSpacing.sm),
-                  if (!done)
+                  if (!done) ...[
+                    const SizedBox(width: AppSpacing.sm),
                     SyntraButton.small(
                       onPressed: onStart,
                       color: tierColor,
@@ -439,6 +389,7 @@ class _MissionCard extends StatelessWidget {
                         child: Text(l.letsGo),
                       ),
                     ),
+                  ],
                 ],
               ),
             ),

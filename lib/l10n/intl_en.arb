@@ -313,6 +313,7 @@
   "minutesBrave": "Min. Brave",
   "bestStreak": "Best Streak",
   "doneToday": "Done Today",
+  "privacyPolicy": "Privacy Policy",
   "storyMinutesBrave": "{minutes} minutes spent being brave.",
   "@storyMinutesBrave": {
     "placeholders": { "minutes": { "type": "int" } }

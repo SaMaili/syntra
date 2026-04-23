@@ -57,8 +57,9 @@ class _StreakFreezesNotifier extends StateNotifier<int> {
 final availableAuraProvider = Provider<int?>((ref) {
   final statsAsync = ref.watch(overviewStatsProvider);
   final spentAura = ref.watch(spentAuraProvider);
-  return statsAsync.whenOrNull(
-      data: (s) => ((s['totalXp'] ?? 0) - spentAura).clamp(0, double.maxFinite).toInt());
+  final s = statsAsync.valueOrNull;
+  if (s == null) return null;
+  return ((s['totalXp'] ?? 0) - spentAura).clamp(0, double.maxFinite).toInt();
 });
 
 // ─── Auto-apply streak freezes ────────────────────────────────────────────────

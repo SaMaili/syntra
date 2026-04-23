@@ -30,8 +30,11 @@ class SyntraBlurAppBar extends StatelessWidget implements PreferredSizeWidget {
   });
 
   /// Top padding a scrollable body should add so its first item clears the bar.
+  /// Uses viewPadding (raw hardware inset) so it works correctly whether called
+  /// from an outer build context or from inside an extendBodyBehindAppBar body,
+  /// where Scaffold replaces padding.top with the full app-bar height.
   static double topPadding(BuildContext context) =>
-      MediaQuery.of(context).padding.top + kToolbarHeight;
+      MediaQuery.viewPaddingOf(context).top + kToolbarHeight;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -44,6 +47,7 @@ class SyntraBlurAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return AppBar(
       title: title,
+      centerTitle: false,
       actions: actions,
       leading: leading,
       backgroundColor: Colors.transparent,

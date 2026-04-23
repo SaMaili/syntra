@@ -57,6 +57,8 @@ class ChallengeFilters {
   final CompletionFilter completionFilter;
   final AuraSortOrder auraSortOrder;
   final CompletionSortOrder completionSortOrder;
+  /// Empty set means "all levels".
+  final Set<int> levelFilter;
 
   const ChallengeFilters({
     this.typeFilter = ChallengeTypeFilter.solo,
@@ -66,6 +68,7 @@ class ChallengeFilters {
     this.completionFilter = CompletionFilter.all,
     this.auraSortOrder = AuraSortOrder.none,
     this.completionSortOrder = CompletionSortOrder.none,
+    this.levelFilter = const {},
   });
 
   ChallengeFilters copyWith({
@@ -76,6 +79,7 @@ class ChallengeFilters {
     CompletionFilter? completionFilter,
     AuraSortOrder? auraSortOrder,
     CompletionSortOrder? completionSortOrder,
+    Set<int>? levelFilter,
   }) =>
       ChallengeFilters(
         typeFilter: typeFilter ?? this.typeFilter,
@@ -85,6 +89,7 @@ class ChallengeFilters {
         completionFilter: completionFilter ?? this.completionFilter,
         auraSortOrder: auraSortOrder ?? this.auraSortOrder,
         completionSortOrder: completionSortOrder ?? this.completionSortOrder,
+        levelFilter: levelFilter ?? this.levelFilter,
       );
 
   /// Number of non-default advanced filters active (shown as badge on tune button).
@@ -92,11 +97,12 @@ class ChallengeFilters {
   int get activeFilterCount {
     int n = 0;
     if (typeFilter == ChallengeTypeFilter.group ||
-        typeFilter == ChallengeTypeFilter.dare) n++;
+        typeFilter == ChallengeTypeFilter.dare) { n++; }
     if (environmentFilter != EnvironmentFilter.all) n++;
     if (completionFilter != CompletionFilter.all) n++;
     if (auraSortOrder != AuraSortOrder.none) n++;
     if (completionSortOrder != CompletionSortOrder.none) n++;
+    if (levelFilter.isNotEmpty) n++;
     return n;
   }
 }
@@ -115,6 +121,7 @@ class ChallengeFiltersNotifier extends StateNotifier<ChallengeFilters> {
   static const _keyCompletion = 'filter_completion';
   static const _keyAuraSort = 'filter_aura_sort';
   static const _keyCompletionSort = 'filter_completion_sort';
+  static const _keyLevelFilter = 'filter_levels';
 
   void _load() {
     final typeIdx = _prefs.getInt(_keyType) ?? 0;
@@ -125,6 +132,14 @@ class ChallengeFiltersNotifier extends StateNotifier<ChallengeFilters> {
         (notDone ? CompletionFilter.notDone.index : 0);
     final auraSortIdx = _prefs.getInt(_keyAuraSort) ?? 0;
     final completionSortIdx = _prefs.getInt(_keyCompletionSort) ?? 0;
+    final levelStr = _prefs.getString(_keyLevelFilter) ?? '';
+    final levelFilter = levelStr.isEmpty
+        ? <int>{}
+        : levelStr
+            .split(',')
+            .map(int.tryParse)
+            .whereType<int>()
+            .toSet();
     state = ChallengeFilters(
       typeFilter: ChallengeTypeFilter.values[
           typeIdx.clamp(0, ChallengeTypeFilter.values.length - 1)],
@@ -138,6 +153,7 @@ class ChallengeFiltersNotifier extends StateNotifier<ChallengeFilters> {
           auraSortIdx.clamp(0, AuraSortOrder.values.length - 1)],
       completionSortOrder: CompletionSortOrder.values[
           completionSortIdx.clamp(0, CompletionSortOrder.values.length - 1)],
+      levelFilter: levelFilter,
     );
   }
 
@@ -176,6 +192,18 @@ class ChallengeFiltersNotifier extends StateNotifier<ChallengeFilters> {
     await _prefs.setInt(_keyCompletionSort, order.index);
   }
 
+  Future<void> toggleLevelFilter(int level) async {
+    final current = Set<int>.from(state.levelFilter);
+    if (current.contains(level)) {
+      current.remove(level);
+    } else {
+      current.add(level);
+    }
+    state = state.copyWith(levelFilter: current);
+    await _prefs.setString(
+        _keyLevelFilter, current.isEmpty ? '' : current.join(','));
+  }
+
   Future<void> resetAdvancedFilters() async {
     state = state.copyWith(
       flirtFilter: FlirtFilter.all,
@@ -184,6 +212,7 @@ class ChallengeFiltersNotifier extends StateNotifier<ChallengeFilters> {
       completionFilter: CompletionFilter.all,
       auraSortOrder: AuraSortOrder.none,
       completionSortOrder: CompletionSortOrder.none,
+      levelFilter: {},
     );
     await _prefs.setInt(_keyFlirtV2, 0);
     await _prefs.setInt(_keyEnv, 0);
@@ -191,6 +220,7 @@ class ChallengeFiltersNotifier extends StateNotifier<ChallengeFilters> {
     await _prefs.setInt(_keyCompletion, 0);
     await _prefs.setInt(_keyAuraSort, 0);
     await _prefs.setInt(_keyCompletionSort, 0);
+    await _prefs.setString(_keyLevelFilter, '');
   }
 }
 
@@ -237,6 +267,11 @@ final filteredChallengesProvider =
       filtered = filtered
           .where((c) => c.environment == 'all' || c.environment == envKey)
           .toList();
+    }
+
+    // Level filter — empty set means show all
+    if (filters.levelFilter.isNotEmpty) {
+      filtered = filtered.where((c) => filters.levelFilter.contains(c.level)).toList();
     }
 
     return filtered;

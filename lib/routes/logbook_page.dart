@@ -5,6 +5,7 @@ import '../data/logbook_repository.dart';
 import '../generated/l10n.dart';
 import '../router.dart';
 import '../theme/app_spacing.dart';
+import '../widgets/syntra_blur_app_bar.dart';
 
 class LogbookPage extends StatefulWidget {
   const LogbookPage({super.key});
@@ -129,13 +130,15 @@ class _LogbookPageState extends State<LogbookPage> {
     final cs = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: AppBar(title: Text(l.logbook)),
+      extendBodyBehindAppBar: true,
+      appBar: SyntraBlurAppBar(title: Text(l.logbook)),
       body: Column(
         children: [
           // ── Search bar ─────────────────────────────────────────────────────
           Padding(
-            padding: const EdgeInsets.fromLTRB(
-                AppSpacing.md, AppSpacing.sm, AppSpacing.md, 0),
+            padding: EdgeInsets.fromLTRB(AppSpacing.md,
+                SyntraBlurAppBar.topPadding(context) + AppSpacing.xs,
+                AppSpacing.md, 0),
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
