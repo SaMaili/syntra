@@ -65,7 +65,15 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
   Future<void> _startChallenge(BuildContext context, Challenge challenge) async {
     SoundService.playDing(enabled: ref.read(soundEffectsEnabledProvider));
     final result = await context.pushPriming(challenge);
-    if (result != null) _onChallengeFinished();
+    if (result != null) {
+      _onChallengeFinished();
+      // Force a rebuild on return. The ref.listener fired while we were
+      // covered by the pushed route (isVisible=false → skipped), and when the
+      // provider value doesn't change again no rebuild triggers the build()
+      // fallback — without this setState, _displayAura stays at the
+      // pre-challenge value and the counter never animates.
+      if (mounted) setState(() {});
+    }
   }
 
   void _onGiveMeOne(BuildContext context) {

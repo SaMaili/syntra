@@ -20,8 +20,7 @@ final dailyMissionsProvider =
     AsyncNotifierProvider<DailyMissionsNotifier, List<DailyMission>>(
         DailyMissionsNotifier.new);
 
-class DailyMissionsNotifier
-    extends AsyncNotifier<List<DailyMission>> {
+class DailyMissionsNotifier extends AsyncNotifier<List<DailyMission>> {
   @override
   Future<List<DailyMission>> build() async {
     final lang = ref.watch(activeLocaleProvider);
@@ -48,174 +47,142 @@ class DailyChallengeScreen extends ConsumerStatefulWidget {
   const DailyChallengeScreen({super.key});
 
   @override
-  ConsumerState<DailyChallengeScreen> createState() => _DailyChallengeScreenState();
+  ConsumerState<DailyChallengeScreen> createState() =>
+      _DailyChallengeScreenState();
 }
 
 class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
     with AutomaticKeepAliveClientMixin {
-  
   @override
   bool get wantKeepAlive => true;
+
+  Future<void> _startMission(DailyMission mission) async {
+    final rewardFactor = await context.pushPriming(
+      mission.challenge,
+      isDailyMission: true,
+    );
+    if (rewardFactor != null && rewardFactor > 0 && mounted) {
+      ref.read(dailyMissionsProvider.notifier).markCompleted(mission.tier);
+      refreshStatistics(ref);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
     final async = ref.watch(dailyMissionsProvider);
-    final stats = ref.watch(overviewStatsProvider);
-    final streak = stats.whenOrNull(data: (s) => s['streak']) ?? 0;
-    final completedToday = stats.whenOrNull(data: (s) => s['completedToday']) ?? 0;
-
-    final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
-    final l = S.of(context);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: SyntraBlurAppBar(
-        title: Text(l.dailyChallenge),
-        actions: streak > 0
-            ? [
-                Padding(
-                  padding: const EdgeInsets.only(right: AppSpacing.md),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.local_fire_department_rounded,
-                          size: 18,
-                          color: completedToday > 0
-                              ? cs.tertiary
-                              : cs.onSurfaceVariant),
-                      const SizedBox(width: 3),
-                      Text(
-                        '$streak',
-                        style: tt.labelLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: completedToday > 0
-                              ? cs.tertiary
-                              : cs.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ]
-            : null,
+        title: Text(S.of(context).dailyChallenge),
+        actions: const [_StreakBadge()],
       ),
       body: async.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('Error: $e')),
-        data: (missions) => _MissionBoard(missions: missions),
+        data: (missions) => ListView(
+          padding: EdgeInsets.fromLTRB(
+            AppSpacing.md,
+            SyntraBlurAppBar.topPadding(context) + AppSpacing.sm,
+            AppSpacing.md,
+            AppSpacing.bottomNavBarHeight(context) + AppSpacing.md,
+          ),
+          children: [
+            _ProgressCard(missions: missions),
+            const SizedBox(height: AppSpacing.md),
+            for (final m in missions) ...[
+              _MissionCard(mission: m, onStart: () => _startMission(m)),
+              const SizedBox(height: AppSpacing.sm),
+            ],
+            const SizedBox(height: AppSpacing.sm),
+            const _ExploreAllButton(),
+          ],
+        ),
       ),
     );
   }
 }
 
-// ─── Mission board layout ─────────────────────────────────────────────────────
+// ─── Streak badge (app-bar action) ────────────────────────────────────────────
 
-class _MissionBoard extends ConsumerWidget {
-  final List<DailyMission> missions;
-
-  const _MissionBoard({required this.missions});
+class _StreakBadge extends ConsumerWidget {
+  const _StreakBadge();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final stats = ref.watch(overviewStatsProvider);
+    final streak = stats.whenOrNull(data: (s) => s['streak']) ?? 0;
+    if (streak <= 0) return const SizedBox.shrink();
+
+    final completedToday =
+        stats.whenOrNull(data: (s) => s['completedToday']) ?? 0;
     final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
+    final color = completedToday > 0 ? cs.tertiary : cs.onSurfaceVariant;
 
-    return ListView(
-      padding: EdgeInsets.only(
-        top: SyntraBlurAppBar.topPadding(context) + AppSpacing.sm,
-        bottom: AppSpacing.bottomNavBarHeight(context) + AppSpacing.md,
+    return Padding(
+      padding: const EdgeInsets.only(right: AppSpacing.md),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.local_fire_department_rounded, size: 18, color: color),
+          const SizedBox(width: 3),
+          Text(
+            '$streak',
+            style: tt.labelLarge
+                ?.copyWith(fontWeight: FontWeight.bold, color: color),
+          ),
+        ],
       ),
-      children: [
-        // ── Subtitle ─────────────────────────────────────────────────────────
-        Padding(
-          padding: const EdgeInsets.fromLTRB(
-              AppSpacing.md, 0, AppSpacing.md, AppSpacing.sm),
-          child: Text(
-            S.of(context).threeChallengesTodo,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: cs.onSurfaceVariant,
-                ),
-          ),
-        ),
-
-        // ── Progress indicator ───────────────────────────────────────────────
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-          child: _DayProgress(missions: missions),
-        ),
-        const SizedBox(height: AppSpacing.md),
-
-        // ── Mission cards ────────────────────────────────────────────────────
-        ...missions.map(
-          (m) => Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md, vertical: AppSpacing.xs),
-            child: _MissionCard(
-              mission: m,
-              onStart: () => _onStart(context, ref, m),
-            ),
-          ),
-        ),
-
-        // ── Footer ──────────────────────────────────────────────────────────
-        const SizedBox(height: AppSpacing.md),
-        Center(
-          child: TextButton.icon(
-            icon: const Icon(Icons.explore_outlined, size: 18),
-            label: Text(
-              S.of(context).exploreAllChallenges,
-              style: const TextStyle(fontWeight: FontWeight.w500),
-            ),
-            onPressed: () =>
-                ref.read(homeTabIndexProvider.notifier).state = 0,
-          ),
-        ),
-      ],
     );
-  }
-
-  Future<void> _onStart(
-      BuildContext context, WidgetRef ref, DailyMission mission) async {
-    if (!context.mounted) return;
-    final rewardFactor = await context.pushPriming(
-      mission.challenge,
-      isDailyMission: true,
-    );
-    if (rewardFactor != null && rewardFactor > 0 && context.mounted) {
-      ref.read(dailyMissionsProvider.notifier).markCompleted(mission.tier);
-      refreshStatistics(ref);
-    }
   }
 }
 
-// ─── Day progress ─────────────────────────────────────────────────────────────
+// ─── Progress card ────────────────────────────────────────────────────────────
 
-class _DayProgress extends StatelessWidget {
+class _ProgressCard extends StatelessWidget {
   final List<DailyMission> missions;
-  const _DayProgress({required this.missions});
+  const _ProgressCard({required this.missions});
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
+    final l = S.of(context);
     final done = missions.where((m) => m.completed).length;
     final total = missions.length;
 
-    return Row(
-      children: [
-        Expanded(
-          child: SyntraXpBar(
-            value: total == 0 ? 0 : done / total,
-          ),
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l.threeChallengesTodo,
+              style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Row(
+              children: [
+                Expanded(
+                  child: SyntraXpBar(value: total == 0 ? 0 : done / total),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Text(
+                  '$done / $total',
+                  style: tt.labelSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: cs.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
-        const SizedBox(width: AppSpacing.sm),
-        Text(
-          '$done / $total',
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-        ),
-      ],
+      ),
     );
   }
 }
@@ -231,27 +198,12 @@ class _MissionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final c = mission.challenge;
-    final tier = mission.tier;
-    final done = mission.completed;
+    final tt = Theme.of(context).textTheme;
     final l = S.of(context);
+    final c = mission.challenge;
+    final done = mission.completed;
 
-    final tierColor = switch (tier) {
-      MissionTier.comfort => cs.primary,
-      MissionTier.growth => cs.tertiary,
-      MissionTier.bold => cs.error,
-    };
-    final tierLabel = switch (tier) {
-      MissionTier.comfort => l.comfortZone,
-      MissionTier.growth => l.growthZone,
-      MissionTier.bold => l.boldMove,
-    };
-    final tierIcon = switch (tier) {
-      MissionTier.comfort => Icons.spa_outlined,
-      MissionTier.growth => Icons.trending_up_rounded,
-      MissionTier.bold => Icons.bolt_rounded,
-    };
-
+    final tierColor = _tierColor(cs, mission.tier);
     final cardColor = done
         ? Color.lerp(
             Theme.of(context).cardTheme.color ?? cs.surfaceContainer,
@@ -269,95 +221,46 @@ class _MissionCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ── Tappable title area → opens detail screen ──────────────────
             InkWell(
               borderRadius: const BorderRadius.vertical(
                 top: Radius.circular(AppSpacing.cardRadius),
               ),
               onTap: () => _onInfoTap(context),
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.md, AppSpacing.md, AppSpacing.md, AppSpacing.sm),
+                padding: const EdgeInsets.fromLTRB(AppSpacing.md,
+                    AppSpacing.md, AppSpacing.md, AppSpacing.sm),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Tier badge + done check
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.sm, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: tierColor.withAlpha(30),
-                            borderRadius:
-                                BorderRadius.circular(AppSpacing.chipRadius),
-                            border: Border.all(color: tierColor.withAlpha(100)),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(tierIcon, size: 14, color: tierColor),
-                              const SizedBox(width: 4),
-                              Text(
-                                tierLabel,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelSmall
-                                    ?.copyWith(
-                                      color: tierColor,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (done)
-                          const Padding(
-                            padding: EdgeInsets.only(left: AppSpacing.xs),
-                            child: Icon(Icons.check_circle_rounded,
-                                size: 16, color: Color(0xFF10B981)),
-                          ),
-                        if (c.flirt)
-                          Padding(
-                            padding: const EdgeInsets.only(left: AppSpacing.xs),
-                            child: Icon(Icons.favorite,
-                                size: 16, color: cs.secondary),
-                          ),
-                      ],
+                    _TierHeader(
+                      tier: mission.tier,
+                      done: done,
+                      flirt: c.flirt,
                     ),
                     const SizedBox(height: AppSpacing.sm),
-                    // Title
                     Text(
                       c.title,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium
+                      style: tt.titleMedium
                           ?.copyWith(fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: AppSpacing.xs),
-                    // Description
                     Text(
                       c.description,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
+                      style: tt.bodyMedium
                           ?.copyWith(color: cs.onSurfaceVariant),
                     ),
                   ],
                 ),
               ),
             ),
-
-            // ── Chips + button ─────────────────────────────────────────────
             Padding(
               padding: const EdgeInsets.fromLTRB(
                   AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
                     child: Wrap(
@@ -365,17 +268,14 @@ class _MissionCard extends StatelessWidget {
                       runSpacing: AppSpacing.xs,
                       children: [
                         MetaChip(
-                          icon: Icons.timer_outlined,
-                          label: _fmtCompact(c.time),
-                        ),
+                            icon: Icons.timer_outlined,
+                            label: _fmtDuration(c.time)),
                         MetaChip(
-                          icon: Icons.emoji_events_outlined,
-                          label: '${c.xp} ${l.auraPoints}',
-                        ),
+                            icon: Icons.emoji_events_outlined,
+                            label: '${c.xp} ${l.auraPoints}'),
                         MetaChip(
-                          icon: _typeIcon(c.type),
-                          label: _typeLabel(context, c.type),
-                        ),
+                            icon: _typeIcon(c.type),
+                            label: _typeLabel(l, c.type)),
                       ],
                     ),
                   ),
@@ -403,29 +303,119 @@ class _MissionCard extends StatelessWidget {
     final start = await showChallengeDetailSheet(context, mission.challenge);
     if (start == true) onStart();
   }
+}
 
-  IconData _typeIcon(String type) => switch (type) {
-        'group' => Icons.group_outlined,
-        'coop' => Icons.people_alt_outlined,
-        'dare' => Icons.bolt_outlined,
-        _ => Icons.person_outlined,
-      };
+// ─── Tier header (chip + status icons) ────────────────────────────────────────
 
-  String _typeLabel(BuildContext context, String type) {
+class _TierHeader extends StatelessWidget {
+  final MissionTier tier;
+  final bool done;
+  final bool flirt;
+  const _TierHeader(
+      {required this.tier, required this.done, required this.flirt});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
     final l = S.of(context);
-    return switch (type) {
+    final color = _tierColor(cs, tier);
+
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.sm, vertical: 4),
+          decoration: BoxDecoration(
+            color: color.withAlpha(30),
+            borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
+            border: Border.all(color: color.withAlpha(100)),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(_tierIcon(tier), size: 14, color: color),
+              const SizedBox(width: 4),
+              Text(
+                _tierLabel(l, tier),
+                style: tt.labelSmall?.copyWith(
+                    color: color, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ),
+        if (done)
+          const Padding(
+            padding: EdgeInsets.only(left: AppSpacing.xs),
+            child: Icon(Icons.check_circle_rounded,
+                size: 16, color: Color(0xFF10B981)),
+          ),
+        if (flirt)
+          Padding(
+            padding: const EdgeInsets.only(left: AppSpacing.xs),
+            child: Icon(Icons.favorite, size: 16, color: cs.secondary),
+          ),
+      ],
+    );
+  }
+}
+
+// ─── Explore-all footer button ────────────────────────────────────────────────
+
+class _ExploreAllButton extends ConsumerWidget {
+  const _ExploreAllButton();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Center(
+      child: TextButton.icon(
+        icon: const Icon(Icons.explore_outlined, size: 18),
+        label: Text(
+          S.of(context).exploreAllChallenges,
+          style: const TextStyle(fontWeight: FontWeight.w500),
+        ),
+        onPressed: () => ref.read(homeTabIndexProvider.notifier).state = 0,
+      ),
+    );
+  }
+}
+
+// ─── Tier helpers ─────────────────────────────────────────────────────────────
+
+Color _tierColor(ColorScheme cs, MissionTier tier) => switch (tier) {
+      MissionTier.comfort => cs.primary,
+      MissionTier.growth => cs.tertiary,
+      MissionTier.bold => cs.error,
+    };
+
+String _tierLabel(S l, MissionTier tier) => switch (tier) {
+      MissionTier.comfort => l.comfortZone,
+      MissionTier.growth => l.growthZone,
+      MissionTier.bold => l.boldMove,
+    };
+
+IconData _tierIcon(MissionTier tier) => switch (tier) {
+      MissionTier.comfort => Icons.spa_outlined,
+      MissionTier.growth => Icons.trending_up_rounded,
+      MissionTier.bold => Icons.bolt_rounded,
+    };
+
+IconData _typeIcon(String type) => switch (type) {
+      'group' => Icons.group_outlined,
+      'coop' => Icons.people_alt_outlined,
+      'dare' => Icons.bolt_outlined,
+      _ => Icons.person_outlined,
+    };
+
+String _typeLabel(S l, String type) => switch (type) {
       'group' => l.group,
       'coop' => l.coop,
       'dare' => l.dare,
       _ => l.solo,
     };
-  }
 
-  String _fmtCompact(int seconds) {
-    final m = seconds ~/ 60;
-    final s = seconds % 60;
-    return '$m:${s.toString().padLeft(2, '0')}';
-  }
-
+String _fmtDuration(int seconds) {
+  final m = seconds ~/ 60;
+  final s = seconds % 60;
+  return '$m:${s.toString().padLeft(2, '0')}';
 }
-
