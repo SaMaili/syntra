@@ -428,7 +428,9 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
       // (the stored value is updated later in the streak block below).
       final bestStreak =
           storedBest > (stats['weekStreak'] ?? 0) ? storedBest : (stats['weekStreak'] ?? 0);
-      final earnedNow = BadgesLogic.computeEarned(stats, bestStreak);
+      final currentLevel = ref.read(comfortZoneLevelProvider);
+      final enrichedStats = {...stats, 'czlLevel': currentLevel};
+      final earnedNow = BadgesLogic.computeEarned(enrichedStats, bestStreak);
       final seenBadges = await SettingsRepository.instance.loadSeenBadges();
 
       final newBadges = BadgesLogic.all

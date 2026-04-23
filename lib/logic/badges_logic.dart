@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'comfort_zone_logic.dart';
+
 /// A single achievement badge definition.
 class AppBadge {
   final String id;
@@ -28,7 +30,7 @@ class AppBadge {
 class BadgesLogic {
   BadgesLogic._();
 
-  static const all = <AppBadge>[
+  static List<AppBadge> get all => [
     AppBadge(
       id: 'first_step',
       icon: Icons.rocket_launch_rounded,
@@ -77,6 +79,14 @@ class BadgesLogic {
       color: Color(0xFF00838F),
       condition: _braveMinutes,
     ),
+    // One badge per comfort-zone level reached (levels 2–10).
+    for (int lvl = 2; lvl <= ComfortZoneLogic.maxLevel; lvl++)
+      AppBadge(
+        id: 'level_$lvl',
+        icon: ComfortZoneLogic.levelIcons[lvl],
+        color: ComfortZoneLogic.levelGradientColors[lvl].$1,
+        condition: (stats, _) => (stats['czlLevel'] ?? 1) >= lvl,
+      ),
   ];
 
   /// Returns the subset of badges the user has earned.

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../generated/l10n.dart';
 import '../logic/badges_logic.dart';
+import '../logic/comfort_zone_logic.dart';
 import '../services/vibration_service.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/syntra_button.dart';
@@ -181,6 +182,12 @@ class _BadgeUnlockedScreenState extends ConsumerState<BadgeUnlockedScreen>
   }
 
   String _badgeName(S l, String id) {
+    if (id.startsWith('level_')) {
+      final lvl = int.tryParse(id.substring(6)) ?? 0;
+      if (lvl >= 1 && lvl <= ComfortZoneLogic.maxLevel) {
+        return 'Level $lvl: ${ComfortZoneLogic.levelNames[lvl]}';
+      }
+    }
     switch (id) {
       case 'first_step': return l.badgeFirstStep;
       case 'ten_challenges': return l.badgeTenChallenges;

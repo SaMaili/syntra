@@ -3,34 +3,49 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../generated/l10n.dart';
 import '../../logic/badges_logic.dart';
+import '../../logic/comfort_zone_logic.dart';
+import '../../providers/settings_providers.dart';
 import '../../providers/statistics_providers.dart';
 import '../../theme/app_spacing.dart';
 class BadgesSection extends ConsumerWidget {
   const BadgesSection({super.key});
 
-  String _badgeLabel(S l, String id) => switch (id) {
-        'first_step' => l.badgeFirstStep,
-        'ten_challenges' => l.badgeTenChallenges,
-        'fifty_challenges' => l.badgeFiftyChallenges,
-        'three_week_streak' => l.badgeThreeWeekStreak,
-        'seven_week_streak' => l.badgeSevenWeekStreak,
-        'century_xp' => l.badgeCenturyXp,
-        'five_hundred_xp' => l.badgeFiveHundredXp,
-        'brave_minutes' => l.badgeBraveMinutes,
-        String other => other,
-      };
+  String _badgeLabel(S l, String id) {
+    final lvl = _levelFromId(id);
+    if (lvl != null) return 'Level $lvl: ${ComfortZoneLogic.levelNames[lvl]}';
+    return switch (id) {
+      'first_step' => l.badgeFirstStep,
+      'ten_challenges' => l.badgeTenChallenges,
+      'fifty_challenges' => l.badgeFiftyChallenges,
+      'three_week_streak' => l.badgeThreeWeekStreak,
+      'seven_week_streak' => l.badgeSevenWeekStreak,
+      'century_xp' => l.badgeCenturyXp,
+      'five_hundred_xp' => l.badgeFiveHundredXp,
+      'brave_minutes' => l.badgeBraveMinutes,
+      String other => other,
+    };
+  }
 
-  String _badgeDesc(S l, String id) => switch (id) {
-        'first_step' => l.badgeFirstStepDesc,
-        'ten_challenges' => l.badgeTenChallengesDesc,
-        'fifty_challenges' => l.badgeFiftyChallengesDesc,
-        'three_week_streak' => l.badgeThreeWeekStreakDesc,
-        'seven_week_streak' => l.badgeSevenWeekStreakDesc,
-        'century_xp' => l.badgeCenturyXpDesc,
-        'five_hundred_xp' => l.badgeFiveHundredXpDesc,
-        'brave_minutes' => l.badgeBraveMinutesDesc,
-        String() => '',
-      };
+  String _badgeDesc(S l, String id) {
+    final lvl = _levelFromId(id);
+    if (lvl != null) return 'Reach Level $lvl in your Comfort Zone journey.';
+    return switch (id) {
+      'first_step' => l.badgeFirstStepDesc,
+      'ten_challenges' => l.badgeTenChallengesDesc,
+      'fifty_challenges' => l.badgeFiftyChallengesDesc,
+      'three_week_streak' => l.badgeThreeWeekStreakDesc,
+      'seven_week_streak' => l.badgeSevenWeekStreakDesc,
+      'century_xp' => l.badgeCenturyXpDesc,
+      'five_hundred_xp' => l.badgeFiveHundredXpDesc,
+      'brave_minutes' => l.badgeBraveMinutesDesc,
+      String() => '',
+    };
+  }
+
+  int? _levelFromId(String id) {
+    if (!id.startsWith('level_')) return null;
+    return int.tryParse(id.substring(6));
+  }
 
   void _showBadgeInfo(
     BuildContext context,
@@ -147,6 +162,7 @@ class BadgesSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final statsAsync = ref.watch(overviewStatsProvider);
+    final currentLevel = ref.watch(comfortZoneLevelProvider);
     final l = S.of(context);
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
@@ -155,7 +171,8 @@ class BadgesSection extends ConsumerWidget {
       loading: () => const SizedBox.shrink(),
       error: (e, st) => const SizedBox.shrink(),
       data: (stats) {
-        final earned = BadgesLogic.computeEarned(stats, stats['weekStreak'] ?? 0);
+        final enrichedStats = {...stats, 'czlLevel': currentLevel};
+        final earned = BadgesLogic.computeEarned(enrichedStats, enrichedStats['weekStreak'] ?? 0);
         return Card(
           margin: EdgeInsets.zero,
           child: Padding(

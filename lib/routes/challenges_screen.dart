@@ -206,10 +206,10 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
     final filterCount = filters.activeFilterCount;
 
     final double headerCollapseRange = isWeekComplete ? 56.0 : 84.0;
-    ScrollPhysics physics = const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics());
-    if (_scrollController.hasClients && _scrollController.position.maxScrollExtent < headerCollapseRange) {
-      physics = const ClampingScrollPhysics();
-    }
+    final physics = _HeaderSnapPhysics(
+      snapRange: headerCollapseRange,
+      parent: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+    );
 
     return Scaffold(
       body: CustomScrollView(
@@ -232,8 +232,64 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
             ),
           ),
           ChallengeListSliver(onStart: _startChallenge),
+          // Guarantees maxScrollExtent >= snapRange so the header can fully dock.
+          const SliverFillRemaining(
+            hasScrollBody: false,
+            child: SizedBox.shrink(),
+          ),
+          SliverToBoxAdapter(
+            child: SizedBox(height: headerCollapseRange),
+          ),
         ],
       ),
+    );
+  }
+}
+
+// Docks the header to expanded or collapsed on release; fast flings pass through.
+class _HeaderSnapPhysics extends ScrollPhysics {
+  final double snapRange;
+
+  const _HeaderSnapPhysics({required this.snapRange, super.parent});
+
+  @override
+  _HeaderSnapPhysics applyTo(ScrollPhysics? ancestor) {
+    return _HeaderSnapPhysics(snapRange: snapRange, parent: buildParent(ancestor));
+  }
+
+  @override
+  Simulation? createBallisticSimulation(ScrollMetrics position, double velocity) {
+    final current = position.pixels;
+
+    // Not enough content to fully collapse → don't interfere.
+    if (position.maxScrollExtent < snapRange) {
+      return super.createBallisticSimulation(position, velocity);
+    }
+
+    // Outside the header's collapse band → normal list scrolling.
+    if (current <= 0 || current >= snapRange) {
+      return super.createBallisticSimulation(position, velocity);
+    }
+
+    // Rough kinematic projection of where natural physics would land.
+    final projected = current + velocity * 0.15;
+
+    // Fling that would exit the band anyway → let it through.
+    if (projected <= 0 || projected >= snapRange) {
+      return super.createBallisticSimulation(position, velocity);
+    }
+
+    // Pick nearest dock point, biased by projected landing.
+    final target = projected < snapRange / 2 ? 0.0 : snapRange;
+
+    if ((target - current).abs() < 0.5) return null;
+
+    return ScrollSpringSimulation(
+      spring,
+      current,
+      target,
+      velocity,
+      tolerance: toleranceFor(position),
     );
   }
 }
