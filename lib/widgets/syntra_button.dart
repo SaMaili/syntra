@@ -176,7 +176,9 @@ class _SyntraButtonState extends ConsumerState<SyntraButton> with SingleTickerPr
         _controller.forward();
         HapticFeedback.selectionClick();
       },
-      onTapUp: isDisabled ? null : (_) {
+      onTapUp: isDisabled ? null : (_) async {
+        await _controller.forward(); // ensure full press completes before bounce
+        if (!mounted) return;
         _controller.reverse();
         SoundService.playClick(enabled: ref.read(soundEffectsEnabledProvider));
         widget.onPressed?.call();

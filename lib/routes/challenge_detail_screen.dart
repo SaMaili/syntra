@@ -81,7 +81,7 @@ class ChallengeDetailSheet extends ConsumerWidget {
                 if (isDone) ...[
                   const SizedBox(width: AppSpacing.sm),
                   const Icon(Icons.check_circle_rounded,
-                      color: Color(0xFF4CAF50), size: 22),
+                      color: Color(0xFF10B981), size: 22),
                 ],
               ],
             ),

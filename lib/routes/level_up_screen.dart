@@ -108,85 +108,92 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
           ),
         ),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Spacer(),
-
-                // ── Icon ───────────────────────────────────────────────────────
-                ScaleTransition(
-                  scale: _iconScale,
-                  child: RotationTransition(
-                    turns: _iconRotation,
-                    child: Container(
-                      width: 160,
-                      height: 160,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: gradient,
+          child: LayoutBuilder(
+            builder: (context, constraints) => SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: AppSpacing.xl),
+  
+                      // ── Icon ───────────────────────────────────────────────────────
+                      ScaleTransition(
+                        scale: _iconScale,
+                        child: RotationTransition(
+                          turns: _iconRotation,
+                          child: Container(
+                            width: 160,
+                            height: 160,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: gradient,
+                            ),
+                            child: Icon(icon, size: 80, color: Colors.white),
+                          ),
+                        ),
                       ),
-                      child: Icon(icon, size: 80, color: Colors.white),
-                    ),
+                      const SizedBox(height: AppSpacing.xl),
+  
+                      // ── Text ───────────────────────────────────────────────────────
+                      FadeTransition(
+                        opacity: _textOpacity,
+                        child: SlideTransition(
+                          position: _textSlide,
+                          child: Column(
+                            children: [
+                              Text(
+                                l.levelUnlocked(widget.newLevel),
+                                style: tt.headlineMedium?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 32,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: AppSpacing.sm),
+                              Text(
+                                name,
+                                style: tt.titleLarge?.copyWith(
+                                  color: gradient.colors.first,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 22,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: AppSpacing.md),
+                              Text(
+                                desc,
+                                style: tt.bodyLarge?.copyWith(
+                                  color: Colors.white70,
+                                  height: 1.5,
+                                  fontSize: 16,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+  
+                      const Expanded(child: SizedBox(height: AppSpacing.xl)),
+  
+                      // ── Action ─────────────────────────────────────────────────────
+                      FadeTransition(
+                        opacity: _textOpacity,
+                        child: SyntraButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          color: gradient.colors.first,
+                          child: Text(l.letsGoButton),
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.xl),
+                    ],
                   ),
                 ),
-                const SizedBox(height: AppSpacing.xl),
-
-                // ── Text ───────────────────────────────────────────────────────
-                FadeTransition(
-                  opacity: _textOpacity,
-                  child: SlideTransition(
-                    position: _textSlide,
-                    child: Column(
-                      children: [
-                        Text(
-                          l.levelUnlocked(widget.newLevel),
-                          style: tt.headlineMedium?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 32,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: AppSpacing.sm),
-                        Text(
-                          name,
-                          style: tt.titleLarge?.copyWith(
-                            color: gradient.colors.first,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 22,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        Text(
-                          desc,
-                          style: tt.bodyLarge?.copyWith(
-                            color: Colors.white70,
-                            height: 1.5,
-                            fontSize: 16,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                const Spacer(),
-
-                // ── Action ─────────────────────────────────────────────────────
-                FadeTransition(
-                  opacity: _textOpacity,
-                  child: SyntraButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    color: gradient.colors.first,
-                    child: Text(l.letsGoButton),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xl),
-              ],
+              ),
             ),
           ),
         ),

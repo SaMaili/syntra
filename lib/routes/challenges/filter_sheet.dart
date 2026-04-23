@@ -5,11 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../generated/l10n.dart';
 import '../../providers/challenge_providers.dart';
+import '../../providers/settings_providers.dart';
 import '../../theme/app_spacing.dart';
 import '../../widgets/syntra_button.dart';
 
 class ChallengesFilterSheet extends ConsumerWidget {
-  const ChallengesFilterSheet({super.key});
+  final ScrollController? scrollController;
+  const ChallengesFilterSheet({super.key, this.scrollController});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -19,54 +21,54 @@ class ChallengesFilterSheet extends ConsumerWidget {
     final tt = Theme.of(context).textTheme;
     final l = S.of(context);
     
+    final currentCzl = ref.watch(comfortZoneLevelProvider);
     final hasResettableFilters = filters.environmentFilter != EnvironmentFilter.all ||
         filters.completionFilter != CompletionFilter.all ||
         filters.auraSortOrder != AuraSortOrder.none ||
         filters.completionSortOrder != CompletionSortOrder.none ||
-        filters.flirtFilter != FlirtFilter.all;
+        filters.flirtFilter != FlirtFilter.all ||
+        filters.levelFilter.isNotEmpty;
 
     return Container(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.85,
-      ),
       padding: EdgeInsets.fromLTRB(
           AppSpacing.lg, AppSpacing.md, AppSpacing.lg, AppSpacing.lg + MediaQuery.paddingOf(context).bottom),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Drag handle
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              margin: const EdgeInsets.only(bottom: AppSpacing.md),
-              decoration: BoxDecoration(
-                color: cs.outlineVariant,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-          Row(
-            children: [
-              Text(l.filterTitle,
-                  style: tt.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
-              const Spacer(),
-              if (hasResettableFilters)
-                TextButton(
-                  onPressed: notifier.resetAdvancedFilters,
-                  child: Text(l.filterReset),
-                ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.sm),
-
-          // Scrollable area for filters
+          // Scrollable area — pill and title scroll with content so the
+          // pill is connected to the scroll controller and can drive the sheet.
           Flexible(
             child: SingleChildScrollView(
+              controller: scrollController,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Drag handle
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      margin: const EdgeInsets.only(bottom: AppSpacing.md),
+                      decoration: BoxDecoration(
+                        color: cs.outlineVariant,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Text(l.filterTitle,
+                          style: tt.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+                      const Spacer(),
+                      if (hasResettableFilters)
+                        TextButton(
+                          onPressed: notifier.resetAdvancedFilters,
+                          child: Text(l.filterReset),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
                   const SizedBox(height: AppSpacing.sm),
 
                   // ── Sorting ───────────────────────────────────────────────────
@@ -238,6 +240,17 @@ class ChallengesFilterSheet extends ConsumerWidget {
                   ),
                   const SizedBox(height: AppSpacing.md),
 
+                  // ── Level filter ──────────────────────────────────────────────────
+                  Text('Level',
+                      style: tt.labelMedium?.copyWith(fontWeight: FontWeight.w600)),
+                  const SizedBox(height: AppSpacing.xs),
+                  _LevelChipRow(
+                    maxLevel: currentCzl,
+                    selected: filters.levelFilter,
+                    onToggle: notifier.toggleLevelFilter,
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+
                   // ── Completion filter ─────────────────────────────────────────────
                   Text(l.filterCompletionLabel,
                       style: tt.labelMedium?.copyWith(fontWeight: FontWeight.w600)),
@@ -342,6 +355,60 @@ class AnimatedChipRow<T> extends StatelessWidget {
           ),
         );
       }).toList(),
+    );
+  }
+}
+
+/// Multi-select chip row for level filtering (L1 … L{maxLevel}).
+class _LevelChipRow extends StatelessWidget {
+  final int maxLevel;
+  final Set<int> selected;
+  final void Function(int) onToggle;
+
+  const _LevelChipRow({
+    required this.maxLevel,
+    required this.selected,
+    required this.onToggle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
+
+    return Wrap(
+      spacing: AppSpacing.xs,
+      runSpacing: AppSpacing.xs,
+      children: List.generate(maxLevel, (i) {
+        final level = i + 1;
+        final isSelected = selected.contains(level);
+        return GestureDetector(
+          onTap: () => onToggle(level),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            curve: Curves.easeInOut,
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? Color.lerp(cs.primary, Colors.grey, 0.45)
+                  : cs.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
+              border: isSelected
+                  ? null
+                  : Border.all(color: cs.outlineVariant, width: 1),
+            ),
+            child: Text(
+              'L$level',
+              style: tt.labelMedium?.copyWith(
+                color: isSelected ? Colors.white : cs.onSurfaceVariant,
+                fontWeight:
+                    isSelected ? FontWeight.w600 : FontWeight.normal,
+              ),
+            ),
+          ),
+        );
+      }),
     );
   }
 }

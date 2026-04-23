@@ -115,13 +115,14 @@ class _PrimingScreenState extends State<PrimingScreen>
     final l = S.of(context);
 
     final ringSize =
-        (MediaQuery.sizeOf(context).height * 0.15).clamp(80.0, 120.0);
+        (MediaQuery.sizeOf(context).height * 0.13).clamp(72.0, 110.0);
 
     return Scaffold(
       backgroundColor: cs.surface,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.xl),
+          padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg, AppSpacing.md, AppSpacing.lg, AppSpacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -129,6 +130,7 @@ class _PrimingScreenState extends State<PrimingScreen>
               Expanded(
                 child: LayoutBuilder(
                   builder: (context, constraints) => SingleChildScrollView(
+                    clipBehavior: Clip.none,
                     child: ConstrainedBox(
                       constraints:
                           BoxConstraints(minHeight: constraints.maxHeight),
@@ -142,7 +144,7 @@ class _PrimingScreenState extends State<PrimingScreen>
                             size: ringSize,
                           ),
 
-                          const SizedBox(height: AppSpacing.xl),
+                          const SizedBox(height: AppSpacing.lg),
 
                           // ── Headline ──────────────────────────────────
                           Text(
@@ -165,7 +167,7 @@ class _PrimingScreenState extends State<PrimingScreen>
                             textAlign: TextAlign.center,
                           ),
 
-                          const SizedBox(height: AppSpacing.lg),
+                          const SizedBox(height: AppSpacing.md),
 
                           // ── Pre-challenge anxiety picker ───────────────
                           _AnxietyPicker(
@@ -174,7 +176,7 @@ class _PrimingScreenState extends State<PrimingScreen>
                                 setState(() => _preAnxiety = v),
                           ),
 
-                          const SizedBox(height: AppSpacing.lg),
+                          const SizedBox(height: AppSpacing.md),
 
                           // ── Duration picker ───────────────────────────
                           _DurationPicker(

@@ -64,7 +64,7 @@ class _LogbookDetailPageState extends ConsumerState<LogbookDetailPage>
 
   Color _statusColor(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    return _isSuccess ? const Color(0xFF4CAF50) : cs.tertiary;
+    return _isSuccess ? const Color(0xFF10B981) : cs.tertiary;
   }
 
   String _formatDate(String? timestamp) {
@@ -129,28 +129,83 @@ class _LogbookDetailPageState extends ConsumerState<LogbookDetailPage>
 
   void _showDeleteDialog() {
     final l = S.of(context);
-    showDialog(
+    showModalBottomSheet<void>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l.deleteEntry),
-        content: Text(l.deleteEntryConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(l.cancel),
+      isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        final cs = Theme.of(ctx).colorScheme;
+        final tt = Theme.of(ctx).textTheme;
+        return Container(
+          decoration: BoxDecoration(
+            color: cs.surfaceContainerLow,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
           ),
-          SyntraButton(
-            onPressed: _deleteEntry,
-            color: Theme.of(context).colorScheme.error,
-            height: 40,
-            depth: 3,
-            child: Text(
-              l.delete,
-              style: TextStyle(color: Theme.of(context).colorScheme.onError),
+          child: SafeArea(
+            top: false,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 12),
+                Center(
+                  child: Container(
+                    width: 36,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: cs.onSurfaceVariant.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xl),
+                Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: cs.errorContainer,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(Icons.delete_outline_rounded,
+                      color: cs.onErrorContainer, size: 28),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                Text(
+                  l.deleteEntry,
+                  style: tt.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+                  child: Text(
+                    l.deleteEntryConfirm,
+                    style: tt.bodyMedium
+                        ?.copyWith(color: cs.onSurfaceVariant, height: 1.5),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xl),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+                  child: SyntraButton(
+                    onPressed: _deleteEntry,
+                    color: cs.error,
+                    height: 52,
+                    child: Text(l.delete,
+                        style: TextStyle(color: cs.onError)),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  child: Text(l.cancel,
+                      style:
+                          TextStyle(color: cs.onSurfaceVariant, fontSize: 13)),
+                ),
+                const SizedBox(height: AppSpacing.md),
+              ],
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 

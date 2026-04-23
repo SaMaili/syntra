@@ -125,6 +125,7 @@ class ComfortZoneLogic {
     SharedPreferences prefs,
   ) async {
     if (currentLevel >= maxLevel) return null;
+    if (completed.level != currentLevel) return null;
 
     final key = '$_keyCompletions$currentLevel';
     final newCount = (prefs.getInt(key) ?? 0) + 1;

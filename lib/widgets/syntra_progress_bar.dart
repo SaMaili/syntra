@@ -14,6 +14,7 @@ import '../services/vibration_service.dart';
 /// Set [silent] = true for timer / countdown bars where audio is unwanted.
 class SyntraXpBar extends ConsumerStatefulWidget {
   final double value;
+  final double initialValue;
   final double minHeight;
   final Color? color;
   final Color? backgroundColor;
@@ -23,6 +24,7 @@ class SyntraXpBar extends ConsumerStatefulWidget {
   const SyntraXpBar({
     super.key,
     required this.value,
+    this.initialValue = 0.0,
     this.minHeight = 10,
     this.color,
     this.backgroundColor,
@@ -59,21 +61,39 @@ class _SyntraXpBarState extends ConsumerState<SyntraXpBar>
       duration: const Duration(milliseconds: 1800),
     )..repeat();
 
-    final initialValue = widget.value.clamp(0.0, 1.0);
-    _sweepFrom = 0.0;
-    _feedbackActive = !widget.silent && initialValue > 0.001;
+    final initialValue = widget.initialValue.clamp(0.0, 1.0);
+    final targetValue = widget.value.clamp(0.0, 1.0);
+    _sweepFrom = initialValue;
+    _feedbackActive = !widget.silent && targetValue > initialValue;
 
-    _anim = Tween<double>(begin: 0.0, end: initialValue)
+    _anim = Tween<double>(begin: initialValue, end: targetValue)
         .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
 
-    Future.delayed(const Duration(milliseconds: 50), () {
+    // Defer until after the first frame so ModalRoute is accessible.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      _ctrl.forward();
-      if (_feedbackActive) {
-        SoundService.playXpProgress(
-            enabled: ref.read(soundEffectsEnabledProvider));
+      final routeAnim = ModalRoute.of(context)?.animation;
+      if (routeAnim != null && !routeAnim.isCompleted) {
+        // Route push in flight (e.g. app cold-start) — wait for it to land.
+        late final AnimationStatusListener listener;
+        listener = (status) {
+          if (status == AnimationStatus.completed) {
+            routeAnim.removeStatusListener(listener);
+            if (mounted) _startFill();
+          }
+        };
+        routeAnim.addStatusListener(listener);
+      } else {
+        // No push animation (tab slide-in) — delay to match the 400 ms slide.
+        Future.delayed(const Duration(milliseconds: 420), () {
+          if (mounted) _startFill();
+        });
       }
     });
+  }
+
+  void _startFill() {
+    _ctrl.forward();
   }
 
   @override
@@ -94,11 +114,6 @@ class _SyntraXpBarState extends ConsumerState<SyntraXpBar>
       ..duration = widget.duration
       ..reset()
       ..forward();
-
-    if (_feedbackActive) {
-      SoundService.playXpProgress(
-          enabled: ref.read(soundEffectsEnabledProvider));
-    }
   }
 
   void _onTick() {
@@ -183,17 +198,6 @@ class _CartoonBarPainter extends CustomPainter {
 
     // ── Track ─────────────────────────────────────────────────────────────
     canvas.drawRRect(trackRRect, Paint()..color = trackColor);
-
-    // ── Segment dividers ──────────────────────────────────────────────────
-    if (h >= 8) {
-      final segPaint = Paint()
-        ..color = Colors.black.withValues(alpha: 0.14)
-        ..strokeWidth = 1.0;
-      for (final pct in [0.25, 0.50, 0.75]) {
-        final x = w * pct;
-        canvas.drawLine(Offset(x, h * 0.12), Offset(x, h * 0.88), segPaint);
-      }
-    }
 
     // ── Fill ──────────────────────────────────────────────────────────────
     if (value > 0.004) {

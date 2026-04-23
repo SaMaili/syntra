@@ -631,8 +631,6 @@ class ComfortZoneLevelCard extends ConsumerWidget {
   Future<void> _showLevelInfo(
       BuildContext context, WidgetRef ref, int level,
       {int? goDownTo}) async {
-    final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
     final l = S.of(context);
     final gradient = ComfortZoneLogic.levelGradient(level);
     final icon = ComfortZoneLogic.levelIcons[
@@ -641,114 +639,240 @@ class ComfortZoneLevelCard extends ConsumerWidget {
     final desc = _levelDesc(l, level);
     final canGoDown = goDownTo != null;
 
-    final goDown = await showDialog<bool>(
+    final goDown = await showModalBottomSheet<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.cardRadius * 2),
-        ),
-        contentPadding:
-            const EdgeInsets.fromLTRB(24, 24, 24, 16),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // ── Icon ────────────────────────────────────────────────────
-            Center(
-              child: Container(
-                width: 72,
-                height: 72,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    colors: gradient.colors,
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+      isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        final cs2 = Theme.of(ctx).colorScheme;
+        final tt2 = Theme.of(ctx).textTheme;
+        return Container(
+          decoration: BoxDecoration(
+            color: cs2.surfaceContainerLow,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+          ),
+          child: SafeArea(
+            top: false,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // ── Handle ────────────────────────────────────────────────
+                const SizedBox(height: 12),
+                Center(
+                  child: Container(
+                    width: 36,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: cs2.onSurfaceVariant.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
                 ),
-                child: Icon(icon, size: 36, color: Colors.white),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-
-            // ── Name ────────────────────────────────────────────────────
-            Text(
-              name,
-              style: tt.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppSpacing.xs),
-
-            // ── Level chip ───────────────────────────────────────────────
-            Center(
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.sm, vertical: 3),
-                decoration: BoxDecoration(
-                  gradient: gradient,
-                  borderRadius:
-                      BorderRadius.circular(AppSpacing.chipRadius),
+                const SizedBox(height: AppSpacing.xl),
+  
+                // ── Icon ──────────────────────────────────────────────────
+                Container(
+                  width: 88,
+                  height: 88,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: gradient.colors,
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                  ),
+                  child: Icon(icon, size: 44, color: Colors.white),
                 ),
-                child: Text(
-                  l.levelN(level),
-                  style: tt.labelSmall?.copyWith(
-                      color: Colors.white, fontWeight: FontWeight.w600),
+                const SizedBox(height: AppSpacing.md),
+  
+                // ── Name ──────────────────────────────────────────────────
+                Text(
+                  name,
+                  style: tt2.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
                 ),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
+                const SizedBox(height: AppSpacing.xs),
+  
+                // ── Level chip ────────────────────────────────────────────
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.sm, vertical: 4),
+                  decoration: BoxDecoration(
+                    gradient: gradient,
+                    borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
+                  ),
+                  child: Text(
+                    l.levelN(level),
+                    style: tt2.labelSmall?.copyWith(
+                        color: Colors.white, fontWeight: FontWeight.w600),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+  
+                // ── Description ───────────────────────────────────────────
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+                  child: Text(
+                    desc,
+                    style: tt2.bodyMedium
+                        ?.copyWith(color: cs2.onSurfaceVariant, height: 1.5),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+  
+                // ── Step-down section ─────────────────────────────────────
+                if (canGoDown) ...[
+                  const SizedBox(height: AppSpacing.lg),
+                  Divider(
+                      indent: AppSpacing.xl,
+                      endIndent: AppSpacing.xl,
+                      color: cs2.outlineVariant),
+                  const SizedBox(height: AppSpacing.sm),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+                    child: Column(
+                      children: [
+                        Text(
+                          l.levelDownTitle,
+                          style: tt2.titleSmall
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          l.levelDownBody,
+                          style: tt2.bodySmall?.copyWith(
+                              color: cs2.onSurfaceVariant, height: 1.4),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+  
+                const SizedBox(height: AppSpacing.lg),
+  
+                // ── Primary action ────────────────────────────────────────
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+                  child: SyntraButton(
+                    onPressed: () => Navigator.of(ctx).pop(false),
+                    child: Text(canGoDown ? l.levelDownCancel : l.letsGoButton),
+                  ),
+                ),
+  
+                // ── Step-back action ──────────────────────────────────────
+                if (canGoDown) ...[
+                  TextButton(
+                    onPressed: () async {
+                      final confirmed = await showModalBottomSheet<bool>(
+                        context: ctx,
+                        isScrollControlled: true,
+                        useSafeArea: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (confirmCtx) {
+                          final cs3 = Theme.of(confirmCtx).colorScheme;
+                          final tt3 = Theme.of(confirmCtx).textTheme;
+                          return Container(
+                            decoration: BoxDecoration(
+                              color: cs3.surfaceContainerLow,
+                              borderRadius: const BorderRadius.vertical(
+                                  top: Radius.circular(28)),
+                            ),
+                            child: SafeArea(
+                              top: false,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const SizedBox(height: 12),
+                                  Center(
+                                    child: Container(
+                                      width: 36,
+                                      height: 4,
+                                      decoration: BoxDecoration(
+                                        color: cs3.onSurfaceVariant
+                                            .withValues(alpha: 0.3),
+                                        borderRadius: BorderRadius.circular(2),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: AppSpacing.xl),
+                                Container(
+                                  padding: const EdgeInsets.all(14),
+                                  decoration: BoxDecoration(
+                                    color: cs3.errorContainer,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(Icons.arrow_downward_rounded,
+                                      color: cs3.onErrorContainer, size: 28),
+                                ),
+                                const SizedBox(height: AppSpacing.md),
+                                Text(
+                                  l.levelDownTitle,
+                                  style: tt3.titleLarge
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: AppSpacing.sm),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: AppSpacing.xl),
+                                  child: Text(
+                                    l.levelDownBody,
+                                    style: tt3.bodyMedium?.copyWith(
+                                        color: cs3.onSurfaceVariant,
+                                        height: 1.5),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                const SizedBox(height: AppSpacing.xl),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: AppSpacing.xl),
+                                  child: SyntraButton(
+                                    onPressed: () =>
+                                        Navigator.of(confirmCtx).pop(true),
+                                    color: cs3.error,
+                                    child: Text(l.levelDownConfirm,
+                                        style: TextStyle(
+                                            color: cs3.onError)),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.of(confirmCtx).pop(false),
+                                  child: Text(l.levelDownCancel,
+                                      style: TextStyle(
+                                          color: cs3.onSurfaceVariant,
+                                          fontSize: 13)),
+                                ),
+                                const SizedBox(height: AppSpacing.md),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                    if (confirmed == true && ctx.mounted) {
+                      Navigator.of(ctx).pop(true);
+                    }
+                  },
+                  child: Text(
+                    l.levelDownConfirm,
+                    style: TextStyle(color: cs2.onSurfaceVariant, fontSize: 13),
+                  ),
+                ),
+              ],
 
-            // ── Description ──────────────────────────────────────────────
-            Text(
-              desc,
-              style: tt.bodyMedium
-                  ?.copyWith(color: cs.onSurfaceVariant, height: 1.5),
-              textAlign: TextAlign.center,
-            ),
-
-            // ── Back-down section (only when level > 1) ──────────────────
-            if (canGoDown) ...[
               const SizedBox(height: AppSpacing.md),
-              Divider(color: cs.outlineVariant),
-              const SizedBox(height: AppSpacing.xs),
-              Text(
-                l.levelDownTitle,
-                style: tt.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppSpacing.xs),
-              Text(
-                l.levelDownBody,
-                style: tt.bodySmall?.copyWith(
-                    color: cs.onSurfaceVariant, height: 1.4),
-                textAlign: TextAlign.center,
-              ),
             ],
-
-            const SizedBox(height: AppSpacing.lg),
-
-            // ── Primary action ───────────────────────────────────────────
-            SyntraButton(
-              onPressed: () => Navigator.of(ctx).pop(false),
-              child: Text(canGoDown ? l.levelDownCancel : l.letsGoButton),
-            ),
-
-            // ── Step-back action (only when level > 1) ───────────────────
-            if (canGoDown) ...[
-              const SizedBox(height: AppSpacing.xs),
-              TextButton(
-                onPressed: () => Navigator.of(ctx).pop(true),
-                child: Text(
-                  l.levelDownConfirm,
-                  style: TextStyle(
-                      color: cs.onSurfaceVariant, fontSize: 13),
-                ),
-              ),
-            ],
-          ],
+          ),
         ),
-      ),
-    );
+      );
+    },
+  );
 
     if (goDown == true && context.mounted) {
       await ref.read(comfortZoneLevelProvider.notifier).setLevel(goDownTo!);
@@ -863,44 +987,21 @@ class ComfortZoneLevelCard extends ConsumerWidget {
                           padding: EdgeInsets.only(
                               left: col == 0 ? 0 : AppSpacing.xs / 2,
                               right: col == 4 ? 0 : AppSpacing.xs / 2),
-                          child: GestureDetector(
-                            onTap: locked
-                                ? () => _showLevelInfo(context, ref, lvl)
-                                : selected
-                                    ? () => _showLevelInfo(context, ref, lvl)
-                                    : () => _showLevelInfo(context, ref, lvl,
-                                          goDownTo: lvl),
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 150),
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8),
-                              decoration: BoxDecoration(
-                                color: selected
-                                    ? cs.primaryContainer
-                                    : locked
-                                        ? cs.surfaceContainerHighest.withValues(alpha: 0.5)
-                                        : cs.surfaceContainerHighest,
-                                borderRadius: BorderRadius.circular(
-                                    AppSpacing.chipRadius),
-                                border: selected
-                                    ? Border.all(
-                                        color: cs.primary, width: 1.5)
-                                    : null,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  '$lvl',
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    color: selected
-                                        ? cs.onPrimaryContainer
-                                        : locked
-                                            ? cs.onSurfaceVariant.withValues(alpha: 0.35)
-                                            : cs.onSurfaceVariant,
-                                  ),
-                                ),
-                              ),
+                          child: Opacity(
+                            opacity: locked ? 0.4 : 1.0,
+                            child: SyntraButton(
+                              onPressed: locked
+                                  ? () => _showLevelInfo(context, ref, lvl)
+                                  : selected
+                                      ? () => _showLevelInfo(context, ref, lvl)
+                                      : () => _showLevelInfo(context, ref, lvl,
+                                            goDownTo: lvl),
+                              color: selected
+                                  ? cs.primary
+                                  : Theme.of(context).scaffoldBackgroundColor,
+                              height: 36,
+                              depth: 3,
+                              child: Text('$lvl'),
                             ),
                           ),
                         ),

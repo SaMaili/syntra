@@ -10,6 +10,7 @@ import 'data/logbook_repository.dart';
 import 'data/settings_repository.dart';
 import 'generated/l10n.dart';
 import 'logic/notification_manager.dart';
+import 'providers/scroll_providers.dart';
 import 'providers/settings_providers.dart';
 import 'providers/statistics_providers.dart' show homeTabIndexProvider;
 import 'router.dart';
@@ -29,11 +30,24 @@ class HomeBar extends ConsumerStatefulWidget {
   ConsumerState<HomeBar> createState() => _HomeBarState();
 }
 
-class _HomeBarState extends ConsumerState<HomeBar> {
+class _HomeBarState extends ConsumerState<HomeBar>
+    with SingleTickerProviderStateMixin {
   int _index = 0;
-  late PageController _pageController;
-  // True while animateToPage is in flight — suppresses intermediate onPageChanged.
-  bool _isProgrammatic = false;
+  int _animFrom = 0;
+  int _animTo = 0;
+  late AnimationController _anim;
+  bool _isAnimating = false;
+
+  // Only screens that have been visited are added to the tree.
+  // This prevents off-screen widgets from running initState (and firing
+  // animations / sounds) before the user has ever navigated to them.
+  final Set<int> _visited = {0};
+
+  // Swipe tracking
+  double _dragProgress = 0.0;
+  bool _isDragging = false;
+  double? _dragStartX;
+  int? _dragTarget;
 
   static const _screens = <Widget>[
     ChallengesScreen(),
@@ -45,35 +59,136 @@ class _HomeBarState extends ConsumerState<HomeBar> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: _index);
+    _anim = AnimationController(vsync: this, duration: const Duration(milliseconds: 400));
     _scheduleIfEnabled();
     _showDailyGreeting();
-    // Listen for programmatic tab switches (e.g., "Explore all challenges").
     ref.listenManual(homeTabIndexProvider, (_, next) {
-      if (mounted) {
-        _onDestinationSelected(next);
-      }
+      if (mounted) _onDestinationSelected(next);
     });
   }
 
   @override
   void dispose() {
-    _pageController.dispose();
+    _anim.dispose();
     super.dispose();
   }
 
   void _onDestinationSelected(int i) {
-    if (_index == i) return;
-    setState(() => _index = i);
+    if (_index == i) {
+      if (i == 0) {
+        ref.read(challengesScrollToTopProvider.notifier).update((s) => s + 1);
+      }
+      return;
+    }
+    if (_isAnimating) return;
+    _animFrom = _index;
+    _animTo = i;
+    setState(() {
+      _visited.add(i);
+      _index = i;
+      _isAnimating = true;
+    });
     ref.read(homeTabIndexProvider.notifier).state = i;
-    _isProgrammatic = true;
-    _pageController
-        .animateToPage(
-          i,
-          duration: const Duration(milliseconds: 400),
-          curve: Curves.easeInOutCubicEmphasized,
-        )
-        .whenComplete(() => _isProgrammatic = false);
+    _anim.forward(from: 0).whenComplete(() {
+      if (mounted) setState(() => _isAnimating = false);
+    });
+  }
+
+  // Returns the horizontal offset for screen [i] given screen width [w].
+  // Only the two involved pages move; all others stay off-screen.
+  double _pageOffset(int i, double w) {
+    double t;
+    int from, to;
+
+    if (_isAnimating) {
+      t = Curves.easeInOutCubicEmphasized.transform(_anim.value);
+      from = _animFrom;
+      to = _animTo;
+    } else if (_isDragging && _dragTarget != null) {
+      t = _dragProgress;
+      from = _index;
+      to = _dragTarget!;
+    } else {
+      return i == _index ? 0.0 : (i < _index ? -w : w);
+    }
+
+    final d = to > from ? 1.0 : -1.0;
+    if (i == from) return -d * w * t;
+    if (i == to) return d * w * (1.0 - t);
+    // Pages outside the transition range stay off-screen.
+    return i < (from < to ? from : to) ? -w : w;
+  }
+
+  void _onDragStart(DragStartDetails d) {
+    if (_isAnimating) return;
+    _dragStartX = d.localPosition.dx;
+  }
+
+  void _onDragUpdate(DragUpdateDetails d) {
+    if (_isAnimating || _dragStartX == null) return;
+    final dx = d.localPosition.dx - _dragStartX!;
+    if (!_isDragging) {
+      if (dx < -8 && _index < _screens.length - 1) {
+        _dragTarget = _index + 1;
+        _visited.add(_dragTarget!);
+      } else if (dx > 8 && _index > 0) {
+        _dragTarget = _index - 1;
+        _visited.add(_dragTarget!);
+      } else {
+        return;
+      }
+    }
+    final w = MediaQuery.sizeOf(context).width;
+    final dir = _dragTarget! > _index ? 1.0 : -1.0;
+    setState(() {
+      _isDragging = true;
+      _dragProgress = (-dx * dir / w).clamp(0.0, 1.0);
+    });
+  }
+
+  void _onDragEnd(DragEndDetails d) {
+    if (!_isDragging || _dragTarget == null) {
+      setState(() {
+        _isDragging = false;
+        _dragStartX = null;
+      });
+      return;
+    }
+
+    final vel = d.primaryVelocity ?? 0.0;
+    final dir = _dragTarget! > _index ? 1.0 : -1.0;
+    final complete = _dragProgress > 0.4 ||
+        (dir > 0 && vel < -500) ||
+        (dir < 0 && vel > 500);
+    final target = _dragTarget!;
+
+    _animFrom = _index;
+    _animTo = target;
+    setState(() {
+      _isDragging = false;
+      _dragTarget = null;
+      _isAnimating = true;
+      if (complete) _index = target;
+    });
+
+    if (complete) {
+      ref.read(homeTabIndexProvider.notifier).state = target;
+    }
+
+    _anim.value = _dragProgress;
+    final future = complete
+        ? _anim.animateTo(1.0, duration: const Duration(milliseconds: 220))
+        : _anim.animateBack(0.0, duration: const Duration(milliseconds: 220));
+    future.whenComplete(() {
+      if (mounted) {
+        setState(() {
+          _isAnimating = false;
+          _dragProgress = 0.0;
+        });
+      }
+    });
+
+    _dragStartX = null;
   }
 
   Future<void> _scheduleIfEnabled() async {
@@ -221,7 +336,7 @@ class _HomeBarState extends ConsumerState<HomeBar> {
             data: Theme.of(context).copyWith(
               navigationBarTheme: NavigationBarThemeData(
                 backgroundColor:
-                    cs.surface.withValues(alpha: 0.35),
+                    cs.surface.withValues(alpha: 0.45),
                 surfaceTintColor: cs.surfaceTint.withValues(alpha: 0.15),
                 elevation: 0,
                 shadowColor: Colors.transparent,
@@ -268,14 +383,30 @@ class _HomeBarState extends ConsumerState<HomeBar> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      body: PageView(
-        controller: _pageController,
-        onPageChanged: (i) {
-          if (_isProgrammatic) return;
-          if (_index != i) setState(() => _index = i);
-        },
-        physics: const BouncingScrollPhysics(),
-        children: _screens,
+      body: GestureDetector(
+        onHorizontalDragStart: _onDragStart,
+        onHorizontalDragUpdate: _onDragUpdate,
+        onHorizontalDragEnd: _onDragEnd,
+        child: ClipRect(
+          child: AnimatedBuilder(
+            animation: _anim,
+            builder: (context, _) {
+              final w = MediaQuery.sizeOf(context).width;
+              return Stack(
+                children: [
+                  for (int i = 0; i < _screens.length; i++)
+                    if (_visited.contains(i))
+                      Positioned.fill(
+                        child: Transform.translate(
+                          offset: Offset(_pageOffset(i, w), 0),
+                          child: _screens[i],
+                        ),
+                      ),
+                ],
+              );
+            },
+          ),
+        ),
       ),
       bottomNavigationBar: _buildNavBar(context),
     );

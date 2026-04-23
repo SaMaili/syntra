@@ -470,10 +470,7 @@ class _HelpButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppSpacing.buttonRadius),
           ),
         ),
-        onPressed: () => showDialog(
-          context: context,
-          builder: (_) => NotSureWhatToSayDialog(hints: hints),
-        ),
+        onPressed: () => NotSureWhatToSaySheet.show(context, hints),
       ),
     );
   }

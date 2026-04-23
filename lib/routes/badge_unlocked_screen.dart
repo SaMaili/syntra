@@ -100,7 +100,7 @@ class _BadgeUnlockedScreenState extends ConsumerState<BadgeUnlockedScreen>
             center: Alignment.center,
             radius: 1.2,
             colors: [
-              badgeColor.withOpacity(0.3),
+              badgeColor.withValues(alpha: 0.3),
               bgColor,
             ],
           ),
@@ -113,7 +113,6 @@ class _BadgeUnlockedScreenState extends ConsumerState<BadgeUnlockedScreen>
               children: [
                 const Spacer(),
 
-                // ── Icon ───────────────────────────────────────────────────────
                 ScaleTransition(
                   scale: _iconScale,
                   child: RotationTransition(
@@ -132,7 +131,6 @@ class _BadgeUnlockedScreenState extends ConsumerState<BadgeUnlockedScreen>
                 ),
                 const SizedBox(height: AppSpacing.xl),
 
-                // ── Text ───────────────────────────────────────────────────────
                 FadeTransition(
                   opacity: _textOpacity,
                   child: SlideTransition(
@@ -165,7 +163,6 @@ class _BadgeUnlockedScreenState extends ConsumerState<BadgeUnlockedScreen>
 
                 const Spacer(),
 
-                // ── Action ─────────────────────────────────────────────────────
                 FadeTransition(
                   opacity: _textOpacity,
                   child: SyntraButton(
