@@ -7,6 +7,7 @@ import '../../providers/shop_providers.dart';
 import '../../providers/statistics_providers.dart';
 import '../../theme/app_spacing.dart';
 import '../../widgets/syntra_progress_bar.dart';
+import 'filter_bar.dart';
 
 /// Hero header shown at the top of the challenges screen.
 class ChallengesHeroHeader extends ConsumerWidget {
@@ -143,7 +144,6 @@ class _StreakBarState extends State<StreakBar> {
       opacity: widget.labelOpacity,
       child: Row(
         children: [
-          // Fire icon + streak label
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -156,8 +156,6 @@ class _StreakBarState extends State<StreakBar> {
               const SizedBox(width: AppSpacing.sm),
             ],
           ),
-
-          // Animated progress track
           Expanded(
             child: SyntraXpBar(
               value: widget.progress,
@@ -168,8 +166,6 @@ class _StreakBarState extends State<StreakBar> {
               silent: true,
             ),
           ),
-
-          // XP counter — counts up from previous value
           const SizedBox(width: AppSpacing.sm),
           TweenAnimationBuilder<int>(
             key: ValueKey('$_prevXp→${widget.currentWeekXp}'),
@@ -182,6 +178,333 @@ class _StreakBarState extends State<StreakBar> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ─── Header snap physics ──────────────────────────────────────────────────────
+
+// Docks the header to expanded or collapsed on release; fast flings pass through.
+class HeaderSnapPhysics extends ScrollPhysics {
+  final double snapRange;
+
+  const HeaderSnapPhysics({required this.snapRange, super.parent});
+
+  @override
+  HeaderSnapPhysics applyTo(ScrollPhysics? ancestor) {
+    return HeaderSnapPhysics(snapRange: snapRange, parent: buildParent(ancestor));
+  }
+
+  @override
+  Simulation? createBallisticSimulation(ScrollMetrics position, double velocity) {
+    final current = position.pixels;
+
+    if (position.maxScrollExtent < snapRange) {
+      return super.createBallisticSimulation(position, velocity);
+    }
+
+    if (current <= 0 || current >= snapRange) {
+      return super.createBallisticSimulation(position, velocity);
+    }
+
+    final projected = current + velocity * 0.15;
+
+    if (projected <= 0 || projected >= snapRange) {
+      return super.createBallisticSimulation(position, velocity);
+    }
+
+    final target = projected < snapRange / 2 ? 0.0 : snapRange;
+
+    if ((target - current).abs() < 0.5) return null;
+
+    return ScrollSpringSimulation(
+      spring,
+      current,
+      target,
+      velocity,
+      tolerance: toleranceFor(position),
+    );
+  }
+}
+
+// ─── Collapsible header delegate ─────────────────────────────────────────────
+
+class ChallengesHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final double topPad;
+  final bool isWeekComplete;
+  final int displayStreak;
+  final int availableXp;
+  final int freezes;
+  final int currentWeekXp;
+  final double progress;
+  final int filterCount;
+  final VoidCallback onGiveMeOne;
+  final VoidCallback onFilterTap;
+
+  ChallengesHeaderDelegate({
+    required this.topPad,
+    required this.isWeekComplete,
+    required this.displayStreak,
+    required this.availableXp,
+    required this.freezes,
+    required this.currentWeekXp,
+    required this.progress,
+    required this.filterCount,
+    required this.onGiveMeOne,
+    required this.onFilterTap,
+  });
+
+  static const _headerContent = 76.0;
+  static const _filterBarHeight = 56.0;
+  static const _compactBarHeight = 48.0;
+
+  @override
+  double get maxExtent => topPad + (isWeekComplete ? 48.0 : _headerContent) + _filterBarHeight;
+
+  @override
+  double get minExtent => topPad + _compactBarHeight;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    final t = (shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0);
+
+    final double labelOpacity = (1.0 - t * 3.33).clamp(0.0, 1.0);
+    final double slideOutT = (t * 2.0).clamp(0.0, 1.0);
+    final double buttonsT = ((t - 0.5) * 2).clamp(0.0, 1.0);
+    final double filterBarOpacity = (1.0 - buttonsT).clamp(0.0, 1.0);
+
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
+    final l = S.of(context);
+    final streakColor = isWeekComplete ? const Color(0xFFFF6D00) : cs.onSurfaceVariant;
+
+    return SizedBox(
+      height: maxExtent,
+      child: Material(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        child: ClipRect(
+          child: Stack(
+            children: [
+              // 1. Streak Bar
+              Positioned(
+                top: topPad + 48,
+                left: 0,
+                right: 0,
+                child: Offstage(
+                  offstage: isWeekComplete,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                    child: StreakBar(
+                      key: const ValueKey('streak_bar'),
+                      isActive: isWeekComplete,
+                      progress: progress,
+                      currentWeekXp: currentWeekXp,
+                      streakLabel: '$displayStreak ${l.weeksShort}',
+                      labelOpacity: labelOpacity,
+                    ),
+                  ),
+                ),
+              ),
+
+              // 2. Filter Bar
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Opacity(
+                  opacity: filterBarOpacity,
+                  child: IgnorePointer(
+                    ignoring: filterBarOpacity < 0.5,
+                    child: ChallengesFilterBar(onGiveMeOne: onGiveMeOne),
+                  ),
+                ),
+              ),
+
+              // 3. Top Row
+              Positioned(
+                top: topPad,
+                left: 0,
+                right: 0,
+                height: _compactBarHeight,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                  child: Row(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        widthFactor: 1.0 - slideOutT,
+                        child: Transform.translate(
+                          offset: Offset(-slideOutT * 40, 0),
+                          child: Opacity(
+                            opacity: 1.0 - slideOutT,
+                            child: Text(
+                              l.navChallenge,
+                              style: tt.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                              maxLines: 1,
+                              softWrap: false,
+                            ),
+                          ),
+                        ),
+                      ),
+                      if (!isWeekComplete)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          widthFactor: slideOutT,
+                          child: Transform.translate(
+                            offset: Offset((1.0 - slideOutT) * 40, 0),
+                            child: Opacity(
+                              opacity: slideOutT,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.local_fire_department_rounded, size: 16, color: streakColor),
+                                  const SizedBox(width: 3),
+                                  Text(
+                                    '$displayStreak ${l.weeksShort}',
+                                    style: tt.labelLarge?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: streakColor,
+                                    ),
+                                    softWrap: false,
+                                  ),
+                                  const SizedBox(width: AppSpacing.md),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+
+                      Expanded(
+                        flex: ((1.0 - t) * 1000).clamp(1, 1000).toInt(),
+                        child: const SizedBox(),
+                      ),
+
+                      if (isWeekComplete) ...[
+                        Icon(Icons.local_fire_department_rounded, size: 16, color: streakColor),
+                        const SizedBox(width: 3),
+                        Text(
+                          '$displayStreak ${l.weeksShort}',
+                          style: tt.labelLarge?.copyWith(fontWeight: FontWeight.bold, color: streakColor),
+                        ),
+                        const SizedBox(width: AppSpacing.md),
+                      ],
+
+                      Icon(Icons.emoji_events_rounded, size: 16, color: cs.primary),
+                      const SizedBox(width: 3),
+                      _AnimatedAuraCounter(value: availableXp),
+
+                      if (freezes > 0)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          widthFactor: 1.0 - slideOutT,
+                          child: Opacity(
+                            opacity: 1.0 - slideOutT,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const SizedBox(width: AppSpacing.md),
+                                Icon(Icons.ac_unit_rounded, size: 14, color: cs.tertiary),
+                                const SizedBox(width: 2),
+                                Text(
+                                  '×$freezes',
+                                  style: tt.labelMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: cs.tertiary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                      Expanded(
+                        flex: (t * 1000).clamp(1, 1000).toInt(),
+                        child: const SizedBox(),
+                      ),
+
+                      Align(
+                        alignment: Alignment.centerRight,
+                        widthFactor: buttonsT,
+                        child: Transform.translate(
+                          offset: Offset((1.0 - buttonsT) * 40, 0),
+                          child: Opacity(
+                            opacity: buttonsT,
+                            child: Badge(
+                              isLabelVisible: filterCount > 0,
+                              label: Text('$filterCount'),
+                              child: IconButton(
+                                icon: const Icon(Icons.tune_rounded),
+                                onPressed: onFilterTap,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  bool shouldRebuild(ChallengesHeaderDelegate old) =>
+      old.topPad != topPad ||
+      old.isWeekComplete != isWeekComplete ||
+      old.displayStreak != displayStreak ||
+      old.availableXp != availableXp ||
+      old.freezes != freezes ||
+      old.currentWeekXp != currentWeekXp ||
+      old.progress != progress ||
+      old.filterCount != filterCount ||
+      old.onGiveMeOne != onGiveMeOne ||
+      old.onFilterTap != onFilterTap;
+}
+
+// ─── Animated aura counter ────────────────────────────────────────────────────
+
+class _AnimatedAuraCounter extends StatefulWidget {
+  final int value;
+  const _AnimatedAuraCounter({required this.value});
+
+  @override
+  State<_AnimatedAuraCounter> createState() => _AnimatedAuraCounterState();
+}
+
+class _AnimatedAuraCounterState extends State<_AnimatedAuraCounter> {
+  late int _prevValue;
+
+  @override
+  void initState() {
+    super.initState();
+    _prevValue = widget.value;
+  }
+
+  @override
+  void didUpdateWidget(_AnimatedAuraCounter old) {
+    super.didUpdateWidget(old);
+    if (old.value != widget.value) {
+      setState(() => _prevValue = old.value);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tt = Theme.of(context).textTheme;
+    final cs = Theme.of(context).colorScheme;
+    return TweenAnimationBuilder<int>(
+      key: ValueKey('$_prevValue→${widget.value}'),
+      tween: IntTween(begin: _prevValue, end: widget.value),
+      duration: const Duration(milliseconds: 1200),
+      curve: Curves.easeOutCubic,
+      builder: (context, value, _) => Text(
+        '$value',
+        style: tt.labelLarge?.copyWith(fontWeight: FontWeight.bold, color: cs.primary),
       ),
     );
   }
