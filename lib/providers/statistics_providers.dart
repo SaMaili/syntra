@@ -20,12 +20,6 @@ final weeklyXpProvider = FutureProvider<List<int>>((ref) {
   return LogbookRepository.instance.weeklyXp();
 });
 
-final activityHeatmapProvider =
-    FutureProvider<Map<String, int>>((ref) {
-  ref.watch(statisticsRefreshProvider);
-  return LogbookRepository.instance.activityHeatmap();
-});
-
 final completedChallengeIdsProvider = FutureProvider<Set<String>>((ref) {
   ref.watch(statisticsRefreshProvider);
   return LogbookRepository.instance.completedChallengeIds();

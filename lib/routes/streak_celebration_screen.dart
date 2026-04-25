@@ -123,8 +123,8 @@ class _StreakCelebrationScreenState extends ConsumerState<StreakCelebrationScree
             radius: 1.2,
             colors: [
               _phase == 0 
-                  ? cs.tertiary.withOpacity(0.15) 
-                  : Colors.amber.withOpacity(0.2),
+                  ? cs.tertiary.withValues(alpha: 0.15)
+                  : Colors.amber.withValues(alpha: 0.2),
               bgColor,
             ],
           ),
