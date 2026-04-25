@@ -117,16 +117,7 @@ class _ShopCard extends ConsumerWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: Colors.blue.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
-                  ),
-                  child: const Icon(Icons.ac_unit_rounded,
-                      color: Colors.blue, size: 24),
-                ),
+                const _StreakFreezeIcon(),
                 const SizedBox(height: AppSpacing.md),
                 Text(l.shopConfirmTitle,
                     style:
@@ -237,17 +228,7 @@ class _ShopCard extends ConsumerWidget {
             // ── Streak Freeze item ────────────────────────────────────────────
             Row(
               children: [
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: Colors.blue.withValues(alpha: 0.12),
-                    borderRadius:
-                        BorderRadius.circular(AppSpacing.chipRadius),
-                  ),
-                  child: Icon(Icons.ac_unit_rounded,
-                      color: Colors.blue, size: 24),
-                ),
+                const _StreakFreezeIcon(),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Column(
@@ -363,7 +344,9 @@ class _AppSettingsCard extends ConsumerWidget {
     try {
       await SyntraNotificationService.instance
           .setNativeNotificationsEnabled(value);
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('Failed to set native notifications: $e');
+    }
     if (value) {
       await NotificationManager.scheduleDailyReminders();
       if (context.mounted) {
@@ -1036,4 +1019,21 @@ class ComfortZoneLevelCard extends ConsumerWidget {
       ),
     );
   }
+}
+
+// ─── Shared widgets ───────────────────────────────────────────────────────────
+
+class _StreakFreezeIcon extends StatelessWidget {
+  const _StreakFreezeIcon();
+
+  @override
+  Widget build(BuildContext context) => Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: Colors.blue.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
+        ),
+        child: const Icon(Icons.ac_unit_rounded, color: Colors.blue, size: 24),
+      );
 }

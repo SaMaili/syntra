@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../challenge_ui.dart';
 import '../generated/l10n.dart';
 import '../logic/daily_missions_logic.dart';
 import '../providers/daily_providers.dart';
@@ -268,8 +269,8 @@ class _MissionCard extends StatelessWidget {
                             icon: Icons.emoji_events_outlined,
                             label: '${c.xp} ${l.auraPoints}'),
                         MetaChip(
-                            icon: _typeIcon(c.type),
-                            label: _typeLabel(l, c.type)),
+                            icon: c.typeIcon,
+                            label: c.typeLabel(l)),
                       ],
                     ),
                   ),
@@ -392,20 +393,6 @@ IconData _tierIcon(MissionTier tier) => switch (tier) {
       MissionTier.comfort => Icons.spa_outlined,
       MissionTier.growth => Icons.trending_up_rounded,
       MissionTier.bold => Icons.bolt_rounded,
-    };
-
-IconData _typeIcon(String type) => switch (type) {
-      'group' => Icons.group_outlined,
-      'coop' => Icons.people_alt_outlined,
-      'dare' => Icons.bolt_outlined,
-      _ => Icons.person_outlined,
-    };
-
-String _typeLabel(S l, String type) => switch (type) {
-      'group' => l.group,
-      'coop' => l.coop,
-      'dare' => l.dare,
-      _ => l.solo,
     };
 
 String _fmtDuration(int seconds) {
