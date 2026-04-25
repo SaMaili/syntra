@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syntra/challenge.dart';
+import 'package:syntra/challenge_ui.dart';
 import 'package:syntra/theme/app_spacing.dart';
 
 import '../generated/l10n.dart';
@@ -115,10 +116,8 @@ class ChallengeCard extends StatelessWidget {
                         label: _fmtDuration(challenge.time),
                       ),
                       _MetaChip(
-                        icon: challenge.type == 'group'
-                            ? Icons.group_outlined
-                            : Icons.person_outlined,
-                        label: challenge.type == 'group' ? l.group : l.solo,
+                        icon: challenge.typeIcon,
+                        label: challenge.typeLabel(l),
                       ),
                       _MetaChip(
                         icon: Icons.shield_outlined,

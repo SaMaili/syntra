@@ -284,13 +284,13 @@ final filteredChallengesProvider =
     // Type filter
     switch (filters.typeFilter) {
       case ChallengeTypeFilter.solo:
-        filtered = filtered.where((c) => c.type == 'solo').toList();
+        filtered = filtered.where((c) => c.type == ChallengeType.solo).toList();
       case ChallengeTypeFilter.group:
-        filtered = filtered.where((c) => c.type == 'group').toList();
+        filtered = filtered.where((c) => c.type == ChallengeType.group).toList();
       case ChallengeTypeFilter.coop:
-        filtered = filtered.where((c) => c.type == 'coop').toList();
+        filtered = filtered.where((c) => c.type == ChallengeType.coop).toList();
       case ChallengeTypeFilter.dare:
-        filtered = filtered.where((c) => c.type == 'dare').toList();
+        filtered = filtered.where((c) => c.type == ChallengeType.dare).toList();
       case ChallengeTypeFilter.all:
         break;
     }

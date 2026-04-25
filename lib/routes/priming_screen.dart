@@ -76,7 +76,7 @@ class _PrimingScreenState extends State<PrimingScreen>
   String _headline(S l) {
     final c = widget.challenge;
     if (c.flirt) return l.primingHeadlineFlirt;
-    if (c.type == 'group') return l.primingHeadlineGroup;
+    if (c.type == ChallengeType.group) return l.primingHeadlineGroup;
     if (c.time < 60) return l.primingHeadlineQuick;
     if (c.xp > 60) return l.primingHeadlineHard;
     return l.primingHeadlineDefault;
@@ -85,7 +85,7 @@ class _PrimingScreenState extends State<PrimingScreen>
   String _subtext(S l) {
     final c = widget.challenge;
     if (c.flirt) return l.primingSubFlirt;
-    if (c.type == 'group') return l.primingSubGroup;
+    if (c.type == ChallengeType.group) return l.primingSubGroup;
     if (c.time < 60) return l.primingSubQuick;
     if (c.xp > 60) return l.primingSubHard;
     return l.primingSubDefault;

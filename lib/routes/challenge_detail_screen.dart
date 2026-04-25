@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../challenge.dart';
+import '../challenge_ui.dart';
 import '../generated/l10n.dart';
 import '../providers/statistics_providers.dart';
 import '../theme/app_spacing.dart';
@@ -38,11 +39,7 @@ class ChallengeDetailSheet extends ConsumerWidget {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
     final l = S.of(context);
-    final isDone = ref
-        .watch(completedChallengeIdsProvider)
-        .valueOrNull
-        ?.contains(challenge.id) ??
-        false;
+    final isDone = ref.watch(isChallengeCompletedProvider(challenge.id));
 
     return DraggableScrollableSheet(
       expand: false,
@@ -261,14 +258,6 @@ class _TagChips extends StatelessWidget {
       return r == 0 ? '${m}m' : '${m}m ${r}s';
     }
 
-    String envLabel(String e) => switch (e) {
-          'street' => l.filterEnvStreet,
-          'transit' => l.filterEnvTransit,
-          'cafe' => l.filterEnvCafe,
-          'event' => l.filterEnvEvent,
-          _ => '',
-        };
-
     final chips = <({IconData? icon, String label, Color bg})>[
       (
         icon: Icons.timer_outlined,
@@ -286,24 +275,15 @@ class _TagChips extends StatelessWidget {
         bg: cs.surfaceContainerHighest
       ),
       (
-        icon: switch (challenge.type) {
-          'group' => Icons.group_outlined,
-          'coop' => Icons.people_alt_outlined,
-          'dare' => Icons.bolt_outlined,
-          _ => Icons.person_outlined,
-        },
-        label: switch (challenge.type) {
-          'group' => l.group,
-          'coop' => l.coop,
-          'dare' => l.dare,
-          _ => l.solo,
-        },
+        icon: challenge.typeIcon,
+        label: challenge.typeLabel(l),
         bg: cs.surfaceContainerHighest,
       ),
-      if (challenge.environment != 'all' && challenge.environment.isNotEmpty)
+      if (challenge.environment != ChallengeEnvironment.all &&
+          challenge.environment.isNotEmpty)
         (
           icon: null,
-          label: envLabel(challenge.environment),
+          label: challenge.environmentLabel(l),
           bg: cs.surfaceContainerHighest
         ),
       if (challenge.flirt)

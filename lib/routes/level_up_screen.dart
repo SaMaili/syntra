@@ -102,7 +102,7 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
             center: Alignment.center,
             radius: 1.2,
             colors: [
-              gradient.colors.first.withOpacity(0.25),
+              gradient.colors.first.withValues(alpha: 0.25),
               bgColor,
             ],
           ),

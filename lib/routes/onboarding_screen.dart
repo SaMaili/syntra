@@ -55,7 +55,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final locale = ref.read(activeLocaleProvider);
     final challenges = await ChallengeRepository.instance.loadChallenges(locale);
     final soloEasy = challenges
-        .where((c) => c.type == 'solo' && !c.flirt)
+        .where((c) => c.type == ChallengeType.solo && !c.flirt)
         .toList()
       ..sort((a, b) => a.xp.compareTo(b.xp));
     if (mounted) {

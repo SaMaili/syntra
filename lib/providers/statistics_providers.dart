@@ -20,12 +20,6 @@ final weeklyXpProvider = FutureProvider<List<int>>((ref) {
   return LogbookRepository.instance.weeklyXp();
 });
 
-final activityHeatmapProvider =
-    FutureProvider<Map<String, int>>((ref) {
-  ref.watch(statisticsRefreshProvider);
-  return LogbookRepository.instance.activityHeatmap();
-});
-
 final completedChallengeIdsProvider = FutureProvider<Set<String>>((ref) {
   ref.watch(statisticsRefreshProvider);
   return LogbookRepository.instance.completedChallengeIds();
@@ -77,6 +71,12 @@ final weeklyXpByWeekProvider = FutureProvider<Map<String, int>>((ref) {
 final frozenWeeksProvider = FutureProvider<Set<String>>((ref) {
   ref.watch(statisticsRefreshProvider);
   return SettingsRepository.instance.loadFrozenWeeks();
+});
+
+/// Whether a single challenge has been completed at least once.
+/// Uses a family so rebuilds are scoped to one challenge instead of the whole set.
+final isChallengeCompletedProvider = Provider.family<bool, String>((ref, id) {
+  return ref.watch(completedChallengeIdsProvider).valueOrNull?.contains(id) ?? false;
 });
 
 /// Convenience helper to bump the refresh counter from anywhere.

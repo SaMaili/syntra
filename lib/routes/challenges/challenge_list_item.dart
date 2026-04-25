@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syntra/challenge.dart';
+import 'package:syntra/challenge_ui.dart';
 
 import '../../generated/l10n.dart';
 import '../../logic/comfort_zone_logic.dart';
@@ -132,8 +133,8 @@ class ChallengeListItem extends StatelessWidget {
                           ),
                           const SizedBox(width: AppSpacing.sm),
                           MetaChip(
-                            icon: _typeIcon(challenge.type),
-                            label: _typeLabel(context, challenge.type),
+                            icon: challenge.typeIcon,
+                            label: challenge.typeLabel(S.of(context)),
                           ),
                         ],
                       );
@@ -154,23 +155,6 @@ class ChallengeListItem extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  IconData _typeIcon(String type) => switch (type) {
-        'group' => Icons.group_outlined,
-        'coop' => Icons.people_alt_outlined,
-        'dare' => Icons.bolt_outlined,
-        _ => Icons.person_outlined,
-      };
-
-  String _typeLabel(BuildContext context, String type) {
-    final l = S.of(context);
-    return switch (type) {
-      'group' => l.group,
-      'coop' => l.coop,
-      'dare' => l.dare,
-      _ => l.solo,
-    };
   }
 
   String _formatTime(int seconds) {
