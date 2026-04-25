@@ -4,8 +4,8 @@ import 'package:syntra/challenge.dart';
 import '../../generated/l10n.dart';
 import '../../logic/comfort_zone_logic.dart';
 import '../../routes/challenge_detail_screen.dart';
-// TODO: re-enable when backend is available: import '../../routes/challenge_done_screen.dart' show socialProofCount;
 import '../../theme/app_spacing.dart';
+import '../../theme/app_theme.dart';
 import '../../widgets/syntra_button.dart';
 
 class ChallengeListItem extends StatelessWidget {
@@ -26,7 +26,7 @@ class ChallengeListItem extends StatelessWidget {
     final cardColor = isDone
         ? Color.lerp(
             Theme.of(context).cardTheme.color ?? cs.surfaceContainer,
-            const Color(0xFF10B981),
+            AppTheme.successGreen,
             0.12,
           )
         : null;
@@ -79,10 +79,10 @@ class ChallengeListItem extends StatelessWidget {
                         ),
                       ),
                       if (isDone)
-                        Padding(
-                          padding: const EdgeInsets.only(left: AppSpacing.xs),
-                          child: const Icon(Icons.check_circle_rounded,
-                              size: 16, color: Color(0xFF10B981)),
+                        const Padding(
+                          padding: EdgeInsets.only(left: AppSpacing.xs),
+                          child: Icon(Icons.check_circle_rounded,
+                              size: 16, color: AppTheme.successGreen),
                         ),
                       if (challenge.flirt)
                         Padding(
@@ -102,14 +102,6 @@ class ChallengeListItem extends StatelessWidget {
                         .bodyMedium
                         ?.copyWith(color: cs.onSurfaceVariant),
                   ),
-                  // TODO: re-enable social proof once backend provides real participant counts
-                  // const SizedBox(height: AppSpacing.xs),
-                  // Text(
-                  //   '~${socialProofCount(challenge.id)} people in this community have tried this',
-                  //   style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  //         color: cs.onSurfaceVariant.withAlpha(160),
-                  //       ),
-                  // ),
                 ],
               ),
             ),

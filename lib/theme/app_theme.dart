@@ -8,6 +8,9 @@ abstract class AppTheme {
   /// Primary brand color — Neon Pink.
   static const Color seedColor = Color(0xFFFF10F0);
 
+  /// Colour used for "done / success" states (checkmark icons, completed-card tint).
+  static const Color successGreen = Color(0xFF10B981);
+
   static ThemeData light() {
     return ThemeData(
       useMaterial3: true,

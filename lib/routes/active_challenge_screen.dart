@@ -18,6 +18,11 @@ import 'package:syntra/widgets/syntra_button.dart';
 import 'package:syntra/widgets/syntra_progress_bar.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
+const int _kAbortLockSeconds = 15;
+const double _kFullReward = 1.0;
+const double _kLateReward = 0.8;
+const double _kAbortPenalty = -0.5;
+
 class ActiveChallengeScreen extends ConsumerStatefulWidget {
   final Challenge challenge;
   final bool isDailyMission;
@@ -39,7 +44,7 @@ class ActiveChallengeScreen extends ConsumerStatefulWidget {
 
 class _ActiveChallengeScreenState extends ConsumerState<ActiveChallengeScreen>
     with TickerProviderStateMixin, WidgetsBindingObserver {
-  int abortLockTimer = 15;
+  int abortLockTimer = _kAbortLockSeconds;
   int mainTimer = 0;
 
   late DateTime _startTime;
@@ -288,8 +293,8 @@ class _ActiveChallengeScreenState extends ConsumerState<ActiveChallengeScreen>
                       // ── Primary action ─────────────────────────────────
                       if (over)
                         SyntraButton.icon(
-                          onPressed: () =>
-                              _onDonePressed(mainTimeOver ? 0.8 : 1.0),
+                          onPressed: () => _onDonePressed(
+                              mainTimeOver ? _kLateReward : _kFullReward),
                           height: mainTimeOver ? buttonH + 8 : buttonH,
                           icon:
                               mainTimeOver ? Icons.flash_on : Icons.check,
@@ -365,7 +370,7 @@ class _ActiveChallengeScreenState extends ConsumerState<ActiveChallengeScreen>
     }
     SoundService.playError(enabled: ref.read(soundEffectsEnabledProvider));
     await Future.delayed(const Duration(milliseconds: 600));
-    await _finishChallenge(-0.5);
+    await _finishChallenge(_kAbortPenalty);
   }
 }
 
