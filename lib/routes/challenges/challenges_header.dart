@@ -365,6 +365,7 @@ class ChallengesHeaderDelegate extends SliverPersistentHeaderDelegate {
                                     style: tt.labelLarge?.copyWith(
                                       fontWeight: FontWeight.bold,
                                       color: streakColor,
+                                      fontSize: 15,
                                     ),
                                     softWrap: false,
                                   ),
@@ -385,7 +386,7 @@ class ChallengesHeaderDelegate extends SliverPersistentHeaderDelegate {
                         const SizedBox(width: 3),
                         Text(
                           '$displayStreak ${l.weeksShort}',
-                          style: tt.labelLarge?.copyWith(fontWeight: FontWeight.bold, color: streakColor),
+                          style: tt.labelLarge?.copyWith(fontWeight: FontWeight.bold, color: streakColor, fontSize: 15),
                         ),
                         const SizedBox(width: AppSpacing.md),
                       ],
@@ -404,13 +405,14 @@ class ChallengesHeaderDelegate extends SliverPersistentHeaderDelegate {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 const SizedBox(width: AppSpacing.md),
-                                Icon(Icons.ac_unit_rounded, size: 14, color: cs.tertiary),
+                                Icon(Icons.ac_unit_rounded, size: 16, color: cs.tertiary),
                                 const SizedBox(width: 2),
                                 Text(
                                   '×$freezes',
-                                  style: tt.labelMedium?.copyWith(
+                                  style: tt.labelLarge?.copyWith(
                                     fontWeight: FontWeight.bold,
                                     color: cs.tertiary,
+                                    fontSize: 15,
                                   ),
                                 ),
                               ],
@@ -504,7 +506,7 @@ class _AnimatedAuraCounterState extends State<_AnimatedAuraCounter> {
       curve: Curves.easeOutCubic,
       builder: (context, value, _) => Text(
         '$value',
-        style: tt.labelLarge?.copyWith(fontWeight: FontWeight.bold, color: cs.primary),
+        style: tt.labelLarge?.copyWith(fontWeight: FontWeight.bold, color: cs.primary, fontSize: 15),
       ),
     );
   }

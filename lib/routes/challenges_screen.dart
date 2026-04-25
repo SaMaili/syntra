@@ -37,12 +37,6 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
   bool get wantKeepAlive => true;
 
   @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(() { if (mounted) setState(() {}); });
-  }
-
-  @override
   void dispose() {
     _scrollController.dispose();
     super.dispose();

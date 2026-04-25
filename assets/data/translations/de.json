@@ -17,7 +17,7 @@
       "\"Guten Tag!\""
     ]
   },
-  "3": {
+  "2": {
     "title": "Style-Kompliment",
     "description": "Frag eine Person die dir gefällt, woher sie ihr Kleid oder ihre Schuhe hat.",
     "hints": [
@@ -26,7 +26,7 @@
       "\"Darf ich fragen, wo du das gekauft hast?\""
     ]
   },
-  "4": {
+  "3": {
     "title": "Sympathie-Kompliment",
     "description": "Sag einer Person, dass sie eine sympathische Ausstrahlung hat.",
     "hints": [
@@ -35,7 +35,7 @@
       "\"Ich find, du wirkst richtig positiv.\""
     ]
   },
-  "5": {
+  "4": {
     "title": "Smalltalk nach dem Weg",
     "description": "Frag eine Person nach dem Weg und halte danach noch 2-3 Sätze Smalltalk.",
     "hints": [
@@ -44,7 +44,7 @@
       "\"Danke, du bist echt nett.\""
     ]
   },
-  "6": {
+  "5": {
     "title": "Ampel-Kompliment",
     "description": "Sag einer Person an der Ampel, dass sie strahlt und wünsch ihr einen schönen Tag.",
     "hints": [
@@ -53,7 +53,7 @@
       "\"Mach weiter so, du machst die Straße schöner.\""
     ]
   },
-  "7": {
+  "6": {
     "title": "Lächeln der Bedienung",
     "description": "Mache der Bedienung ein Kompliment für ihr Lächeln.",
     "hints": [
@@ -62,7 +62,7 @@
       "\"Dein Lächeln macht meinen Tag besser.\""
     ]
   },
-  "8": {
+  "7": {
     "title": "Liebe auf den ersten Blick",
     "description": "Frag eine Person, ob sie an Liebe auf den ersten Blick glaubt.",
     "hints": [
@@ -71,7 +71,7 @@
       "\"Meinst du, das gibt’s wirklich?\""
     ]
   },
-  "9": {
+  "8": {
     "title": "Verlorene Wette Eis",
     "description": "Sag, dass du eine Wette verloren hast und sie nach ihrer Lieblingseissorte fragen musst.",
     "hints": [
@@ -80,7 +80,7 @@
       "\"Also, welches Eis ist dein Favorit?\""
     ]
   },
-  "11": {
+  "9": {
     "title": "Kopfhörer-Musik",
     "description": "Frag eine Person, was sie gerade über ihre Kopfhörer hört.",
     "hints": [
@@ -89,7 +89,7 @@
       "\"Kennst du diese YouTube-Videos?\""
     ]
   },
-  "12": {
+  "10": {
     "title": "Selfie mit Grund",
     "description": "Mach ein Selfie mit einer Person und sag, es sei für deine Challenge.",
     "hints": [
@@ -98,7 +98,7 @@
       "\"Brauche nur 1 Foto, dann lass ich dich in Ruhe.\""
     ]
   },
-  "13": {
+  "11": {
     "title": "Bekannt vorkommen",
     "description": "Gehe zu einer Person hin und sag, dass sie dir bekannt vorkommt.",
     "hints": [
@@ -107,7 +107,7 @@
       "\"Bist du öfter hier?\""
     ]
   },
-  "16": {
+  "12": {
     "title": "Parfum-Kompliment",
     "description": "Sag einer Person, dass ihr Parfum gut riecht. Dazu könntest du in einem Cafe in ihrer nähe sein.",
     "hints": [
@@ -116,12 +116,12 @@
       "\"Welcher Duft ist das?\""
     ]
   },
-  "18": {
+  "13": {
     "title": "Direktes Kompliment",
     "description": "Sag zu einer Person: „Ich muss ehrlich sagen, du siehst unfassbar gut aus.“ und geh dann einfach weiter.",
     "hints": []
   },
-  "20": {
+  "14": {
     "title": "Wenn wir uns wiedersehen",
     "description": "Sag einer Person, die dir gefällt, dass du ihr ein Eis schuldest, falls ihr euch noch einmal über den Weg laufen solltet.",
     "hints": [
@@ -130,7 +130,7 @@
       "\"Na dann, bis bald.\""
     ]
   },
-  "21": {
+  "15": {
     "title": "Nummer beim Weggehen",
     "description": "Sag beim Weggehen: „Wenn ich mutig genug bin, dich anzusprechen, bist du mutig genug, mir deine Nummer zu geben.“",
     "hints": [
@@ -139,7 +139,7 @@
       "\"Sonst sehen wir uns nie wieder.\""
     ]
   },
-  "22": {
+  "16": {
     "title": "Wingman Mission",
     "description": "Geh mit einem Freund zu einer Gruppe Mädchen und stellt euch charmant vor.",
     "hints": [
@@ -148,7 +148,7 @@
       "\"Wir sind gerade auf Mut-Mission.\""
     ]
   },
-  "25": {
+  "17": {
     "title": "Tanz-Challenge",
     "description": "Fordert eine Gruppe zu einem kurzen TikTok-Tanz heraus.",
     "hints": [
@@ -157,7 +157,7 @@
       "\"Komm, kurz 10 Sekunden.\""
     ]
   },
-  "26": {
+  "18": {
     "title": "Gruppen-Instagram",
     "description": "Geht zu mehreren Mädchen und fragt, ob ihr zusammen ein Gruppenfoto für Insta machen dürft.",
     "hints": [
@@ -166,7 +166,7 @@
       "\"Wird legendär.\""
     ]
   },
-  "28": {
+  "19": {
     "title": "Schönheits-Jury",
     "description": "Tut so, als wärt ihr Preisrichter und verteilt Punkte für Outfits.",
     "hints": [
@@ -175,7 +175,7 @@
       "\"Wir machen nur Spaß.\""
     ]
   },
-  "29": {
+  "20": {
     "title": "Wer ist Single?",
     "description": "Fragt direkt: „Kurze Statistikrunde, wer von euch ist Single?“",
     "hints": [
@@ -184,7 +184,7 @@
       "\"Keine Sorge, nur Spaß.\""
     ]
   },
-  "31": {
+  "21": {
     "title": "Freund beurteilen lassen",
     "description": "Stellt einen Freund vor: „Auf ner Skala von 1-10, wie süß ist er?“",
     "hints": [
@@ -193,7 +193,7 @@
       "\"Mach dir keine Sorgen, er weint nur kurz.\""
     ]
   },
-  "33": {
+  "22": {
     "title": "Pick-Up Quiz",
     "description": "Sagt: „Wir üben Anmachsprüche, bewertet mal von 1-10.“",
     "hints": [
@@ -202,7 +202,7 @@
       "\"Was würdet ihr lieber hören?\""
     ]
   },
-  "34": {
+  "23": {
     "title": "Selfie Battle",
     "description": "Macht ein Selfie-Wettbewerb: Wer das lustigste Bild mit der Gruppe hinkriegt.",
     "hints": [
@@ -211,7 +211,7 @@
       "\"Lust auf 'ne Challenge?\""
     ]
   },
-  "35": {
+  "24": {
     "title": "Blind-Date Aufruf",
     "description": "Fragt eine Gruppe: „Kennt ihr jemanden, den ihr uns vorstellen könnt?“",
     "hints": [
@@ -220,7 +220,7 @@
       "\"Bewerbungsrunde eröffnet.\""
     ]
   },
-  "36": {
+  "25": {
     "title": "Gemeinsame Story",
     "description": "Macht mit einer Gruppe ein Boomerang oder kurzes Insta-Video.",
     "hints": [
@@ -229,7 +229,7 @@
       "\"Das wird viral, versprochen.\""
     ]
   },
-  "37": {
+  "26": {
     "title": "Fake Bachelor",
     "description": "Tut so, als wärt ihr beim Bachelor-Casting: „Wer kriegt die Rose?“",
     "hints": [
@@ -238,7 +238,7 @@
       "\"Sorry, Regeln sind Regeln.\""
     ]
   },
-  "38": {
+  "27": {
     "title": "Schlechtester Anmachspruch",
     "description": "Sagt: „Wir sammeln die schlechtesten Anmachsprüche. Habt ihr welche?“",
     "hints": [
@@ -247,7 +247,7 @@
       "\"Ich hab schon nen Favoriten.\""
     ]
   },
-  "39": {
+  "28": {
     "title": "Spontaner Karaoke",
     "description": "Fangt an zu singen und ladet die Gruppe ein, mitzumachen.",
     "hints": [
@@ -256,7 +256,7 @@
       "\"So peinlich ist es nicht.\""
     ]
   },
-  "42": {
+  "29": {
     "title": "Flirt-Skala",
     "description": "Frage eine Person, die dir gefällt, wie sie ihre eigenen Flirtkünste auf einer Skala von 1 bis 10 bewerten würde.",
     "hints": [
@@ -265,7 +265,7 @@
       "\"Wär gespannt auf deine Punktzahl.\""
     ]
   },
-  "44": {
+  "30": {
     "title": "WhatsApp jetzt",
     "description": "Sag einer Person, dass sie eine echt coole Art habe und es schade wäre, wenn das das letzte Gespräch bleiben würde, und frage sie schließlich nach ihrer WhatsApp-Nummer.",
     "hints": [
@@ -274,7 +274,7 @@
       "\"Lass uns schreiben.\""
     ]
   },
-  "45": {
+  "31": {
     "title": "Später was schicken",
     "description": "Frage eine Person, ob du ihr später etwas Lustiges schicken dürftest, und bitte sie darum, dir ihre Nummer zu geben.",
     "hints": [
@@ -283,7 +283,7 @@
       "\"Wird sich lohnen, versprochen.\""
     ]
   },
-  "46": {
+  "32": {
     "title": "Wir sollten uns wiedersehen",
     "description": "Sag einer Person, dass du wetten würdest, sie sei jemand, den man öfter sehen sollte, und frage sie nach ihrer Meinung dazu.",
     "hints": [
@@ -292,7 +292,7 @@
       "\"Ich glaub, das wär lustig mit uns.\""
     ]
   },
-  "48": {
+  "33": {
     "title": "Musikvideo",
     "description": "Sag einer Person im Vorbeigehen, dass sie so aussehe, als käme sie gerade direkt aus einem Musikvideo.",
     "hints": [
@@ -301,7 +301,7 @@
       "\"Mega Ausstrahlung.\""
     ]
   },
-  "49": {
+  "34": {
     "title": "Spontanes Date",
     "description": "Frage eine Person, die dir gefällt, was sie gerade mache, und schlage ihr vor, ganz spontan irgendwo einen Kaffee trinken zu gehen.",
     "hints": [
@@ -310,7 +310,7 @@
       "\"Sei spontan, lohnt sich.\""
     ]
   },
-  "52": {
+  "35": {
     "title": "Mach mir ein Kompliment",
     "description": "Fordere eine Person dazu auf, dir ein Kompliment zu machen, da du gerade eines verdient hättest.",
     "hints": [
@@ -319,7 +319,7 @@
       "\"Bin gespannt, was dir einfällt.\""
     ]
   },
-  "54": {
+  "36": {
     "title": "Direkt nach Nummer",
     "description": "Sag zu einer Person: „Ich find dich super interessant. Gib mir deine Nummer, wir sollten das wiederholen.“",
     "hints": [
@@ -328,7 +328,7 @@
       "\"Find dich spannend.\""
     ]
   },
-  "56": {
+  "37": {
     "title": "Handy eintippen",
     "description": "Reich der Person mitten im Gespräch dein Handy und sag ihr, sie solle darauf vertrauen, dass dies das Beste sei, was ihr heute passiert sei, während sie ihre Nummer eintippt.",
     "hints": [
@@ -337,7 +337,7 @@
       "\"Gib mir kurz dein Handy.\""
     ]
   },
-  "57": {
+  "38": {
     "title": "Date-Provokation",
     "description": "Sag zu einer Person: „Wir sollten ein Date ausmachen – du wirkst, als würdest du mich sonst vermissen.“",
     "hints": [
@@ -346,7 +346,7 @@
       "\"Wirst du noch merken.\""
     ]
   },
-  "58": {
+  "39": {
     "title": "Gruppe ansprechen",
     "description": "Geh zu einer Personengruppe und stell dich allen gleichzeitig vor.",
     "hints": [
@@ -355,7 +355,7 @@
       "\"Musste euch kennenlernen.\""
     ]
   },
-  "60": {
+  "40": {
     "title": "Mutspiel zu zweit",
     "description": "Sag zu jemandem: „Wir müssen beide einer fremden Person ein Kompliment machen. Wer zuerst lacht, verliert.“",
     "hints": [
@@ -364,7 +364,7 @@
       "\"Ich verlier eh.\""
     ]
   },
-  "61": {
+  "41": {
     "title": "Peinliche Story-Duell",
     "description": "Sag zu einer Person: „Lass uns Mutprobe machen: wir erzählen beide ne peinliche Story. Wer peinlicher ist, gewinnt.“",
     "hints": [
@@ -373,7 +373,7 @@
       "\"War das schlimm genug?\""
     ]
   },
-  "62": {
+  "42": {
     "title": "Schnick Schnack Schnuck",
     "description": "Spielt Schere-Stein-Papier mit einer Gruppe. Der Verlierer muss ein Geheimnis verraten.",
     "hints": [
@@ -382,7 +382,7 @@
       "\"Wir sind mutig.\""
     ]
   },
-  "63": {
+  "43": {
     "title": "Nickname geben",
     "description": "Gebt jeder aus der Gruppe spontan einen witzigen Spitznamen. Du weist anderen Identitäten zu. Das ist eine extrem dominante soziale Handlung.",
     "hints": [
@@ -391,7 +391,7 @@
       "\"Alles nur Spaß.\""
     ]
   },
-  "64": {
+  "44": {
     "title": "Größte Flirtqueen finden",
     "description": "Fragt: „Wer von euch ist die größte Flirtqueen?“. Du wirfst eine provozierende Frage in eine Gruppe.",
     "hints": [
@@ -400,7 +400,7 @@
       "\"Keine falsche Bescheidenheit.\""
     ]
   },
-  "65": {
+  "45": {
     "title": "Fake Hochzeitsfoto",
     "description": "Macht ein gestelltes „Brautpaar“-Foto mit einer Person, die Gruppe ist das Publikum.",
     "hints": [
@@ -409,7 +409,7 @@
       "\"Ihr seht aus wie teure Gäste.\""
     ]
   },
-  "66": {
+  "46": {
     "title": "Verliebt? Test",
     "description": "Frage eine Person, die dir gefällt, was jemand machen müsste, damit sie sich sofort in ihn verlieben würden.",
     "hints": [
@@ -418,7 +418,7 @@
       "\"Das ist wissenschaftlich.\""
     ]
   },
-  "67": {
+  "47": {
     "title": "Spontanes Speed-Dating",
     "description": "Jeder aus eurer Gruppe spricht kurz mit jeder aus deren Gruppe.",
     "hints": [
@@ -427,7 +427,7 @@
       "\"Nur 1 Minute pro Person.\""
     ]
   },
-  "68": {
+  "48": {
     "title": "Wer zahlt zuerst?",
     "description": "Schlagt einen Münzwurf vor: Wenn ihr gewinnt, schulden sie euch ein Eis – sonst umgekehrt.",
     "hints": [
@@ -436,7 +436,7 @@
       "\"Los, wir haben Hunger.\""
     ]
   },
-  "69": {
+  "49": {
     "title": "Modenschau auf der Straße",
     "description": "Fordert die Gruppe heraus: „Wer macht den besten Laufstegwalk?“",
     "hints": [
@@ -445,7 +445,7 @@
       "\"Der Gehweg ist eure Bühne.\""
     ]
   },
-  "70": {
+  "50": {
     "title": "Spontane Freundschaftsanfrage",
     "description": "Sag einer Person, dass sie so cool aussähe, dass ihr beide ab jetzt offiziell befreundet sein müsstet.",
     "hints": [
@@ -454,7 +454,7 @@
       "\"Freundschaft auf Lebenszeit.\""
     ]
   },
-  "71": {
+  "51": {
     "title": "Wer würde eher",
     "description": "Startet mit der Gruppe ein „Wer würde eher?“-Spiel.",
     "hints": [
@@ -463,7 +463,7 @@
       "\"Mutigere Fragen erlaubt.\""
     ]
   },
-  "72": {
+  "52": {
     "title": "Instagram Swap",
     "description": "Lasst euch gegenseitig die Handys geben und folgt euch direkt auf Insta.",
     "hints": [
@@ -472,7 +472,7 @@
       "\"Jetzt seid ihr dran.\""
     ]
   },
-  "73": {
+  "53": {
     "title": "Syntra vorstellen",
     "description": "Geh auf eine Person zu, stelle ihr Syntra vor und erkundige dich nach ihrer Meinung zu dem Konzept; dabei steht es dir frei, die App vorzuführen und die Challenge erfolgreich abzuschließen, sobald ihr gemeinsam vor dem Bildschirm seid.",
     "hints": [
@@ -481,7 +481,7 @@
       "\"Würdest du das nutzen?\""
     ]
   },
-  "74": {
+  "54": {
     "title": "Berufung erfragen",
     "description": "Frag eine Person: „Du siehst interessant aus, was machst du beruflich?“ und stell dann 2 Fragen dazu.",
     "hints": [
@@ -490,7 +490,7 @@
       "\"Hört sich spannend an.\""
     ]
   },
-  "75": {
+  "55": {
     "title": "Hallo zu 5 Fremden",
     "description": "Sag Hallo zu 5 Fremden beim Vorbeigehen. Lächle und halte Augenkontakt.",
     "hints": [
@@ -499,7 +499,7 @@
       "\"Hi, schöner Tag, oder?\""
     ]
   },
-  "76": {
+  "56": {
     "title": "KI-Smalltalk",
     "description": "Starte Smalltalk oder Flirt und sage 3 Sätze später „warte kurz“, dann tu so, als würdest du KI fragen.",
     "hints": [
@@ -508,7 +508,7 @@
       "\"Moment mal…\""
     ]
   },
-  "77": {
+  "57": {
     "title": "Ohrringe-Kompliment",
     "description": "Finde jemanden mit Ohrringen und sage, dass sie dir positiv aufgefallen sind.",
     "hints": [
@@ -517,7 +517,7 @@
       "\"Passt super zu deinem Style.\""
     ]
   },
-  "78": {
+  "58": {
     "title": "Blumengeschenk",
     "description": "Kauf oder pflück eine Blume und gib sie jemandem, ohne etwas zu wollen.",
     "hints": [
@@ -526,7 +526,7 @@
       "\"Schönen Tag dir noch!\""
     ]
   },
-  "79": {
+  "59": {
     "title": "Style-Komplimente",
     "description": "Mach ein Kompliment für den Style von 2 Personen.",
     "hints": [
@@ -535,7 +535,7 @@
       "\"Sehr stimmig alles.\""
     ]
   },
-  "80": {
+  "60": {
     "title": "Mädchen mit Mutter",
     "description": "Sprich eine Person, die dir gefällt an die mit ihrer Mutter unterwegs ist. Halte Blickkontakt zu beiden, damit sich die Mutter nicht wie ein „Hindernis“ und die Zielperson nicht unwohl fühlt. Ein kurzes Lächeln in Richtung der Mutter wirkt Wunder für die Sympathiepunkte.",
     "hints": [
@@ -544,7 +544,7 @@
       "\"Wollte nur kurz zu deiner Tochter 'Hallo' sagen.\""
     ]
   },
-  "81": {
+  "61": {
     "title": "Mutter ansprechen",
     "description": "Sprich die Mutter eines Mädchens an.",
     "hints": [
@@ -553,7 +553,7 @@
       "\"Wollt ich nur mal sagen.\""
     ]
   },
-  "82": {
+  "62": {
     "title": "Restaurant-Kompliment",
     "description": "Geh zu einem Tisch im Außenbereich und sag den Leuten, dass sie der am besten aussehende Tisch hier seien und du ihnen noch einen guten Appetit wünschen wolltest.",
     "hints": [
@@ -562,7 +562,7 @@
       "\"Tut mit der Info was ihr wollt.\""
     ]
   },
-  "83": {
+  "63": {
     "title": "Syntra Feedback",
     "description": "Geh zu einer Freundesgruppe: „Ihr seht aus, als würdet ihr viel rausgehen. Kann ich euch was fragen?“ Stell Syntra vor und hol Feedback.",
     "hints": [
@@ -571,7 +571,7 @@
       "\"Was würdet ihr anders machen?\""
     ]
   },
-  "84": {
+  "64": {
     "title": "Wasser für Kassierer",
     "description": "Kauf etwas für dich + ein Wasser extra und gib es der Person an der Kasse.",
     "hints": [
@@ -580,7 +580,7 @@
       "\"Danke fürs Arbeiten.\""
     ]
   },
-  "91": {
+  "65": {
     "title": "Gruppen-Mut",
     "description": "Geh auf eine Gruppe zu, stell dich allen gleichzeitig vor: „Hi, ich bin [Name], ihr seht so nett aus, musste euch kennenlernen.“",
     "hints": [
@@ -589,7 +589,7 @@
       "\"Ich mag eure Vibes.\""
     ]
   },
-  "122": {
+  "66": {
     "title": "Stahlendes Lächeln",
     "description": "Sag einer Person, die dir gefällt, im Vorbeigehen, dass du ihr einfach mitteilen müsstest, dass sie ein wirklich tolles Lächeln habe.",
     "hints": [
@@ -598,7 +598,7 @@
       "\"Du strahlst richtig schön.\""
     ]
   },
-  "123": {
+  "67": {
     "title": "Bart bewundern",
     "description": "Halte eine Person mit Bart an und frage sie, ob sie dir verraten würde, wie lange sie für den Bart gebraucht habe, da du neidisch seist.",
     "hints": [
@@ -607,7 +607,7 @@
       "\"Bin echt beeindruckt.\""
     ]
   },
-  "124": {
+  "68": {
     "title": "Wartezeit-Kompliment",
     "description": "Sprich eine Person an, sobald sie ihr Telefonat beendet hat, und sag ihr, dass du kurz hättest warten müssen, weil du ihr unbedingt mitteilen wolltest, dass du ihr Outfit klasse fändest.",
     "hints": [
@@ -616,7 +616,7 @@
       "\"Ich will dich nicht stören aber mega Style hast du.\""
     ]
   },
-  "127": {
+  "69": {
     "title": "Tasche loben",
     "description": "Sag zu jemandem mit bunter Tasche, dass du sie cool findest",
     "hints": [
@@ -625,7 +625,7 @@
       "\"Die passt super zu dir.\""
     ]
   },
-  "128": {
+  "70": {
     "title": "Rote Haare loben",
     "description": "Sprich eine Person mit roten Haaren an und sag ihr, dass ihre Haare der Hammer seien und du das einfach hättest loswerden müssen.",
     "hints": [
@@ -634,7 +634,7 @@
       "\"Richtig auffällig und schön.\""
     ]
   },
-  "129": {
+  "71": {
     "title": "Skateboard-Trick fragen",
     "description": "Frag eine Person mit Skateboard: „Kannst du einen Trick? Ich mach dir Standing Ovations.“",
     "hints": [
@@ -643,7 +643,7 @@
       "\"Ich bin beeindruckt.\""
     ]
   },
-  "130": {
+  "72": {
     "title": "Kleid Kompliment",
     "description": "Sag zu einer Person im Kleid: „Nur ganz kurz, aber das Kleid steht dir wahnsinnig gut.“",
     "hints": [
@@ -652,7 +652,7 @@
       "\"Richtig elegant heute.\""
     ]
   },
-  "132": {
+  "73": {
     "title": "Paar frisch verliebt",
     "description": "Sprich ein Paar an und sag ihm, dass du einfach loswerden müsstest, dass die beiden wie frisch verliebt aussähen.",
     "hints": [
@@ -661,7 +661,7 @@
       "\"Das strahlt ihr richtig aus.\""
     ]
   },
-  "133": {
+  "74": {
     "title": "Sonnenbrillen-Kompliment",
     "description": "Sag zu jemandem mit Sonnenbrille: „Du siehst so geheimnisvoll aus mit der Brille. Absicht?“",
     "hints": [
@@ -670,7 +670,7 @@
       "\"Sieht richtig geheimnisvoll aus.\""
     ]
   },
-  "134": {
+  "75": {
     "title": "Coffee-to-go Frage",
     "description": "Geh auf eine Person mit einem Coffee-to-go-Becher zu und frag sie, ob das der beste Kaffee der Stadt sei oder ob der Becher nur als Accessoire diene.",
     "hints": [
@@ -679,7 +679,7 @@
       "\"Ich such immer den besten Kaffee.\""
     ]
   },
-  "136": {
+  "76": {
     "title": "Eleganz trotz Eile",
     "description": "Sag zu einer Person, die eilig läuft: „Keine Sorge, du bist trotzdem die Eleganz in Person.“",
     "hints": [
@@ -688,7 +688,7 @@
       "\"Siehst toll aus.\""
     ]
   },
-  "138": {
+  "77": {
     "title": "Adoptieren bitten",
     "description": "Sprich eine Gruppe an und frag sie, ob sie dich kurzzeitig adoptieren könnten, da sie so wirkten, als hätten sie gerade eine Menge Spaß.",
     "hints": [
@@ -697,7 +697,7 @@
       "\"Adoptiert mich bitte.\""
     ]
   },
-  "139": {
+  "78": {
     "title": "Lustiges Shirt loben",
     "description": "Geh auf eine Person mit einem lustigen Shirt zu und sag ihr, dass ihr Shirt echt cool sei und du gerne wissen würdest, wo man so etwas herbekomm",
     "hints": [
@@ -706,7 +706,7 @@
       "\"Richtig witzig.\""
     ]
   },
-  "140": {
+  "79": {
     "title": "Große Ohrringe loben",
     "description": "Stoppe eine Person mit besonders großen Ohrringen und sag: „Darf ich sagen, dass deine Ohrringe richtig Statement sind?“",
     "hints": [
@@ -715,7 +715,7 @@
       "\"Steht dir super.\""
     ]
   },
-  "141": {
+  "80": {
     "title": "Schönstes diese Woche",
     "description": "Frag eine fremde Person: „Spontan… was ist das Schönste, was dir diese Woche passiert ist?“",
     "hints": [
@@ -724,7 +724,7 @@
       "\"Freust du dich auf was?\""
     ]
   },
-  "142": {
+  "81": {
     "title": "Traumhaar loben",
     "description": "Sag zu einer Person mit langen Haaren: „Sorry, aber deine Haare sind ein Traum.“",
     "hints": [
@@ -733,7 +733,7 @@
       "\"Einfach wunderschön.\""
     ]
   },
-  "143": {
+  "82": {
     "title": "Jutebeutel lesen",
     "description": "Geh auf eine Person mit einem Jutebeutel zu und frage sie, ob du kurz lesen dürftest, was darauf stünde, da du einfach neugierig seist.",
     "hints": [
@@ -742,7 +742,7 @@
       "\"Ich kann das irgendwie nicht lesen.\""
     ]
   },
-  "145": {
+  "83": {
     "title": "Neonfarben loben",
     "description": "Sag zu einer Person mit Neon-Farben: „Okay wow, du bringst hier grad richtig Farbe rein.“",
     "hints": [
@@ -751,7 +751,7 @@
       "\"Richtig auffällig.\""
     ]
   },
-  "148": {
+  "84": {
     "title": "Lachen loben",
     "description": "Sag zu einer Person, die grad lacht: „Dein Lachen ist ansteckend, bitte weitermachen.“",
     "hints": [
@@ -760,7 +760,7 @@
       "\"Bleib so fröhlich.\""
     ]
   },
-  "149": {
+  "85": {
     "title": "Geheimnis Gruppe",
     "description": "Halte eine Gruppe an und sage ihnen, sie sähen so aus, als hätten sie ein Geheimnis, und frage sie dann, was ihr Plan für heute sei.",
     "hints": [
@@ -769,7 +769,7 @@
       "\"Klingt spannend.\""
     ]
   },
-  "150": {
+  "86": {
     "title": "Piercing mutig",
     "description": "Sag zu jemandem mit Piercing: „Mutig! Wollte ich schon immer mal, aber Schisser.“",
     "hints": [
@@ -779,7 +779,7 @@
       "\"Würde ich nicht machen.\""
     ]
   },
-  "151": {
+  "87": {
     "title": "Spontane Lebensweisheit",
     "description": "Frage eine fremde Person, ob du ihr eine spontane Lebensweisheit abkaufen könntest.",
     "hints": [
@@ -788,7 +788,7 @@
       "\"Kann auch lustig sein.\""
     ]
   },
-  "152": {
+  "88": {
     "title": "Foto von pinken Haaren machen",
     "description": "Finde jemanden mit pinken Haaren und frage, ob du ein Foto von seinen Haaren machen darfst.",
     "hints": [
@@ -797,7 +797,7 @@
       "\"Mega cool, darf ich ein Bild machen?\""
     ]
   },
-  "153": {
+  "89": {
     "title": "Kompliment auffälliger Schmuck",
     "description": "Finde eine Person, die dir gefällt, mit auffälligem Schmuck (z. B. große Ohrringe) und mach ihr ein Kompliment.",
     "hints": [
@@ -806,7 +806,7 @@
       "\"Woher hast du das?\""
     ]
   },
-  "155": {
+  "90": {
     "title": "Vollbart Wikinger",
     "description": "Finde einen Mann mit Vollbart und sag ihm, dass er aussieht wie ein Wikinger.",
     "hints": [
@@ -815,7 +815,7 @@
       "\"Siehst aus wie ein Krieger.\""
     ]
   },
-  "156": {
+  "91": {
     "title": "Band-Shirt fragen",
     "description": "Entdecke jemanden mit Band-Shirt (AC/DC, Nirvana etc.) und frag, ob er die Band live gesehen hat.",
     "hints": [
@@ -824,7 +824,7 @@
       "\"Wie war das Live-Erlebnis?\""
     ]
   },
-  "157": {
+  "92": {
     "title": "Sneaker von ...?",
     "description": "Finde eine Person mit farbigen Sneakern und frag, wo sie die her hat.",
     "hints": [
@@ -833,7 +833,7 @@
       "\"Such ich auch noch so welche.\""
     ]
   },
-  "159": {
+  "93": {
     "title": "Tattoo Bedeutung fragen",
     "description": "Finde jemanden mit Tattoo am Arm und frag, was es bedeutet.",
     "hints": [
@@ -842,7 +842,7 @@
       "\"War das schmerzhaft?\""
     ]
   },
-  "160": {
+  "94": {
     "title": "Lippenstift Kompliment",
     "description": "Entdecke eine Person mit knallrotem Lippenstift und sag ihr, dass die Farbe mega aussieht.",
     "hints": [
@@ -851,7 +851,7 @@
       "\"Richtig mutig und schön.\""
     ]
   },
-  "161": {
+  "95": {
     "title": "Hund streicheln",
     "description": "Finde jemanden mit Hund, frag wie er heißt und ob du den Hund streicheln darfst.",
     "hints": [
@@ -860,7 +860,7 @@
       "\"So ein süßer Begleiter.\""
     ]
   },
-  "162": {
+  "96": {
     "title": "Schwarz gekleidete Gruppe",
     "description": "Such eine Gruppe, die alle schwarz gekleidet ist, und frage, ob sie eine Band sind.",
     "hints": [
@@ -869,7 +869,7 @@
       "\"Ich bin gespannt, was ihr spielt.\""
     ]
   },
-  "163": {
+  "97": {
     "title": "Pflege Tipps lange Haare",
     "description": "Finde eine Person mit sehr langen Haaren und frage, ob sie Tipps hat, wie man sie pflegt.",
     "hints": [
@@ -878,7 +878,7 @@
       "\"Meine Freundin sucht nach einer neuen Routine \""
     ]
   },
-  "164": {
+  "98": {
     "title": "Foto von Skateboard machen",
     "description": "Finde jemanden mit Skateboard oder Longboard und mach ein Foto von dem Board.",
     "hints": [
@@ -887,7 +887,7 @@
       "\"So ein Board will ich auch.\""
     ]
   },
-  "165": {
+  "99": {
     "title": "Lustiges Shirt vorlesen",
     "description": "Finde eine Person mit lustigem T-Shirt, lies den Spruch laut vor und lache zusammen.",
     "hints": [
@@ -896,7 +896,7 @@
       "\"Wo bekommt man sowas her Haha?\""
     ]
   },
-  "167": {
+  "100": {
     "title": "Selfie mit Sonnenbrille-Gruppe",
     "description": "Such eine Gruppe, in der mindestens eine Person eine Sonnenbrille trägt, und mach ein Selfie mit ihnen.",
     "hints": [
@@ -905,7 +905,7 @@
       "\"Ihr seht richtig entspannt aus.\""
     ]
   },
-  "168": {
+  "101": {
     "title": "Flip-Flops Sommer-Spruch",
     "description": "Suche dir jemanden, der Flip-Flops trägt, und sag der Person, dass sie den Sommer so richtig lebe.",
     "hints": [
@@ -914,7 +914,7 @@
       "\"Flip-Flops sind Sommer pur.\""
     ]
   },
-  "170": {
+  "102": {
     "title": "Paar Händchen halten",
     "description": "Finde ein Paar, das Händchen hält, und wünsch ihnen einen schönen Tag.",
     "hints": [
@@ -923,7 +923,7 @@
       "\"Genießt den Tag zusammen.\""
     ]
   },
-  "171": {
+  "103": {
     "title": "Kompliment lackierte Fingernägel",
     "description": "Finde jemanden mit auffällig lackierten Fingernägeln und mach ein Kompliment.",
     "hints": [
@@ -932,7 +932,7 @@
       "\"So gepflegt. Hast du die neu gemacht?\""
     ]
   },
-  "172": {
+  "104": {
     "title": "Warten beim Telefonieren",
     "description": "Suche jemanden, der gerade telefoniert, warte das Ende des Gesprächs ab und sag der Person, sie habe so ausgesehen, als sei es ein wichtiges Telefonat gewesen.",
     "hints": [
@@ -941,7 +941,7 @@
       "\"War sicher wichtig, oder?\""
     ]
   },
-  "173": {
+  "105": {
     "title": "Gruppe lachen fragen",
     "description": "Finde eine Gruppe, die gerade lacht, geh dazu und frag, was so lustig war.",
     "hints": [
@@ -950,7 +950,7 @@
       "\"Echt witzig bei euch!\""
     ]
   },
-  "176": {
+  "106": {
     "title": "Barfuß auf Wiese loben",
     "description": "Finde jemanden, der barfuß auf einer Wiese läuft, und sag: „Barfuß ist das beste Feeling, oder?“",
     "hints": [
@@ -959,7 +959,7 @@
       "\"Richtig schön hier draußen.\""
     ]
   },
-  "177": {
+  "107": {
     "title": "Sommerblumen Kompliment",
     "description": "Finde eine Person mit Blumenmuster auf Kleid oder Tuch und sag: „Du bringst richtig Sommerstimmung mit.“",
     "hints": [
@@ -968,7 +968,7 @@
       "\"Du strahlst Sommer aus.\""
     ]
   },
-  "178": {
+  "108": {
     "title": "Fußballtrikot Spielerfrage",
     "description": "Finde jemanden mit Fußballtrikot und frag, ob er/sie selber spielt.",
     "hints": [
@@ -977,7 +977,7 @@
       "\"Lieblingsposition?\""
     ]
   },
-  "179": {
+  "109": {
     "title": "Musikgruppe zuhören",
     "description": "Such eine Gruppe, in der jemand Gitarre spielt oder Musik macht, und höre kurz zu.",
     "hints": [
@@ -986,7 +986,7 @@
       "\"Habt ihr eine Band?\""
     ]
   },
-  "180": {
+  "110": {
     "title": "Selfie mit außergewöhnlicher Haarfarbe",
     "description": "Finde jemanden mit außergewöhnlicher Haarfarbe (blau, grün etc.) und mach ein Selfie mit ihr/ihm.",
     "hints": [
@@ -995,7 +995,7 @@
       "\"So was sieht man selten.\""
     ]
   },
-  "181": {
+  "111": {
     "title": "Lieblings-Eissorte fragen",
     "description": "Finde jemanden, der Eis isst, und frag, was seine Lieblingssorte ist.",
     "hints": [

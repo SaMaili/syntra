@@ -59,11 +59,10 @@ final averageMoodProvider =
   return LogbookRepository.instance.averageMoodPerDay(days: 14);
 });
 
-/// Completions toward the next CZL level-up. Reacts to both challenge
-/// completions (statisticsRefreshProvider) and level changes.
-/// SharedPreferences reads are synchronous, so this is a plain Provider.
+/// Completions toward the next CZL level-up.
+/// SharedPreferences reads are synchronous and already flushed when
+/// [comfortZoneLevelProvider] notifies, so no extra refresh dependency needed.
 final czlCompletionsProvider = Provider<int>((ref) {
-  ref.watch(statisticsRefreshProvider);
   ref.watch(comfortZoneLevelProvider);
   return ref.read(comfortZoneLevelProvider.notifier).getCompletionsAtCurrentLevel();
 });
