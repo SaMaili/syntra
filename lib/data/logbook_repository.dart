@@ -15,45 +15,45 @@ class LogbookRepository {
 
   Database? _db;
 
+  static const _kCreateTable = '''
+    CREATE TABLE IF NOT EXISTS logbook (
+      id               INTEGER PRIMARY KEY AUTOINCREMENT,
+      challenge_id     TEXT,
+      status           TEXT,
+      earned           INTEGER,
+      timestamp        DATETIME,
+      notes            TEXT,
+      feeling          INTEGER,
+      perception       INTEGER,
+      duration_seconds INTEGER,
+      pre_anxiety      INTEGER
+    )
+  ''';
+
+  static Future<void> _createIndexes(Database db) async {
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_logbook_status_challenge ON logbook(status, challenge_id)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_logbook_timestamp ON logbook(timestamp)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_logbook_challenge ON logbook(challenge_id)');
+  }
+
   Future<Database> get _database async {
     if (_db != null) return _db!;
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'logbook.db');
     _db = await openDatabase(
       path,
-      version: 1,
+      version: 2,
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) await _createIndexes(db);
+      },
       onDowngrade: (db, oldVersion, newVersion) async {
         await db.execute('DROP TABLE IF EXISTS logbook');
-        await db.execute('''
-          CREATE TABLE logbook (
-            id               INTEGER PRIMARY KEY AUTOINCREMENT,
-            challenge_id     TEXT,
-            status           TEXT,
-            earned           INTEGER,
-            timestamp        DATETIME,
-            notes            TEXT,
-            feeling          INTEGER,
-            perception       INTEGER,
-            duration_seconds INTEGER,
-            pre_anxiety      INTEGER
-          )
-        ''');
+        await db.execute(_kCreateTable);
+        await _createIndexes(db);
       },
       onCreate: (db, version) async {
-        await db.execute('''
-          CREATE TABLE IF NOT EXISTS logbook (
-            id               INTEGER PRIMARY KEY AUTOINCREMENT,
-            challenge_id     TEXT,
-            status           TEXT,
-            earned           INTEGER,
-            timestamp        DATETIME,
-            notes            TEXT,
-            feeling          INTEGER,
-            perception       INTEGER,
-            duration_seconds INTEGER,
-            pre_anxiety      INTEGER
-          )
-        ''');
+        await db.execute(_kCreateTable);
+        await _createIndexes(db);
       },
     );
     return _db!;

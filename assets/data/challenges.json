@@ -23,7 +23,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 100,
-    "id": 3,
+    "id": 2,
     "level": 3
   },
   {
@@ -32,7 +32,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 170,
-    "id": 4,
+    "id": 3,
     "level": 4
   },
   {
@@ -41,7 +41,7 @@
     "environment": "street",
     "timer": 300,
     "xp": 120,
-    "id": 5,
+    "id": 4,
     "level": 3
   },
   {
@@ -50,7 +50,7 @@
     "environment": "street",
     "timer": 300,
     "xp": 160,
-    "id": 6,
+    "id": 5,
     "level": 4
   },
   {
@@ -59,7 +59,7 @@
     "environment": "cafe",
     "timer": 270,
     "xp": 100,
-    "id": 7,
+    "id": 6,
     "level": 2
   },
   {
@@ -68,7 +68,7 @@
     "environment": "all",
     "timer": 225,
     "xp": 290,
-    "id": 8,
+    "id": 7,
     "level": 5
   },
   {
@@ -77,7 +77,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 90,
-    "id": 9,
+    "id": 8,
     "level": 3
   },
   {
@@ -86,7 +86,7 @@
     "environment": "all",
     "timer": 360,
     "xp": 240,
-    "id": 11,
+    "id": 9,
     "level": 5
   },
   {
@@ -95,7 +95,7 @@
     "environment": "all",
     "timer": 600,
     "xp": 240,
-    "id": 12,
+    "id": 10,
     "level": 5
   },
   {
@@ -104,7 +104,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 110,
-    "id": 13,
+    "id": 11,
     "level": 3
   },
   {
@@ -113,7 +113,7 @@
     "environment": "all",
     "timer": 600,
     "xp": 190,
-    "id": 16,
+    "id": 12,
     "level": 4
   },
   {
@@ -122,7 +122,7 @@
     "environment": "street",
     "timer": 200,
     "xp": 190,
-    "id": 18,
+    "id": 13,
     "level": 4
   },
   {
@@ -131,7 +131,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 290,
-    "id": 20,
+    "id": 14,
     "level": 6
   },
   {
@@ -140,7 +140,7 @@
     "environment": "all",
     "timer": 230,
     "xp": 380,
-    "id": 21,
+    "id": 15,
     "level": 7
   },
   {
@@ -149,7 +149,7 @@
     "environment": "all",
     "timer": 270,
     "xp": 270,
-    "id": 22,
+    "id": 16,
     "level": 5
   },
   {
@@ -158,7 +158,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 420,
-    "id": 25,
+    "id": 17,
     "level": 7
   },
   {
@@ -167,7 +167,7 @@
     "environment": "all",
     "timer": 260,
     "xp": 290,
-    "id": 26,
+    "id": 18,
     "level": 5
   },
   {
@@ -176,7 +176,7 @@
     "environment": "all",
     "timer": 250,
     "xp": 270,
-    "id": 28,
+    "id": 19,
     "level": 5
   },
   {
@@ -185,7 +185,7 @@
     "environment": "all",
     "timer": 230,
     "xp": 280,
-    "id": 29,
+    "id": 20,
     "level": 6
   },
   {
@@ -194,7 +194,7 @@
     "environment": "all",
     "timer": 240,
     "xp": 250,
-    "id": 31,
+    "id": 21,
     "level": 5
   },
   {
@@ -203,7 +203,7 @@
     "environment": "all",
     "timer": 250,
     "xp": 300,
-    "id": 33,
+    "id": 22,
     "level": 5
   },
   {
@@ -212,7 +212,7 @@
     "environment": "all",
     "timer": 500,
     "xp": 390,
-    "id": 34,
+    "id": 23,
     "level": 7
   },
   {
@@ -221,7 +221,7 @@
     "environment": "all",
     "timer": 240,
     "xp": 285,
-    "id": 35,
+    "id": 24,
     "level": 6
   },
   {
@@ -230,7 +230,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 400,
-    "id": 36,
+    "id": 25,
     "level": 7
   },
   {
@@ -239,7 +239,7 @@
     "environment": "all",
     "timer": 230,
     "xp": 270,
-    "id": 37,
+    "id": 26,
     "level": 6
   },
   {
@@ -248,7 +248,7 @@
     "environment": "all",
     "timer": 240,
     "xp": 290,
-    "id": 38,
+    "id": 27,
     "level": 5
   },
   {
@@ -257,7 +257,7 @@
     "environment": "all",
     "timer": 270,
     "xp": 520,
-    "id": 39,
+    "id": 28,
     "level": 8
   },
   {
@@ -266,7 +266,7 @@
     "environment": "all",
     "timer": 600,
     "xp": 380,
-    "id": 42,
+    "id": 29,
     "level": 7
   },
   {
@@ -275,7 +275,7 @@
     "environment": "all",
     "timer": 240,
     "xp": 270,
-    "id": 44,
+    "id": 30,
     "level": 6
   },
   {
@@ -284,7 +284,7 @@
     "environment": "all",
     "timer": 230,
     "xp": 400,
-    "id": 45,
+    "id": 31,
     "level": 7
   },
   {
@@ -293,7 +293,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 360,
-    "id": 46,
+    "id": 32,
     "level": 7
   },
   {
@@ -302,7 +302,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 200,
-    "id": 48,
+    "id": 33,
     "level": 4
   },
   {
@@ -311,7 +311,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 420,
-    "id": 49,
+    "id": 34,
     "level": 7
   },
   {
@@ -320,7 +320,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 260,
-    "id": 52,
+    "id": 35,
     "level": 6
   },
   {
@@ -329,7 +329,7 @@
     "environment": "all",
     "timer": 240,
     "xp": 390,
-    "id": 54,
+    "id": 36,
     "level": 7
   },
   {
@@ -338,7 +338,7 @@
     "environment": "all",
     "timer": 240,
     "xp": 490,
-    "id": 56,
+    "id": 37,
     "level": 8
   },
   {
@@ -347,7 +347,7 @@
     "environment": "all",
     "timer": 230,
     "xp": 290,
-    "id": 57,
+    "id": 38,
     "level": 6
   },
   {
@@ -356,7 +356,7 @@
     "environment": "all",
     "timer": 260,
     "xp": 280,
-    "id": 58,
+    "id": 39,
     "level": 6
   },
   {
@@ -365,7 +365,7 @@
     "environment": "all",
     "timer": 250,
     "xp": 250,
-    "id": 60,
+    "id": 40,
     "level": 5
   },
   {
@@ -374,7 +374,7 @@
     "environment": "all",
     "timer": 260,
     "xp": 250,
-    "id": 61,
+    "id": 41,
     "level": 5
   },
   {
@@ -383,7 +383,7 @@
     "environment": "all",
     "timer": 600,
     "xp": 280,
-    "id": 62,
+    "id": 42,
     "level": 5
   },
   {
@@ -392,7 +392,7 @@
     "environment": "all",
     "timer": 600,
     "xp": 290,
-    "id": 63,
+    "id": 43,
     "level": 6
   },
   {
@@ -401,7 +401,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 280,
-    "id": 64,
+    "id": 44,
     "level": 6
   },
   {
@@ -410,7 +410,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 500,
-    "id": 65,
+    "id": 45,
     "level": 8
   },
   {
@@ -419,7 +419,7 @@
     "environment": "all",
     "timer": 240,
     "xp": 260,
-    "id": 66,
+    "id": 46,
     "level": 5
   },
   {
@@ -428,7 +428,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 280,
-    "id": 67,
+    "id": 47,
     "level": 6
   },
   {
@@ -437,7 +437,7 @@
     "environment": "all",
     "timer": 360,
     "xp": 285,
-    "id": 68,
+    "id": 48,
     "level": 6
   },
   {
@@ -446,7 +446,7 @@
     "environment": "street",
     "timer": 720,
     "xp": 410,
-    "id": 69,
+    "id": 49,
     "level": 7
   },
   {
@@ -455,7 +455,7 @@
     "environment": "all",
     "timer": 270,
     "xp": 240,
-    "id": 70,
+    "id": 50,
     "level": 5
   },
   {
@@ -464,7 +464,7 @@
     "environment": "all",
     "timer": 260,
     "xp": 275,
-    "id": 71,
+    "id": 51,
     "level": 6
   },
   {
@@ -473,7 +473,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 370,
-    "id": 72,
+    "id": 52,
     "level": 7
   },
   {
@@ -482,7 +482,7 @@
     "environment": "all",
     "timer": 900,
     "xp": 360,
-    "id": 73,
+    "id": 53,
     "level": 5
   },
   {
@@ -491,7 +491,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 240,
-    "id": 74,
+    "id": 54,
     "level": 5
   },
   {
@@ -500,7 +500,7 @@
     "environment": "street",
     "timer": 180,
     "xp": 100,
-    "id": 75,
+    "id": 55,
     "level": 2
   },
   {
@@ -509,7 +509,7 @@
     "environment": "all",
     "timer": 600,
     "xp": 280,
-    "id": 76,
+    "id": 56,
     "level": 5
   },
   {
@@ -518,7 +518,7 @@
     "environment": "all",
     "timer": 360,
     "xp": 175,
-    "id": 77,
+    "id": 57,
     "level": 4
   },
   {
@@ -527,7 +527,7 @@
     "environment": "all",
     "timer": 270,
     "xp": 180,
-    "id": 78,
+    "id": 58,
     "level": 4
   },
   {
@@ -536,7 +536,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 180,
-    "id": 79,
+    "id": 59,
     "level": 4
   },
   {
@@ -545,7 +545,7 @@
     "environment": "all",
     "timer": 260,
     "xp": 260,
-    "id": 80,
+    "id": 60,
     "level": 6
   },
   {
@@ -554,7 +554,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 220,
-    "id": 81,
+    "id": 61,
     "level": 5
   },
   {
@@ -563,7 +563,7 @@
     "environment": "cafe",
     "timer": 240,
     "xp": 220,
-    "id": 82,
+    "id": 62,
     "level": 5
   },
   {
@@ -572,7 +572,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 280,
-    "id": 83,
+    "id": 63,
     "level": 6
   },
   {
@@ -581,7 +581,7 @@
     "environment": "cafe",
     "timer": 600,
     "xp": 150,
-    "id": 84,
+    "id": 64,
     "level": 4
   },
   {
@@ -590,7 +590,7 @@
     "environment": "all",
     "timer": 270,
     "xp": 290,
-    "id": 91,
+    "id": 65,
     "level": 6
   },
   {
@@ -599,7 +599,7 @@
     "environment": "all",
     "timer": 180,
     "xp": 190,
-    "id": 122,
+    "id": 66,
     "level": 4
   },
   {
@@ -608,7 +608,7 @@
     "environment": "all",
     "timer": 240,
     "xp": 160,
-    "id": 123,
+    "id": 67,
     "level": 4
   },
   {
@@ -617,7 +617,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 220,
-    "id": 124,
+    "id": 68,
     "level": 5
   },
   {
@@ -626,7 +626,7 @@
     "environment": "all",
     "timer": 47,
     "xp": 140,
-    "id": 127,
+    "id": 69,
     "level": 4
   },
   {
@@ -635,7 +635,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 180,
-    "id": 128,
+    "id": 70,
     "level": 4
   },
   {
@@ -644,7 +644,7 @@
     "environment": "street",
     "timer": 900,
     "xp": 230,
-    "id": 129,
+    "id": 71,
     "level": 5
   },
   {
@@ -653,7 +653,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 160,
-    "id": 130,
+    "id": 72,
     "level": 4
   },
   {
@@ -662,7 +662,7 @@
     "environment": "all",
     "timer": 180,
     "xp": 180,
-    "id": 132,
+    "id": 73,
     "level": 4
   },
   {
@@ -671,7 +671,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 180,
-    "id": 133,
+    "id": 74,
     "level": 4
   },
   {
@@ -680,7 +680,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 115,
-    "id": 134,
+    "id": 75,
     "level": 3
   },
   {
@@ -689,7 +689,7 @@
     "environment": "all",
     "timer": 400,
     "xp": 220,
-    "id": 136,
+    "id": 76,
     "level": 5
   },
   {
@@ -698,7 +698,7 @@
     "environment": "all",
     "timer": 600,
     "xp": 280,
-    "id": 138,
+    "id": 77,
     "level": 6
   },
   {
@@ -707,7 +707,7 @@
     "environment": "all",
     "timer": 40,
     "xp": 110,
-    "id": 139,
+    "id": 78,
     "level": 3
   },
   {
@@ -716,7 +716,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 150,
-    "id": 140,
+    "id": 79,
     "level": 4
   },
   {
@@ -725,7 +725,7 @@
     "environment": "all",
     "timer": 360,
     "xp": 250,
-    "id": 141,
+    "id": 80,
     "level": 5
   },
   {
@@ -734,7 +734,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 180,
-    "id": 142,
+    "id": 81,
     "level": 4
   },
   {
@@ -743,7 +743,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 100,
-    "id": 143,
+    "id": 82,
     "level": 3
   },
   {
@@ -752,7 +752,7 @@
     "environment": "all",
     "timer": 420,
     "xp": 110,
-    "id": 145,
+    "id": 83,
     "level": 3
   },
   {
@@ -761,7 +761,7 @@
     "environment": "all",
     "timer": 600,
     "xp": 170,
-    "id": 148,
+    "id": 84,
     "level": 4
   },
   {
@@ -770,7 +770,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 290,
-    "id": 149,
+    "id": 85,
     "level": 6
   },
   {
@@ -779,7 +779,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 160,
-    "id": 150,
+    "id": 86,
     "level": 4
   },
   {
@@ -788,7 +788,7 @@
     "environment": "all",
     "timer": 600,
     "xp": 270,
-    "id": 151,
+    "id": 87,
     "level": 5
   },
   {
@@ -797,7 +797,7 @@
     "environment": "all",
     "timer": 480,
     "xp": 140,
-    "id": 152,
+    "id": 88,
     "level": 4
   },
   {
@@ -806,7 +806,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 160,
-    "id": 153,
+    "id": 89,
     "level": 4
   },
   {
@@ -815,7 +815,7 @@
     "environment": "all",
     "timer": 360,
     "xp": 170,
-    "id": 155,
+    "id": 90,
     "level": 4
   },
   {
@@ -824,7 +824,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 110,
-    "id": 156,
+    "id": 91,
     "level": 3
   },
   {
@@ -833,7 +833,7 @@
     "environment": "all",
     "timer": 480,
     "xp": 100,
-    "id": 157,
+    "id": 92,
     "level": 3
   },
   {
@@ -842,7 +842,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 140,
-    "id": 159,
+    "id": 93,
     "level": 3
   },
   {
@@ -851,7 +851,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 180,
-    "id": 160,
+    "id": 94,
     "level": 4
   },
   {
@@ -860,7 +860,7 @@
     "environment": "all",
     "timer": 210,
     "xp": 100,
-    "id": 161,
+    "id": 95,
     "level": 3
   },
   {
@@ -869,7 +869,7 @@
     "environment": "all",
     "timer": 600,
     "xp": 280,
-    "id": 162,
+    "id": 96,
     "level": 6
   },
   {
@@ -878,7 +878,7 @@
     "environment": "all",
     "timer": 480,
     "xp": 140,
-    "id": 163,
+    "id": 97,
     "level": 3
   },
   {
@@ -887,7 +887,7 @@
     "environment": "all",
     "timer": 480,
     "xp": 130,
-    "id": 164,
+    "id": 98,
     "level": 3
   },
   {
@@ -896,7 +896,7 @@
     "environment": "all",
     "timer": 480,
     "xp": 100,
-    "id": 165,
+    "id": 99,
     "level": 3
   },
   {
@@ -905,7 +905,7 @@
     "environment": "all",
     "timer": 900,
     "xp": 450,
-    "id": 167,
+    "id": 100,
     "level": 8
   },
   {
@@ -914,7 +914,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 110,
-    "id": 168,
+    "id": 101,
     "level": 3
   },
   {
@@ -923,7 +923,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 140,
-    "id": 170,
+    "id": 102,
     "level": 4
   },
   {
@@ -932,7 +932,7 @@
     "environment": "all",
     "timer": 330,
     "xp": 150,
-    "id": 171,
+    "id": 103,
     "level": 4
   },
   {
@@ -941,7 +941,7 @@
     "environment": "all",
     "timer": 480,
     "xp": 200,
-    "id": 172,
+    "id": 104,
     "level": 4
   },
   {
@@ -950,7 +950,7 @@
     "environment": "all",
     "timer": 600,
     "xp": 290,
-    "id": 173,
+    "id": 105,
     "level": 6
   },
   {
@@ -959,7 +959,7 @@
     "environment": "all",
     "timer": 900,
     "xp": 120,
-    "id": 176,
+    "id": 106,
     "level": 3
   },
   {
@@ -968,7 +968,7 @@
     "environment": "all",
     "timer": 420,
     "xp": 190,
-    "id": 177,
+    "id": 107,
     "level": 4
   },
   {
@@ -977,7 +977,7 @@
     "environment": "all",
     "timer": 240,
     "xp": 100,
-    "id": 178,
+    "id": 108,
     "level": 3
   },
   {
@@ -986,7 +986,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 60,
-    "id": 179,
+    "id": 109,
     "level": 1
   },
   {
@@ -995,7 +995,7 @@
     "environment": "all",
     "timer": 900,
     "xp": 440,
-    "id": 180,
+    "id": 110,
     "level": 8
   },
   {
@@ -1004,7 +1004,7 @@
     "environment": "all",
     "timer": 300,
     "xp": 100,
-    "id": 181,
+    "id": 111,
     "level": 3
   }
 ]

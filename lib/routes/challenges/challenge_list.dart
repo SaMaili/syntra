@@ -8,61 +8,37 @@ import '../../providers/statistics_providers.dart';
 import '../../theme/app_spacing.dart';
 import 'challenge_list_item.dart';
 
-/// Sliver version of the challenge list — for use inside a [CustomScrollView].
-class ChallengeListSliver extends ConsumerWidget {
+class ChallengeListSliver extends ConsumerStatefulWidget {
   final void Function(BuildContext, Challenge) onStart;
 
-  const ChallengeListSliver({required this.onStart});
+  const ChallengeListSliver({required this.onStart, super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final filteredAsync = ref.watch(filteredChallengesProvider);
-    final filters = ref.watch(challengeFiltersProvider);
-    final completedIds =
-        ref.watch(completedChallengeIdsProvider).valueOrNull ?? {};
-    final completionDates =
-        ref.watch(latestCompletionDatesProvider).valueOrNull ?? {};
+  ConsumerState<ChallengeListSliver> createState() => _ChallengeListSliverState();
+}
 
-    return filteredAsync.when(
+class _ChallengeListSliverState extends ConsumerState<ChallengeListSliver> {
+  static const _pageSize = 20;
+  int _visibleCount = _pageSize;
+
+  @override
+  Widget build(BuildContext context) {
+    // Reset paging and re-enable stagger whenever filters change.
+    ref.listen(challengeFiltersProvider, (prev, next) {
+      if (mounted) setState(() => _visibleCount = _pageSize);
+    });
+
+    final displayedAsync = ref.watch(displayedChallengesProvider);
+    final completedIds = ref.watch(completedChallengeIdsProvider).valueOrNull ?? {};
+
+    return displayedAsync.when(
       loading: () => const SliverFillRemaining(
         child: Center(child: CircularProgressIndicator()),
       ),
       error: (e, _) => SliverFillRemaining(
         child: Center(child: Text('Error: $e')),
       ),
-      data: (list) {
-        var filtered = List<Challenge>.from(list);
-
-        // Completion filter
-        switch (filters.completionFilter) {
-          case CompletionFilter.notDone:
-            filtered =
-                filtered.where((c) => !completedIds.contains(c.id)).toList();
-          case CompletionFilter.done:
-            filtered =
-                filtered.where((c) => completedIds.contains(c.id)).toList();
-          case CompletionFilter.all:
-            break;
-        }
-
-        // Sort: completion date takes precedence over aura when both are active
-        if (filters.completionSortOrder != CompletionSortOrder.none) {
-          filtered.sort((a, b) {
-            final da = completionDates[a.id];
-            final db = completionDates[b.id];
-            if (da == null && db == null) return 0;
-            if (da == null) return 1; // undone goes to end
-            if (db == null) return -1;
-            return filters.completionSortOrder == CompletionSortOrder.newestFirst
-                ? db.compareTo(da)
-                : da.compareTo(db);
-          });
-        } else if (filters.auraSortOrder != AuraSortOrder.none) {
-          filtered.sort((a, b) => filters.auraSortOrder == AuraSortOrder.asc
-              ? a.xp.compareTo(b.xp)
-              : b.xp.compareTo(a.xp));
-        }
-
+      data: (filtered) {
         if (filtered.isEmpty) {
           return const SliverFillRemaining(
             hasScrollBody: false,
@@ -70,30 +46,118 @@ class ChallengeListSliver extends ConsumerWidget {
           );
         }
 
-        return SliverPadding(
-          padding: EdgeInsets.fromLTRB(
-            AppSpacing.md,
-            AppSpacing.xs,
-            AppSpacing.md,
-            AppSpacing.bottomNavBarHeight(context) + AppSpacing.md,
-          ),
-          sliver: SliverList.separated(
-            itemCount: filtered.length,
-            separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
-            itemBuilder: (context, i) => ChallengeListItem(
-              challenge: filtered[i],
-              isDone: completedIds.contains(filtered[i].id),
-              onStart: () => onStart(context, filtered[i]),
+        final showing = filtered.length.clamp(0, _visibleCount);
+        final hasMore = showing < filtered.length;
+
+        return SliverMainAxisGroup(
+          slivers: [
+            SliverPadding(
+              padding: EdgeInsets.fromLTRB(
+                AppSpacing.md,
+                AppSpacing.xs,
+                AppSpacing.md,
+                0,
+              ),
+              sliver: SliverList.separated(
+                itemCount: showing,
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: AppSpacing.sm),
+                itemBuilder: (context, i) => _FadeInItem(
+                  key: ValueKey(filtered[i].id),
+                  child: ChallengeListItem(
+                    challenge: filtered[i],
+                    isDone: completedIds.contains(filtered[i].id),
+                    onStart: () => widget.onStart(context, filtered[i]),
+                  ),
+                ),
+              ),
             ),
-          ),
+            SliverToBoxAdapter(
+              child: hasMore
+                  ? _LoadMoreSentinel(
+                      onVisible: () =>
+                          setState(() => _visibleCount += _pageSize),
+                    )
+                  : SizedBox(
+                      height: AppSpacing.bottomNavBarHeight(context) +
+                          AppSpacing.md,
+                    ),
+            ),
+          ],
         );
       },
     );
   }
 }
 
+// ─── Sentinel ─────────────────────────────────────────────────────────────────
+
+class _LoadMoreSentinel extends StatefulWidget {
+  final VoidCallback onVisible;
+  const _LoadMoreSentinel({required this.onVisible});
+
+  @override
+  State<_LoadMoreSentinel> createState() => _LoadMoreSentinelState();
+}
+
+class _LoadMoreSentinelState extends State<_LoadMoreSentinel> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) { if (mounted) widget.onVisible(); });
+  }
+
+  @override
+  Widget build(BuildContext context) => const SizedBox(height: 1);
+}
+
+// ─── Fade-in wrapper ──────────────────────────────────────────────────────────
+
+class _FadeInItem extends StatefulWidget {
+  final Widget child;
+  const _FadeInItem({required this.child, super.key});
+
+  @override
+  State<_FadeInItem> createState() => _FadeInItemState();
+}
+
+class _FadeInItemState extends State<_FadeInItem>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<double> _opacity;
+  late final Animation<Offset> _slide;
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 320),
+    )..forward();
+    _opacity = CurvedAnimation(parent: _ctrl, curve: Curves.easeOut);
+    _slide = Tween<Offset>(
+      begin: const Offset(0, 0.06),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => FadeTransition(
+        opacity: _opacity,
+        child: SlideTransition(position: _slide, child: widget.child),
+      );
+}
+
+// ─── Empty state ──────────────────────────────────────────────────────────────
+
 class ChallengesEmptyState extends StatelessWidget {
-  const ChallengesEmptyState();
+  const ChallengesEmptyState({super.key});
 
   @override
   Widget build(BuildContext context) {

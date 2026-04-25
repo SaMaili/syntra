@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../generated/l10n.dart';
 import '../logic/daily_missions_logic.dart';
+import '../providers/scroll_providers.dart';
 import '../providers/settings_providers.dart';
 import '../providers/shared_preferences_provider.dart';
 import '../providers/statistics_providers.dart';
@@ -53,8 +54,16 @@ class DailyChallengeScreen extends ConsumerStatefulWidget {
 
 class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
     with AutomaticKeepAliveClientMixin {
+  final _scrollController = ScrollController();
+
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   Future<void> _startMission(DailyMission mission) async {
     final rewardFactor = await context.pushPriming(
@@ -70,6 +79,17 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    ref.listen(dailyScrollToTopProvider, (prev, next) {
+      if (next > 0 && _scrollController.hasClients) {
+        _scrollController.animateTo(
+          0,
+          duration: const Duration(milliseconds: 600),
+          curve: Curves.easeInOutCubic,
+        );
+      }
+    });
+
     final async = ref.watch(dailyMissionsProvider);
 
     return Scaffold(
@@ -82,6 +102,7 @@ class _DailyChallengeScreenState extends ConsumerState<DailyChallengeScreen>
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (missions) => ListView(
+          controller: _scrollController,
           padding: EdgeInsets.fromLTRB(
             AppSpacing.md,
             SyntraBlurAppBar.topPadding(context) + AppSpacing.sm,

@@ -59,13 +59,24 @@ final averageMoodProvider =
   return LogbookRepository.instance.averageMoodPerDay(days: 14);
 });
 
-/// Completions toward the next CZL level-up. Reacts to both challenge
-/// completions (statisticsRefreshProvider) and level changes.
-/// SharedPreferences reads are synchronous, so this is a plain Provider.
+/// Completions toward the next CZL level-up.
+/// SharedPreferences reads are synchronous and already flushed when
+/// [comfortZoneLevelProvider] notifies, so no extra refresh dependency needed.
 final czlCompletionsProvider = Provider<int>((ref) {
-  ref.watch(statisticsRefreshProvider);
   ref.watch(comfortZoneLevelProvider);
   return ref.read(comfortZoneLevelProvider.notifier).getCompletionsAtCurrentLevel();
+});
+
+/// XP per ISO year-week for the last 52 weeks (for the weekly history chart).
+final weeklyXpByWeekProvider = FutureProvider<Map<String, int>>((ref) {
+  ref.watch(statisticsRefreshProvider);
+  return LogbookRepository.instance.weeklyXpByWeek(weeks: 52);
+});
+
+/// Set of ISO year-week keys that are protected by a streak freeze.
+final frozenWeeksProvider = FutureProvider<Set<String>>((ref) {
+  ref.watch(statisticsRefreshProvider);
+  return SettingsRepository.instance.loadFrozenWeeks();
 });
 
 /// Convenience helper to bump the refresh counter from anywhere.

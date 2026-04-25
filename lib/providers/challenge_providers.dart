@@ -6,6 +6,7 @@ import '../data/challenge_repository.dart';
 import '../logic/comfort_zone_logic.dart';
 import 'settings_providers.dart';
 import 'shared_preferences_provider.dart';
+import 'statistics_providers.dart';
 
 // ─── Catalog ──────────────────────────────────────────────────────────────────
 
@@ -223,6 +224,49 @@ class ChallengeFiltersNotifier extends StateNotifier<ChallengeFilters> {
     await _prefs.setString(_keyLevelFilter, '');
   }
 }
+
+// ─── Displayed list (filtered + sorted, ready to render) ─────────────────────
+
+/// Applies completion filter and sort on top of [filteredChallengesProvider].
+/// Cached by Riverpod — only recomputes when inputs actually change.
+final displayedChallengesProvider = Provider<AsyncValue<List<Challenge>>>((ref) {
+  final baseAsync = ref.watch(filteredChallengesProvider);
+  final filters = ref.watch(challengeFiltersProvider);
+  final completedIds = ref.watch(completedChallengeIdsProvider).valueOrNull ?? {};
+  final completionDates = ref.watch(latestCompletionDatesProvider).valueOrNull ?? {};
+
+  return baseAsync.whenData((list) {
+    var result = List<Challenge>.from(list);
+
+    switch (filters.completionFilter) {
+      case CompletionFilter.notDone:
+        result = result.where((c) => !completedIds.contains(c.id)).toList();
+      case CompletionFilter.done:
+        result = result.where((c) => completedIds.contains(c.id)).toList();
+      case CompletionFilter.all:
+        break;
+    }
+
+    if (filters.completionSortOrder != CompletionSortOrder.none) {
+      result.sort((a, b) {
+        final da = completionDates[a.id];
+        final db = completionDates[b.id];
+        if (da == null && db == null) return 0;
+        if (da == null) return 1;
+        if (db == null) return -1;
+        return filters.completionSortOrder == CompletionSortOrder.newestFirst
+            ? db.compareTo(da)
+            : da.compareTo(db);
+      });
+    } else if (filters.auraSortOrder != AuraSortOrder.none) {
+      result.sort((a, b) => filters.auraSortOrder == AuraSortOrder.asc
+          ? a.xp.compareTo(b.xp)
+          : b.xp.compareTo(a.xp));
+    }
+
+    return result;
+  });
+});
 
 // ─── Filtered list ────────────────────────────────────────────────────────────
 

@@ -2,15 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../generated/l10n.dart';
+import '../../logic/weekly_streak_logic.dart';
 import '../../providers/statistics_providers.dart';
 import '../../theme/app_spacing.dart';
 
-class ActivityCalendar extends ConsumerWidget {
-  const ActivityCalendar();
+/// Weekly Aura bar chart: one bar per ISO week, threshold line at 300 Aura.
+/// Grey  = below threshold · Orange = at/above threshold · Blue = streak freeze applied
+class WeeklyAuraChart extends ConsumerWidget {
+  const WeeklyAuraChart({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final async = ref.watch(activityHeatmapProvider);
+    final xpAsync = ref.watch(weeklyXpByWeekProvider);
+    final frozenAsync = ref.watch(frozenWeeksProvider);
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
 
@@ -27,35 +31,42 @@ class ActivityCalendar extends ConsumerWidget {
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(
-              S.of(context).activitySubtitle,
+              '$kWeeklyXpThreshold Aura = active week',
               style: tt.bodySmall?.copyWith(color: cs.outline),
             ),
             const SizedBox(height: AppSpacing.sm),
-            async.when(
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) => Text('Error: $e'),
-              data: (map) => HeatmapGrid(data: map),
-            ),
-            const SizedBox(height: AppSpacing.sm),
+            if (xpAsync.isLoading || frozenAsync.isLoading)
+              const Center(child: CircularProgressIndicator())
+            else if (xpAsync.hasError || frozenAsync.hasError)
+              Text('Error: ${xpAsync.error ?? frozenAsync.error}')
+            else
+              _WeeklyBars(
+                xpByWeek: xpAsync.value!,
+                frozenWeeks: frozenAsync.value!,
+              ),
+            const SizedBox(height: AppSpacing.xs),
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text(S.of(context).less, style: tt.labelSmall),
+                _Dot(color: cs.surfaceContainerHighest),
                 const SizedBox(width: 4),
-                for (final level in [0, 1, 2, 3])
-                  Padding(
-                    padding: const EdgeInsets.only(right: 2),
-                    child: Container(
-                      width: 10,
-                      height: 10,
-                      decoration: BoxDecoration(
-                        color: heatColor(level, cs),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                  ),
+                Text(
+                  '<$kWeeklyXpThreshold',
+                  style: tt.labelSmall?.copyWith(color: cs.outline),
+                ),
+                const SizedBox(width: 12),
+                _Dot(color: cs.tertiary),
                 const SizedBox(width: 4),
-                Text(S.of(context).more, style: tt.labelSmall),
+                Text(
+                  '≥$kWeeklyXpThreshold',
+                  style: tt.labelSmall?.copyWith(color: cs.outline),
+                ),
+                const SizedBox(width: 12),
+                _Dot(color: Colors.blue.shade400),
+                const SizedBox(width: 4),
+                Text(
+                  'Streak Freeze',
+                  style: tt.labelSmall?.copyWith(color: cs.outline),
+                ),
               ],
             ),
           ],
@@ -65,14 +76,36 @@ class ActivityCalendar extends ConsumerWidget {
   }
 }
 
-class HeatmapGrid extends StatelessWidget {
-  final Map<String, int> data;
-  const HeatmapGrid({super.key, required this.data});
+class _Dot extends StatelessWidget {
+  final Color color;
+  const _Dot({required this.color});
 
-  static const _weeks = 12;
-  static const _gap = 3.0;
-  static const _dayLabelWidth = 14.0;
-  static const _dayLabels = {0: 'M', 2: 'W', 4: 'F'};
+  @override
+  Widget build(BuildContext context) => Container(
+        width: 10,
+        height: 10,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(2),
+        ),
+      );
+}
+
+// ─── Bar chart ────────────────────────────────────────────────────────────────
+
+class _WeeklyBars extends StatelessWidget {
+  final Map<String, int> xpByWeek;
+  final Set<String> frozenWeeks;
+
+  const _WeeklyBars({required this.xpByWeek, required this.frozenWeeks});
+
+  static const int _weeks = 16;
+  static const double _chartHeight = 120.0;
+  static const double _labelHeight = 16.0;
+  static const double _gap = 3.0;
+  // Display cap: bars max out visually at 2× threshold (600 Aura).
+  static const double _maxXp = kWeeklyXpThreshold * 2.0;
+
   static const _monthAbbr = [
     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
@@ -83,95 +116,182 @@ class HeatmapGrid extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
     final now = DateTime.now();
-    final todayWeekday = now.weekday;
-    final startOfGrid =
-        now.subtract(Duration(days: (_weeks - 1) * 7 + (todayWeekday - 1)));
+    final currentMonday = WeeklyStreakLogic.startOfIsoWeek(now);
 
-    final labelStyle = tt.labelSmall?.copyWith(
-      fontSize: 9,
-      color: cs.onSurfaceVariant,
-    );
+    // Oldest week first.
+    final weeks = List.generate(_weeks, (i) {
+      final offset = (_weeks - 1 - i) * 7;
+      return DateTime(
+        currentMonday.year,
+        currentMonday.month,
+        currentMonday.day - offset,
+      );
+    });
+
+    // Y-position of the threshold line from the bottom of the full widget.
+    // labelHeight occupies the bottom; chart area above it.
+    final thresholdFromBottom =
+        _labelHeight + (kWeeklyXpThreshold / _maxXp) * _chartHeight;
 
     return LayoutBuilder(builder: (context, constraints) {
-      final gridWidth = constraints.maxWidth - _dayLabelWidth - _gap;
-      final cellSize = (gridWidth - (_weeks - 1) * _gap) / _weeks;
+      final barWidth =
+          (constraints.maxWidth - _gap * (_weeks - 1)) / _weeks;
 
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              SizedBox(width: _dayLabelWidth + _gap),
-              for (int col = 0; col < _weeks; col++) ...[
-                SizedBox(
-                  width: cellSize,
-                  child: _monthLabel(startOfGrid, col, labelStyle),
-                ),
-                if (col < _weeks - 1) const SizedBox(width: _gap),
-              ],
-            ],
-          ),
-          const SizedBox(height: 2),
-          for (int row = 0; row < 7; row++) ...[
-            if (row > 0) const SizedBox(height: _gap),
-            Row(
-              children: [
-                SizedBox(
-                  width: _dayLabelWidth,
-                  child: Text(
-                    _dayLabels[row] ?? '',
-                    style: labelStyle,
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-                const SizedBox(width: _gap),
-                for (int col = 0; col < _weeks; col++) ...[
-                  _buildCell(startOfGrid, col, row, now, cellSize, cs),
-                  if (col < _weeks - 1) const SizedBox(width: _gap),
+      return SizedBox(
+        height: _chartHeight + _labelHeight,
+        child: Stack(
+          children: [
+            // ── Bars (bottom-aligned inside chart area) ────────────────────
+            Positioned(
+              left: 0,
+              right: 0,
+              top: 0,
+              bottom: _labelHeight,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  for (int i = 0; i < weeks.length; i++) ...[
+                    if (i > 0) const SizedBox(width: _gap),
+                    _Bar(
+                      monday: weeks[i],
+                      barWidth: barWidth,
+                      chartHeight: _chartHeight,
+                      xpByWeek: xpByWeek,
+                      frozenWeeks: frozenWeeks,
+                      cs: cs,
+                    ),
+                  ],
                 ],
-              ],
+              ),
+            ),
+
+            // ── Threshold line ─────────────────────────────────────────────
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: thresholdFromBottom,
+              height: 1,
+              child: ColoredBox(
+                color: cs.outline.withValues(alpha: 0.45),
+              ),
+            ),
+
+            // ── Threshold label (just above the line, right edge) ──────────
+            Positioned(
+              right: 0,
+              bottom: thresholdFromBottom + 2,
+              child: Text(
+                '$kWeeklyXpThreshold',
+                style: TextStyle(fontSize: 9, color: cs.outline),
+              ),
+            ),
+
+            // ── Week / month labels ────────────────────────────────────────
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              height: _labelHeight,
+              child: Row(
+                children: [
+                  for (int i = 0; i < weeks.length; i++) ...[
+                    if (i > 0) const SizedBox(width: _gap),
+                    SizedBox(
+                      width: barWidth,
+                      child: _monthLabel(weeks[i], i, tt, cs),
+                    ),
+                  ],
+                ],
+              ),
             ),
           ],
-        ],
+        ),
       );
     });
   }
 
-  Widget? _monthLabel(DateTime start, int col, TextStyle? style) {
-    final weekStart = start.add(Duration(days: col * 7));
+  Widget _monthLabel(
+      DateTime monday, int index, TextTheme tt, ColorScheme cs) {
+    // Show a label on the first bar and whenever a new month starts in this week.
+    final isFirstBar = index == 0;
+    final hasMonthStart = Iterable.generate(7)
+        .map((d) => monday.add(Duration(days: d)))
+        .any((d) => d.day == 1);
+    if (!isFirstBar && !hasMonthStart) return const SizedBox.shrink();
+
+    // Use the 1st of the month inside this week if there is one.
+    DateTime labelDay = monday;
     for (int d = 0; d < 7; d++) {
-      final day = weekStart.add(Duration(days: d));
-      if (day.day == 1 || (col == 0 && d == 0)) {
-        return Text(_monthAbbr[day.month - 1], style: style, overflow: TextOverflow.visible);
+      final day = monday.add(Duration(days: d));
+      if (day.day == 1) {
+        labelDay = day;
+        break;
       }
     }
-    return null;
-  }
 
-  Widget _buildCell(DateTime start, int col, int row, DateTime now,
-      double cellSize, ColorScheme cs) {
-    final date = start.add(Duration(days: col * 7 + row));
-    if (date.isAfter(now)) return SizedBox(width: cellSize, height: cellSize);
-    final dateStr = date.toIso8601String().substring(0, 10);
-    final count = data[dateStr] ?? 0;
-    final level = count == 0 ? 0 : count == 1 ? 1 : count <= 3 ? 2 : 3;
-    return Container(
-      width: cellSize,
-      height: cellSize,
-      decoration: BoxDecoration(
-        color: heatColor(level, cs),
-        borderRadius: BorderRadius.circular(cellSize * 0.2),
-      ),
+    return Text(
+      _monthAbbr[labelDay.month - 1],
+      style: tt.labelSmall?.copyWith(fontSize: 9, color: cs.outline),
+      textAlign: TextAlign.center,
+      overflow: TextOverflow.visible,
     );
   }
 }
 
-Color heatColor(int level, ColorScheme cs) {
-  switch (level) {
-    case 1: return cs.primary.withValues(alpha: 0.25);
-    case 2: return cs.primary.withValues(alpha: 0.55);
-    case 3: return cs.primary;
-    default: return cs.surfaceContainerHighest;
+// ─── Single bar ───────────────────────────────────────────────────────────────
+
+class _Bar extends StatelessWidget {
+  final DateTime monday;
+  final double barWidth;
+  final double chartHeight;
+  final Map<String, int> xpByWeek;
+  final Set<String> frozenWeeks;
+  final ColorScheme cs;
+
+  const _Bar({
+    required this.monday,
+    required this.barWidth,
+    required this.chartHeight,
+    required this.xpByWeek,
+    required this.frozenWeeks,
+    required this.cs,
+  });
+
+  static const double _maxXp = kWeeklyXpThreshold * 2.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final weekKey = WeeklyStreakLogic.isoYearWeek(monday);
+    final isFrozen = frozenWeeks.contains(weekKey);
+
+    // Frozen weeks are rendered at exactly the threshold height.
+    final xp = isFrozen ? kWeeklyXpThreshold : (xpByWeek[weekKey] ?? 0);
+    final fraction = (xp / _maxXp).clamp(0.0, 1.0);
+    final barHeight = fraction * chartHeight;
+
+    final Color color;
+    if (isFrozen) {
+      color = Colors.blue.shade400;
+    } else if (xp >= kWeeklyXpThreshold) {
+      color = cs.tertiary;
+    } else {
+      color = cs.surfaceContainerHighest;
+    }
+
+    // Always show at least a 2 dp stub so empty weeks are still visible.
+    final displayHeight = barHeight < 2 ? 2.0 : barHeight;
+    final displayColor =
+        barHeight < 2 ? color.withValues(alpha: 0.35) : color;
+
+    return SizedBox(
+      width: barWidth,
+      height: displayHeight,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: displayColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(3)),
+        ),
+      ),
+    );
   }
 }

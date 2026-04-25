@@ -10,7 +10,7 @@ import 'data/logbook_repository.dart';
 import 'data/settings_repository.dart';
 import 'generated/l10n.dart';
 import 'logic/notification_manager.dart';
-import 'providers/scroll_providers.dart';
+import 'providers/scroll_providers.dart' show challengesScrollToTopProvider, dailyScrollToTopProvider, profileScrollToTopProvider, settingsScrollToTopProvider;
 import 'providers/settings_providers.dart';
 import 'providers/statistics_providers.dart' show homeTabIndexProvider;
 import 'router.dart';
@@ -75,8 +75,14 @@ class _HomeBarState extends ConsumerState<HomeBar>
 
   void _onDestinationSelected(int i) {
     if (_index == i) {
-      if (i == 0) {
-        ref.read(challengesScrollToTopProvider.notifier).update((s) => s + 1);
+      if (!_isAnimating) {
+        final providers = [
+          challengesScrollToTopProvider,
+          dailyScrollToTopProvider,
+          profileScrollToTopProvider,
+          settingsScrollToTopProvider,
+        ];
+        ref.read(providers[i].notifier).update((s) => s + 1);
       }
       return;
     }

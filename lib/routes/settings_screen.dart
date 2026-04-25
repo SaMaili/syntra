@@ -8,6 +8,7 @@ import '../logic/comfort_zone_logic.dart';
 import '../logic/weekly_streak_logic.dart';
 import '../logic/notification_manager.dart';
 import '../providers/challenge_providers.dart';
+import '../providers/scroll_providers.dart';
 import '../providers/settings_providers.dart';
 import '../providers/shop_providers.dart';
 import '../providers/statistics_providers.dart' show czlCompletionsProvider;
@@ -27,17 +28,36 @@ class SettingsScreen extends ConsumerStatefulWidget {
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen>
     with AutomaticKeepAliveClientMixin {
+  final _scrollController = ScrollController();
+
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
 
+    ref.listen(settingsScrollToTopProvider, (prev, next) {
+      if (next > 0 && _scrollController.hasClients) {
+        _scrollController.animateTo(
+          0,
+          duration: const Duration(milliseconds: 600),
+          curve: Curves.easeInOutCubic,
+        );
+      }
+    });
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: SyntraBlurAppBar(title: Text(S.of(context).settingsTitle)),
       body: ListView(
+        controller: _scrollController,
         padding: EdgeInsets.fromLTRB(
           AppSpacing.md,
           SyntraBlurAppBar.topPadding(context) + AppSpacing.sm,
