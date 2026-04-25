@@ -44,46 +44,6 @@ class AboutNotePage extends StatelessWidget {
                   '\n${l.developerLabel}',
                   style: tt.bodyLarge,
                 ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Text(l.githubLabel, style: tt.bodyLarge),
-                    Flexible(
-                      child: InkWell(
-                        onTap: () async {
-                          final url =
-                              Uri.parse('https://github.com/SaMaili/syntra');
-                          try {
-                            if (await canLaunchUrl(url)) {
-                              await launchUrl(url,
-                                  mode: LaunchMode.externalApplication);
-                            } else {
-                              await launchUrl(url,
-                                  mode: LaunchMode.platformDefault);
-                            }
-                          } catch (e) {
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('${l.couldNotOpenLink}: $e'),
-                                  backgroundColor: cs.error,
-                                ),
-                              );
-                            }
-                          }
-                        },
-                        child: Text(
-                          'https://github.com/SaMaili/syntra',
-                          style: tt.bodyLarge?.copyWith(
-                            color: cs.primary,
-                            decoration: TextDecoration.underline,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
                 const SizedBox(height: 12),
                 Row(
                   children: [

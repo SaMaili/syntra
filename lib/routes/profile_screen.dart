@@ -9,7 +9,7 @@ import '../widgets/syntra_blur_app_bar.dart';
 import '../widgets/syntra_button.dart';
 import 'logbook_page.dart';
 import 'settings_screen.dart' show ComfortZoneLevelCard;
-import 'statistics/activity_calendar.dart';
+import 'statistics/activity_calendar.dart' show WeeklyAuraChart;
 import 'statistics/average_mood_card.dart';
 import 'statistics/badges_section.dart';
 import 'statistics/overview_grid.dart';
@@ -77,7 +77,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
             const SizedBox(height: AppSpacing.md),
             const BadgesSection(),
             const SizedBox(height: AppSpacing.md),
-            const ActivityCalendar(),
+            const WeeklyAuraChart(),
             const SizedBox(height: AppSpacing.md),
             const WeeklyXpChart(),
             const SizedBox(height: AppSpacing.md),

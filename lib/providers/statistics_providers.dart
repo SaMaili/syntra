@@ -67,6 +67,18 @@ final czlCompletionsProvider = Provider<int>((ref) {
   return ref.read(comfortZoneLevelProvider.notifier).getCompletionsAtCurrentLevel();
 });
 
+/// XP per ISO year-week for the last 52 weeks (for the weekly history chart).
+final weeklyXpByWeekProvider = FutureProvider<Map<String, int>>((ref) {
+  ref.watch(statisticsRefreshProvider);
+  return LogbookRepository.instance.weeklyXpByWeek(weeks: 52);
+});
+
+/// Set of ISO year-week keys that are protected by a streak freeze.
+final frozenWeeksProvider = FutureProvider<Set<String>>((ref) {
+  ref.watch(statisticsRefreshProvider);
+  return SettingsRepository.instance.loadFrozenWeeks();
+});
+
 /// Convenience helper to bump the refresh counter from anywhere.
 void refreshStatistics(WidgetRef ref) {
   ref.read(statisticsRefreshProvider.notifier).state++;
