@@ -3,44 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../generated/l10n.dart';
 import '../logic/daily_missions_logic.dart';
+import '../providers/daily_providers.dart';
 import '../providers/scroll_providers.dart';
-import '../providers/settings_providers.dart';
-import '../providers/shared_preferences_provider.dart';
 import '../providers/statistics_providers.dart';
 import '../router.dart';
 import '../theme/app_spacing.dart';
+import '../theme/app_theme.dart';
 import '../widgets/syntra_blur_app_bar.dart';
 import '../widgets/syntra_button.dart';
 import '../widgets/syntra_progress_bar.dart';
 import 'challenge_detail_screen.dart';
 import 'challenges/challenge_list_item.dart' show MetaChip;
-
-// ─── Provider ─────────────────────────────────────────────────────────────────
-
-final dailyMissionsProvider =
-    AsyncNotifierProvider<DailyMissionsNotifier, List<DailyMission>>(
-        DailyMissionsNotifier.new);
-
-class DailyMissionsNotifier extends AsyncNotifier<List<DailyMission>> {
-  @override
-  Future<List<DailyMission>> build() async {
-    final lang = ref.watch(activeLocaleProvider);
-    final prefs = ref.read(sharedPreferencesProvider);
-    return DailyMissionsLogic().getTodayMissions(lang, prefs);
-  }
-
-  Future<void> markCompleted(MissionTier tier) async {
-    final prefs = ref.read(sharedPreferencesProvider);
-    await DailyMissionsLogic().markCompleted(tier, prefs);
-    final current = state.value;
-    if (current == null) return;
-    state = AsyncData(
-      current
-          .map((m) => m.tier == tier ? m.copyWith(completed: true) : m)
-          .toList(),
-    );
-  }
-}
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
@@ -228,7 +201,7 @@ class _MissionCard extends StatelessWidget {
     final cardColor = done
         ? Color.lerp(
             Theme.of(context).cardTheme.color ?? cs.surfaceContainer,
-            const Color(0xFF10B981),
+            AppTheme.successGreen,
             0.12,
           )
         : null;
@@ -369,7 +342,7 @@ class _TierHeader extends StatelessWidget {
           const Padding(
             padding: EdgeInsets.only(left: AppSpacing.xs),
             child: Icon(Icons.check_circle_rounded,
-                size: 16, color: Color(0xFF10B981)),
+                size: 16, color: AppTheme.successGreen),
           ),
         if (flirt)
           Padding(
