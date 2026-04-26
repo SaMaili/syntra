@@ -267,7 +267,7 @@ class _MissionCard extends StatelessWidget {
                             label: _fmtDuration(c.time)),
                         MetaChip(
                             icon: Icons.emoji_events_outlined,
-                            label: '${c.xp} ${l.auraPoints}'),
+                            label: '${c.aura} ${l.auraPoints}'),
                         MetaChip(
                             icon: c.typeIcon,
                             label: c.typeLabel(l)),

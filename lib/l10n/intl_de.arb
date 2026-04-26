@@ -153,7 +153,7 @@
   "logbookEntry": "Logbuch-Eintrag",
   "challenge": "Challenge",
   "date": "Datum",
-  "xp": "XP",
+  "aura": "Aura",
   "status": "Status",
   "feeling": "Gefühl",
   "perception": "Wahrnehmung",
@@ -286,24 +286,24 @@
     "placeholders": { "days": { "type": "int" } }
   },
   "storyStreakOne": "Tag 1 eines neuen Streaks. Jeder große Streak hat hier angefangen.",
-  "storyXpKilo": "{kilo}k Aura verdient — du baust etwas Echtes auf.",
-  "@storyXpKilo": {
+  "storyAuraKilo": "{kilo}k Aura verdient. Du baust etwas Echtes auf.",
+  "@storyAuraKilo": {
     "placeholders": { "kilo": { "type": "String" } }
   },
-  "storyXpSmall": "{xp} Aura durch echtes Handeln verdient.",
-  "@storyXpSmall": {
-    "placeholders": { "xp": { "type": "int" } }
+  "storyAuraSmall": "{aura} Aura durch echtes Handeln verdient.",
+  "@storyAuraSmall": {
+    "placeholders": { "aura": { "type": "int" } }
   },
   "challengesThisWeek": "Challenges diese Woche",
   "chartExplanation": "Jeder Balken ist ein Tag. Grün = geschafft, orange = versucht.",
   "legendCompleted": "Geschafft",
   "legendTried": "Versucht",
-  "xpEarnedThisWeek": "Aura diese Woche",
+  "auraEarnedThisWeek": "Aura diese Woche",
   "activity": "Aktivität",
   "activitySubtitle": "jedes Quadrat ist ein Tag",
   "less": "Weniger",
   "more": "Mehr",
-  "totalXp": "Gesamt-Aura",
+  "totalAura": "Gesamt-Aura",
   "dayStreak": "Tage-Streak",
   "weekStreak": "Wochen-Streak",
   "weeksShort": "Wochen",
@@ -324,9 +324,9 @@
   "fri": "Fr",
   "sat": "Sa",
   "sun": "So",
-  "greetingLongTime": "Lange nicht gesehen. Keine Sorge — dein Fortschritt ist noch da.",
+  "greetingLongTime": "Lange nicht gesehen. Keine Sorge, dein Fortschritt ist noch da.",
   "greetingFresh": "Willkommen zurück. Bereit für einen neuen Start?",
-  "greetingStreak": "Woche {streak} — bleib dran.",
+  "greetingStreak": "Woche {streak}, bleib dran.",
   "@greetingStreak": {
     "placeholders": { "streak": { "type": "int" } }
   },
@@ -354,7 +354,7 @@
   "allSet": "Alles bereit!",
   "skipForNow": "Erstmal überspringen",
   "wantReminders": "Sollen wir dich erinnern?",
-  "reminderExplanation": "Wir senden dir einen Impuls am Tag — du wählst wann. Kein Spam. Du kannst es jederzeit in den Einstellungen abschalten.",
+  "reminderExplanation": "Wir senden dir einen Impuls am Tag, du wählst wann. Kein Spam. Du kannst es jederzeit in den Einstellungen abschalten.",
   "enableReminders": "Erinnerungen aktivieren",
   "rememberOnMyOwn": "Ich erinnere mich selbst →",
   "heresYourFirst": "Hier ist deine erste.",
@@ -391,7 +391,7 @@
   "onboarding2Headline": "Eine Challenge nach der anderen.",
   "onboarding2Subtext": "Jede ist so gestaltet, dass sie dich leicht aus deiner Komfortzone schiebt. Du entscheidest, wie weit.",
   "onboarding2Step1": "Wähle eine Challenge",
-  "onboarding2Step2": "Mach sie — der Timer hilft",
+  "onboarding2Step2": "Mach sie, der Timer hilft",
   "onboarding2Step3": "Protokolliere dein Ergebnis",
   "onboarding2Button": "Verstanden →",
 
@@ -399,14 +399,14 @@
   "onboarding3Subtext": "Jede Challenge in dieser App ist sicher. Nichts Extremes, nichts Peinliches. Das unangenehme Gefühl ist genau das, was mit der Zeit Selbstvertrauen aufbaut.\n\nDie meisten fühlen es. Keiner stirbt daran.",
   "onboarding3Button": "Ich bin dabei →",
 
-  "onboarding4Headline": "Wo stehst du gerade?",
-  "onboarding4Subtext": "Wir zeigen dir Challenges, die zu deinem aktuellen Stand passen.",
-  "onboarding4Level1Title": "Ganz am Anfang",
-  "onboarding4Level1Subtitle": "Soziale Situationen fühlen sich oft unangenehm an",
-  "onboarding4Level2Title": "Etwas Erfahrung",
-  "onboarding4Level2Subtitle": "Ich versuche es, aber manchmal blockiere ich",
-  "onboarding4Level3Title": "Bereit für mehr",
-  "onboarding4Level3Subtitle": "Ich will mich steigern, nicht bei null anfangen",
+  "onboarding4Headline": "Was klingt am ehesten wie du?",
+  "onboarding4Subtext": "Sei ehrlich: deine ersten Challenges werden darauf abgestimmt. Du kannst es jederzeit ändern.",
+  "onboarding4Level1Title": "Ich mache selten den ersten Schritt",
+  "onboarding4Level1Subtitle": "Ich denke oft daran, etwas zu sagen, und tue es dann doch nicht",
+  "onboarding4Level2Title": "Ich schaffe es, aber es kostet mich wirklich Mühe",
+  "onboarding4Level2Subtitle": "Ich spreche Leute an, wenn ich muss. Aber neue Kontakte aufzubauen kostet mich Energie",
+  "onboarding4Level3Title": "Ich bin über die Grundlagen hinaus",
+  "onboarding4Level3Subtitle": "Ich blockiere selten. Ich will schwierigere soziale Situationen angehen",
 
   "onboarding5Headline": "5 Minuten am Tag reichen.",
   "onboarding5Subtext": "Die Wissenschaft zur Gewohnheitsbildung sagt: Regelmäßigkeit ist wichtiger als Intensität. Eine kleine Sache, jeden Tag, verändert dein Gehirn. Wortwörtlich.",
@@ -420,7 +420,7 @@
   "coachMsg6": "Eine Aktion nach der anderen. Du baust etwas Echtes auf.",
   "coachMsg7": "Die Version von dir vor sechs Monaten wäre stolz.",
 
-  "failureCopy": "Die war schwer. Aufzutauchen und es zu versuchen — darum geht's.",
+  "failureCopy": "Die war schwer. Aufzutauchen und es zu versuchen: darum geht's.",
   "failureNotesHint": "Was ist passiert? Was würdest du anders machen? (Auch ein einziges Wort ist ein Gewinn.)",
 
   "levelUnlocked": "Level {level} freigeschaltet!",
@@ -436,7 +436,7 @@
   "primingHeadlineQuick": "Ein kleiner Schritt. Mehr nicht.",
   "primingHeadlineHard": "Das hier erfordert Mut.\nDu hast ihn.",
   "primingHeadlineDefault": "Atme durch.\nDu schaffst das.",
-  "primingSubFlirt": "Flirten ist einfach spielerische Kommunikation. Das Ergebnis ist egal — Auftauchen zählt.",
+  "primingSubFlirt": "Flirten ist einfach spielerische Kommunikation. Das Ergebnis ist egal. Auftauchen zählt.",
   "primingSubGroup": "Die meisten Menschen sind freundlicher als du erwartest. Eine Begegnung kann deinen ganzen Tag verändern.",
   "primingSubQuick": "Unter einer Minute Aktion. Das Unbehagen verfliegt schneller als du denkst.",
   "primingSubHard": "Die Challenges, die dich am meisten einschüchtern, lassen dich am meisten wachsen. Das hier ist eine davon.",
@@ -467,7 +467,7 @@
   "reachedTheTop": "Du hast die Spitze erreicht. Mach weiter.",
   "setDifficultyManually": "Schwierigkeit manuell setzen",
   "levelDownTitle": "Einen Schritt zurück?",
-  "levelDownBody": "Du kannst nur manuell runterleveln — wieder hochzukommen erfordert erneut Abschlüsse zu sammeln.",
+  "levelDownBody": "Du kannst nur manuell runterleveln. Wieder hochzukommen erfordert erneut Abschlüsse zu sammeln.",
   "levelDownConfirm": "Ja, Schritt zurück",
   "levelDownCancel": "Bleibe wo ich bin",
 
@@ -491,7 +491,7 @@
   "levelDesc7": "Du erklärst etwas über dich selbst oder dein Interesse an einer anderen Person: direkt, klar, ohne es zu verwässern. Oder du tust etwas, das die Aufmerksamkeit mehrerer Menschen auf einmal zieht. Verletzlich und öffentlich.",
   "levelDesc8": "Du tust etwas, das echten Mut braucht. Körperliche Kühnheit, bewusste Unbeholfenheit vollständig gelebt oder tiefe persönliche Offenbarung gegenüber einem Fremden. Ein kontrollierter, selbstbewusster Schritt in Unbehagen.",
   "levelDesc9": "Du wirst zum Spektakel. Du tust etwas, das ein anhaltendes Publikum anzieht oder erfordert, laut zu sprechen, aufzutreten oder dich so zu verhalten, dass Fremde sich umdrehen. Der Kern ist die Exposition: angeschaut werden und jeden Moment davon besitzen.",
-  "levelDesc10": "Für Dinge, die sich gerade außerhalb des Akzeptablen anfühlen. Nicht gefährlich, nicht schädlich, nicht illegal — aber die Art von Ding, die einen Passanten zweimal hinschauen lässt. Du spürst das Gewicht davon. Du gehst trotzdem.",
+  "levelDesc10": "Für Dinge, die sich gerade außerhalb des Akzeptablen anfühlen. Nicht gefährlich, nicht schädlich, nicht illegal. Aber die Art von Ding, die einen Passanten zweimal hinschauen lässt. Du spürst das Gewicht davon. Du gehst trotzdem.",
 
   "challengeInformation": "Challenge-Information",
   "allPermissionsGranted": "Alle Berechtigungen erfolgreich erteilt!",
@@ -536,16 +536,16 @@
   "badgeFiftyChallenges": "50 Challenges",
   "badgeThreeWeekStreak": "3-Wochen-Streak",
   "badgeSevenWeekStreak": "7-Wochen-Streak",
-  "badgeCenturyXp": "100-Aura-Club",
-  "badgeFiveHundredXp": "500-Aura-Legende",
+  "badgeCenturyAura": "100-Aura-Club",
+  "badgeFiveHundredAura": "500-Aura-Legende",
   "badgeBraveMinutes": "60 Min. mutig",
   "badgeFirstStepDesc": "Schließe deine erste Challenge ab",
   "badgeTenChallengesDesc": "Schließe 10 Challenges ab",
   "badgeFiftyChallengesDesc": "Schließe 50 Challenges ab",
   "badgeThreeWeekStreakDesc": "Baue einen 3-Wochen-Streak auf",
   "badgeSevenWeekStreakDesc": "Baue einen 7-Wochen-Streak auf",
-  "badgeCenturyXpDesc": "Verdiene 100 Aura-Punkte",
-  "badgeFiveHundredXpDesc": "Verdiene 500 Aura-Punkte",
+  "badgeCenturyAuraDesc": "Verdiene 100 Aura-Punkte",
+  "badgeFiveHundredAuraDesc": "Verdiene 500 Aura-Punkte",
   "badgeBraveMinutesDesc": "Verbringe 60 Minuten mutig",
   "badgeLocked": "Gesperrt",
   "weeklyGoalTitle": "Wochenziel",
@@ -571,5 +571,21 @@
   "afterLabel": "Nachher",
   "gapPositive": "Du hast dich besser gefühlt als erwartet.",
   "gapNeutral": "Deine Erwartung hat gestimmt.",
-  "gapNegative": "Es war schwieriger als erwartet — das ist okay."
+  "gapNegative": "Es war schwieriger als erwartet. Das ist okay.",
+
+  "notePrompt1": "Was hat dich überrascht, wie es lief?",
+  "notePrompt2": "Was hast du während der Challenge in deinem Körper gespürt?",
+  "notePrompt3": "Welche Geschichte hast du dir vorher erzählt?",
+  "notePrompt4": "Welcher Moment blieb dir am meisten in Erinnerung?",
+  "notePrompt5": "Würdest du es wieder machen? Was würdest du ändern?",
+  "notePrompt6": "Was sagt es über dich aus, dass du das getan hast?",
+  "notePrompt7": "Wie war die Realität im Vergleich zu deiner Befürchtung?",
+  "notePrompt8": "Welche Reaktion hat dich überrascht?",
+  "notePrompt9": "Was würdest du einem Freund sagen, der das versuchen will?",
+  "notePrompt10": "Wie fühlst du dich gerade, ehrlich?",
+
+  "feelingScaleLow": "Mies",
+  "feelingScaleHigh": "Großartig",
+  "perceivedScaleLow": "Unangenehm",
+  "perceivedScaleHigh": "Selbstsicher"
 }

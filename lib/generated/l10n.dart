@@ -849,9 +849,9 @@ class S {
     return Intl.message('Date', name: 'date', desc: '', args: []);
   }
 
-  /// `XP`
-  String get xp {
-    return Intl.message('XP', name: 'xp', desc: '', args: []);
+  /// `Aura`
+  String get aura {
+    return Intl.message('Aura', name: 'aura', desc: '', args: []);
   }
 
   /// `Status`
@@ -1854,23 +1854,23 @@ class S {
     );
   }
 
-  /// `{kilo}k Aura earned — you are building something real.`
-  String storyXpKilo(String kilo) {
+  /// `{kilo}k Aura earned. You are building something real.`
+  String storyAuraKilo(String kilo) {
     return Intl.message(
-      '${kilo}k Aura earned — you are building something real.',
-      name: 'storyXpKilo',
+      '${kilo}k Aura earned. You are building something real.',
+      name: 'storyAuraKilo',
       desc: '',
       args: [kilo],
     );
   }
 
-  /// `{xp} Aura earned through genuine action.`
-  String storyXpSmall(int xp) {
+  /// `{aura} Aura earned through genuine action.`
+  String storyAuraSmall(int aura) {
     return Intl.message(
-      '$xp Aura earned through genuine action.',
-      name: 'storyXpSmall',
+      '$aura Aura earned through genuine action.',
+      name: 'storyAuraSmall',
       desc: '',
-      args: [xp],
+      args: [aura],
     );
   }
 
@@ -1910,10 +1910,10 @@ class S {
   }
 
   /// `Aura Earned This Week`
-  String get xpEarnedThisWeek {
+  String get auraEarnedThisWeek {
     return Intl.message(
       'Aura Earned This Week',
-      name: 'xpEarnedThisWeek',
+      name: 'auraEarnedThisWeek',
       desc: '',
       args: [],
     );
@@ -1945,8 +1945,8 @@ class S {
   }
 
   /// `Total Aura`
-  String get totalXp {
-    return Intl.message('Total Aura', name: 'totalXp', desc: '', args: []);
+  String get totalAura {
+    return Intl.message('Total Aura', name: 'totalAura', desc: '', args: []);
   }
 
   /// `Day Streak`
@@ -2059,10 +2059,10 @@ class S {
     return Intl.message('S', name: 'sun', desc: '', args: []);
   }
 
-  /// `Long time. No worries — your progress is still here.`
+  /// `Long time. No worries, your progress is still here.`
   String get greetingLongTime {
     return Intl.message(
-      'Long time. No worries — your progress is still here.',
+      'Long time. No worries, your progress is still here.',
       name: 'greetingLongTime',
       desc: '',
       args: [],
@@ -2279,10 +2279,10 @@ class S {
     );
   }
 
-  /// `We'll send you one nudge a day — your choice when. No spam. You can turn it off any time in Settings.`
+  /// `We'll send you one nudge a day, your choice when. No spam. You can turn it off any time in Settings.`
   String get reminderExplanation {
     return Intl.message(
-      'We\'ll send you one nudge a day — your choice when. No spam. You can turn it off any time in Settings.',
+      'We\'ll send you one nudge a day, your choice when. No spam. You can turn it off any time in Settings.',
       name: 'reminderExplanation',
       desc: '',
       args: [],
@@ -2489,10 +2489,10 @@ class S {
     );
   }
 
-  /// `Go do it — timer helps`
+  /// `Go do it, the timer guides you`
   String get onboarding2Step2 {
     return Intl.message(
-      'Go do it — timer helps',
+      'Go do it, the timer guides you',
       name: 'onboarding2Step2',
       desc: '',
       args: [],
@@ -2549,80 +2549,80 @@ class S {
     );
   }
 
-  /// `Where are you starting from?`
+  /// `Which sounds most like you?`
   String get onboarding4Headline {
     return Intl.message(
-      'Where are you starting from?',
+      'Which sounds most like you?',
       name: 'onboarding4Headline',
       desc: '',
       args: [],
     );
   }
 
-  /// `We'll show you challenges that fit where you are right now.`
+  /// `Be honest: your first challenges are calibrated to this. You can adjust anytime.`
   String get onboarding4Subtext {
     return Intl.message(
-      'We\'ll show you challenges that fit where you are right now.',
+      'Be honest: your first challenges are calibrated to this. You can adjust anytime.',
       name: 'onboarding4Subtext',
       desc: '',
       args: [],
     );
   }
 
-  /// `Just getting started`
+  /// `I usually avoid making the first move`
   String get onboarding4Level1Title {
     return Intl.message(
-      'Just getting started',
+      'I usually avoid making the first move',
       name: 'onboarding4Level1Title',
       desc: '',
       args: [],
     );
   }
 
-  /// `Social situations often feel uncomfortable`
+  /// `I often think of something to say, then don't do it`
   String get onboarding4Level1Subtitle {
     return Intl.message(
-      'Social situations often feel uncomfortable',
+      'I often think of something to say, then don\'t do it',
       name: 'onboarding4Level1Subtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Some experience`
+  /// `I can do it, but it costs me real effort`
   String get onboarding4Level2Title {
     return Intl.message(
-      'Some experience',
+      'I can do it, but it costs me real effort',
       name: 'onboarding4Level2Title',
       desc: '',
       args: [],
     );
   }
 
-  /// `I try, but sometimes freeze up`
+  /// `I'll speak up when I have to, but approaching someone new still drains me`
   String get onboarding4Level2Subtitle {
     return Intl.message(
-      'I try, but sometimes freeze up',
+      'I\'ll speak up when I have to, but approaching someone new still drains me',
       name: 'onboarding4Level2Subtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Ready to push harder`
+  /// `I'm past the basics`
   String get onboarding4Level3Title {
     return Intl.message(
-      'Ready to push harder',
+      'I\'m past the basics',
       name: 'onboarding4Level3Title',
       desc: '',
       args: [],
     );
   }
 
-  /// `I want to level up, not start from scratch`
+  /// `I rarely freeze up. I want to work on harder social territory`
   String get onboarding4Level3Subtitle {
     return Intl.message(
-      'I want to level up, not start from scratch',
+      'I rarely freeze up. I want to work on harder social territory',
       name: 'onboarding4Level3Subtitle',
       desc: '',
       args: [],
@@ -2819,10 +2819,10 @@ class S {
     );
   }
 
-  /// `Flirting is just playful communication. The outcome doesn't matter — showing up does.`
+  /// `Flirting is just playful communication. The outcome doesn't matter. Showing up does.`
   String get primingSubFlirt {
     return Intl.message(
-      'Flirting is just playful communication. The outcome doesn\'t matter — showing up does.',
+      'Flirting is just playful communication. The outcome doesn\'t matter. Showing up does.',
       name: 'primingSubFlirt',
       desc: '',
       args: [],
@@ -2979,10 +2979,10 @@ class S {
     );
   }
 
-  /// `You can only level down manually — going back up requires grinding through completions again.`
+  /// `You can only level down manually. Going back up requires grinding through completions again.`
   String get levelDownBody {
     return Intl.message(
-      'You can only level down manually — going back up requires grinding through completions again.',
+      'You can only level down manually. Going back up requires grinding through completions again.',
       name: 'levelDownBody',
       desc: '',
       args: [],
@@ -3174,10 +3174,10 @@ class S {
     );
   }
 
-  /// `For things that sit just outside what feels acceptable. Not dangerous, not harmful, not illegal — but the kind of thing that makes a bystander stop and look twice. You feel the weight of it. You go anyway.`
+  /// `For things that sit just outside what feels acceptable. Not dangerous, not harmful, not illegal. But the kind of thing that makes a bystander stop and look twice. You feel the weight of it. You go anyway.`
   String get levelDesc10 {
     return Intl.message(
-      'For things that sit just outside what feels acceptable. Not dangerous, not harmful, not illegal — but the kind of thing that makes a bystander stop and look twice. You feel the weight of it. You go anyway.',
+      'For things that sit just outside what feels acceptable. Not dangerous, not harmful, not illegal. But the kind of thing that makes a bystander stop and look twice. You feel the weight of it. You go anyway.',
       name: 'levelDesc10',
       desc: '',
       args: [],
@@ -3545,20 +3545,20 @@ class S {
   }
 
   /// `100 Aura Club`
-  String get badgeCenturyXp {
+  String get badgeCenturyAura {
     return Intl.message(
       '100 Aura Club',
-      name: 'badgeCenturyXp',
+      name: 'badgeCenturyAura',
       desc: '',
       args: [],
     );
   }
 
   /// `500 Aura Legend`
-  String get badgeFiveHundredXp {
+  String get badgeFiveHundredAura {
     return Intl.message(
       '500 Aura Legend',
-      name: 'badgeFiveHundredXp',
+      name: 'badgeFiveHundredAura',
       desc: '',
       args: [],
     );
@@ -3625,20 +3625,20 @@ class S {
   }
 
   /// `Earn 100 Aura points`
-  String get badgeCenturyXpDesc {
+  String get badgeCenturyAuraDesc {
     return Intl.message(
       'Earn 100 Aura points',
-      name: 'badgeCenturyXpDesc',
+      name: 'badgeCenturyAuraDesc',
       desc: '',
       args: [],
     );
   }
 
   /// `Earn 500 Aura points`
-  String get badgeFiveHundredXpDesc {
+  String get badgeFiveHundredAuraDesc {
     return Intl.message(
       'Earn 500 Aura points',
-      name: 'badgeFiveHundredXpDesc',
+      name: 'badgeFiveHundredAuraDesc',
       desc: '',
       args: [],
     );
@@ -3789,11 +3789,146 @@ class S {
     );
   }
 
-  /// `It was harder than expected — that's okay.`
+  /// `It was harder than expected. That's okay.`
   String get gapNegative {
     return Intl.message(
-      'It was harder than expected — that\'s okay.',
+      'It was harder than expected. That\'s okay.',
       name: 'gapNegative',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What surprised you about how it went?`
+  String get notePrompt1 {
+    return Intl.message(
+      'What surprised you about how it went?',
+      name: 'notePrompt1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What did you notice in your body during this?`
+  String get notePrompt2 {
+    return Intl.message(
+      'What did you notice in your body during this?',
+      name: 'notePrompt2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What story were you telling yourself beforehand?`
+  String get notePrompt3 {
+    return Intl.message(
+      'What story were you telling yourself beforehand?',
+      name: 'notePrompt3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What moment stood out, good or bad?`
+  String get notePrompt4 {
+    return Intl.message(
+      'What moment stood out, good or bad?',
+      name: 'notePrompt4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Would you do this again? What would you change?`
+  String get notePrompt5 {
+    return Intl.message(
+      'Would you do this again? What would you change?',
+      name: 'notePrompt5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What does doing this say about you?`
+  String get notePrompt6 {
+    return Intl.message(
+      'What does doing this say about you?',
+      name: 'notePrompt6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How did the reality compare to what you feared?`
+  String get notePrompt7 {
+    return Intl.message(
+      'How did the reality compare to what you feared?',
+      name: 'notePrompt7',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What reaction did you get that you didn't expect?`
+  String get notePrompt8 {
+    return Intl.message(
+      'What reaction did you get that you didn\'t expect?',
+      name: 'notePrompt8',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What would you tell a friend who's about to try this?`
+  String get notePrompt9 {
+    return Intl.message(
+      'What would you tell a friend who\'s about to try this?',
+      name: 'notePrompt9',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How do you feel right now, honestly?`
+  String get notePrompt10 {
+    return Intl.message(
+      'How do you feel right now, honestly?',
+      name: 'notePrompt10',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Awful`
+  String get feelingScaleLow {
+    return Intl.message('Awful', name: 'feelingScaleLow', desc: '', args: []);
+  }
+
+  /// `Amazing`
+  String get feelingScaleHigh {
+    return Intl.message(
+      'Amazing',
+      name: 'feelingScaleHigh',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Awkward`
+  String get perceivedScaleLow {
+    return Intl.message(
+      'Awkward',
+      name: 'perceivedScaleLow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confident`
+  String get perceivedScaleHigh {
+    return Intl.message(
+      'Confident',
+      name: 'perceivedScaleHigh',
       desc: '',
       args: [],
     );

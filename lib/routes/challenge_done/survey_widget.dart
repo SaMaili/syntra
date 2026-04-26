@@ -5,7 +5,13 @@ import '../../theme/app_spacing.dart';
 
 class SurveyWidget extends StatefulWidget {
   final bool isAborted;
-  const SurveyWidget({super.key, required this.isAborted});
+  final String challengeId;
+
+  const SurveyWidget({
+    super.key,
+    required this.isAborted,
+    required this.challengeId,
+  });
 
   @override
   State<SurveyWidget> createState() => SurveyWidgetState();
@@ -15,7 +21,10 @@ class SurveyWidgetState extends State<SurveyWidget> {
   int _feeling = 2;
   int _perceived = 2;
   bool _submitted = false;
+  late final int _promptIndex;
   final TextEditingController _notesController = TextEditingController();
+
+  static const _kPromptCount = 10;
 
   // Semantic sentiment scale — intentionally not theme colors.
   static const _smileys = [
@@ -30,9 +39,26 @@ class SurveyWidgetState extends State<SurveyWidget> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    // Deterministic per challenge so the same challenge always shows the same
+    // prompt — but different challenges get different prompts.
+    _promptIndex = widget.challengeId.hashCode.abs() % _kPromptCount;
+  }
+
+  @override
   void dispose() {
     _notesController.dispose();
     super.dispose();
+  }
+
+  String _noteHint(S l) {
+    if (widget.isAborted) return l.failureNotesHint;
+    return [
+      l.notePrompt1, l.notePrompt2, l.notePrompt3, l.notePrompt4,
+      l.notePrompt5, l.notePrompt6, l.notePrompt7, l.notePrompt8,
+      l.notePrompt9, l.notePrompt10,
+    ][_promptIndex];
   }
 
   @override
@@ -40,6 +66,7 @@ class SurveyWidgetState extends State<SurveyWidget> {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
     final l = S.of(context);
+    final scaleLabel = tt.labelSmall?.copyWith(color: cs.outline);
 
     if (_submitted) {
       return Padding(
@@ -68,6 +95,16 @@ class SurveyWidgetState extends State<SurveyWidget> {
             onPressed: () => setState(() => _feeling = i),
           )),
         ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(l.feelingScaleLow, style: scaleLabel),
+              Text(l.feelingScaleHigh, style: scaleLabel),
+            ],
+          ),
+        ),
         const SizedBox(height: AppSpacing.md),
         Text(l.howPerceivedQuestion,
             style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
@@ -83,6 +120,16 @@ class SurveyWidgetState extends State<SurveyWidget> {
             onPressed: () => setState(() => _perceived = i),
           )),
         ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(l.perceivedScaleLow, style: scaleLabel),
+              Text(l.perceivedScaleHigh, style: scaleLabel),
+            ],
+          ),
+        ),
         const SizedBox(height: AppSpacing.md),
         Text(l.notes,
             style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
@@ -92,9 +139,7 @@ class SurveyWidgetState extends State<SurveyWidget> {
           minLines: 2,
           maxLines: 4,
           decoration: InputDecoration(
-            hintText: widget.isAborted
-                ? l.failureNotesHint
-                : l.notesPlaceholder,
+            hintText: _noteHint(l),
           ),
         ),
       ],

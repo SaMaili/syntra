@@ -52,7 +52,7 @@ class ChallengeRepository {
         description: (t['description'] as String?) ?? '',
         hints: hints,
         level: (meta['level'] as num?)?.toInt() ?? 1,
-        xp: (meta['xp'] as num).toInt(),
+        aura: (meta['aura'] as num).toInt(),
         time: (meta['timer'] as num).toInt(),
         type: (meta['type'] as String?) ?? 'solo',
         flirt: (meta['flirt'] as bool?) ?? false,

@@ -52,7 +52,7 @@ abstract class VibrationService {
   }
 
   /// Very light single tick — XP bar crossing a 25/50/75 % milestone.
-  static Future<void> xpTick() async {
+  static Future<void> auraTick() async {
     if (!await _available) return;
     Vibration.vibrate(duration: 18, amplitude: 50);
   }

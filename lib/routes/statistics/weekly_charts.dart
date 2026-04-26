@@ -13,7 +13,7 @@ class WeeklyXpChart extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final async = ref.watch(weeklyXpProvider);
+    final async = ref.watch(weeklyAuraProvider);
 
     return Card(
       margin: EdgeInsets.zero,
@@ -23,7 +23,7 @@ class WeeklyXpChart extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              S.of(context).xpEarnedThisWeek,
+              S.of(context).auraEarnedThisWeek,
               style: Theme.of(context)
                   .textTheme
                   .titleMedium
@@ -35,7 +35,7 @@ class WeeklyXpChart extends ConsumerWidget {
               child: async.when(
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (e, _) => Text('Error: $e'),
-                data: (xp) => XpBarChart(xp: xp),
+                data: (aura) => AuraBarChart(aura: aura),
               ),
             ),
           ],
@@ -45,16 +45,16 @@ class WeeklyXpChart extends ConsumerWidget {
   }
 }
 
-class XpBarChart extends StatelessWidget {
-  final List<int> xp;
-  const XpBarChart({super.key, required this.xp});
+class AuraBarChart extends StatelessWidget {
+  final List<int> aura;
+  const AuraBarChart({super.key, required this.aura});
 
   @override
   Widget build(BuildContext context) {
     final l = S.of(context);
     final days = [l.mon, l.tue, l.wed, l.thu, l.fri, l.sat, l.sun];
     final cs = Theme.of(context).colorScheme;
-    final maxY = xp.fold(0, (a, b) => a > b ? a : b).toDouble();
+    final maxY = aura.fold(0, (a, b) => a > b ? a : b).toDouble();
 
     return BarChart(
       BarChartData(
@@ -77,12 +77,12 @@ class XpBarChart extends StatelessWidget {
           rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         ),
         barGroups: [
-          for (int i = 0; i < xp.length; i++)
+          for (int i = 0; i < aura.length; i++)
             BarChartGroupData(
               x: i,
               barRods: [
                 BarChartRodData(
-                  toY: xp[i].toDouble(),
+                  toY: aura[i].toDouble(),
                   color: cs.primary,
                   width: 16,
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),

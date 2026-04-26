@@ -1,12 +1,12 @@
 /// Pure, side-effect-free logic for the weekly streak system.
 ///
-/// A week is "active" when the user earned ≥ [kWeeklyXpThreshold] Aura Points
+/// A week is "active" when the user earned ≥ [kWeeklyAuraThreshold] Aura Points
 /// in that Mon–Sun period. The streak counts consecutive *completed* weeks
 /// (the current in-progress week never counts toward the streak yet).
 library;
 
-/// Minimum XP to earn in a Mon–Sun week for it to count as an active week.
-const int kWeeklyXpThreshold = 300;
+/// Minimum Aura to earn in a Mon–Sun week for it to count as an active week.
+const int kWeeklyAuraThreshold = 300;
 
 class WeeklyStreakLogic {
   WeeklyStreakLogic._();
@@ -39,15 +39,15 @@ class WeeklyStreakLogic {
   /// On Monday of a new week, if the user has not yet reached the threshold,
   /// the current week has 0 qualifying XP and the streak shows 0 (grey).
   ///
-  /// [xpByWeek] maps ISO year-week strings (e.g. `"2026-W14"`) to total XP
-  /// earned that week. Missing weeks are treated as 0 XP.
+  /// [xpByWeek] maps ISO year-week strings (e.g. `"2026-W14"`) to total Aura
+  /// earned that week. Missing weeks are treated as 0.
   ///
   /// [frozenWeeks] is the set of ISO week keys that have been protected by a
   /// streak freeze — they are treated as having met the threshold.
   static int countStreak(
-    Map<String, int> xpByWeek,
+    Map<String, int> auraByWeek,
     DateTime today, {
-    int threshold = kWeeklyXpThreshold,
+    int threshold = kWeeklyAuraThreshold,
     Set<String> frozenWeeks = const {},
   }) {
     final currentWeekMonday = startOfIsoWeek(today);
@@ -62,8 +62,8 @@ class WeeklyStreakLogic {
         currentWeekMonday.day - weeksBack * 7,
       );
       final weekKey = isoYearWeek(weekStart);
-      final xp = xpByWeek[weekKey] ?? 0;
-      if (xp >= threshold || frozenWeeks.contains(weekKey)) {
+      final aura = auraByWeek[weekKey] ?? 0;
+      if (aura >= threshold || frozenWeeks.contains(weekKey)) {
         streak++;
       } else {
         break;
@@ -80,9 +80,9 @@ class WeeklyStreakLogic {
   /// Returns 0 if last week did not qualify (streak truly broken after 2+
   /// missed weeks).
   static int countPendingStreak(
-    Map<String, int> xpByWeek,
+    Map<String, int> auraByWeek,
     DateTime today, {
-    int threshold = kWeeklyXpThreshold,
+    int threshold = kWeeklyAuraThreshold,
     Set<String> frozenWeeks = const {},
   }) {
     final currentWeekMonday = startOfIsoWeek(today);
@@ -95,8 +95,8 @@ class WeeklyStreakLogic {
         currentWeekMonday.day - weeksBack * 7,
       );
       final weekKey = isoYearWeek(weekStart);
-      final xp = xpByWeek[weekKey] ?? 0;
-      if (xp >= threshold || frozenWeeks.contains(weekKey)) {
+      final aura = auraByWeek[weekKey] ?? 0;
+      if (aura >= threshold || frozenWeeks.contains(weekKey)) {
         streak++;
       } else {
         break;
@@ -120,9 +120,9 @@ class WeeklyStreakLogic {
   /// Already-frozen weeks in [alreadyFrozenWeeks] are counted but not re-added
   /// to the returned list.
   static ({int streak, List<String> newlyFrozenWeeks}) countStreakAutoFreeze(
-    Map<String, int> xpByWeek,
+    Map<String, int> auraByWeek,
     DateTime today, {
-    int threshold = kWeeklyXpThreshold,
+    int threshold = kWeeklyAuraThreshold,
     Set<String> alreadyFrozenWeeks = const {},
     int availableFreezes = 0,
   }) {
@@ -138,11 +138,11 @@ class WeeklyStreakLogic {
         currentWeekMonday.day - weeksBack * 7,
       );
       final weekKey = isoYearWeek(weekStart);
-      final xp = xpByWeek[weekKey] ?? 0;
+      final aura = auraByWeek[weekKey] ?? 0;
       final isFrozen =
           alreadyFrozenWeeks.contains(weekKey) || newlyFrozen.contains(weekKey);
 
-      if (xp >= threshold || isFrozen) {
+      if (aura >= threshold || isFrozen) {
         streak++;
       } else if (weeksBack > 0 && remainingFreezes > 0) {
         // Auto-apply a freeze to this missed past week.
@@ -160,8 +160,8 @@ class WeeklyStreakLogic {
   /// Returns whether the current week is on track (XP ≥ threshold already
   /// earned this week).
   static bool isCurrentWeekComplete(
-    int currentWeekXp, {
-    int threshold = kWeeklyXpThreshold,
+    int currentWeekAura, {
+    int threshold = kWeeklyAuraThreshold,
   }) =>
-      currentWeekXp >= threshold;
+      currentWeekAura >= threshold;
 }

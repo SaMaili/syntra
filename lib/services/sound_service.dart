@@ -29,8 +29,8 @@ abstract class SoundService {
   static const String ding = 'ding-126626.mp3';
   static const String success = 'yipee-45360.wav';
   static const String error = 'error-call-to-attention-129258.mp3';
-  static const String xpProgress = 'Prompt_XP_Bar_Progress.wav';
-  static const String xpComplete = 'Loading_Sucsess_sound.wav';
+  static const String auraProgress = 'Prompt_XP_Bar_Progress.wav';
+  static const String auraComplete = 'Loading_Sucsess_sound.wav';
 
   /// Plays a sound from the pool.
   static void _play(String asset, {double volume = 1.0}) {
@@ -68,12 +68,12 @@ abstract class SoundService {
   /// Plays while an XP / progress bar is filling.
   static void playXpProgress({bool enabled = true}) {
     if (!enabled) return;
-    _play(xpProgress, volume: 0.55);
+    _play(auraProgress, volume: 0.55);
   }
 
   /// Plays at the end of every XP bar fill animation (the "landing" chime).
   static void playXpComplete({bool enabled = true}) {
     if (!enabled) return;
-    _play(xpComplete, volume: 0.7);
+    _play(auraComplete, volume: 0.7);
   }
 }

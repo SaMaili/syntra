@@ -6,11 +6,11 @@ import 'package:syntra/providers/challenge_providers.dart';
 import 'package:syntra/providers/shared_preferences_provider.dart';
 import 'package:syntra/providers/statistics_providers.dart';
 
-Challenge _c(String id, {int xp = 50}) => Challenge(
+Challenge _c(String id, {int aura = 50}) => Challenge(
       id: id,
       title: 'T',
       description: 'D',
-      xp: xp,
+      aura: aura,
     );
 
 /// Creates a container where [challengeFiltersProvider] starts with [prefs] values.
@@ -74,9 +74,9 @@ void main() {
   });
 
   group('displayedChallengesProvider — aura sort', () {
-    final catalog = [_c('a', xp: 30), _c('b', xp: 10), _c('c', xp: 20)];
+    final catalog = [_c('a', aura: 30), _c('b', aura: 10), _c('c', aura: 20)];
 
-    test('AuraSortOrder.asc sorts ascending by XP', () async {
+    test('AuraSortOrder.asc sorts ascending by Aura', () async {
       final c = await _container(
         catalog: catalog,
         filterPrefs: {_kAuraSortKey: AuraSortOrder.asc.index},
@@ -86,7 +86,7 @@ void main() {
       expect(ids?.toList(), ['b', 'c', 'a']);
     });
 
-    test('AuraSortOrder.desc sorts descending by XP', () async {
+    test('AuraSortOrder.desc sorts descending by Aura', () async {
       final c = await _container(
         catalog: catalog,
         filterPrefs: {_kAuraSortKey: AuraSortOrder.desc.index},

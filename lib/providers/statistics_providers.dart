@@ -15,9 +15,9 @@ final overviewStatsProvider = FutureProvider<Map<String, int>>((ref) {
   return LogbookRepository.instance.overviewStats();
 });
 
-final weeklyXpProvider = FutureProvider<List<int>>((ref) {
+final weeklyAuraProvider = FutureProvider<List<int>>((ref) {
   ref.watch(statisticsRefreshProvider);
-  return LogbookRepository.instance.weeklyXp();
+  return LogbookRepository.instance.weeklyAura();
 });
 
 final completedChallengeIdsProvider = FutureProvider<Set<String>>((ref) {
@@ -36,9 +36,9 @@ final personalBestStreakProvider = FutureProvider<int>((ref) {
   return SettingsRepository.instance.loadBestWeeklyStreak();
 });
 
-final currentWeekXpProvider = FutureProvider<int>((ref) {
+final currentWeekAuraProvider = FutureProvider<int>((ref) {
   ref.watch(statisticsRefreshProvider);
-  return LogbookRepository.instance.currentWeekXp();
+  return LogbookRepository.instance.currentWeekAura();
 });
 
 final moodHistoryProvider =
@@ -61,10 +61,10 @@ final czlCompletionsProvider = Provider<int>((ref) {
   return ref.read(comfortZoneLevelProvider.notifier).getCompletionsAtCurrentLevel();
 });
 
-/// XP per ISO year-week for the last 52 weeks (for the weekly history chart).
-final weeklyXpByWeekProvider = FutureProvider<Map<String, int>>((ref) {
+/// Aura per ISO year-week for the last 52 weeks (for the weekly history chart).
+final weeklyAuraByWeekProvider = FutureProvider<Map<String, int>>((ref) {
   ref.watch(statisticsRefreshProvider);
-  return LogbookRepository.instance.weeklyXpByWeek(weeks: 52);
+  return LogbookRepository.instance.weeklyAuraByWeek(weeks: 52);
 });
 
 /// Set of ISO year-week keys that are protected by a streak freeze.

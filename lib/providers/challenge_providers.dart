@@ -260,8 +260,8 @@ final displayedChallengesProvider = Provider<AsyncValue<List<Challenge>>>((ref) 
       });
     } else if (filters.auraSortOrder != AuraSortOrder.none) {
       result.sort((a, b) => filters.auraSortOrder == AuraSortOrder.asc
-          ? a.xp.compareTo(b.xp)
-          : b.xp.compareTo(a.xp));
+          ? a.aura.compareTo(b.aura)
+          : b.aura.compareTo(a.aura));
     }
 
     return result;

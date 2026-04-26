@@ -65,16 +65,16 @@ class ChallengeDoneScreen extends ConsumerStatefulWidget {
 
 class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
   final _surveyKey = GlobalKey<SurveyWidgetState>();
-  int _oldWeeklyXp = 0;
-  int _displayWeeklyXp = 0;
-  bool _xpLoaded = false;
+  int _oldWeeklyAura = 0;
+  int _displayWeeklyAura = 0;
+  bool _auraLoaded = false;
 
   bool get _isAborted => widget.rewardFactor < 0;
-  int get _earnedXp =>
-      _isAborted ? 0 : (widget.challenge.xp * widget.rewardFactor).round();
-  int get _bonusXp =>
-      widget.isDailyMission && !_isAborted ? (_earnedXp * 0.1).round() : 0;
-  int get _totalXp => _earnedXp + _bonusXp;
+  int get _earnedAura =>
+      _isAborted ? 0 : (widget.challenge.aura * widget.rewardFactor).round();
+  int get _bonusAura =>
+      widget.isDailyMission && !_isAborted ? (_earnedAura * 0.1).round() : 0;
+  int get _totalAura => _earnedAura + _bonusAura;
   String get _status => _isAborted ? 'tried' : 'success';
 
   @override
@@ -85,16 +85,16 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
     } else {
       unawaited(VibrationService.success());
     }
-    _loadXp();
+    _loadAura();
   }
 
-  Future<void> _loadXp() async {
-    final latestXp = await LogbookRepository.instance.currentWeekXp();
+  Future<void> _loadAura() async {
+    final latestAura = await LogbookRepository.instance.currentWeekAura();
     if (mounted) {
       setState(() {
-        _oldWeeklyXp = latestXp;
-        _displayWeeklyXp = latestXp;
-        _xpLoaded = true;
+        _oldWeeklyAura = latestAura;
+        _displayWeeklyAura = latestAura;
+        _auraLoaded = true;
       });
       // Sequence:
       // 1. Wait for screen fade-in (400ms)
@@ -103,7 +103,7 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
       Future.delayed(const Duration(milliseconds: 1000), () {
         if (mounted) {
           setState(() {
-            _displayWeeklyXp = _oldWeeklyXp + _totalXp;
+            _displayWeeklyAura = _oldWeeklyAura + _totalAura;
           });
         }
       });
@@ -216,9 +216,9 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
                   SizedBox(height: gapXl),
 
                   // ── Aura chip — number counts up from 0 on appear ──────
-                  if (_xpLoaded)
+                  if (_auraLoaded)
                     TweenAnimationBuilder<int>(
-                      tween: IntTween(begin: 0, end: _totalXp),
+                      tween: IntTween(begin: 0, end: _totalAura),
                       duration: const Duration(milliseconds: 900),
                       curve: Curves.easeOutCubic,
                       builder: (_, value, child) => Container(
@@ -260,7 +260,7 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
                   ),
 
                   // ── Aura progress bar ──────────────────────────────────
-                  if (!_isAborted && _xpLoaded) ...[
+                  if (!_isAborted && _auraLoaded) ...[
                     SizedBox(height: gapMd),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -273,11 +273,11 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
                           ),
                         ),
                         TweenAnimationBuilder<int>(
-                          tween: IntTween(begin: _oldWeeklyXp, end: _displayWeeklyXp),
+                          tween: IntTween(begin: _oldWeeklyAura, end: _displayWeeklyAura),
                           duration: const Duration(milliseconds: 1500),
                           curve: Curves.easeOutCubic,
                           builder: (context, value, child) => Text(
-                            '$value / $kWeeklyXpThreshold',
+                            '$value / $kWeeklyAuraThreshold',
                             style: tt.labelMedium?.copyWith(
                               color: cs.onSurfaceVariant,
                               fontWeight: FontWeight.bold,
@@ -288,15 +288,15 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
                     ),
                     const SizedBox(height: 6),
                     SyntraXpBar(
-                      value: (_displayWeeklyXp / kWeeklyXpThreshold).clamp(0.0, 1.0),
-                      initialValue: (_oldWeeklyXp / kWeeklyXpThreshold).clamp(0.0, 1.0),
+                      value: (_displayWeeklyAura / kWeeklyAuraThreshold).clamp(0.0, 1.0),
+                      initialValue: (_oldWeeklyAura / kWeeklyAuraThreshold).clamp(0.0, 1.0),
                       minHeight: 12,
                       duration: const Duration(milliseconds: 1500),
                     ),
                   ],
 
                   // ── Daily bonus badge ──────────────────────────────────
-                  if (_bonusXp > 0) ...[
+                  if (_bonusAura > 0) ...[
                     const SizedBox(height: AppSpacing.sm),
                     TweenAnimationBuilder<double>(
                       tween: Tween(begin: 0.0, end: 1.0),
@@ -323,7 +323,7 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
                                 color: cs.onTertiaryContainer),
                             const SizedBox(width: 4),
                             Text(
-                              '+$_bonusXp ${l.dailyBonus}',
+                              '+$_bonusAura ${l.dailyBonus}',
                               style: tt.labelMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: cs.onTertiaryContainer,
@@ -338,7 +338,11 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
                   SizedBox(height: gapMd),
 
                   // ── Survey ─────────────────────────────────────────────
-                  SurveyWidget(key: _surveyKey, isAborted: _isAborted),
+                  SurveyWidget(
+                    key: _surveyKey,
+                    isAborted: _isAborted,
+                    challengeId: widget.challenge.id,
+                  ),
                   SizedBox(height: gapMd),
                 ],
               ),
@@ -397,7 +401,7 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
     await LogbookRepository.instance.addEntry(
       challengeId: widget.challenge.id,
       status: _status,
-      earned: _totalXp,
+      aura: _totalAura,
       timestamp: DateTime.now(),
       feeling: feeling,
       perception: perception,
@@ -448,13 +452,13 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
     }
 
     if (!_isAborted && context.mounted) {
-      // ── Weekly XP goal celebration ────────────────────────────────────
+      // ── Weekly Aura goal celebration ────────────────────────────────────
       // Fire the flame animation as soon as the user reaches the weekly
-      // XP threshold — not at the week boundary. Uses an ISO year-week key
+      // Aura threshold — not at the week boundary. Uses an ISO year-week key
       // so the celebration fires at most once per week.
-      final currentWeekXp =
-          await LogbookRepository.instance.currentWeekXp();
-      if (currentWeekXp >= kWeeklyXpThreshold) {
+      final currentWeekAura =
+          await LogbookRepository.instance.currentWeekAura();
+      if (currentWeekAura >= kWeeklyAuraThreshold) {
         final currentWeek =
             WeeklyStreakLogic.isoYearWeek(DateTime.now());
         final lastGoalWeek =
@@ -495,7 +499,7 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
     await LogbookRepository.instance.addEntry(
       challengeId: widget.challenge.id,
       status: _status,
-      earned: 0,
+      aura: 0,
       timestamp: DateTime.now(),
       feeling: feeling,
       perception: perception,

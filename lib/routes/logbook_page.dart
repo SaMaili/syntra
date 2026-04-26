@@ -335,7 +335,7 @@ class _LogbookEntryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final earned = (entry['earned'] as int?) ?? 0;
+    final earned = (entry['aura'] as int?) ?? 0;
     final status = entry['status']?.toString() ?? '';
     final isSuccess = status == 'success';
     final xpColor = isSuccess ? cs.primary : cs.tertiary;

@@ -19,8 +19,8 @@ class BadgesSection extends ConsumerWidget {
       'fifty_challenges' => l.badgeFiftyChallenges,
       'three_week_streak' => l.badgeThreeWeekStreak,
       'seven_week_streak' => l.badgeSevenWeekStreak,
-      'century_xp' => l.badgeCenturyXp,
-      'five_hundred_xp' => l.badgeFiveHundredXp,
+      'century_aura' => l.badgeCenturyAura,
+      'five_hundred_aura' => l.badgeFiveHundredAura,
       'brave_minutes' => l.badgeBraveMinutes,
       String other => other,
     };
@@ -35,8 +35,8 @@ class BadgesSection extends ConsumerWidget {
       'fifty_challenges' => l.badgeFiftyChallengesDesc,
       'three_week_streak' => l.badgeThreeWeekStreakDesc,
       'seven_week_streak' => l.badgeSevenWeekStreakDesc,
-      'century_xp' => l.badgeCenturyXpDesc,
-      'five_hundred_xp' => l.badgeFiveHundredXpDesc,
+      'century_aura' => l.badgeCenturyAuraDesc,
+      'five_hundred_aura' => l.badgeFiveHundredAuraDesc,
       'brave_minutes' => l.badgeBraveMinutesDesc,
       String() => '',
     };

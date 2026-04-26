@@ -266,7 +266,7 @@ class _TagChips extends StatelessWidget {
       ),
       (
         icon: Icons.emoji_events_outlined,
-        label: '+${challenge.xp} ${l.auraPoints}',
+        label: '+${challenge.aura} ${l.auraPoints}',
         bg: cs.primaryContainer
       ),
       (

@@ -30,7 +30,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m3(done, needed, next) =>
       "${done} / ${needed} Abschlüsse bis Level ${next}";
 
-  static String m4(streak) => "Woche ${streak} — bleib dran.";
+  static String m4(streak) => "Woche ${streak}, bleib dran.";
 
   static String m5(level) => "Level ${level}";
 
@@ -53,18 +53,18 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m14(seconds) => "In ${seconds} Sekunden verfügbar";
 
-  static String m15(minutes) => "${minutes} Minuten mutig gewesen.";
+  static String m15(kilo) =>
+      "${kilo}k Aura verdient. Du baust etwas Echtes auf.";
 
-  static String m16(count) =>
+  static String m16(aura) => "${aura} Aura durch echtes Handeln verdient.";
+
+  static String m17(minutes) => "${minutes} Minuten mutig gewesen.";
+
+  static String m18(count) =>
       "Du bist ${count} Mal aus deiner Komfortzone herausgetreten.";
 
-  static String m17(days) =>
+  static String m19(days) =>
       "Du bist auf einem ${days}-Tage-Streak. Bleib dran!";
-
-  static String m18(kilo) =>
-      "${kilo}k Aura verdient — du baust etwas Echtes auf.";
-
-  static String m19(xp) => "${xp} Aura durch echtes Handeln verdient.";
 
   static String m20(days) => "Du bist seit ${days} Wochen dabei. Weiter so.";
 
@@ -110,6 +110,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "allowExactAlarms": MessageLookupByLibrary.simpleMessage(
       "Genaue Alarme zulassen",
     ),
+    "aura": MessageLookupByLibrary.simpleMessage("Aura"),
+    "auraEarnedThisWeek": MessageLookupByLibrary.simpleMessage(
+      "Aura diese Woche",
+    ),
     "auraPoints": MessageLookupByLibrary.simpleMessage("Aura"),
     "avgMoodEmpty": MessageLookupByLibrary.simpleMessage(
       "Bewerte dein Gefühl nach jeder Challenge, um deinen Stimmungsverlauf zu sehen.",
@@ -126,8 +130,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "badgeBraveMinutesDesc": MessageLookupByLibrary.simpleMessage(
       "Verbringe 60 Minuten mutig",
     ),
-    "badgeCenturyXp": MessageLookupByLibrary.simpleMessage("100-Aura-Club"),
-    "badgeCenturyXpDesc": MessageLookupByLibrary.simpleMessage(
+    "badgeCenturyAura": MessageLookupByLibrary.simpleMessage("100-Aura-Club"),
+    "badgeCenturyAuraDesc": MessageLookupByLibrary.simpleMessage(
       "Verdiene 100 Aura-Punkte",
     ),
     "badgeFiftyChallenges": MessageLookupByLibrary.simpleMessage(
@@ -140,10 +144,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "badgeFirstStepDesc": MessageLookupByLibrary.simpleMessage(
       "Schließe deine erste Challenge ab",
     ),
-    "badgeFiveHundredXp": MessageLookupByLibrary.simpleMessage(
+    "badgeFiveHundredAura": MessageLookupByLibrary.simpleMessage(
       "500-Aura-Legende",
     ),
-    "badgeFiveHundredXpDesc": MessageLookupByLibrary.simpleMessage(
+    "badgeFiveHundredAuraDesc": MessageLookupByLibrary.simpleMessage(
       "Verdiene 500 Aura-Punkte",
     ),
     "badgeLocked": MessageLookupByLibrary.simpleMessage("Gesperrt"),
@@ -350,12 +354,14 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "failed": MessageLookupByLibrary.simpleMessage("Gescheitert"),
     "failureCopy": MessageLookupByLibrary.simpleMessage(
-      "Die war schwer. Aufzutauchen und es zu versuchen — darum geht\'s.",
+      "Die war schwer. Aufzutauchen und es zu versuchen: darum geht\'s.",
     ),
     "failureNotesHint": MessageLookupByLibrary.simpleMessage(
       "Was ist passiert? Was würdest du anders machen? (Auch ein einziges Wort ist ein Gewinn.)",
     ),
     "feeling": MessageLookupByLibrary.simpleMessage("Gefühl"),
+    "feelingScaleHigh": MessageLookupByLibrary.simpleMessage("Großartig"),
+    "feelingScaleLow": MessageLookupByLibrary.simpleMessage("Mies"),
     "filterAll": MessageLookupByLibrary.simpleMessage("Alle"),
     "filterAuraHigh": MessageLookupByLibrary.simpleMessage("Hoch"),
     "filterAuraLabel": MessageLookupByLibrary.simpleMessage("Aura"),
@@ -423,7 +429,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "fri": MessageLookupByLibrary.simpleMessage("Fr"),
     "gapNegative": MessageLookupByLibrary.simpleMessage(
-      "Es war schwieriger als erwartet — das ist okay.",
+      "Es war schwieriger als erwartet. Das ist okay.",
     ),
     "gapNeutral": MessageLookupByLibrary.simpleMessage(
       "Deine Erwartung hat gestimmt.",
@@ -447,7 +453,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Willkommen zurück. Bereit für einen neuen Start?",
     ),
     "greetingLongTime": MessageLookupByLibrary.simpleMessage(
-      "Lange nicht gesehen. Keine Sorge — dein Fortschritt ist noch da.",
+      "Lange nicht gesehen. Keine Sorge, dein Fortschritt ist noch da.",
     ),
     "greetingStreak": m4,
     "group": MessageLookupByLibrary.simpleMessage("Gruppe"),
@@ -507,7 +513,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Das Unbehagen ist rein innerlich: Ego, Selbstbewusstsein, die Angst, gesehen zu werden. Keine Worte nötig. Klein von außen, echt von innen.",
     ),
     "levelDesc10": MessageLookupByLibrary.simpleMessage(
-      "Für Dinge, die sich gerade außerhalb des Akzeptablen anfühlen. Nicht gefährlich, nicht schädlich, nicht illegal — aber die Art von Ding, die einen Passanten zweimal hinschauen lässt. Du spürst das Gewicht davon. Du gehst trotzdem.",
+      "Für Dinge, die sich gerade außerhalb des Akzeptablen anfühlen. Nicht gefährlich, nicht schädlich, nicht illegal. Aber die Art von Ding, die einen Passanten zweimal hinschauen lässt. Du spürst das Gewicht davon. Du gehst trotzdem.",
     ),
     "levelDesc2": MessageLookupByLibrary.simpleMessage(
       "Ein Satz, ein Fremder: jemand, der bereits dort ist und in gewisser Weise eine Interaktion erwartet (Kassiererin, Barista, Rezeptionist). Du initiierst, aber das soziale Skript ist vertraut. Das Unbehagen liegt darin, zuerst zu sprechen.",
@@ -534,7 +540,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Du wirst zum Spektakel. Du tust etwas, das ein anhaltendes Publikum anzieht oder erfordert, laut zu sprechen, aufzutreten oder dich so zu verhalten, dass Fremde sich umdrehen. Der Kern ist die Exposition: angeschaut werden und jeden Moment davon besitzen.",
     ),
     "levelDownBody": MessageLookupByLibrary.simpleMessage(
-      "Du kannst nur manuell runterleveln — wieder hochzukommen erfordert erneut Abschlüsse zu sammeln.",
+      "Du kannst nur manuell runterleveln. Wieder hochzukommen erfordert erneut Abschlüsse zu sammeln.",
     ),
     "levelDownCancel": MessageLookupByLibrary.simpleMessage(
       "Bleibe wo ich bin",
@@ -633,6 +639,36 @@ class MessageLookup extends MessageLookupByLibrary {
       "Nicht sicher was du sagen sollst?",
     ),
     "notToday": MessageLookupByLibrary.simpleMessage("Heute nicht 🙈"),
+    "notePrompt1": MessageLookupByLibrary.simpleMessage(
+      "Was hat dich überrascht, wie es lief?",
+    ),
+    "notePrompt10": MessageLookupByLibrary.simpleMessage(
+      "Wie fühlst du dich gerade, ehrlich?",
+    ),
+    "notePrompt2": MessageLookupByLibrary.simpleMessage(
+      "Was hast du während der Challenge in deinem Körper gespürt?",
+    ),
+    "notePrompt3": MessageLookupByLibrary.simpleMessage(
+      "Welche Geschichte hast du dir vorher erzählt?",
+    ),
+    "notePrompt4": MessageLookupByLibrary.simpleMessage(
+      "Welcher Moment blieb dir am meisten in Erinnerung?",
+    ),
+    "notePrompt5": MessageLookupByLibrary.simpleMessage(
+      "Würdest du es wieder machen? Was würdest du ändern?",
+    ),
+    "notePrompt6": MessageLookupByLibrary.simpleMessage(
+      "Was sagt es über dich aus, dass du das getan hast?",
+    ),
+    "notePrompt7": MessageLookupByLibrary.simpleMessage(
+      "Wie war die Realität im Vergleich zu deiner Befürchtung?",
+    ),
+    "notePrompt8": MessageLookupByLibrary.simpleMessage(
+      "Welche Reaktion hat dich überrascht?",
+    ),
+    "notePrompt9": MessageLookupByLibrary.simpleMessage(
+      "Was würdest du einem Freund sagen, der das versuchen will?",
+    ),
     "notes": MessageLookupByLibrary.simpleMessage("Notizen:"),
     "notesPlaceholder": MessageLookupByLibrary.simpleMessage(
       "Deine Gedanken, Beobachtungen, ...",
@@ -671,7 +707,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Wähle eine Challenge",
     ),
     "onboarding2Step2": MessageLookupByLibrary.simpleMessage(
-      "Mach sie — der Timer hilft",
+      "Mach sie, der Timer hilft",
     ),
     "onboarding2Step3": MessageLookupByLibrary.simpleMessage(
       "Protokolliere dein Ergebnis",
@@ -689,28 +725,28 @@ class MessageLookup extends MessageLookupByLibrary {
       "Jede Challenge in dieser App ist sicher. Nichts Extremes, nichts Peinliches. Das unangenehme Gefühl ist genau das, was mit der Zeit Selbstvertrauen aufbaut.\n\nDie meisten fühlen es. Keiner stirbt daran.",
     ),
     "onboarding4Headline": MessageLookupByLibrary.simpleMessage(
-      "Wo stehst du gerade?",
+      "Was klingt am ehesten wie du?",
     ),
     "onboarding4Level1Subtitle": MessageLookupByLibrary.simpleMessage(
-      "Soziale Situationen fühlen sich oft unangenehm an",
+      "Ich denke oft daran, etwas zu sagen, und tue es dann doch nicht",
     ),
     "onboarding4Level1Title": MessageLookupByLibrary.simpleMessage(
-      "Ganz am Anfang",
+      "Ich mache selten den ersten Schritt",
     ),
     "onboarding4Level2Subtitle": MessageLookupByLibrary.simpleMessage(
-      "Ich versuche es, aber manchmal blockiere ich",
+      "Ich spreche Leute an, wenn ich muss. Aber neue Kontakte aufzubauen kostet mich Energie",
     ),
     "onboarding4Level2Title": MessageLookupByLibrary.simpleMessage(
-      "Etwas Erfahrung",
+      "Ich schaffe es, aber es kostet mich wirklich Mühe",
     ),
     "onboarding4Level3Subtitle": MessageLookupByLibrary.simpleMessage(
-      "Ich will mich steigern, nicht bei null anfangen",
+      "Ich blockiere selten. Ich will schwierigere soziale Situationen angehen",
     ),
     "onboarding4Level3Title": MessageLookupByLibrary.simpleMessage(
-      "Bereit für mehr",
+      "Ich bin über die Grundlagen hinaus",
     ),
     "onboarding4Subtext": MessageLookupByLibrary.simpleMessage(
-      "Wir zeigen dir Challenges, die zu deinem aktuellen Stand passen.",
+      "Sei ehrlich: deine ersten Challenges werden darauf abgestimmt. Du kannst es jederzeit ändern.",
     ),
     "onboarding5Button": MessageLookupByLibrary.simpleMessage(
       "Erinnerung einstellen →",
@@ -724,6 +760,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "openBatteryOptimization": MessageLookupByLibrary.simpleMessage(
       "Batterieeinstellungen öffnen",
     ),
+    "perceivedScaleHigh": MessageLookupByLibrary.simpleMessage("Selbstsicher"),
+    "perceivedScaleLow": MessageLookupByLibrary.simpleMessage("Unangenehm"),
     "perception": MessageLookupByLibrary.simpleMessage("Wahrnehmung"),
     "positive": MessageLookupByLibrary.simpleMessage("Positiv"),
     "predictionRealityGapTitle": MessageLookupByLibrary.simpleMessage(
@@ -754,7 +792,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Jedes Mal wird es ein bisschen leichter. Dein zukünftiges Ich ist dir schon dankbar.",
     ),
     "primingSubFlirt": MessageLookupByLibrary.simpleMessage(
-      "Flirten ist einfach spielerische Kommunikation. Das Ergebnis ist egal — Auftauchen zählt.",
+      "Flirten ist einfach spielerische Kommunikation. Das Ergebnis ist egal. Auftauchen zählt.",
     ),
     "primingSubGroup": MessageLookupByLibrary.simpleMessage(
       "Die meisten Menschen sind freundlicher als du erwartest. Eine Begegnung kann deinen ganzen Tag verändern.",
@@ -800,7 +838,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Ich erinnere mich selbst →",
     ),
     "reminderExplanation": MessageLookupByLibrary.simpleMessage(
-      "Wir senden dir einen Impuls am Tag — du wählst wann. Kein Spam. Du kannst es jederzeit in den Einstellungen abschalten.",
+      "Wir senden dir einen Impuls am Tag, du wählst wann. Kein Spam. Du kannst es jederzeit in den Einstellungen abschalten.",
     ),
     "reminderUpdated": m9,
     "repeatChallengeInfo": MessageLookupByLibrary.simpleMessage(
@@ -862,20 +900,20 @@ class MessageLookup extends MessageLookupByLibrary {
       "Bleibe neugierig und aufgeschlossen",
     ),
     "stillSecondsLeft": m14,
+    "storyAuraKilo": m15,
+    "storyAuraSmall": m16,
     "storyFirstChallenge": MessageLookupByLibrary.simpleMessage(
       "Deine Geschichte beginnt mit der ersten Challenge, die du abschließt.",
     ),
-    "storyMinutesBrave": m15,
-    "storyNTimes": m16,
+    "storyMinutesBrave": m17,
+    "storyNTimes": m18,
     "storyOnce": MessageLookupByLibrary.simpleMessage(
       "Du bist einmal aus deiner Komfortzone herausgetreten. Das erfordert Mut.",
     ),
-    "storyStreakMany": m17,
+    "storyStreakMany": m19,
     "storyStreakOne": MessageLookupByLibrary.simpleMessage(
       "Tag 1 eines neuen Streaks. Jeder große Streak hat hier angefangen.",
     ),
-    "storyXpKilo": m18,
-    "storyXpSmall": m19,
     "streak": MessageLookupByLibrary.simpleMessage("Serie"),
     "streakMilestone100": MessageLookupByLibrary.simpleMessage(
       "100 Wochen. Du hast etwas Außergewöhnliches aufgebaut. Respekt.",
@@ -923,7 +961,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Schade! Du hast die Challenge abgebrochen.",
     ),
     "total": MessageLookupByLibrary.simpleMessage("Gesamt"),
-    "totalXp": MessageLookupByLibrary.simpleMessage("Gesamt-Aura"),
+    "totalAura": MessageLookupByLibrary.simpleMessage("Gesamt-Aura"),
     "tryAgainNextTime": MessageLookupByLibrary.simpleMessage(
       "Versuch es beim nächsten Mal!",
     ),
@@ -959,10 +997,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "weeksShort": MessageLookupByLibrary.simpleMessage("Wochen"),
     "wellDone": MessageLookupByLibrary.simpleMessage(
       "Gut gemacht! Mach weiter so!",
-    ),
-    "xp": MessageLookupByLibrary.simpleMessage("XP"),
-    "xpEarnedThisWeek": MessageLookupByLibrary.simpleMessage(
-      "Aura diese Woche",
     ),
     "yesChallengeStart": MessageLookupByLibrary.simpleMessage(
       "Ja, ich habe sie gemacht",

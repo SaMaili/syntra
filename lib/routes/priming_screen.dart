@@ -78,7 +78,7 @@ class _PrimingScreenState extends State<PrimingScreen>
     if (c.flirt) return l.primingHeadlineFlirt;
     if (c.type == ChallengeType.group) return l.primingHeadlineGroup;
     if (c.time < 60) return l.primingHeadlineQuick;
-    if (c.xp > 60) return l.primingHeadlineHard;
+    if (c.aura > 60) return l.primingHeadlineHard;
     return l.primingHeadlineDefault;
   }
 
@@ -87,7 +87,7 @@ class _PrimingScreenState extends State<PrimingScreen>
     if (c.flirt) return l.primingSubFlirt;
     if (c.type == ChallengeType.group) return l.primingSubGroup;
     if (c.time < 60) return l.primingSubQuick;
-    if (c.xp > 60) return l.primingSubHard;
+    if (c.aura > 60) return l.primingSubHard;
     return l.primingSubDefault;
   }
 

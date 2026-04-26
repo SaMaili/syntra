@@ -126,7 +126,7 @@ class ChallengeCard extends StatelessWidget {
                       if (showXP)
                         _MetaChip(
                           icon: Icons.star_rounded,
-                          label: '+${challenge.xp} ${l.auraPoints}',
+                          label: '+${challenge.aura} ${l.auraPoints}',
                         ),
                     ],
                   ),

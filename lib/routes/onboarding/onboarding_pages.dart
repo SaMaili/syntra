@@ -365,7 +365,7 @@ class Page7FirstChallenge extends StatelessWidget {
                                             AppSpacing.chipRadius),
                                       ),
                                       child: Text(
-                                          '+${challenge!.xp} ${l.auraPoints}',
+                                          '+${challenge!.aura} ${l.auraPoints}',
                                           style: tt.labelSmall?.copyWith(
                                               color: cs.onPrimaryContainer,
                                               fontWeight: FontWeight.bold)),

@@ -2,8 +2,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:syntra/challenge.dart';
 import 'package:syntra/logic/comfort_zone_logic.dart';
 
-Challenge _c(String id, int xp, {int level = 1, String type = 'solo', bool flirt = false}) =>
-    Challenge(id: id, title: 'T', description: 'D', xp: xp, level: level, type: type, flirt: flirt);
+Challenge _c(String id, int aura, {int level = 1, String type = 'solo', bool flirt = false}) =>
+    Challenge(id: id, title: 'T', description: 'D', aura: aura, level: level, type: type, flirt: flirt);
 
 void main() {
   group('ComfortZoneLogic.assignLevel', () {

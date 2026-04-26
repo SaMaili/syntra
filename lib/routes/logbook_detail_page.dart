@@ -339,7 +339,7 @@ class _HeroCard extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
     final l = S.of(context);
-    final earned = entry['earned'] ?? 0;
+    final earned = entry['aura'] ?? 0;
     final rewardFactor = entry['reward_factor'];
 
     return Card(

@@ -16,16 +16,16 @@ class ChallengesHeroHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final stats = ref.watch(overviewStatsProvider);
-    final availableXp = ref.watch(availableAuraProvider) ?? 0;
+    final availableAura = ref.watch(availableAuraProvider) ?? 0;
     final weekStreak = stats.whenOrNull(data: (s) => s['weekStreak']) ?? 0;
     final pendingWeekStreak =
         stats.whenOrNull(data: (s) => s['pendingWeekStreak']) ?? 0;
-    final currentWeekXp = ref.watch(currentWeekXpProvider).valueOrNull ?? 0;
+    final currentWeekAura = ref.watch(currentWeekAuraProvider).valueOrNull ?? 0;
     final freezes = ref.watch(streakFreezesProvider);
 
     final isStreakActive = weekStreak > 0;
     final displayStreak = weekStreak > 0 ? weekStreak : pendingWeekStreak;
-    final progress = (currentWeekXp / kWeeklyXpThreshold).clamp(0.0, 1.0);
+    final progress = (currentWeekAura / kWeeklyAuraThreshold).clamp(0.0, 1.0);
 
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
@@ -66,8 +66,8 @@ class ChallengesHeroHeader extends ConsumerWidget {
                   ),
                 ),
                 child: Text(
-                  '$availableXp',
-                  key: ValueKey(availableXp),
+                  '$availableAura',
+                  key: ValueKey(availableAura),
                   style: tt.labelLarge?.copyWith(
                       fontWeight: FontWeight.bold, color: cs.primary),
                 ),
@@ -90,7 +90,7 @@ class ChallengesHeroHeader extends ConsumerWidget {
           StreakBar(
             isActive: isStreakActive,
             progress: progress,
-            currentWeekXp: currentWeekXp,
+            currentWeekAura: currentWeekAura,
             streakLabel: '$displayStreak ${l.weeksShort}',
           ),
         ],
@@ -104,7 +104,7 @@ class ChallengesHeroHeader extends ConsumerWidget {
 class StreakBar extends StatefulWidget {
   final bool isActive;
   final double progress;
-  final int currentWeekXp;
+  final int currentWeekAura;
   final String streakLabel;
   final double labelOpacity;
 
@@ -112,7 +112,7 @@ class StreakBar extends StatefulWidget {
     super.key,
     required this.isActive,
     required this.progress,
-    required this.currentWeekXp,
+    required this.currentWeekAura,
     required this.streakLabel,
     this.labelOpacity = 1.0,
   });
@@ -122,13 +122,13 @@ class StreakBar extends StatefulWidget {
 }
 
 class _StreakBarState extends State<StreakBar> {
-  int _prevXp = 0;
+  int _prevAura = 0;
 
   @override
   void didUpdateWidget(StreakBar old) {
     super.didUpdateWidget(old);
-    if (old.currentWeekXp != widget.currentWeekXp) {
-      setState(() => _prevXp = old.currentWeekXp);
+    if (old.currentWeekAura != widget.currentWeekAura) {
+      setState(() => _prevAura = old.currentWeekAura);
     }
   }
 
@@ -159,7 +159,7 @@ class _StreakBarState extends State<StreakBar> {
           Expanded(
             child: SyntraXpBar(
               value: widget.progress,
-              initialValue: (_prevXp / kWeeklyXpThreshold).clamp(0.0, 1.0),
+              initialValue: (_prevAura / kWeeklyAuraThreshold).clamp(0.0, 1.0),
               minHeight: 5,
               color: barColor,
               backgroundColor: cs.surfaceContainerHighest,
@@ -168,12 +168,12 @@ class _StreakBarState extends State<StreakBar> {
           ),
           const SizedBox(width: AppSpacing.sm),
           TweenAnimationBuilder<int>(
-            key: ValueKey('$_prevXp→${widget.currentWeekXp}'),
-            tween: IntTween(begin: _prevXp, end: widget.currentWeekXp),
+            key: ValueKey('$_prevAura→${widget.currentWeekAura}'),
+            tween: IntTween(begin: _prevAura, end: widget.currentWeekAura),
             duration: const Duration(milliseconds: 1500),
             curve: Curves.easeOutCubic,
             builder: (context, value, _) => Text(
-              '$value/$kWeeklyXpThreshold',
+              '$value/$kWeeklyAuraThreshold',
               style: tt.labelSmall?.copyWith(color: cs.outline),
             ),
           ),
@@ -234,9 +234,9 @@ class ChallengesHeaderDelegate extends SliverPersistentHeaderDelegate {
   final double topPad;
   final bool isWeekComplete;
   final int displayStreak;
-  final int availableXp;
+  final int availableAura;
   final int freezes;
-  final int currentWeekXp;
+  final int currentWeekAura;
   final double progress;
   final int filterCount;
   final VoidCallback onGiveMeOne;
@@ -246,9 +246,9 @@ class ChallengesHeaderDelegate extends SliverPersistentHeaderDelegate {
     required this.topPad,
     required this.isWeekComplete,
     required this.displayStreak,
-    required this.availableXp,
+    required this.availableAura,
     required this.freezes,
-    required this.currentWeekXp,
+    required this.currentWeekAura,
     required this.progress,
     required this.filterCount,
     required this.onGiveMeOne,
@@ -299,7 +299,7 @@ class ChallengesHeaderDelegate extends SliverPersistentHeaderDelegate {
                       key: const ValueKey('streak_bar'),
                       isActive: isWeekComplete,
                       progress: progress,
-                      currentWeekXp: currentWeekXp,
+                      currentWeekAura: currentWeekAura,
                       streakLabel: '$displayStreak ${l.weeksShort}',
                       labelOpacity: labelOpacity,
                     ),
@@ -393,7 +393,7 @@ class ChallengesHeaderDelegate extends SliverPersistentHeaderDelegate {
 
                       Icon(Icons.emoji_events_rounded, size: 16, color: cs.primary),
                       const SizedBox(width: 3),
-                      _AnimatedAuraCounter(value: availableXp),
+                      _AnimatedAuraCounter(value: availableAura),
 
                       if (freezes > 0)
                         Align(
@@ -459,9 +459,9 @@ class ChallengesHeaderDelegate extends SliverPersistentHeaderDelegate {
       old.topPad != topPad ||
       old.isWeekComplete != isWeekComplete ||
       old.displayStreak != displayStreak ||
-      old.availableXp != availableXp ||
+      old.availableAura != availableAura ||
       old.freezes != freezes ||
-      old.currentWeekXp != currentWeekXp ||
+      old.currentWeekAura != currentWeekAura ||
       old.progress != progress ||
       old.filterCount != filterCount ||
       old.onGiveMeOne != onGiveMeOne ||

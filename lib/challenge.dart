@@ -22,7 +22,7 @@ class Challenge {
   /// Suggested phrases the user can say. Shown in the hint dialog.
   final List<String> hints;
   final int level; // 1–N explicit difficulty level from the catalog
-  final int xp;
+  final int aura;
   final int time; // seconds
   final String type; // see ChallengeType
   final bool flirt;
@@ -34,7 +34,7 @@ class Challenge {
     required this.description,
     this.hints = const [],
     this.level = 1,
-    required this.xp,
+    required this.aura,
     this.type = 'solo',
     this.flirt = false,
     this.environment = 'all',

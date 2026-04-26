@@ -53,7 +53,7 @@ class DailyMissionsLogic {
 
     // Split catalog into three XP tiers (percentile-based, non-flirt preferred).
     final pool = all.where((c) => !c.flirt).toList()
-      ..sort((a, b) => a.xp.compareTo(b.xp));
+      ..sort((a, b) => a.aura.compareTo(b.aura));
 
     final third = (pool.length / 3).ceil();
     final comfortPool = pool.sublist(0, third);
@@ -62,7 +62,7 @@ class DailyMissionsLogic {
 
     // Bold tier may include flirt challenges if the pool is too small.
     final boldFallback = boldPool.isEmpty
-        ? (all..sort((a, b) => b.xp.compareTo(a.xp))).take(5).toList()
+        ? (all..sort((a, b) => b.aura.compareTo(a.aura))).take(5).toList()
         : boldPool;
 
     // New day — re-roll missions.

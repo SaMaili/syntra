@@ -128,8 +128,8 @@ class ChallengeListItem extends StatelessWidget {
                           MetaChip(
                             icon: Icons.emoji_events_outlined,
                             label: compact
-                                ? '${challenge.xp}A'
-                                : '${challenge.xp} ${S.of(context).auraPoints}',
+                                ? '${challenge.aura}A'
+                                : '${challenge.aura} ${S.of(context).auraPoints}',
                           ),
                           const SizedBox(width: AppSpacing.sm),
                           MetaChip(

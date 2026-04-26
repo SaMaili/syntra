@@ -13,7 +13,7 @@ class WeeklyAuraChart extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final xpAsync = ref.watch(weeklyXpByWeekProvider);
+    final auraAsync = ref.watch(weeklyAuraByWeekProvider);
     final frozenAsync = ref.watch(frozenWeeksProvider);
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
@@ -31,17 +31,17 @@ class WeeklyAuraChart extends ConsumerWidget {
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(
-              '$kWeeklyXpThreshold Aura = active week',
+              '$kWeeklyAuraThreshold Aura = active week',
               style: tt.bodySmall?.copyWith(color: cs.outline),
             ),
             const SizedBox(height: AppSpacing.sm),
-            if (xpAsync.isLoading || frozenAsync.isLoading)
+            if (auraAsync.isLoading || frozenAsync.isLoading)
               const Center(child: CircularProgressIndicator())
-            else if (xpAsync.hasError || frozenAsync.hasError)
-              Text('Error: ${xpAsync.error ?? frozenAsync.error}')
+            else if (auraAsync.hasError || frozenAsync.hasError)
+              Text('Error: ${auraAsync.error ?? frozenAsync.error}')
             else
               _WeeklyBars(
-                xpByWeek: xpAsync.value!,
+                auraByWeek: auraAsync.value!,
                 frozenWeeks: frozenAsync.value!,
               ),
             const SizedBox(height: AppSpacing.xs),
@@ -50,14 +50,14 @@ class WeeklyAuraChart extends ConsumerWidget {
                 _Dot(color: cs.surfaceContainerHighest),
                 const SizedBox(width: 4),
                 Text(
-                  '<$kWeeklyXpThreshold',
+                  '<$kWeeklyAuraThreshold',
                   style: tt.labelSmall?.copyWith(color: cs.outline),
                 ),
                 const SizedBox(width: 12),
                 _Dot(color: cs.tertiary),
                 const SizedBox(width: 4),
                 Text(
-                  '≥$kWeeklyXpThreshold',
+                  '≥$kWeeklyAuraThreshold',
                   style: tt.labelSmall?.copyWith(color: cs.outline),
                 ),
                 const SizedBox(width: 12),
@@ -94,17 +94,17 @@ class _Dot extends StatelessWidget {
 // ─── Bar chart ────────────────────────────────────────────────────────────────
 
 class _WeeklyBars extends StatelessWidget {
-  final Map<String, int> xpByWeek;
+  final Map<String, int> auraByWeek;
   final Set<String> frozenWeeks;
 
-  const _WeeklyBars({required this.xpByWeek, required this.frozenWeeks});
+  const _WeeklyBars({required this.auraByWeek, required this.frozenWeeks});
 
   static const int _weeks = 16;
   static const double _chartHeight = 120.0;
   static const double _labelHeight = 16.0;
   static const double _gap = 3.0;
   // Display cap: bars max out visually at 2× threshold (600 Aura).
-  static const double _maxXp = kWeeklyXpThreshold * 2.0;
+  static const double _maxXp = kWeeklyAuraThreshold * 2.0;
 
   static const _monthAbbr = [
     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -131,7 +131,7 @@ class _WeeklyBars extends StatelessWidget {
     // Y-position of the threshold line from the bottom of the full widget.
     // labelHeight occupies the bottom; chart area above it.
     final thresholdFromBottom =
-        _labelHeight + (kWeeklyXpThreshold / _maxXp) * _chartHeight;
+        _labelHeight + (kWeeklyAuraThreshold / _maxXp) * _chartHeight;
 
     return LayoutBuilder(builder: (context, constraints) {
       final barWidth =
@@ -156,7 +156,7 @@ class _WeeklyBars extends StatelessWidget {
                       monday: weeks[i],
                       barWidth: barWidth,
                       chartHeight: _chartHeight,
-                      xpByWeek: xpByWeek,
+                      auraByWeek: auraByWeek,
                       frozenWeeks: frozenWeeks,
                       cs: cs,
                     ),
@@ -181,7 +181,7 @@ class _WeeklyBars extends StatelessWidget {
               right: 0,
               bottom: thresholdFromBottom + 2,
               child: Text(
-                '$kWeeklyXpThreshold',
+                '$kWeeklyAuraThreshold',
                 style: TextStyle(fontSize: 9, color: cs.outline),
               ),
             ),
@@ -244,7 +244,7 @@ class _Bar extends StatelessWidget {
   final DateTime monday;
   final double barWidth;
   final double chartHeight;
-  final Map<String, int> xpByWeek;
+  final Map<String, int> auraByWeek;
   final Set<String> frozenWeeks;
   final ColorScheme cs;
 
@@ -252,12 +252,12 @@ class _Bar extends StatelessWidget {
     required this.monday,
     required this.barWidth,
     required this.chartHeight,
-    required this.xpByWeek,
+    required this.auraByWeek,
     required this.frozenWeeks,
     required this.cs,
   });
 
-  static const double _maxXp = kWeeklyXpThreshold * 2.0;
+  static const double _maxXp = kWeeklyAuraThreshold * 2.0;
 
   @override
   Widget build(BuildContext context) {
@@ -265,14 +265,14 @@ class _Bar extends StatelessWidget {
     final isFrozen = frozenWeeks.contains(weekKey);
 
     // Frozen weeks are rendered at exactly the threshold height.
-    final xp = isFrozen ? kWeeklyXpThreshold : (xpByWeek[weekKey] ?? 0);
-    final fraction = (xp / _maxXp).clamp(0.0, 1.0);
+    final aura = isFrozen ? kWeeklyAuraThreshold : (auraByWeek[weekKey] ?? 0);
+    final fraction = (aura / _maxXp).clamp(0.0, 1.0);
     final barHeight = fraction * chartHeight;
 
     final Color color;
     if (isFrozen) {
       color = Colors.blue.shade400;
-    } else if (xp >= kWeeklyXpThreshold) {
+    } else if (aura >= kWeeklyAuraThreshold) {
       color = cs.tertiary;
     } else {
       color = cs.surfaceContainerHighest;

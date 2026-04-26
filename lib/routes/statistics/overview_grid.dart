@@ -38,8 +38,8 @@ class StatsOverviewGrid extends ConsumerWidget {
               children: [
                 StatCard(
                   icon: Icons.emoji_events,
-                  value: '${stats['totalXp']}',
-                  label: l.totalXp,
+                  value: '${stats['totalAura']}',
+                  label: l.totalAura,
                   color: cs.primary,
                 ),
                 StatCard(

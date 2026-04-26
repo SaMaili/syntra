@@ -20,7 +20,7 @@ class LogbookRepository {
       id               INTEGER PRIMARY KEY AUTOINCREMENT,
       challenge_id     TEXT,
       status           TEXT,
-      earned           INTEGER,
+      aura             INTEGER,
       timestamp        DATETIME,
       notes            TEXT,
       feeling          INTEGER,
@@ -42,10 +42,7 @@ class LogbookRepository {
     final path = join(dbPath, 'logbook.db');
     _db = await openDatabase(
       path,
-      version: 2,
-      onUpgrade: (db, oldVersion, newVersion) async {
-        if (oldVersion < 2) await _createIndexes(db);
-      },
+      version: 1,
       onDowngrade: (db, oldVersion, newVersion) async {
         await db.execute('DROP TABLE IF EXISTS logbook');
         await db.execute(_kCreateTable);
@@ -64,7 +61,7 @@ class LogbookRepository {
   Future<int> addEntry({
     required String challengeId,
     required String status,
-    required int earned,
+    required int aura,
     required DateTime timestamp,
     String? notes,
     int? feeling,
@@ -76,7 +73,7 @@ class LogbookRepository {
     return db.insert('logbook', {
       'challenge_id': challengeId,
       'status': status,
-      'earned': earned,
+      'aura': aura,
       'timestamp': timestamp.toIso8601String(),
       'notes': notes,
       'feeling': feeling,
@@ -152,8 +149,8 @@ class LogbookRepository {
 
     final rows = await db.rawQuery('''
       SELECT
-        COALESCE(SUM(earned), 0)                                          AS totalXp,
-        COALESCE(SUM(CASE WHEN date(timestamp) = ? THEN earned ELSE 0 END), 0) AS todayXp,
+        COALESCE(SUM(aura), 0)                                          AS totalAura,
+        COALESCE(SUM(CASE WHEN date(timestamp) = ? THEN aura ELSE 0 END), 0) AS todayAura,
         COALESCE(SUM(CASE WHEN status = 'success' THEN 1 ELSE 0 END), 0) AS completedAllTime,
         COALESCE(SUM(CASE WHEN status = 'success' AND date(timestamp) = ? THEN 1 ELSE 0 END), 0) AS completedToday,
         COALESCE(SUM(duration_seconds), 0) AS totalSeconds
@@ -163,21 +160,21 @@ class LogbookRepository {
     final row = rows.first;
     final totalSeconds = (row['totalSeconds'] as int?) ?? 0;
     final now = DateTime.now();
-    final xpByWeek = await weeklyXpByWeek(weeks: 52);
+    final auraByWeek = await weeklyAuraByWeek(weeks: 52);
     final frozenWeeks = await SettingsRepository.instance.loadFrozenWeeks();
     final weekStreak =
-        WeeklyStreakLogic.countStreak(xpByWeek, now, frozenWeeks: frozenWeeks);
+        WeeklyStreakLogic.countStreak(auraByWeek, now, frozenWeeks: frozenWeeks);
     // pendingWeekStreak: streak from last week — shown in grey when the current
     // week hasn't reached the threshold yet (grace period motivational cue).
     // Resets to 0 only when two or more consecutive weeks were missed.
     final pendingWeekStreak = weekStreak == 0
-        ? WeeklyStreakLogic.countPendingStreak(xpByWeek, now,
+        ? WeeklyStreakLogic.countPendingStreak(auraByWeek, now,
             frozenWeeks: frozenWeeks)
         : 0;
 
     return {
-      'totalXp': (row['totalXp'] as int?) ?? 0,
-      'todayXp': (row['todayXp'] as int?) ?? 0,
+      'totalAura': (row['totalAura'] as int?) ?? 0,
+      'todayAura': (row['todayAura'] as int?) ?? 0,
       'completedAllTime': (row['completedAllTime'] as int?) ?? 0,
       'completedToday': (row['completedToday'] as int?) ?? 0,
       'weekStreak': weekStreak,
@@ -186,9 +183,9 @@ class LogbookRepository {
     };
   }
 
-  /// XP earned per ISO year-week (e.g. `"2026-W14"`) for the last [weeks] weeks.
+  /// Aura earned per ISO year-week (e.g. `"2026-W14"`) for the last [weeks] weeks.
   /// Weeks with no entries are not included in the returned map.
-  Future<Map<String, int>> weeklyXpByWeek({int weeks = 52}) async {
+  Future<Map<String, int>> weeklyAuraByWeek({int weeks = 52}) async {
     final db = await _database;
     final now = DateTime.now();
     final cutoff = DateTime(now.year, now.month, now.day - weeks * 7)
@@ -196,7 +193,7 @@ class LogbookRepository {
         .substring(0, 10);
 
     final rows = await db.rawQuery('''
-      SELECT timestamp, COALESCE(SUM(earned), 0) AS xp
+      SELECT timestamp, COALESCE(SUM(aura), 0) AS aura
       FROM logbook
       WHERE date(timestamp) >= ?
       GROUP BY strftime('%Y-%W', timestamp)
@@ -206,24 +203,24 @@ class LogbookRepository {
     for (final r in rows) {
       final ts = DateTime.parse(r['timestamp'] as String);
       final key = WeeklyStreakLogic.isoYearWeek(ts);
-      result[key] = (result[key] ?? 0) + (r['xp'] as int);
+      result[key] = (result[key] ?? 0) + (r['aura'] as int);
     }
     return result;
   }
 
-  /// Total XP earned in the current Mon–Sun week.
-  Future<int> currentWeekXp() async {
+  /// Total Aura earned in the current Mon–Sun week.
+  Future<int> currentWeekAura() async {
     final db = await _database;
     final now = DateTime.now();
     final monday = WeeklyStreakLogic.startOfIsoWeek(now);
     final mondayStr = monday.toIso8601String().substring(0, 10);
 
     final rows = await db.rawQuery('''
-      SELECT COALESCE(SUM(earned), 0) AS xp
+      SELECT COALESCE(SUM(aura), 0) AS aura
       FROM logbook
       WHERE date(timestamp) >= ?
     ''', [mondayStr]);
-    return (rows.first['xp'] as int?) ?? 0;
+    return (rows.first['aura'] as int?) ?? 0;
   }
 
   /// Pure daily-streak-counting logic, kept for the existing test suite.
@@ -253,8 +250,8 @@ class LogbookRepository {
     return streak;
   }
 
-  /// XP per day for [days] days ending today (index 0 = oldest day).
-  Future<List<int>> weeklyXp({int days = 7}) async {
+  /// Aura per day for [days] days ending today (index 0 = oldest day).
+  Future<List<int>> weeklyAura({int days = 7}) async {
     final db = await _database;
     final now = DateTime.now();
     final start = now.subtract(Duration(days: days - 1));
@@ -262,13 +259,13 @@ class LogbookRepository {
     final endStr = now.toIso8601String().substring(0, 10);
 
     final rows = await db.rawQuery('''
-      SELECT date(timestamp) AS day, COALESCE(SUM(earned), 0) AS xp
+      SELECT date(timestamp) AS day, COALESCE(SUM(aura), 0) AS aura
       FROM logbook
       WHERE date(timestamp) BETWEEN ? AND ?
       GROUP BY date(timestamp)
     ''', [startStr, endStr]);
 
-    final map = {for (final r in rows) r['day'] as String: r['xp'] as int};
+    final map = {for (final r in rows) r['day'] as String: r['aura'] as int};
     return List.generate(days, (i) {
       final d = start.add(Duration(days: i)).toIso8601String().substring(0, 10);
       return map[d] ?? 0;

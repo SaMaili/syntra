@@ -3,12 +3,12 @@ import 'package:syntra/logic/badges_logic.dart';
 
 Map<String, int> _stats({
   int completedAllTime = 0,
-  int totalXp = 0,
+  int totalAura = 0,
   int minutesBrave = 0,
   int czlLevel = 1,
 }) => {
       'completedAllTime': completedAllTime,
-      'totalXp': totalXp,
+      'totalAura': totalAura,
       'minutesBrave': minutesBrave,
       'czlLevel': czlLevel,
     };
@@ -64,21 +64,21 @@ void main() {
     });
   });
 
-  group('BadgesLogic — century_xp', () {
-    test('not earned with 99 XP', () {
-      expect(_earned('century_xp', _stats(totalXp: 99)), isFalse);
+  group('BadgesLogic — century_aura', () {
+    test('not earned with 99 Aura', () {
+      expect(_earned('century_aura', _stats(totalAura: 99)), isFalse);
     });
-    test('earned at exactly 100 XP', () {
-      expect(_earned('century_xp', _stats(totalXp: 100)), isTrue);
+    test('earned at exactly 100 Aura', () {
+      expect(_earned('century_aura', _stats(totalAura: 100)), isTrue);
     });
   });
 
-  group('BadgesLogic — five_hundred_xp', () {
-    test('not earned with 499 XP', () {
-      expect(_earned('five_hundred_xp', _stats(totalXp: 499)), isFalse);
+  group('BadgesLogic — five_hundred_aura', () {
+    test('not earned with 499 Aura', () {
+      expect(_earned('five_hundred_aura', _stats(totalAura: 499)), isFalse);
     });
-    test('earned at exactly 500 XP', () {
-      expect(_earned('five_hundred_xp', _stats(totalXp: 500)), isTrue);
+    test('earned at exactly 500 Aura', () {
+      expect(_earned('five_hundred_aura', _stats(totalAura: 500)), isTrue);
     });
   });
 
@@ -112,7 +112,7 @@ void main() {
       final earned = BadgesLogic.computeEarned(
         _stats(
           completedAllTime: 100,
-          totalXp: 1000,
+          totalAura: 1000,
           minutesBrave: 120,
           czlLevel: 10,
         ),
@@ -124,8 +124,8 @@ void main() {
         'fifty_challenges',
         'three_week_streak',
         'seven_week_streak',
-        'century_xp',
-        'five_hundred_xp',
+        'century_aura',
+        'five_hundred_aura',
         'brave_minutes',
       ]));
     });

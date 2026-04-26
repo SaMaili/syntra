@@ -62,13 +62,13 @@ class BadgesLogic {
       condition: _sevenWeekStreak,
     ),
     AppBadge(
-      id: 'century_xp',
+      id: 'century_aura',
       icon: Icons.bolt_rounded,
       color: Color(0xFF5E35B1),
       condition: _centuryXp,
     ),
     AppBadge(
-      id: 'five_hundred_xp',
+      id: 'five_hundred_aura',
       icon: Icons.military_tech_rounded,
       color: Color(0xFFAD1457),
       condition: _fiveHundredXp,
@@ -116,10 +116,10 @@ class BadgesLogic {
       best >= 7;
 
   static bool _centuryXp(Map<String, int> s, int _) =>
-      (s['totalXp'] ?? 0) >= 100;
+      (s['totalAura'] ?? 0) >= 100;
 
   static bool _fiveHundredXp(Map<String, int> s, int _) =>
-      (s['totalXp'] ?? 0) >= 500;
+      (s['totalAura'] ?? 0) >= 500;
 
   static bool _braveMinutes(Map<String, int> s, int _) =>
       (s['minutesBrave'] ?? 0) >= 60;

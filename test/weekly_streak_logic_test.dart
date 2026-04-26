@@ -63,12 +63,12 @@ void main() {
       expect(WeeklyStreakLogic.countStreak({}, monday), 0);
     });
 
-    test('returns 0 when current week has 0 XP (new week, not yet farmed)', () {
+    test('returns 0 when current week has 0 Aura (new week, not yet farmed)', () {
       // Current week W15 has 0 XP → streak is 0 even if previous weeks qualified
       expect(WeeklyStreakLogic.countStreak({'2026-W14': 400}, monday), 0);
     });
 
-    test('returns 0 when current week XP is below threshold', () {
+    test('returns 0 when current week Aura is below threshold', () {
       expect(WeeklyStreakLogic.countStreak({'2026-W15': 299}, monday), 0);
     });
 
@@ -77,101 +77,101 @@ void main() {
     });
 
     test('returns 1 when current week hit threshold but previous week did not', () {
-      final xp = {'2026-W15': 400, '2026-W14': 100};
-      expect(WeeklyStreakLogic.countStreak(xp, monday), 1);
+      final aura = {'2026-W15': 400, '2026-W14': 100};
+      expect(WeeklyStreakLogic.countStreak(aura, monday), 1);
     });
 
     test('returns 2 when current and previous week both qualify', () {
-      final xp = {'2026-W15': 400, '2026-W14': 350};
-      expect(WeeklyStreakLogic.countStreak(xp, monday), 2);
+      final aura = {'2026-W15': 400, '2026-W14': 350};
+      expect(WeeklyStreakLogic.countStreak(aura, monday), 2);
     });
 
     test('returns 3 for three consecutive qualifying weeks including current', () {
-      final xp = {
+      final aura = {
         '2026-W15': 500,
         '2026-W14': 300,
         '2026-W13': 400,
       };
-      expect(WeeklyStreakLogic.countStreak(xp, monday), 3);
+      expect(WeeklyStreakLogic.countStreak(aura, monday), 3);
     });
 
     test('stops at first gap — past qualifying week does not help', () {
-      final xp = {
+      final aura = {
         '2026-W15': 500,
         '2026-W14': 0,   // gap
         '2026-W13': 400,
       };
-      expect(WeeklyStreakLogic.countStreak(xp, monday), 1);
+      expect(WeeklyStreakLogic.countStreak(aura, monday), 1);
     });
 
-    test('current week XP counts immediately once threshold is reached', () {
-      final xp = {
+    test('current week Aura counts immediately once threshold is reached', () {
+      final aura = {
         '2026-W15': 999, // current week — must count
         '2026-W14': 300,
       };
-      expect(WeeklyStreakLogic.countStreak(xp, monday), 2);
+      expect(WeeklyStreakLogic.countStreak(aura, monday), 2);
     });
 
     test('mid-week: current week counts if threshold already reached', () {
       // today = Wednesday W15
-      final xp = {
+      final aura = {
         '2026-W15': 400,
         '2026-W14': 300,
         '2026-W13': 300,
       };
-      expect(WeeklyStreakLogic.countStreak(xp, wednesday), 3);
+      expect(WeeklyStreakLogic.countStreak(aura, wednesday), 3);
     });
 
     test('mid-week: streak is 0 if current week not yet qualified', () {
       // today = Wednesday W15, current week has only 100 XP
-      final xp = {
+      final aura = {
         '2026-W15': 100,
         '2026-W14': 300,
       };
-      expect(WeeklyStreakLogic.countStreak(xp, wednesday), 0);
+      expect(WeeklyStreakLogic.countStreak(aura, wednesday), 0);
     });
 
-    test('missing previous weeks treated as 0 XP (breaks streak)', () {
+    test('missing previous weeks treated as 0 Aura (breaks streak)', () {
       // Only current week present → streak is 1
-      final xp = {'2026-W15': 400};
-      expect(WeeklyStreakLogic.countStreak(xp, monday), 1);
+      final aura = {'2026-W15': 400};
+      expect(WeeklyStreakLogic.countStreak(aura, monday), 1);
     });
 
     test('respects custom threshold', () {
-      final xp = {'2026-W15': 150};
-      expect(WeeklyStreakLogic.countStreak(xp, monday, threshold: 100), 1);
-      expect(WeeklyStreakLogic.countStreak(xp, monday, threshold: 200), 0);
+      final aura = {'2026-W15': 150};
+      expect(WeeklyStreakLogic.countStreak(aura, monday, threshold: 100), 1);
+      expect(WeeklyStreakLogic.countStreak(aura, monday, threshold: 200), 0);
     });
 
     test('handles streak from Sunday mid-week (W14)', () {
       // today = Sunday 2026-04-05 (W14). Current week W14 qualifies.
-      final xp = {'2026-W14': 350, '2026-W13': 300};
-      expect(WeeklyStreakLogic.countStreak(xp, sunday), 2);
+      final aura = {'2026-W14': 350, '2026-W13': 300};
+      expect(WeeklyStreakLogic.countStreak(aura, sunday), 2);
     });
 
-    test('on Monday of new week with 0 XP, previous streak is not shown', () {
+    test('on Monday of new week with 0 Aura, previous streak is not shown', () {
       // today = Monday W15, hasn't farmed yet → streak = 0
-      final xp = {
+      final aura = {
         '2026-W15': 0,
         '2026-W14': 400,
         '2026-W13': 400,
       };
-      expect(WeeklyStreakLogic.countStreak(xp, monday), 0);
+      expect(WeeklyStreakLogic.countStreak(aura, monday), 0);
     });
 
     test('large streak counts correctly including current week', () {
       // W15 (current) down to W06 = 10 consecutive qualifying weeks
-      final xp = {
+      final aura = {
         for (int w = 0; w <= 9; w++) '2026-W${(15 - w).toString().padLeft(2, '0')}': 400,
       };
-      expect(WeeklyStreakLogic.countStreak(xp, monday), 10);
+      expect(WeeklyStreakLogic.countStreak(aura, monday), 10);
     });
   });
 
   // ── countPendingStreak ────────────────────────────────────────────────────
 
   group('WeeklyStreakLogic.countPendingStreak', () {
-    test('returns 0 when last week had 0 XP (streak truly broken)', () {
+    test('returns 0 when last week had 0 Aura (streak truly broken)', () {
       expect(WeeklyStreakLogic.countPendingStreak({}, monday), 0);
     });
 
@@ -190,52 +190,52 @@ void main() {
     });
 
     test('returns 3 when last three weeks qualified', () {
-      final xp = {
+      final aura = {
         '2026-W14': 400,
         '2026-W13': 350,
         '2026-W12': 300,
       };
-      expect(WeeklyStreakLogic.countPendingStreak(xp, monday), 3);
+      expect(WeeklyStreakLogic.countPendingStreak(aura, monday), 3);
     });
 
     test('ignores current week entirely', () {
       // Current week W15 has lots of XP but should not be counted
-      final xp = {'2026-W15': 999, '2026-W14': 400};
-      expect(WeeklyStreakLogic.countPendingStreak(xp, monday), 1);
+      final aura = {'2026-W15': 999, '2026-W14': 400};
+      expect(WeeklyStreakLogic.countPendingStreak(aura, monday), 1);
     });
 
     test('returns 0 when last week missed even if week before qualified', () {
-      final xp = {'2026-W14': 0, '2026-W13': 500};
-      expect(WeeklyStreakLogic.countPendingStreak(xp, monday), 0);
+      final aura = {'2026-W14': 0, '2026-W13': 500};
+      expect(WeeklyStreakLogic.countPendingStreak(aura, monday), 0);
     });
 
     test('grace period: one missed week shows previous streak, two resets to 0', () {
-      final xp = {'2026-W14': 400, '2026-W13': 350, '2026-W12': 300};
+      final aura = {'2026-W14': 400, '2026-W13': 350, '2026-W12': 300};
       // Current week (W15) not yet active → pending = 3
-      expect(WeeklyStreakLogic.countPendingStreak(xp, monday), 3);
+      expect(WeeklyStreakLogic.countPendingStreak(aura, monday), 3);
 
       // Simulate next Monday (W16): last week W15 had 0 XP → pending = 0
       final nextMonday = DateTime(2026, 4, 13);
-      expect(WeeklyStreakLogic.countPendingStreak(xp, nextMonday), 0);
+      expect(WeeklyStreakLogic.countPendingStreak(aura, nextMonday), 0);
     });
   });
 
   // ── isCurrentWeekComplete ──────────────────────────────────────────────────
 
   group('WeeklyStreakLogic.isCurrentWeekComplete', () {
-    test('returns true when XP equals threshold', () {
+    test('returns true when Aura equals threshold', () {
       expect(WeeklyStreakLogic.isCurrentWeekComplete(300), isTrue);
     });
 
-    test('returns true when XP exceeds threshold', () {
+    test('returns true when Aura exceeds threshold', () {
       expect(WeeklyStreakLogic.isCurrentWeekComplete(450), isTrue);
     });
 
-    test('returns false when XP is below threshold', () {
+    test('returns false when Aura is below threshold', () {
       expect(WeeklyStreakLogic.isCurrentWeekComplete(299), isFalse);
     });
 
-    test('returns false for zero XP', () {
+    test('returns false for zero Aura', () {
       expect(WeeklyStreakLogic.isCurrentWeekComplete(0), isFalse);
     });
 

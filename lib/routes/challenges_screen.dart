@@ -29,7 +29,7 @@ class ChallengesScreen extends ConsumerStatefulWidget {
 class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
     with AutomaticKeepAliveClientMixin {
   final _scrollController = ScrollController();
-  int _displayWeeklyXp = 0;
+  int _displayWeeklyAura = 0;
   int _displayAura = 0;
   bool _initialized = false;
 
@@ -110,26 +110,26 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
     final s = statsAsync.valueOrNull;
     final weekStreak = s?['weekStreak'] ?? 0;
     final displayStreak = weekStreak > 0 ? weekStreak : (s?['pendingWeekStreak'] ?? 0);
-    final availableXp = ref.watch(availableAuraProvider) ?? 0;
+    final availableAura = ref.watch(availableAuraProvider) ?? 0;
     final freezes = ref.watch(streakFreezesProvider);
-    final currentWeekXp = ref.watch(currentWeekXpProvider).valueOrNull ?? 0;
+    final currentWeekAura = ref.watch(currentWeekAuraProvider).valueOrNull ?? 0;
 
     if (!_initialized) {
-      _displayWeeklyXp = currentWeekXp;
-      _displayAura = availableXp;
+      _displayWeeklyAura = currentWeekAura;
+      _displayAura = availableAura;
       _initialized = true;
     }
 
-    ref.listen(currentWeekXpProvider, (prev, next) {
+    ref.listen(currentWeekAuraProvider, (prev, next) {
       final nextVal = next.valueOrNull ?? 0;
-      if (nextVal > _displayWeeklyXp) {
+      if (nextVal > _displayWeeklyAura) {
         if (ModalRoute.of(context)?.isCurrent ?? false) {
           Future.delayed(const Duration(milliseconds: 500), () {
-            if (mounted) setState(() => _displayWeeklyXp = nextVal);
+            if (mounted) setState(() => _displayWeeklyAura = nextVal);
           });
         }
-      } else if (nextVal < _displayWeeklyXp) {
-        setState(() => _displayWeeklyXp = nextVal);
+      } else if (nextVal < _displayWeeklyAura) {
+        setState(() => _displayWeeklyAura = nextVal);
       }
     });
 
@@ -148,17 +148,17 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
 
     // Catch pending increases when returning from a pushed route.
     final isCurrent = ModalRoute.of(context)?.isCurrent ?? false;
-    if (isCurrent && (_displayAura < availableXp || _displayWeeklyXp < currentWeekXp)) {
+    if (isCurrent && (_displayAura < availableAura || _displayWeeklyAura < currentWeekAura)) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Future.delayed(const Duration(milliseconds: 500), () {
           if (!mounted) return;
-          if (_displayAura < availableXp) setState(() => _displayAura = availableXp);
-          if (_displayWeeklyXp < currentWeekXp) setState(() => _displayWeeklyXp = currentWeekXp);
+          if (_displayAura < availableAura) setState(() => _displayAura = availableAura);
+          if (_displayWeeklyAura < currentWeekAura) setState(() => _displayWeeklyAura = currentWeekAura);
         });
       });
     }
 
-    final progress = (_displayWeeklyXp / kWeeklyXpThreshold).clamp(0.0, 1.0);
+    final progress = (_displayWeeklyAura / kWeeklyAuraThreshold).clamp(0.0, 1.0);
     final isWeekComplete = progress >= 1.0;
     final filterCount = ref.watch(challengeFiltersProvider).activeFilterCount;
     final double headerCollapseRange = isWeekComplete ? 56.0 : 84.0;
@@ -177,9 +177,9 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
               topPad: MediaQuery.paddingOf(context).top,
               isWeekComplete: isWeekComplete,
               displayStreak: displayStreak,
-              availableXp: _displayAura,
+              availableAura: _displayAura,
               freezes: freezes,
-              currentWeekXp: _displayWeeklyXp,
+              currentWeekAura: _displayWeeklyAura,
               progress: progress,
               filterCount: filterCount,
               onGiveMeOne: () => _onGiveMeOne(context),

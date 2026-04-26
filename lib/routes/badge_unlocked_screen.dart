@@ -194,8 +194,8 @@ class _BadgeUnlockedScreenState extends ConsumerState<BadgeUnlockedScreen>
       case 'fifty_challenges': return l.badgeFiftyChallenges;
       case 'three_week_streak': return l.badgeThreeWeekStreak;
       case 'seven_week_streak': return l.badgeSevenWeekStreak;
-      case 'century_xp': return l.badgeCenturyXp;
-      case 'five_hundred_xp': return l.badgeFiveHundredXp;
+      case 'century_aura': return l.badgeCenturyAura;
+      case 'five_hundred_aura': return l.badgeFiveHundredAura;
       case 'brave_minutes': return l.badgeBraveMinutes;
       default: return id;
     }

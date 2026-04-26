@@ -123,7 +123,7 @@ class _SyntraXpBarState extends ConsumerState<SyntraXpBar>
       final t = pct / 100.0;
       if (!_milestonesFired.contains(pct) && v >= t && _sweepFrom < t) {
         _milestonesFired.add(pct);
-        VibrationService.xpTick();
+        VibrationService.auraTick();
       }
     }
   }

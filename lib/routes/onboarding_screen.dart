@@ -57,7 +57,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final soloEasy = challenges
         .where((c) => c.type == ChallengeType.solo && !c.flirt)
         .toList()
-      ..sort((a, b) => a.xp.compareTo(b.xp));
+      ..sort((a, b) => a.aura.compareTo(b.aura));
     if (mounted) {
       setState(() => _firstChallenge = soloEasy.isNotEmpty ? soloEasy.first : challenges.first);
     }

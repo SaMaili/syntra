@@ -50,7 +50,7 @@ class _StreakFreezesNotifier extends StateNotifier<int> {
   }
 }
 
-// ─── Available Aura (totalXp − spent) ────────────────────────────────────────
+// ─── Available Aura (totalAura − spent) ──────────────────────────────────────
 
 /// The Aura the user can still spend. Derived from total earned minus shop
 /// purchases. Returns null while the overview stats are still loading.
@@ -59,7 +59,7 @@ final availableAuraProvider = Provider<int?>((ref) {
   final spentAura = ref.watch(spentAuraProvider);
   final s = statsAsync.valueOrNull;
   if (s == null) return null;
-  return ((s['totalXp'] ?? 0) - spentAura).clamp(0, double.maxFinite).toInt();
+  return ((s['totalAura'] ?? 0) - spentAura).clamp(0, double.maxFinite).toInt();
 });
 
 // ─── Auto-apply streak freezes ────────────────────────────────────────────────
@@ -76,11 +76,11 @@ Future<void> applyStreakFreezesIfNeeded(WidgetRef ref) async {
   if (freezeCount == 0) return;
 
   final frozenWeeks = await SettingsRepository.instance.loadFrozenWeeks();
-  final xpByWeek =
-      await LogbookRepository.instance.weeklyXpByWeek(weeks: 52);
+  final auraByWeek =
+      await LogbookRepository.instance.weeklyAuraByWeek(weeks: 52);
 
   final result = WeeklyStreakLogic.countStreakAutoFreeze(
-    xpByWeek,
+    auraByWeek,
     DateTime.now(),
     alreadyFrozenWeeks: frozenWeeks,
     availableFreezes: freezeCount,
