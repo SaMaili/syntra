@@ -22,7 +22,7 @@ abstract class AppTheme {
         tertiary: const Color(0xFFFF6D00), // Reddish Orange
       ),
       brightness: Brightness.light,
-      scaffoldBackgroundColor: const Color(0xFFF7F3F2),
+      scaffoldBackgroundColor: const Color(0xFFFBF9F8),
       textTheme: const TextTheme(
         headlineSmall: TextStyle(height: 1.2),
         labelMedium: TextStyle(height: 1.2),
@@ -45,6 +45,7 @@ abstract class AppTheme {
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
+          side: BorderSide(color: Colors.grey[300]!, width: 1),
         ),
         color: Colors.white,
       ),
@@ -130,6 +131,7 @@ abstract class AppTheme {
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
+          side: BorderSide(color: Colors.grey[700]!, width: 1),
         ),
       ),
       appBarTheme: const AppBarTheme(

@@ -1003,5 +1003,299 @@
       "\"Where did you get that from?\"",
       "\"That looks delicious.\""
     ]
+  },
+  "112": {
+    "title": "Like a Gentleman",
+    "description": "Hold the door open and make eye contact with the next person who passes",
+    "hints": [
+      "\"You're welcome.\"",
+      "\"After you.\"",
+      "Just Smile"
+    ]
+  },
+  "113": {
+    "title": "Wave together",
+    "description": "Wave at a stranger together with a friend, both of you, same time",
+    "hints": [
+      "A synchronized moment."
+    ]
+  },
+  "114": {
+    "title": "Transit presence",
+    "description": "Sit on public transport and look around for 30 seconds without looking at your phone",
+    "hints": []
+  },
+  "115": {
+    "title": "Immovable Object",
+    "description": "Stop walking and stand still for 30 seconds in a crowded area.",
+    "hints": []
+  },
+  "116": {
+    "title": "Cashier goodbye",
+    "description": "Say 'have a great day' to a cashier as you leave.",
+    "hints": [
+      "\"Have a great day!\"",
+      "\"Thank you, you too!\"",
+      "\"All the best!\""
+    ]
+  },
+  "117": {
+    "title": "Barista favorite",
+    "description": "Ask a barista what their favorite drink on the menu is.",
+    "hints": [
+      "\"What's your go-to drink here?\"",
+      "\"What would you recommend?\"",
+      "\"What do you make most often?\""
+    ]
+  },
+  "118": {
+    "title": "Weather comment",
+    "description": "Comment on the weather to someone next to you at a crossing.",
+    "hints": [
+      "\"Nice day, isn't it?\"",
+      "\"Quite warm today!\"",
+      "\"Can't complain about this weather.\""
+    ]
+  },
+  "119": {
+    "title": "Ask the time",
+    "description": "Ask a stranger what time it is.",
+    "hints": [
+      "\"Excuse me, do you have the time?\"",
+      "\"What time is it?\"",
+      "\"Could you tell me the time?\""
+    ]
+  },
+  "120": {
+    "title": "Shop compliment",
+    "description": "Tell the person at checkout one thing you like about the shop.",
+    "hints": [
+      "\"I really like your shop.\"",
+      "\"You have such a nice selection here.\"",
+      "\"This place is so well organized.\""
+    ]
+  },
+  "121": {
+    "title": "Waiter recommendation",
+    "description": "Ask a waiter or server what dish they'd recommend.",
+    "hints": [
+      "\"What would you recommend?\"",
+      "\"What's your favorite thing here?\"",
+      "\"What do most people order?\""
+    ]
+  },
+  "122": {
+    "title": "Transit direction",
+    "description": "Ask someone on the bus or train if this is the right stop for a specific location.",
+    "hints": [
+      "\"Excuse me, is this the right stop for...?\"",
+      "\"Do you know if this goes to...?\"",
+      "\"Is this the right direction?\""
+    ]
+  },
+  "123": {
+    "title": "Shop assistant question",
+    "description": "Ask a shop assistant where something is.",
+    "hints": [
+      "\"Excuse me, where would I find...?\"",
+      "\"Could you point me to...?\"",
+      "\"Do you have...?\""
+    ]
+  },
+  "124": {
+    "title": "Goodbye moment",
+    "description": "Say 'bye' or 'have a good one' to someone as you both leave a place.",
+    "hints": [
+      "\"Bye, have a good one!\"",
+      "\"Take care!\"",
+      "\"All the best!\""
+    ]
+  },
+  "125": {
+    "title": "Event small talk",
+    "description": "Ask someone at an event how long they've been there.",
+    "hints": [
+      "\"Have you been here long?\"",
+      "\"Is this your first time?\"",
+      "\"How are you liking it?\""
+    ]
+  },
+  "126": {
+    "title": "Photo WITH you",
+    "description": "Ask someone to take a photo WITH you — no explanation given.",
+    "hints": [
+      "\"Can you be in a photo with me?\"",
+      "Just ask, then pose together"
+    ]
+  },
+  "127": {
+    "title": "Spontaneous dance",
+    "description": "Start a spontaneous dance move in a public space and hold it for 30 seconds.",
+    "hints": [
+      "Pick a busy area",
+      "No music needed",
+      "Just own it"
+    ]
+  },
+  "128": {
+    "title": "Vulnerability opener",
+    "description": "Sit next to a stranger and open with a personal disclosure.",
+    "hints": [
+      "\"Mind if I tell you something that happened to me today?\"",
+      "Share something real and genuine"
+    ]
+  },
+  "129": {
+    "title": "Absurd street survey",
+    "description": "Conduct an absurd 'street survey' on a ridiculous opinion question.",
+    "hints": [
+      "Claim you're a 'social researcher'",
+      "Ask at least 5 strangers",
+      "Take notes seriously"
+    ]
+  },
+  "130": {
+    "title": "Lie on a bench",
+    "description": "Lie down on a public bench and stay there for 60 seconds.",
+    "hints": [
+      "Find a park or public bench",
+      "Lie down horizontally",
+      "Don't explain or hide it"
+    ]
+  },
+  "131": {
+    "title": "Shout something positive",
+    "description": "Shout something genuinely positive out loud in a busy area.",
+    "hints": [
+      "Pick a moderately crowded place",
+      "Full volume",
+      "Then carry on like nothing happened"
+    ]
+  },
+  "132": {
+    "title": "Skip down the street",
+    "description": "Skip instead of walk through a busy street for 2 full minutes.",
+    "hints": [
+      "Pick a busy area",
+      "Actually skip/hop",
+      "Don't rush or hide it"
+    ]
+  },
+  "133": {
+    "title": "Emotional vulnerability",
+    "description": "Tell a stranger something genuinely vulnerable within 60 seconds of meeting them.",
+    "hints": [
+      "Brief small talk first (10-20 sec)",
+      "Then share something real",
+      "A fear, failure, or moment of weakness"
+    ]
+  },
+  "134": {
+    "title": "Shout to the crowd",
+    "description": "Stand in a busy area and shout something positive to nobody in particular.",
+    "hints": [
+      "Full volume, genuine energy",
+      "Let everyone turn and look",
+      "'What a day to be alive!' or 'This is amazing!'"
+    ]
+  },
+  "135": {
+    "title": "Approach 10 strangers",
+    "description": "Approach 10 strangers in a row with different bold openers.",
+    "hints": [
+      "Each with a different opening line",
+      "Don't stop until all 10 are done",
+      "Keep the momentum"
+    ]
+  },
+  "136": {
+    "title": "Impromptu speech",
+    "description": "Give a 1-minute impromptu speech to whoever is nearby.",
+    "hints": [
+      "Stand in a moderately crowded place",
+      "Speak loudly and clearly",
+      "Don't apologize or explain, just talk"
+    ]
+  },
+  "137": {
+    "title": "Hold the awkwardness",
+    "description": "Do something deliberately awkward in public and hold it for 60 seconds.",
+    "hints": [
+      "Stand on one leg, hop, make strange faces",
+      "Hold it for a full 60 seconds",
+      "People will watch and judge"
+    ]
+  },
+  "138": {
+    "title": "Compliment tour",
+    "description": "Give genuine compliments to 10 strangers in 15 minutes.",
+    "hints": [
+      "Move through a busy area",
+      "One real compliment per person",
+      "Keep the pace up"
+    ]
+  },
+  "139": {
+    "title": "Lie on the ground",
+    "description": "Lie down on the ground in a busy public space for 90 seconds.",
+    "hints": [
+      "Find a moderately crowded area",
+      "Lie down flat, don't move",
+      "People will walk by and stare"
+    ]
+  },
+  "140": {
+    "title": "Full-volume scream",
+    "description": "Let out a full-volume genuine scream in a busy public space.",
+    "hints": [
+      "Not a threat, just raw energy",
+      "People will stop and stare",
+      "Own it completely"
+    ]
+  },
+  "141": {
+    "title": "Sing opera loudly",
+    "description": "Sing opera loudly in a busy public space for 3 minutes.",
+    "hints": [
+      "Pick a busy street or plaza",
+      "Sing dramatically, don't worry about being good",
+      "Make sure people know what you're doing"
+    ]
+  },
+  "142": {
+    "title": "Embarrassing sign",
+    "description": "Hold a sign at a busy intersection with something embarrassing about yourself.",
+    "hints": [
+      "'I cry at Disney movies' or 'I practice singing in the shower'",
+      "Stand for 5 minutes",
+      "Make eye contact with people"
+    ]
+  },
+  "143": {
+    "title": "Fake announcement",
+    "description": "Make a calm, confident 'fake announcement' on public transport.",
+    "hints": [
+      "Stand up and speak to the whole car",
+      "'Ladies and gentlemen, I'd like to remind you to smile at least once today'",
+      "Act natural when you sit down"
+    ]
+  },
+  "144": {
+    "title": "Conga line",
+    "description": "Get 3+ strangers to form a conga line and dance down a busy street.",
+    "hints": [
+      "Approach strangers one by one",
+      "Convince at least 3 to join you",
+      "Dance for at least 30 seconds together"
+    ]
+  },
+  "145": {
+    "title": "3-minute performance",
+    "description": "Perform a 3-minute 'show' that draws and keeps a crowd's attention.",
+    "hints": [
+      "Tell jokes badly, do exaggerated movements, sing off-key",
+      "Draw at least 5 people to watch",
+      "Keep them there for all 3 minutes"
+    ]
   }
 }

@@ -88,7 +88,7 @@ class ChallengesFilterBar extends ConsumerWidget {
   void _openFilterSheet(BuildContext context) => openSheet(context);
 }
 
-/// Three-tab bar (Solo | Coop | All) with a sliding pill indicator.
+/// Three-tab bar (Solo | All) with a sliding pill indicator.
 class TypeSelector extends StatelessWidget {
   static const _mainBarValues = [
     ChallengeTypeFilter.solo,

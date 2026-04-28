@@ -146,6 +146,20 @@ class _PrimingScreenState extends State<PrimingScreen>
 
                           const SizedBox(height: AppSpacing.lg),
 
+                          // ── Challenge name ───────────────────────────
+                          Text(
+                            widget.challenge.title,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                    color: cs.onSurfaceVariant,
+                                    fontWeight: FontWeight.w500),
+                            textAlign: TextAlign.center,
+                          ),
+
+                          const SizedBox(height: AppSpacing.md),
+
                           // ── Headline ──────────────────────────────────
                           Text(
                             _headline(l),

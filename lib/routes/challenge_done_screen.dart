@@ -11,6 +11,7 @@ import '../logic/weekly_streak_logic.dart';
 import '../generated/l10n.dart';
 import '../providers/settings_providers.dart';
 import '../providers/statistics_providers.dart' show refreshStatistics;
+import '../providers/shop_providers.dart' show applyStreakFreezesIfNeeded;
 import '../logic/badges_logic.dart';
 import '../router.dart';
 import '../services/sound_service.dart';
@@ -415,6 +416,7 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
       newLevel = await ref
           .read(comfortZoneLevelProvider.notifier)
           .recordSuccessAndCheckLevelUp(widget.challenge, ref.read(activeLocaleProvider));
+      await applyStreakFreezesIfNeeded(ref);
     }
 
     if (newLevel != null && context.mounted) {

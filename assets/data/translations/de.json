@@ -1003,5 +1003,299 @@
       "\"Woher hast du das Eis?\"",
       "\"Das sieht lecker aus.\""
     ]
+  },
+  "112": {
+    "title": "Wie ein Gentleman",
+    "description": "Die Tür aufhalten und mit der nächsten Person Augenkontakt halten",
+    "hints": [
+      "\"Gern geschehen.\"",
+      "\"Nach dir.\"",
+      "Einfach lächeln"
+    ]
+  },
+  "113": {
+    "title": "Zu zweit winken",
+    "description": "Mit einem Freund gleichzeitig einem Fremden winken",
+    "hints": [
+      "Ein synchronisierter Moment."
+    ]
+  },
+  "114": {
+    "title": "Eine Station Präsenz",
+    "description": "30 Sekunden in öffentlichen Verkehrsmitteln umschauen, ohne aufs Handy zu sehen",
+    "hints": []
+  },
+  "115": {
+    "title": "Unbewegbares Objekt",
+    "description": "30 Sekunden in einem belebten Bereich stehen bleiben und stillstehen",
+    "hints": []
+  },
+  "116": {
+    "title": "Kassierer Auf Wiedersehen",
+    "description": "Einem Kassierer 'Schönen Tag noch' sagen, wenn du gehst.",
+    "hints": [
+      "\"Schönen Tag noch!\"",
+      "\"Danke, dir auch!\"",
+      "\"Alles Gute für dich!\""
+    ]
+  },
+  "117": {
+    "title": "Barista Lieblingsgetränk",
+    "description": "Den Barista fragen, was sein Lieblingsgetränk auf der Karte ist.",
+    "hints": [
+      "\"Was trinkst du selbst gerne?\"",
+      "\"Was würdest du empfehlen?\"",
+      "\"Was machst du am häufigsten?\""
+    ]
+  },
+  "118": {
+    "title": "Wetter-Kommentar",
+    "description": "Mach dem Nachbarn an der Ampel einen Kommentar über das Wetter.",
+    "hints": [
+      "\"Schöner Tag, nicht wahr?\"",
+      "\"Heute ganz warm!\"",
+      "\"Man kann sich nicht beschweren über das Wetter.\""
+    ]
+  },
+  "119": {
+    "title": "Nach Uhrzeit fragen",
+    "description": "Einen Fremden nach der Uhrzeit fragen.",
+    "hints": [
+      "\"Entschuldigen Sie, wie spät ist es?\"",
+      "\"Wie viel Uhr ist es?\"",
+      "\"Könnten Sie mir die Zeit sagen?\""
+    ]
+  },
+  "120": {
+    "title": "Laden-Kompliment",
+    "description": "An der Kasse erwähnen, was dir an dem Laden gefällt.",
+    "hints": [
+      "\"Mir gefällt dein Laden sehr.\"",
+      "\"Du hast so eine schöne Auswahl hier.\"",
+      "\"Dieser Ort ist so gut organisiert.\""
+    ]
+  },
+  "121": {
+    "title": "Kellner Empfehlung",
+    "description": "Einen Kellner fragen, welches Gericht er empfehlen würde.",
+    "hints": [
+      "\"Was würdest du empfehlen?\"",
+      "\"Was magst du selbst am liebsten?\"",
+      "\"Was bestellen die meisten Leute?\""
+    ]
+  },
+  "122": {
+    "title": "Haltstelle erfragen",
+    "description": "Jemanden in Bus oder Bahn fragen, ob dies die richtige Haltestelle ist.",
+    "hints": [
+      "\"Entschuldigen Sie, ist dies die richtige Haltstelle für...?\"",
+      "\"Fahrt ihr zu...?\"",
+      "\"Ist das die richtige Richtung?\""
+    ]
+  },
+  "123": {
+    "title": "Verkäufer Frage",
+    "description": "Einen Verkäufer fragen, wo etwas ist.",
+    "hints": [
+      "\"Entschuldigen Sie, wo finde ich...?\"",
+      "\"Könnten Sie mich zu... zeigen?\"",
+      "\"Habt ihr...?\""
+    ]
+  },
+  "124": {
+    "title": "Auf Wiedersehen Moment",
+    "description": "Auf Wiedersehen oder 'alles Gute' sagen, wenn ihr beide einen Ort verlasst.",
+    "hints": [
+      "\"Auf Wiedersehen, alles Gute für dich!\"",
+      "\"Pass auf dich auf!\"",
+      "\"Alles Gute für dich!\""
+    ]
+  },
+  "125": {
+    "title": "Event Small Talk",
+    "description": "Jemanden auf einem Event fragen, wie lange er schon hier ist.",
+    "hints": [
+      "\"Bist du schon lange hier?\"",
+      "\"Ist das dein erstes Mal?\"",
+      "\"Wie gefällt es dir?\""
+    ]
+  },
+  "126": {
+    "title": "Foto MIT dir",
+    "description": "Jemanden bitten, ein Foto MIT dir zu machen — ohne Erklärung.",
+    "hints": [
+      "\"Kannst du mit mir im Foto sein?\"",
+      "Frag einfach, dann posiert zusammen"
+    ]
+  },
+  "127": {
+    "title": "Spontanes Tanzen",
+    "description": "In einem öffentlichen Raum eine Tanzbewegung beginnen und 30 Sekunden durchhalten.",
+    "hints": [
+      "Wähle einen belebten Bereich",
+      "Keine Musik nötig",
+      "Einfach besitzen"
+    ]
+  },
+  "128": {
+    "title": "Verletzliche Eröffnung",
+    "description": "Neben einem Fremden sitzen und mit einer persönlichen Offenbarung öffnen.",
+    "hints": [
+      "\"Darf ich dir von etwas erzählen, das mir heute passiert ist?\"",
+      "Teile etwas Echtes und Authentisches"
+    ]
+  },
+  "129": {
+    "title": "Absurde Straßenumfrage",
+    "description": "Eine absurde 'Straßenumfrage' zu einer lächerlichen Meinungsfrage durchführen.",
+    "hints": [
+      "Behaupte, du bist ein 'Sozialforscher'",
+      "Frage mindestens 5 Fremde",
+      "Mach Notizen ernsthaft"
+    ]
+  },
+  "130": {
+    "title": "Auf einer Bank liegen",
+    "description": "Auf einer öffentlichen Bank liegen und 60 Sekunden dort bleiben.",
+    "hints": [
+      "Finde eine Park- oder öffentliche Bank",
+      "Lege dich horizontal hin",
+      "Erkläre nicht und verstecke dich nicht"
+    ]
+  },
+  "131": {
+    "title": "Etwas Positives rufen",
+    "description": "In einem belebten Bereich etwas wirklich Positives laut ausrufen.",
+    "hints": [
+      "Wähle einen mittelgroß belebten Ort",
+      "Volle Lautstärke",
+      "Dann mach weiter, als wäre nichts passiert"
+    ]
+  },
+  "132": {
+    "title": "Hüpfen statt gehen",
+    "description": "2 volle Minuten durch eine belebte Straße hüpfen statt zu gehen.",
+    "hints": [
+      "Wähle einen belebten Bereich",
+      "Tatsächlich hüpfen/hopsen",
+      "Beeil dich nicht und verstecke dich nicht"
+    ]
+  },
+  "133": {
+    "title": "Emotionale Verletzlichkeit",
+    "description": "Einem Fremden etwas wirklich Verletzliches innerhalb von 60 Sekunden nach dem Kennenlernen erzählen.",
+    "hints": [
+      "Erst kurzer Small Talk (10-20 Sek)",
+      "Dann etwas Echtes teilen",
+      "Eine Angst, ein Versagen oder ein Moment der Schwäche"
+    ]
+  },
+  "134": {
+    "title": "Zu der Menge rufen",
+    "description": "In einem belebten Bereich etwas Positives in die Menge rufen.",
+    "hints": [
+      "Volle Lautstärke, echte Energie",
+      "Lass alle sich umdrehen und schauen",
+      "'Was für ein Tag, um am Leben zu sein!' oder 'Das ist erstaunlich!'"
+    ]
+  },
+  "135": {
+    "title": "10 Fremde ansprechen",
+    "description": "10 Fremde hintereinander mit unterschiedlichen mutigen Einstiegen ansprechen.",
+    "hints": [
+      "Jeder mit einer anderen Eröffnungslinie",
+      "Höre nicht auf, bis alle 10 erledigt sind",
+      "Behalte den Schwung"
+    ]
+  },
+  "136": {
+    "title": "Spontanrede halten",
+    "description": "Eine 1-minütige Spontanrede vor den Menschen in der Nähe halten.",
+    "hints": [
+      "Stelle dich an einen mittelgroß belebten Ort",
+      "Sprich laut und deutlich",
+      "Entschuldige dich nicht, erkläre nicht, sprich einfach"
+    ]
+  },
+  "137": {
+    "title": "Die Unbeholfenheit halten",
+    "description": "Etwas absichtlich Unbeholfenes in der Öffentlichkeit 60 Sekunden durchhalten.",
+    "hints": [
+      "Auf einem Bein stehen, hüpfen, seltsame Gesichter machen",
+      "Halte es 60 Sekunden lang",
+      "Menschen werden zusehen und urteilen"
+    ]
+  },
+  "138": {
+    "title": "Kompliment-Tour",
+    "description": "10 Fremden in 15 Minuten echte Komplimente geben.",
+    "hints": [
+      "Gehe durch einen belebten Bereich",
+      "Ein echtes Kompliment pro Person",
+      "Behalte das Tempo bei"
+    ]
+  },
+  "139": {
+    "title": "Auf dem Boden liegen",
+    "description": "90 Sekunden auf dem Boden in einem belebten öffentlichen Raum liegen.",
+    "hints": [
+      "Finde einen mittelgroß belebten Raum",
+      "Lege dich flach hin, bewege dich nicht",
+      "Menschen werden vorbeigehen und schauen"
+    ]
+  },
+  "140": {
+    "title": "Voller Schrei",
+    "description": "In einem belebten öffentlichen Raum aus vollem Hals schreien.",
+    "hints": [
+      "Keine Drohung, nur pure Energie",
+      "Menschen werden anhalten und starren",
+      "Besitze es komplett"
+    ]
+  },
+  "141": {
+    "title": "Oper laut singen",
+    "description": "3 Minuten lang Oper in einem belebten öffentlichen Raum singen.",
+    "hints": [
+      "Wähle eine belebte Straße oder einen Platz",
+      "Singe dramatisch, mach dir nichts aus dem guten Singen",
+      "Stelle sicher, dass die Leute wissen, was du tust"
+    ]
+  },
+  "142": {
+    "title": "Peinliches Schild",
+    "description": "An einer belebten Kreuzung mit einem peinlichen Schild über dich stehen.",
+    "hints": [
+      "'Ich weine bei Disney-Filmen' oder 'Ich übe Singen in der Dusche'",
+      "Stehe 5 Minuten",
+      "Mache Augenkontakt mit Menschen"
+    ]
+  },
+  "143": {
+    "title": "Fake-Ansage",
+    "description": "Eine ruhige, selbstsichere 'Fake-Ansage' in öffentlichen Verkehrsmitteln machen.",
+    "hints": [
+      "Stelle dich hin und sprich zum ganzen Wagen",
+      "'Meine Damen und Herren, ich möchte euch daran erinnern, heute mindestens einmal zu lächeln'",
+      "Verhalte dich natürlich, wenn du dich hinsetzt"
+    ]
+  },
+  "144": {
+    "title": "Kongareihe",
+    "description": "Mindestens 3 Fremde überzeugen, eine Kongareihe zu bilden und eine belebte Straße zu tanzen.",
+    "hints": [
+      "Spreche Fremde einzeln an",
+      "Überzeuge mindestens 3",
+      "Tanzt mindestens 30 Sekunden gemeinsam"
+    ]
+  },
+  "145": {
+    "title": "3-Minuten-Show",
+    "description": "Eine 3-minütige 'Show' aufführen, die eine Menge anzieht und hält.",
+    "hints": [
+      "Erzähle Witze schlecht, mache übertriebene Bewegungen, singe falsch",
+      "Ziehe mindestens 5 Menschen zum Zuschauen an",
+      "Halte sie 3 Minuten lang"
+    ]
   }
 }

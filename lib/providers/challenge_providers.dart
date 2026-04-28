@@ -62,7 +62,7 @@ class ChallengeFilters {
   final Set<int> levelFilter;
 
   const ChallengeFilters({
-    this.typeFilter = ChallengeTypeFilter.solo,
+    this.typeFilter = ChallengeTypeFilter.all,
     this.flirtFilter = FlirtFilter.all,
     this.environmentFilter = EnvironmentFilter.all,
     this.showOnlyNotDone = false,
