@@ -529,7 +529,7 @@
   "filterSortPopular": "Beliebt",
   "filterSortEasiest": "Einfachste zuerst",
   "giveMeOneTooltip": "Gib mir eine!",
-  "badgesTitle": "Abzeichen",
+  "badgesTitle": "Geschafft",
   "badgesLocked": "Weiter so, um mehr freizuschalten!",
   "badgeFirstStep": "Erster Schritt",
   "badgeTenChallenges": "10 Challenges",
@@ -587,5 +587,19 @@
   "feelingScaleLow": "Mies",
   "feelingScaleHigh": "Großartig",
   "perceivedScaleLow": "Unangenehm",
-  "perceivedScaleHigh": "Selbstsicher"
+  "perceivedScaleHigh": "Selbstsicher",
+
+  "predictionVsRealityTitle": "Erwartung vs Realität",
+  "predictionVsRealitySubtitle": "Wie nervös du erwartest vs wie du dich wirklich fühlst",
+  "predictionAttempts": "Versuche",
+  "predictionAvgGap": "Ø Differenz",
+  "predictionCalmer": "Ruhiger",
+  "predictionInsightVeryCalm": "Du bist durchweg ruhiger als du denkst",
+  "predictionInsightCalm": "Du fühlst dich meist ruhiger als erwartet",
+  "predictionInsightAccurate": "Deine Vorhersagen sind ziemlich genau",
+  "predictionInsightTough": "Diese hier ist härter als du denkst",
+  "predictionInsightNervous": "Du fühlst dich nervöser als erwartet",
+
+  "challengeHintsTitle": "Sprachlos?",
+  "lastNoteTitle": "Letzte Notiz"
 }

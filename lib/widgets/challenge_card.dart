@@ -11,7 +11,7 @@ import 'challenge_info_notification.dart';
 /// Renders the challenge title, description, and meta chips in a
 /// Material 3 Card that fills its parent. The description is vertically
 /// centered when short and scrollable when long.
-class ChallengeCard extends StatelessWidget {
+class ChallengeCard extends StatefulWidget {
   final Challenge challenge;
   final bool showXP;
   final VoidCallback? onInfoPressed;
@@ -23,10 +23,34 @@ class ChallengeCard extends StatelessWidget {
     this.onInfoPressed,
   });
 
+  @override
+  State<ChallengeCard> createState() => _ChallengeCardState();
+}
+
+class _ChallengeCardState extends State<ChallengeCard> {
+  DateTime? _lastInfoPressTime;
+
   String _fmtDuration(int seconds) {
     final m = seconds ~/ 60;
     final s = seconds % 60;
     return '$m:${s.toString().padLeft(2, '0')}';
+  }
+
+  void _onInfoPressed() {
+    final now = DateTime.now();
+    // Debounce: only allow one press per 500ms
+    if (_lastInfoPressTime != null &&
+        now.difference(_lastInfoPressTime!).inMilliseconds < 500) {
+      return;
+    }
+    _lastInfoPressTime = now;
+
+    if (widget.onInfoPressed != null) {
+      widget.onInfoPressed!();
+    } else {
+      ChallengeInfoNotification.showLastNotesNotification(
+          context, widget.challenge.id);
+    }
   }
 
   @override
@@ -53,7 +77,7 @@ class ChallengeCard extends StatelessWidget {
               ),
             ),
             child: Text(
-              challenge.title,
+              widget.challenge.title,
               style: tt.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: cs.onPrimaryContainer,
@@ -80,7 +104,7 @@ class ChallengeCard extends StatelessWidget {
                         vertical: AppSpacing.md,
                       ),
                       child: Text(
-                        challenge.description,
+                        widget.challenge.description,
                         style: tt.bodyLarge?.copyWith(
                           color: cs.onSurface,
                           height: 1.65,
@@ -113,20 +137,20 @@ class ChallengeCard extends StatelessWidget {
                     children: [
                       _MetaChip(
                         icon: Icons.timer_outlined,
-                        label: _fmtDuration(challenge.time),
+                        label: _fmtDuration(widget.challenge.time),
                       ),
                       _MetaChip(
-                        icon: challenge.typeIcon,
-                        label: challenge.typeLabel(l),
+                        icon: widget.challenge.typeIcon,
+                        label: widget.challenge.typeLabel(l),
                       ),
                       _MetaChip(
                         icon: Icons.shield_outlined,
-                        label: 'L${challenge.level}',
+                        label: 'L${widget.challenge.level}',
                       ),
-                      if (showXP)
+                      if (widget.showXP)
                         _MetaChip(
                           icon: Icons.star_rounded,
-                          label: '+${challenge.aura} ${l.auraPoints}',
+                          label: '+${widget.challenge.aura} ${l.auraPoints}',
                         ),
                     ],
                   ),
@@ -138,10 +162,7 @@ class ChallengeCard extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
                   tooltip: l.challengeInformation,
-                  onPressed: onInfoPressed ??
-                      () => ChallengeInfoNotification
-                          .showLastNotesNotification(
-                              context, challenge.id),
+                  onPressed: _onInfoPressed,
                 ),
               ],
             ),

@@ -3479,9 +3479,9 @@ class S {
     );
   }
 
-  /// `Badges`
+  /// `Opted`
   String get badgesTitle {
-    return Intl.message('Badges', name: 'badgesTitle', desc: '', args: []);
+    return Intl.message('Opted', name: 'badgesTitle', desc: '', args: []);
   }
 
   /// `Keep going to unlock more!`
@@ -3932,6 +3932,116 @@ class S {
       desc: '',
       args: [],
     );
+  }
+
+  /// `Prediction vs Reality`
+  String get predictionVsRealityTitle {
+    return Intl.message(
+      'Prediction vs Reality',
+      name: 'predictionVsRealityTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How nervous you predict vs how you actually feel`
+  String get predictionVsRealitySubtitle {
+    return Intl.message(
+      'How nervous you predict vs how you actually feel',
+      name: 'predictionVsRealitySubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Attempts`
+  String get predictionAttempts {
+    return Intl.message(
+      'Attempts',
+      name: 'predictionAttempts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Avg gap`
+  String get predictionAvgGap {
+    return Intl.message(
+      'Avg gap',
+      name: 'predictionAvgGap',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Calmer`
+  String get predictionCalmer {
+    return Intl.message('Calmer', name: 'predictionCalmer', desc: '', args: []);
+  }
+
+  /// `You're consistently calmer than you expect`
+  String get predictionInsightVeryCalm {
+    return Intl.message(
+      'You\'re consistently calmer than you expect',
+      name: 'predictionInsightVeryCalm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You typically feel calmer than predicted`
+  String get predictionInsightCalm {
+    return Intl.message(
+      'You typically feel calmer than predicted',
+      name: 'predictionInsightCalm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your predictions are pretty accurate`
+  String get predictionInsightAccurate {
+    return Intl.message(
+      'Your predictions are pretty accurate',
+      name: 'predictionInsightAccurate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This one's tougher than you think`
+  String get predictionInsightTough {
+    return Intl.message(
+      'This one\'s tougher than you think',
+      name: 'predictionInsightTough',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You feel more nervous than expected`
+  String get predictionInsightNervous {
+    return Intl.message(
+      'You feel more nervous than expected',
+      name: 'predictionInsightNervous',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not sure what to say?`
+  String get challengeHintsTitle {
+    return Intl.message(
+      'Not sure what to say?',
+      name: 'challengeHintsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Last Note`
+  String get lastNoteTitle {
+    return Intl.message('Last Note', name: 'lastNoteTitle', desc: '', args: []);
   }
 }
 

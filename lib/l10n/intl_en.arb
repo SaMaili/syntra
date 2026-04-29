@@ -327,6 +327,7 @@
   "sun": "S",
   "greetingLongTime": "Long time. No worries, your progress is still here.",
   "greetingFresh": "Welcome back. Ready to start fresh today?",
+  "greetingFresh": "Welcome back. Ready to start fresh today?",
   "greetingStreak": "Week {streak}! Keep it going.",
   "@greetingStreak": {
     "placeholders": { "streak": { "type": "int" } }
@@ -529,7 +530,7 @@
   "filterSortPopular": "Popular",
   "filterSortEasiest": "Easiest first",
   "giveMeOneTooltip": "Give me one!",
-  "badgesTitle": "Badges",
+  "badgesTitle": "Opted",
   "badgesLocked": "Keep going to unlock more!",
   "badgeFirstStep": "First Step",
   "badgeTenChallenges": "10 Challenges",
@@ -587,5 +588,19 @@
   "feelingScaleLow": "Awful",
   "feelingScaleHigh": "Amazing",
   "perceivedScaleLow": "Awkward",
-  "perceivedScaleHigh": "Confident"
+  "perceivedScaleHigh": "Confident",
+
+  "predictionVsRealityTitle": "Prediction vs Reality",
+  "predictionVsRealitySubtitle": "How nervous you predict vs how you actually feel",
+  "predictionAttempts": "Attempts",
+  "predictionAvgGap": "Avg gap",
+  "predictionCalmer": "Calmer",
+  "predictionInsightVeryCalm": "You're consistently calmer than you expect",
+  "predictionInsightCalm": "You typically feel calmer than predicted",
+  "predictionInsightAccurate": "Your predictions are pretty accurate",
+  "predictionInsightTough": "This one's tougher than you think",
+  "predictionInsightNervous": "You feel more nervous than expected",
+
+  "challengeHintsTitle": "Not sure what to say?",
+  "lastNoteTitle": "Last Note"
 }
