@@ -98,6 +98,37 @@ class BadgesLogic {
     };
   }
 
+  /// Orders badges for display: earned badges first (most recently unlocked
+  /// first per [unlockedOrder]), then locked badges in definition order.
+  /// Earned badges absent from [unlockedOrder] (e.g. legacy installs predating
+  /// order tracking) fall in after the ordered ones, in definition order.
+  static List<AppBadge> sortByDisplay({
+    required Set<String> earned,
+    required List<String> unlockedOrder,
+  }) {
+    final byId = {for (final b in all) b.id: b};
+    final result = <AppBadge>[];
+    final added = <String>{};
+
+    for (final id in unlockedOrder.reversed) {
+      if (!earned.contains(id) || added.contains(id)) continue;
+      final b = byId[id];
+      if (b == null) continue;
+      result.add(b);
+      added.add(id);
+    }
+    for (final b in all) {
+      if (earned.contains(b.id) && !added.contains(b.id)) {
+        result.add(b);
+        added.add(b.id);
+      }
+    }
+    for (final b in all) {
+      if (!earned.contains(b.id)) result.add(b);
+    }
+    return result;
+  }
+
   // ─── Conditions ──────────────────────────────────────────────────────────────
 
   static bool _firstStep(Map<String, int> s, int _) =>

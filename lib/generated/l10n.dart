@@ -3479,9 +3479,14 @@ class S {
     );
   }
 
-  /// `Opted`
+  /// `Badges`
   String get badgesTitle {
-    return Intl.message('Opted', name: 'badgesTitle', desc: '', args: []);
+    return Intl.message('Badges', name: 'badgesTitle', desc: '', args: []);
+  }
+
+  /// `Opted`
+  String get badgeOpted {
+    return Intl.message('Opted', name: 'badgeOpted', desc: '', args: []);
   }
 
   /// `Keep going to unlock more!`
@@ -3654,9 +3659,64 @@ class S {
     );
   }
 
+  /// `Reach Level {level} in your Comfort Zone journey.`
+  String badgeLevelDesc(int level) {
+    return Intl.message(
+      'Reach Level $level in your Comfort Zone journey.',
+      name: 'badgeLevelDesc',
+      desc: '',
+      args: [level],
+    );
+  }
+
   /// `Locked`
   String get badgeLocked {
     return Intl.message('Locked', name: 'badgeLocked', desc: '', args: []);
+  }
+
+  /// `All Badges`
+  String get allBadgesTitle {
+    return Intl.message(
+      'All Badges',
+      name: 'allBadgesTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `See all`
+  String get seeAllBadges {
+    return Intl.message('See all', name: 'seeAllBadges', desc: '', args: []);
+  }
+
+  /// `Earned`
+  String get badgesEarnedSection {
+    return Intl.message(
+      'Earned',
+      name: 'badgesEarnedSection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Locked`
+  String get badgesLockedSection {
+    return Intl.message(
+      'Locked',
+      name: 'badgesLockedSection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You've unlocked every badge — incredible!`
+  String get badgesAllUnlocked {
+    return Intl.message(
+      'You\'ve unlocked every badge — incredible!',
+      name: 'badgesAllUnlocked',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Weekly Goal`

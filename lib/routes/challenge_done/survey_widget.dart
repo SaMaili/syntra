@@ -138,6 +138,7 @@ class SurveyWidgetState extends State<SurveyWidget> {
           controller: _notesController,
           minLines: 2,
           maxLines: 4,
+          maxLength: 500,
           decoration: InputDecoration(
             hintText: _noteHint(l),
           ),
@@ -149,6 +150,6 @@ class SurveyWidgetState extends State<SurveyWidget> {
   bool get submitted => _submitted;
   int get feeling => _feeling;
   int get perceived => _perceived;
-  String get notes => _notesController.text;
+  String get notes => _notesController.text.trim();
   void submit() => setState(() => _submitted = true);
 }

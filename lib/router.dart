@@ -7,6 +7,7 @@ import 'logic/badges_logic.dart';
 import 'providers/router_notifier.dart';
 import 'routes/about_page.dart';
 import 'routes/active_challenge_screen.dart';
+import 'routes/all_badges_page.dart';
 import 'routes/challenge_done_screen.dart';
 import 'routes/logbook_detail_page.dart';
 import 'routes/logbook_page.dart';
@@ -28,6 +29,7 @@ abstract class AppRoutes {
   static const streakCelebration = '/streak_celebration';
   static const levelUp = '/level_up';
   static const badgeUnlocked = '/badge_unlocked';
+  static const allBadges = '/badges';
 }
 
 final appRouter = GoRouter(
@@ -115,6 +117,10 @@ final appRouter = GoRouter(
         final args = state.extra as _BadgeUnlockedArgs;
         return BadgeUnlockedScreen(badge: args.badge);
       },
+    ),
+    GoRoute(
+      path: AppRoutes.allBadges,
+      builder: (context, state) => const AllBadgesPage(),
     ),
   ],
 );
@@ -256,4 +262,6 @@ extension AppNavigation on BuildContext {
         AppRoutes.badgeUnlocked,
         extra: _BadgeUnlockedArgs(badge),
       );
+
+  void goAllBadges() => GoRouter.of(this).push(AppRoutes.allBadges);
 }

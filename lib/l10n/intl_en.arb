@@ -327,7 +327,6 @@
   "sun": "S",
   "greetingLongTime": "Long time. No worries, your progress is still here.",
   "greetingFresh": "Welcome back. Ready to start fresh today?",
-  "greetingFresh": "Welcome back. Ready to start fresh today?",
   "greetingStreak": "Week {streak}! Keep it going.",
   "@greetingStreak": {
     "placeholders": { "streak": { "type": "int" } }
@@ -530,7 +529,8 @@
   "filterSortPopular": "Popular",
   "filterSortEasiest": "Easiest first",
   "giveMeOneTooltip": "Give me one!",
-  "badgesTitle": "Opted",
+  "badgesTitle": "Badges",
+  "badgeOpted": "Opted",
   "badgesLocked": "Keep going to unlock more!",
   "badgeFirstStep": "First Step",
   "badgeTenChallenges": "10 Challenges",
@@ -548,7 +548,18 @@
   "badgeCenturyAuraDesc": "Earn 100 Aura points",
   "badgeFiveHundredAuraDesc": "Earn 500 Aura points",
   "badgeBraveMinutesDesc": "Spend 60 minutes being brave",
+  "badgeLevelDesc": "Reach Level {level} in your Comfort Zone journey.",
+  "@badgeLevelDesc": {
+    "placeholders": {
+      "level": { "type": "int" }
+    }
+  },
   "badgeLocked": "Locked",
+  "allBadgesTitle": "All Badges",
+  "seeAllBadges": "See all",
+  "badgesEarnedSection": "Earned",
+  "badgesLockedSection": "Locked",
+  "badgesAllUnlocked": "You've unlocked every badge — incredible!",
   "weeklyGoalTitle": "Weekly Goal",
   "weeklyGoalProgress": "{done} of {goal} challenges this week",
   "@weeklyGoalProgress": {

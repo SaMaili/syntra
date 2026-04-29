@@ -40,6 +40,9 @@ class SettingsRepository {
   static const _keyLastGoalWeek = 'last_goal_week';
   /// Comma-separated badge IDs that have already been celebrated.
   static const _keySeenBadges = 'seen_badges';
+  /// Comma-separated badge IDs in the order they were unlocked.
+  /// Most recently unlocked badge is the last entry.
+  static const _keyUnlockedOrder = 'unlocked_badges_order';
   /// Total Aura spent in the shop (lifetime).
   static const _keySpentAura = 'shop_spent_aura';
   /// Number of streak freezes currently in the user's inventory (0–2).
@@ -202,6 +205,25 @@ class SettingsRepository {
 
   Future<void> saveSeenBadges(Set<String> badges) async =>
       _prefs.setString(_keySeenBadges, badges.join(','));
+
+  /// Returns the IDs of unlocked badges in the order they were unlocked.
+  /// Most recently unlocked is last.
+  Future<List<String>> loadUnlockedBadgesOrder() async {
+    final raw = _prefs.getString(_keyUnlockedOrder) ?? '';
+    if (raw.isEmpty) return const [];
+    return raw.split(',');
+  }
+
+  /// Appends [newIds] to the unlock order, skipping any that are already
+  /// present. The order in [newIds] is preserved for new entries.
+  Future<void> appendUnlockedBadges(Iterable<String> newIds) async {
+    final existing = await loadUnlockedBadgesOrder();
+    final seen = existing.toSet();
+    final additions = newIds.where((id) => !seen.contains(id)).toList();
+    if (additions.isEmpty) return;
+    final merged = [...existing, ...additions];
+    await _prefs.setString(_keyUnlockedOrder, merged.join(','));
+  }
 
   // ─── Weekly goal ─────────────────────────────────────────────────────────
 

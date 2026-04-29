@@ -31,6 +31,9 @@ class _PrimingScreenState extends State<PrimingScreen>
   int _secondsLeft = _totalSeconds;
   Timer? _timer;
   bool _isExiting = false;
+  /// Whether the user has engaged with a picker, freezing the auto-launch.
+  /// Once paused, the user must explicitly tap "I'm Ready" to launch.
+  bool _isPaused = false;
   /// Duration override chosen by user; null = use challenge default.
   int? _selectedTime;
   /// Pre-challenge anxiety level (1–5); null = user skipped.
@@ -71,6 +74,16 @@ class _PrimingScreenState extends State<PrimingScreen>
     _arcController.dispose();
     _timer?.cancel();
     super.dispose();
+  }
+
+  /// Pause the auto-launch countdown when the user starts engaging with
+  /// pickers. Cancels the timer and freezes the ring animation so the user
+  /// can take their time and launch manually via "I'm Ready".
+  void _pauseCountdown() {
+    if (_isPaused || _isExiting) return;
+    _timer?.cancel();
+    _arcController.stop();
+    setState(() => _isPaused = true);
   }
 
   String _headline(S l) {
@@ -141,6 +154,7 @@ class _PrimingScreenState extends State<PrimingScreen>
                           _CountdownRing(
                             arcController: _arcController,
                             secondsLeft: _secondsLeft,
+                            isPaused: _isPaused,
                             size: ringSize,
                           ),
 
@@ -186,8 +200,10 @@ class _PrimingScreenState extends State<PrimingScreen>
                           // ── Pre-challenge anxiety picker ───────────────
                           _AnxietyPicker(
                             selected: _preAnxiety,
-                            onChanged: (v) =>
-                                setState(() => _preAnxiety = v),
+                            onChanged: (v) {
+                              _pauseCountdown();
+                              setState(() => _preAnxiety = v);
+                            },
                           ),
 
                           const SizedBox(height: AppSpacing.md),
@@ -196,8 +212,10 @@ class _PrimingScreenState extends State<PrimingScreen>
                           _DurationPicker(
                             challengeTime: widget.challenge.time,
                             selected: _selectedTime,
-                            onChanged: (t) =>
-                                setState(() => _selectedTime = t),
+                            onChanged: (t) {
+                              _pauseCountdown();
+                              setState(() => _selectedTime = t);
+                            },
                           ),
                         ],
                       ),
@@ -235,11 +253,13 @@ class _PrimingScreenState extends State<PrimingScreen>
 class _CountdownRing extends StatelessWidget {
   final AnimationController arcController;
   final int secondsLeft;
+  final bool isPaused;
   final double size;
 
   const _CountdownRing({
     required this.arcController,
     required this.secondsLeft,
+    required this.isPaused,
     this.size = 120,
   });
 
@@ -262,21 +282,21 @@ class _CountdownRing extends StatelessWidget {
           child: AnimatedBuilder(
             animation: arcValue,
             builder: (_, child) => CircularProgressIndicator(
-              value: arcValue.value,
+              value: isPaused ? 1.0 : arcValue.value,
               strokeWidth: 5,
               strokeCap: StrokeCap.round,
               backgroundColor: cs.surfaceContainerHighest,
-              valueColor: AlwaysStoppedAnimation<Color>(cs.primary),
+              valueColor: AlwaysStoppedAnimation<Color>(
+                isPaused ? cs.outlineVariant : cs.primary,
+              ),
             ),
           ),
         ),
 
-        // ── Number — pops in with easeOutBack on each tick ──
+        // ── Center: countdown number, or pause icon when paused ──
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 350),
           transitionBuilder: (child, animation) {
-            // Incoming digit: scale from 0.4 → 1.0 with a slight overshoot,
-            // outgoing digit: fades + scales down.
             final scaleIn = Tween<double>(begin: 0.4, end: 1.0).animate(
               CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
             );
@@ -285,16 +305,21 @@ class _CountdownRing extends StatelessWidget {
               child: ScaleTransition(scale: scaleIn, child: child),
             );
           },
-          child: Text(
-            '$secondsLeft',
-            // ValueKey forces AnimatedSwitcher to treat each number as a new
-            // widget and run the transition even when the type stays the same.
-            key: ValueKey(secondsLeft),
-            style: tt.displaySmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: cs.primary,
-            ),
-          ),
+          child: isPaused
+              ? Icon(
+                  Icons.pause_rounded,
+                  key: const ValueKey('paused'),
+                  size: size * 0.4,
+                  color: cs.onSurfaceVariant,
+                )
+              : Text(
+                  '$secondsLeft',
+                  key: ValueKey(secondsLeft),
+                  style: tt.displaySmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: cs.primary,
+                  ),
+                ),
         ),
       ],
     );

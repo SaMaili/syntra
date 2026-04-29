@@ -529,7 +529,8 @@
   "filterSortPopular": "Beliebt",
   "filterSortEasiest": "Einfachste zuerst",
   "giveMeOneTooltip": "Gib mir eine!",
-  "badgesTitle": "Geschafft",
+  "badgesTitle": "Abzeichen",
+  "badgeOpted" : "Geschafft",
   "badgesLocked": "Weiter so, um mehr freizuschalten!",
   "badgeFirstStep": "Erster Schritt",
   "badgeTenChallenges": "10 Challenges",
@@ -547,7 +548,18 @@
   "badgeCenturyAuraDesc": "Verdiene 100 Aura-Punkte",
   "badgeFiveHundredAuraDesc": "Verdiene 500 Aura-Punkte",
   "badgeBraveMinutesDesc": "Verbringe 60 Minuten mutig",
+  "badgeLevelDesc": "Erreiche Level {level} auf deiner Komfortzonen-Reise.",
+  "@badgeLevelDesc": {
+    "placeholders": {
+      "level": { "type": "int" }
+    }
+  },
   "badgeLocked": "Gesperrt",
+  "allBadgesTitle": "Alle Badges",
+  "seeAllBadges": "Alle ansehen",
+  "badgesEarnedSection": "Geschafft",
+  "badgesLockedSection": "Gesperrt",
+  "badgesAllUnlocked": "Du hast alle Badges freigeschaltet — unglaublich!",
   "weeklyGoalTitle": "Wochenziel",
   "weeklyGoalProgress": "{done} von {goal} Challenges diese Woche",
   "@weeklyGoalProgress": {

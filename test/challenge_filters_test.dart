@@ -3,9 +3,9 @@ import 'package:syntra/providers/challenge_providers.dart';
 
 void main() {
   group('ChallengeFilters', () {
-    test('default state is solo, flirt=all', () {
+    test('default state is all, flirt=all', () {
       const f = ChallengeFilters();
-      expect(f.typeFilter, ChallengeTypeFilter.solo);
+      expect(f.typeFilter, ChallengeTypeFilter.all);
       expect(f.flirtFilter, FlirtFilter.all);
     });
 

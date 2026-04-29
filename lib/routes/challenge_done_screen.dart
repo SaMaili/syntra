@@ -446,6 +446,8 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
       if (newBadges.isNotEmpty) {
         await SettingsRepository.instance
             .saveSeenBadges({...seenBadges, ...newBadges.map((b) => b.id)});
+        await SettingsRepository.instance
+            .appendUnlockedBadges(newBadges.map((b) => b.id));
         for (final badge in newBadges) {
           if (!context.mounted) break;
           await context.goBadgeUnlocked(badge);

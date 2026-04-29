@@ -43,11 +43,6 @@ class LogbookRepository {
     _db = await openDatabase(
       path,
       version: 1,
-      onDowngrade: (db, oldVersion, newVersion) async {
-        await db.execute('DROP TABLE IF EXISTS logbook');
-        await db.execute(_kCreateTable);
-        await _createIndexes(db);
-      },
       onCreate: (db, version) async {
         await db.execute(_kCreateTable);
         await _createIndexes(db);
