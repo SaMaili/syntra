@@ -284,6 +284,31 @@ class LogbookRepository {
     return rows.isNotEmpty ? rows.first : null;
   }
 
+  /// Returns all logbook entries for a specific challenge (most recent first).
+  Future<List<Map<String, dynamic>>> entriesForChallenge(
+    String challengeId, {
+    int limit = 100,
+  }) async {
+    final db = await _database;
+    return await db.rawQuery(
+      'SELECT * FROM logbook '
+      'WHERE challenge_id = ? '
+      'ORDER BY timestamp DESC '
+      'LIMIT ?',
+      [challengeId, limit],
+    );
+  }
+
+  /// Returns all entries that have both pre_anxiety and feeling recorded.
+  /// Used to compute the overall prediction-reality gap insight.
+  Future<List<Map<String, dynamic>>> allEntriesForGap() async {
+    final db = await _database;
+    return await db.rawQuery(
+      'SELECT pre_anxiety, feeling FROM logbook '
+      'WHERE pre_anxiety IS NOT NULL AND feeling IS NOT NULL',
+    );
+  }
+
   /// Returns all challenge IDs the user has ever completed (status = 'success').
   Future<Set<String>> completedChallengeIds() async {
     final db = await _database;

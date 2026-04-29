@@ -86,7 +86,9 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
   }
 
   void _showNoChallengesSnackBar(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.clearSnackBars();
+    messenger.showSnackBar(SnackBar(
       content: Text(S.of(context).noChallengesFound),
       behavior: SnackBarBehavior.floating,
     ));

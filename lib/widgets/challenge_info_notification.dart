@@ -12,6 +12,9 @@ class ChallengeInfoNotification {
     final l10n = S.of(context);
     final messenger = ScaffoldMessenger.of(context);
 
+    // Clear any existing snackbars of the same type before showing a new one
+    messenger.clearSnackBars();
+
     final result = await LogbookRepository.instance
         .lastNotesForChallenge(challengeId);
 

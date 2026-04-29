@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/logbook_repository.dart';
 import '../generated/l10n.dart';
+import '../providers/prediction_gap_providers.dart';
 import '../providers/statistics_providers.dart' show refreshStatistics;
 import '../theme/app_spacing.dart';
 import '../theme/app_theme.dart';
+import '../widgets/prediction_gap_card.dart';
 import '../widgets/syntra_button.dart';
 import 'logbook/field_rows.dart';
 import 'logbook/mood_display.dart';
@@ -265,6 +267,8 @@ class _LogbookDetailPageState extends ConsumerState<LogbookDetailPage>
                           challengeId:
                               widget.entry['challenge_id']?.toString() ?? '',
                         ),
+                        const SizedBox(height: AppSpacing.md),
+                        _buildInsightsCard(context),
                         const SizedBox(height: AppSpacing.xl),
                         _buildDeleteButton(),
                         const SizedBox(height: AppSpacing.lg),
@@ -277,6 +281,19 @@ class _LogbookDetailPageState extends ConsumerState<LogbookDetailPage>
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildInsightsCard(BuildContext context) {
+    final challengeId = widget.entry['challenge_id']?.toString() ?? '';
+
+    return ref.watch(predictionGapProvider(challengeId)).when(
+      data: (insight) {
+        if (insight == null) return const SizedBox.shrink();
+        return PredictionGapCard(insight: insight);
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
     );
   }
 

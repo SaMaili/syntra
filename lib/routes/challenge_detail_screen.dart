@@ -5,8 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../challenge.dart';
 import '../challenge_ui.dart';
 import '../generated/l10n.dart';
+import '../providers/note_providers.dart';
+import '../providers/prediction_gap_providers.dart';
 import '../providers/statistics_providers.dart';
 import '../theme/app_spacing.dart';
+import '../widgets/detail_card.dart';
+import '../widgets/prediction_gap_card.dart';
 import '../widgets/syntra_button.dart';
 
 /// Shows the challenge detail as a slide-up modal bottom sheet.
@@ -58,7 +62,7 @@ class ChallengeDetailSheet extends ConsumerWidget {
                 color: cs.onSurfaceVariant.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(2),
               ),
-            ),
+            )                      
           ),
 
           // ── Header row ──────────────────────────────────────────────────
@@ -101,39 +105,18 @@ class ChallengeDetailSheet extends ConsumerWidget {
                     style: tt.bodyLarge?.copyWith(height: 1.6),
                   ),
 
+                  const SizedBox(height: AppSpacing.xl),
+                  _LastNoteCard(challengeId: challenge.id),
+
                   if (challenge.hints.isNotEmpty) ...[
-                    const SizedBox(height: AppSpacing.xl),
-                    Text(
-                      l.notSureWhatToSay,
-                      style: tt.titleSmall
-                          ?.copyWith(fontWeight: FontWeight.w600),
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(AppSpacing.md),
-                      decoration: BoxDecoration(
-                        color: cs.secondaryContainer,
-                        borderRadius:
-                            BorderRadius.circular(AppSpacing.cardRadius),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: challenge.hints
-                            .map((h) => Text(
-                                  '• $h',
-                                  style: tt.bodyMedium?.copyWith(
-                                    color: cs.onSecondaryContainer,
-                                    height: 1.5,
-                                  ),
-                                ))
-                            .toList(),
-                      ),
-                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    _HintsCard(hints: challenge.hints),
                   ],
 
-                  const SizedBox(height: AppSpacing.xl),
-                  _MoodChart(challengeId: challenge.id),
+                  const SizedBox(height: AppSpacing.md),
+                  _InsightsCard(challengeId: challenge.id),
+                  const SizedBox(height: AppSpacing.md),
+                  _MoodChartCard(challengeId: challenge.id),
                   const SizedBox(height: AppSpacing.xl),
                 ],
               ),
@@ -160,11 +143,98 @@ class ChallengeDetailSheet extends ConsumerWidget {
   }
 }
 
-// ─── Mood trend chart ─────────────────────────────────────────────────────────
+// ─── Hints card ───────────────────────────────────────────────────────────────
 
-class _MoodChart extends ConsumerWidget {
+class _HintsCard extends StatelessWidget {
+  final List<String> hints;
+  const _HintsCard({required this.hints});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
+
+    return DetailCard(
+      icon: Icons.lightbulb_outline_rounded,
+      title: S.of(context).challengeHintsTitle,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: hints
+            .map((h) => Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+                  child: Text(
+                    '• $h',
+                    style: tt.bodyMedium?.copyWith(
+                      color: cs.onSurface,
+                      height: 1.5,
+                    ),
+                  ),
+                ))
+            .toList(),
+      ),
+    );
+  }
+}
+
+// ─── Last note card ───────────────────────────────────────────────────────────
+
+String _formatDayMonthYear(String? raw) {
+  if (raw == null || raw.isEmpty) return '';
+  try {
+    final dt = DateTime.parse(raw);
+    return '${dt.day.toString().padLeft(2, '0')}.'
+        '${dt.month.toString().padLeft(2, '0')}.${dt.year}';
+  } catch (_) {
+    return raw;
+  }
+}
+
+class _LastNoteCard extends ConsumerWidget {
   final String challengeId;
-  const _MoodChart({required this.challengeId});
+  const _LastNoteCard({required this.challengeId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ref.watch(lastNoteProvider(challengeId)).when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, _) => const SizedBox.shrink(),
+      data: (data) {
+        final notes = data?['notes']?.toString() ?? '';
+        if (notes.isEmpty) return const SizedBox.shrink();
+
+        final cs = Theme.of(context).colorScheme;
+        final tt = Theme.of(context).textTheme;
+        final formattedDate =
+            _formatDayMonthYear(data?['timestamp']?.toString());
+
+        return DetailCard(
+          icon: Icons.sticky_note_2_rounded,
+          title: S.of(context).lastNoteTitle,
+          trailing: formattedDate.isEmpty
+              ? null
+              : Text(
+                  formattedDate,
+                  style: tt.labelSmall?.copyWith(color: cs.onSurfaceVariant),
+                ),
+          child: Text(
+            '"$notes"',
+            style: tt.bodyMedium?.copyWith(
+              color: cs.onSurface,
+              fontStyle: FontStyle.italic,
+              height: 1.5,
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+// ─── Mood trend chart card ────────────────────────────────────────────────────
+
+class _MoodChartCard extends ConsumerWidget {
+  final String challengeId;
+  const _MoodChartCard({required this.challengeId});
 
   static const _smileyLabels = ['😞', '😕', '😐', '😊', '😄'];
 
@@ -173,67 +243,60 @@ class _MoodChart extends ConsumerWidget {
     final async = ref.watch(moodHistoryProvider(challengeId));
     return async.when(
       loading: () => const SizedBox.shrink(),
-      error: (e, st) => const SizedBox.shrink(),
+      error: (_, _) => const SizedBox.shrink(),
       data: (scores) {
         if (scores.length < 2) return const SizedBox.shrink();
         final cs = Theme.of(context).colorScheme;
-        final tt = Theme.of(context).textTheme;
         final spots = [
           for (var i = 0; i < scores.length; i++)
             FlSpot(i.toDouble(), scores[i].toDouble()),
         ];
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              S.of(context).moodTrend,
-              style: tt.titleSmall?.copyWith(fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            SizedBox(
-              height: 100,
-              child: LineChart(
-                LineChartData(
-                  minY: 0,
-                  maxY: 4,
-                  gridData: const FlGridData(show: false),
-                  borderData: FlBorderData(show: false),
-                  titlesData: FlTitlesData(
-                    leftTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        reservedSize: 28,
-                        interval: 2,
-                        getTitlesWidget: (v, _) => Text(
-                          _smileyLabels[v.round().clamp(0, 4)],
-                          style: const TextStyle(fontSize: 12),
-                        ),
+        return DetailCard(
+          icon: Icons.mood_rounded,
+          title: S.of(context).moodTrend,
+          child: SizedBox(
+            height: 100,
+            child: LineChart(
+              LineChartData(
+                minY: 0,
+                maxY: 4,
+                gridData: const FlGridData(show: false),
+                borderData: FlBorderData(show: false),
+                titlesData: FlTitlesData(
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 28,
+                      interval: 2,
+                      getTitlesWidget: (v, _) => Text(
+                        _smileyLabels[v.round().clamp(0, 4)],
+                        style: const TextStyle(fontSize: 12),
                       ),
                     ),
-                    bottomTitles: const AxisTitles(
-                        sideTitles: SideTitles(showTitles: false)),
-                    topTitles: const AxisTitles(
-                        sideTitles: SideTitles(showTitles: false)),
-                    rightTitles: const AxisTitles(
-                        sideTitles: SideTitles(showTitles: false)),
                   ),
-                  lineBarsData: [
-                    LineChartBarData(
-                      spots: spots,
-                      isCurved: true,
-                      color: cs.primary,
-                      barWidth: 2.5,
-                      dotData: FlDotData(show: spots.length <= 10),
-                      belowBarData: BarAreaData(
-                        show: true,
-                        color: cs.primary.withValues(alpha: 0.12),
-                      ),
-                    ),
-                  ],
+                  bottomTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false)),
+                  topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false)),
+                  rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false)),
                 ),
+                lineBarsData: [
+                  LineChartBarData(
+                    spots: spots,
+                    isCurved: true,
+                    color: cs.primary,
+                    barWidth: 2.5,
+                    dotData: FlDotData(show: spots.length <= 10),
+                    belowBarData: BarAreaData(
+                      show: true,
+                      color: cs.primary.withValues(alpha: 0.12),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
+          ),
         );
       },
     );
@@ -324,6 +387,25 @@ class _TagChips extends StatelessWidget {
                 ),
               ))
           .toList(),
+    );
+  }
+}
+
+// ─── Insights card ────────────────────────────────────────────────────────────
+
+class _InsightsCard extends ConsumerWidget {
+  final String challengeId;
+  const _InsightsCard({required this.challengeId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ref.watch(predictionGapProvider(challengeId)).when(
+      data: (insight) {
+        if (insight == null) return const SizedBox.shrink();
+        return PredictionGapCard(insight: insight);
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
     );
   }
 }

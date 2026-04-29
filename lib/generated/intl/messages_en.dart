@@ -168,7 +168,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "badgesLocked": MessageLookupByLibrary.simpleMessage(
       "Keep going to unlock more!",
     ),
-    "badgesTitle": MessageLookupByLibrary.simpleMessage("Badges"),
+    "badgesTitle": MessageLookupByLibrary.simpleMessage("Opted"),
     "basicNotifications": MessageLookupByLibrary.simpleMessage(
       "Basic Notifications",
     ),
@@ -213,6 +213,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "challengeDetails": MessageLookupByLibrary.simpleMessage(
       "Challenge Details",
+    ),
+    "challengeHintsTitle": MessageLookupByLibrary.simpleMessage(
+      "Not sure what to say?",
     ),
     "challengeId": MessageLookupByLibrary.simpleMessage("Challenge ID"),
     "challengeInformation": MessageLookupByLibrary.simpleMessage(
@@ -484,6 +487,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "lastCompleted": MessageLookupByLibrary.simpleMessage("Last completed:"),
     "lastNote": MessageLookupByLibrary.simpleMessage("Last note:"),
+    "lastNoteTitle": MessageLookupByLibrary.simpleMessage("Last Note"),
     "learnSetbacks": MessageLookupByLibrary.simpleMessage(
       "Learn from setbacks",
     ),
@@ -736,11 +740,35 @@ class MessageLookup extends MessageLookupByLibrary {
     "perceivedScaleLow": MessageLookupByLibrary.simpleMessage("Awkward"),
     "perception": MessageLookupByLibrary.simpleMessage("Perception"),
     "positive": MessageLookupByLibrary.simpleMessage("Positive"),
+    "predictionAttempts": MessageLookupByLibrary.simpleMessage("Attempts"),
+    "predictionAvgGap": MessageLookupByLibrary.simpleMessage("Avg gap"),
+    "predictionCalmer": MessageLookupByLibrary.simpleMessage("Calmer"),
+    "predictionInsightAccurate": MessageLookupByLibrary.simpleMessage(
+      "Your predictions are pretty accurate",
+    ),
+    "predictionInsightCalm": MessageLookupByLibrary.simpleMessage(
+      "You typically feel calmer than predicted",
+    ),
+    "predictionInsightNervous": MessageLookupByLibrary.simpleMessage(
+      "You feel more nervous than expected",
+    ),
+    "predictionInsightTough": MessageLookupByLibrary.simpleMessage(
+      "This one\'s tougher than you think",
+    ),
+    "predictionInsightVeryCalm": MessageLookupByLibrary.simpleMessage(
+      "You\'re consistently calmer than you expect",
+    ),
     "predictionRealityGapTitle": MessageLookupByLibrary.simpleMessage(
       "Nervousness before vs. feeling after",
     ),
     "predictionRealityInsight": MessageLookupByLibrary.simpleMessage(
       "You were nervous before. How do you feel now?",
+    ),
+    "predictionVsRealitySubtitle": MessageLookupByLibrary.simpleMessage(
+      "How nervous you predict vs how you actually feel",
+    ),
+    "predictionVsRealityTitle": MessageLookupByLibrary.simpleMessage(
+      "Prediction vs Reality",
     ),
     "preferAnotherChallenge": MessageLookupByLibrary.simpleMessage(
       "I\'d prefer another challenge",

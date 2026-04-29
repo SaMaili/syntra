@@ -12,6 +12,7 @@ import 'settings_screen.dart' show ComfortZoneLevelCard;
 import 'statistics/activity_calendar.dart' show WeeklyAuraChart;
 import 'statistics/average_mood_card.dart';
 import 'statistics/badges_section.dart';
+import 'statistics/overall_prediction_card.dart';
 import 'statistics/overview_grid.dart';
 import 'statistics/weekly_charts.dart';
 
@@ -80,6 +81,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
             const WeeklyAuraChart(),
             const SizedBox(height: AppSpacing.md),
             const WeeklyXpChart(),
+            const SizedBox(height: AppSpacing.md),
+            const OverallPredictionCard(),
             const SizedBox(height: AppSpacing.md),
             const AverageMoodCard(),
           ],
