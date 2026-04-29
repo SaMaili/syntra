@@ -48,7 +48,6 @@ class ChallengeDoneScreen extends ConsumerStatefulWidget {
   final double rewardFactor;
   final int? durationSeconds;
   final bool isDailyMission;
-  final int? preAnxiety;
 
   const ChallengeDoneScreen({
     super.key,
@@ -56,7 +55,6 @@ class ChallengeDoneScreen extends ConsumerStatefulWidget {
     this.rewardFactor = 1.0,
     this.durationSeconds,
     this.isDailyMission = false,
-    this.preAnxiety,
   });
 
   @override
@@ -207,12 +205,6 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
                         textAlign: TextAlign.center,
                       ),
                     ),
-
-                  // ── Prediction-reality gap ────────────────────────────
-                  if (!_isAborted && widget.preAnxiety != null) ...[
-                    SizedBox(height: gapMd),
-                    _PredictionRealityCard(preAnxiety: widget.preAnxiety!),
-                  ],
 
                   SizedBox(height: gapXl),
 
@@ -408,7 +400,7 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
       perception: perception,
       notes: notes,
       durationSeconds: widget.durationSeconds,
-      preAnxiety: widget.preAnxiety,
+      preAnxiety: surveyState?.preAnxiety,
     );
 
     int? newLevel;
@@ -509,7 +501,7 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
       perception: perception,
       notes: notes,
       durationSeconds: widget.durationSeconds,
-      preAnxiety: widget.preAnxiety,
+      preAnxiety: surveyState?.preAnxiety,
     );
 
     refreshStatistics(ref);
@@ -524,63 +516,3 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
   }
 }
 
-// ─── Prediction-reality gap card ──────────────────────────────────────────────
-
-class _PredictionRealityCard extends StatelessWidget {
-  // 1–5 nervousness rated before the challenge
-  final int preAnxiety;
-
-  const _PredictionRealityCard({required this.preAnxiety});
-
-  static const _icons = [
-    Icons.sentiment_very_satisfied,
-    Icons.sentiment_satisfied,
-    Icons.sentiment_neutral,
-    Icons.sentiment_dissatisfied,
-    Icons.sentiment_very_dissatisfied,
-  ];
-  static const _colors = [
-    Colors.green,
-    Colors.lightGreen,
-    Colors.amber,
-    Colors.orange,
-    Colors.red,
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
-    final l = S.of(context);
-
-    // preAnxiety is 1–5 (1=calm, 5=very nervous); index into icon list is reversed
-    final iconIndex = (preAnxiety - 1).clamp(0, 4);
-
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: cs.secondaryContainer,
-        borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            _icons[iconIndex],
-            color: _colors[iconIndex],
-            size: 28,
-          ),
-          const SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: Text(
-              l.predictionRealityInsight,
-              style: tt.bodySmall?.copyWith(
-                color: cs.onSecondaryContainer,
-                height: 1.4,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}

@@ -18,15 +18,16 @@ class SurveyWidget extends StatefulWidget {
 }
 
 class SurveyWidgetState extends State<SurveyWidget> {
-  int _feeling = 2;
-  int _perceived = 2;
+  int? _preAnxiety;
+  int? _feeling;
+  int? _perceived;
   bool _submitted = false;
   late final int _promptIndex;
   final TextEditingController _notesController = TextEditingController();
 
   static const _kPromptCount = 10;
 
-  // Semantic sentiment scale — intentionally not theme colors.
+  // Feeling / perceived scale: 0 = very dissatisfied → 4 = very satisfied.
   static const _smileys = [
     Icons.sentiment_very_dissatisfied,
     Icons.sentiment_dissatisfied,
@@ -38,11 +39,21 @@ class SurveyWidgetState extends State<SurveyWidget> {
     Colors.red, Colors.orange, Colors.amber, Colors.lightGreen, Colors.green,
   ];
 
+  // Pre-anxiety scale: index 0 = calm (value 1) → index 4 = very nervous (value 5).
+  static const _anxietyIcons = [
+    Icons.sentiment_very_satisfied,
+    Icons.sentiment_satisfied,
+    Icons.sentiment_neutral,
+    Icons.sentiment_dissatisfied,
+    Icons.sentiment_very_dissatisfied,
+  ];
+  static const _anxietyColors = [
+    Colors.green, Colors.lightGreen, Colors.amber, Colors.orange, Colors.red,
+  ];
+
   @override
   void initState() {
     super.initState();
-    // Deterministic per challenge so the same challenge always shows the same
-    // prompt — but different challenges get different prompts.
     _promptIndex = widget.challengeId.hashCode.abs() % _kPromptCount;
   }
 
@@ -81,6 +92,41 @@ class SurveyWidgetState extends State<SurveyWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // ── How nervous were you going in? ────────────────────────────────
+        Text(l.howNervousQuestion,
+            style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
+        const SizedBox(height: AppSpacing.sm),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: List.generate(5, (i) {
+            final value = i + 1;
+            final isSelected = _preAnxiety == value;
+            return IconButton(
+              icon: Icon(
+                _anxietyIcons[i],
+                color: isSelected ? _anxietyColors[i] : cs.outlineVariant,
+                size: 36,
+              ),
+              onPressed: () => setState(
+                () => _preAnxiety = isSelected ? null : value,
+              ),
+            );
+          }),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(l.notNervousAtAll, style: scaleLabel),
+              Text(l.veryNervous, style: scaleLabel),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: AppSpacing.md),
+
+        // ── How did you feel after? ───────────────────────────────────────
         Text(l.howDidYouFeel,
             style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
         const SizedBox(height: AppSpacing.sm),
@@ -92,7 +138,7 @@ class SurveyWidgetState extends State<SurveyWidget> {
               color: _feeling == i ? _smileyColors[i] : cs.outlineVariant,
               size: 36,
             ),
-            onPressed: () => setState(() => _feeling = i),
+            onPressed: () => setState(() => _feeling = _feeling == i ? null : i),
           )),
         ),
         Padding(
@@ -105,7 +151,10 @@ class SurveyWidgetState extends State<SurveyWidget> {
             ],
           ),
         ),
+
         const SizedBox(height: AppSpacing.md),
+
+        // ── How were you perceived? ───────────────────────────────────────
         Text(l.howPerceivedQuestion,
             style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
         const SizedBox(height: AppSpacing.sm),
@@ -117,7 +166,7 @@ class SurveyWidgetState extends State<SurveyWidget> {
               color: _perceived == i ? _smileyColors[i] : cs.outlineVariant,
               size: 36,
             ),
-            onPressed: () => setState(() => _perceived = i),
+            onPressed: () => setState(() => _perceived = _perceived == i ? null : i),
           )),
         ),
         Padding(
@@ -130,7 +179,10 @@ class SurveyWidgetState extends State<SurveyWidget> {
             ],
           ),
         ),
+
         const SizedBox(height: AppSpacing.md),
+
+        // ── Notes ─────────────────────────────────────────────────────────
         Text(l.notes,
             style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
         const SizedBox(height: AppSpacing.xs),
@@ -139,17 +191,16 @@ class SurveyWidgetState extends State<SurveyWidget> {
           minLines: 2,
           maxLines: 4,
           maxLength: 500,
-          decoration: InputDecoration(
-            hintText: _noteHint(l),
-          ),
+          decoration: InputDecoration(hintText: _noteHint(l)),
         ),
       ],
     );
   }
 
   bool get submitted => _submitted;
-  int get feeling => _feeling;
-  int get perceived => _perceived;
+  int? get preAnxiety => _preAnxiety;
+  int? get feeling => _feeling;
+  int? get perceived => _perceived;
   String get notes => _notesController.text.trim();
   void submit() => setState(() => _submitted = true);
 }

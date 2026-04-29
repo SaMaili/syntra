@@ -69,7 +69,6 @@ final appRouter = GoRouter(
           challenge: args.challenge,
           isDailyMission: args.isDailyMission,
           overrideTime: args.overrideTime,
-          preAnxiety: args.preAnxiety,
         );
       },
     ),
@@ -82,7 +81,6 @@ final appRouter = GoRouter(
           rewardFactor: args.rewardFactor,
           durationSeconds: args.durationSeconds,
           isDailyMission: args.isDailyMission,
-          preAnxiety: args.preAnxiety,
         );
       },
     ),
@@ -135,9 +133,8 @@ class _ActiveChallengeArgs {
   final Challenge challenge;
   final bool isDailyMission;
   final int? overrideTime;
-  final int? preAnxiety;
   const _ActiveChallengeArgs(this.challenge,
-      {this.isDailyMission = false, this.overrideTime, this.preAnxiety});
+      {this.isDailyMission = false, this.overrideTime});
 }
 
 class _ChallengeDoneArgs {
@@ -145,13 +142,11 @@ class _ChallengeDoneArgs {
   final double rewardFactor;
   final int? durationSeconds;
   final bool isDailyMission;
-  final int? preAnxiety;
   const _ChallengeDoneArgs(
     this.challenge,
     this.rewardFactor, {
     this.durationSeconds,
     this.isDailyMission = false,
-    this.preAnxiety,
   });
 }
 
@@ -197,14 +192,12 @@ extension AppNavigation on BuildContext {
     Challenge challenge, {
     bool isDailyMission = false,
     int? overrideTime,
-    int? preAnxiety,
   }) =>
       GoRouter.of(this).push<double>(
         AppRoutes.activeChallenge,
         extra: _ActiveChallengeArgs(challenge,
             isDailyMission: isDailyMission,
-            overrideTime: overrideTime,
-            preAnxiety: preAnxiety),
+            overrideTime: overrideTime),
       );
 
   /// Replaces the entire navigation stack with a fresh [ActiveChallengeScreen].
@@ -225,7 +218,6 @@ extension AppNavigation on BuildContext {
     double rewardFactor, {
     int? durationSeconds,
     bool isDailyMission = false,
-    int? preAnxiety,
   }) =>
       GoRouter.of(this).push<double>(
         AppRoutes.challengeDone,
@@ -234,7 +226,6 @@ extension AppNavigation on BuildContext {
           rewardFactor,
           durationSeconds: durationSeconds,
           isDailyMission: isDailyMission,
-          preAnxiety: preAnxiety,
         ),
       );
 

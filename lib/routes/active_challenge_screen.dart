@@ -27,14 +27,12 @@ class ActiveChallengeScreen extends ConsumerStatefulWidget {
   final Challenge challenge;
   final bool isDailyMission;
   final int? overrideTime;
-  final int? preAnxiety;
 
   const ActiveChallengeScreen({
     super.key,
     required this.challenge,
     this.isDailyMission = false,
     this.overrideTime,
-    this.preAnxiety,
   });
 
   @override
@@ -218,7 +216,6 @@ class _ActiveChallengeScreenState extends ConsumerState<ActiveChallengeScreen>
       rewardFactor,
       durationSeconds: durationSeconds,
       isDailyMission: widget.isDailyMission,
-      preAnxiety: widget.preAnxiety,
     );
     if (result != null && mounted) {
       if (_bgScheduledNotificationId != null) {

@@ -31,13 +31,8 @@ class _PrimingScreenState extends State<PrimingScreen>
   int _secondsLeft = _totalSeconds;
   Timer? _timer;
   bool _isExiting = false;
-  /// Whether the user has engaged with a picker, freezing the auto-launch.
-  /// Once paused, the user must explicitly tap "I'm Ready" to launch.
-  bool _isPaused = false;
   /// Duration override chosen by user; null = use challenge default.
   int? _selectedTime;
-  /// Pre-challenge anxiety level (1–5); null = user skipped.
-  int? _preAnxiety;
 
   /// Drives the circular arc from 1.0 → 0.0 continuously over the full
   /// countdown so the ring sweeps smoothly instead of jumping each second.
@@ -76,16 +71,6 @@ class _PrimingScreenState extends State<PrimingScreen>
     super.dispose();
   }
 
-  /// Pause the auto-launch countdown when the user starts engaging with
-  /// pickers. Cancels the timer and freezes the ring animation so the user
-  /// can take their time and launch manually via "I'm Ready".
-  void _pauseCountdown() {
-    if (_isPaused || _isExiting) return;
-    _timer?.cancel();
-    _arcController.stop();
-    setState(() => _isPaused = true);
-  }
-
   String _headline(S l) {
     final c = widget.challenge;
     if (c.flirt) return l.primingHeadlineFlirt;
@@ -117,7 +102,6 @@ class _PrimingScreenState extends State<PrimingScreen>
       widget.challenge,
       isDailyMission: widget.isDailyMission,
       overrideTime: _selectedTime,
-      preAnxiety: _preAnxiety,
     );
     if (mounted) context.pop(result);
   }
@@ -154,7 +138,6 @@ class _PrimingScreenState extends State<PrimingScreen>
                           _CountdownRing(
                             arcController: _arcController,
                             secondsLeft: _secondsLeft,
-                            isPaused: _isPaused,
                             size: ringSize,
                           ),
 
@@ -197,25 +180,11 @@ class _PrimingScreenState extends State<PrimingScreen>
 
                           const SizedBox(height: AppSpacing.md),
 
-                          // ── Pre-challenge anxiety picker ───────────────
-                          _AnxietyPicker(
-                            selected: _preAnxiety,
-                            onChanged: (v) {
-                              _pauseCountdown();
-                              setState(() => _preAnxiety = v);
-                            },
-                          ),
-
-                          const SizedBox(height: AppSpacing.md),
-
                           // ── Duration picker ───────────────────────────
                           _DurationPicker(
                             challengeTime: widget.challenge.time,
                             selected: _selectedTime,
-                            onChanged: (t) {
-                              _pauseCountdown();
-                              setState(() => _selectedTime = t);
-                            },
+                            onChanged: (t) => setState(() => _selectedTime = t),
                           ),
                         ],
                       ),
@@ -253,13 +222,11 @@ class _PrimingScreenState extends State<PrimingScreen>
 class _CountdownRing extends StatelessWidget {
   final AnimationController arcController;
   final int secondsLeft;
-  final bool isPaused;
   final double size;
 
   const _CountdownRing({
     required this.arcController,
     required this.secondsLeft,
-    required this.isPaused,
     this.size = 120,
   });
 
@@ -268,32 +235,25 @@ class _CountdownRing extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
 
-    // Arc value: 1.0 (full ring) → 0.0 (empty), continuous.
-    final arcValue = Tween<double>(begin: 1.0, end: 0.0)
-        .animate(arcController);
+    final arcValue = Tween<double>(begin: 1.0, end: 0.0).animate(arcController);
 
     return Stack(
       alignment: Alignment.center,
       children: [
-        // ── Circular arc ──
         SizedBox(
           width: size,
           height: size,
           child: AnimatedBuilder(
             animation: arcValue,
-            builder: (_, child) => CircularProgressIndicator(
-              value: isPaused ? 1.0 : arcValue.value,
+            builder: (_, _) => CircularProgressIndicator(
+              value: arcValue.value,
               strokeWidth: 5,
               strokeCap: StrokeCap.round,
               backgroundColor: cs.surfaceContainerHighest,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                isPaused ? cs.outlineVariant : cs.primary,
-              ),
+              valueColor: AlwaysStoppedAnimation<Color>(cs.primary),
             ),
           ),
         ),
-
-        // ── Center: countdown number, or pause icon when paused ──
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 350),
           transitionBuilder: (child, animation) {
@@ -305,21 +265,14 @@ class _CountdownRing extends StatelessWidget {
               child: ScaleTransition(scale: scaleIn, child: child),
             );
           },
-          child: isPaused
-              ? Icon(
-                  Icons.pause_rounded,
-                  key: const ValueKey('paused'),
-                  size: size * 0.4,
-                  color: cs.onSurfaceVariant,
-                )
-              : Text(
-                  '$secondsLeft',
-                  key: ValueKey(secondsLeft),
-                  style: tt.displaySmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: cs.primary,
-                  ),
-                ),
+          child: Text(
+            '$secondsLeft',
+            key: ValueKey(secondsLeft),
+            style: tt.displaySmall?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: cs.primary,
+            ),
+          ),
         ),
       ],
     );
@@ -431,70 +384,3 @@ class _Chip extends StatelessWidget {
   }
 }
 
-// ─── Anxiety picker ───────────────────────────────────────────────────────────
-
-class _AnxietyPicker extends StatelessWidget {
-  final int? selected;
-  final ValueChanged<int?> onChanged;
-
-  const _AnxietyPicker({required this.selected, required this.onChanged});
-
-  static const _icons = [
-    Icons.sentiment_very_satisfied,
-    Icons.sentiment_satisfied,
-    Icons.sentiment_neutral,
-    Icons.sentiment_dissatisfied,
-    Icons.sentiment_very_dissatisfied,
-  ];
-  static const _colors = [
-    Colors.green,
-    Colors.lightGreen,
-    Colors.amber,
-    Colors.orange,
-    Colors.red,
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
-    final l = S.of(context);
-
-    return Column(
-      children: [
-        Text(
-          l.howNervousQuestion,
-          style: tt.labelSmall?.copyWith(color: cs.onSurfaceVariant),
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: List.generate(5, (i) {
-            final value = i + 1; // 1–5
-            final isSelected = selected == value;
-            return IconButton(
-              icon: Icon(
-                _icons[i],
-                color: isSelected ? _colors[i] : cs.outlineVariant,
-                size: 36,
-              ),
-              onPressed: () => onChanged(isSelected ? null : value),
-            );
-          }),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(l.notNervousAtAll,
-                  style: tt.labelSmall?.copyWith(color: cs.outlineVariant)),
-              Text(l.veryNervous,
-                  style: tt.labelSmall?.copyWith(color: cs.outlineVariant)),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}

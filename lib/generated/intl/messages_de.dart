@@ -484,7 +484,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "howDoYouFeel": MessageLookupByLibrary.simpleMessage("Wie fühlst du dich?"),
     "howNervousQuestion": MessageLookupByLibrary.simpleMessage(
-      "Wie nervös bist du gerade?",
+      "Wie nervös warst du vorher?",
     ),
     "howPerceivedByOthers": MessageLookupByLibrary.simpleMessage(
       "Wie wurdest du wahrgenommen?",
@@ -797,9 +797,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "predictionRealityGapTitle": MessageLookupByLibrary.simpleMessage(
       "Nervosität vorher vs. Gefühl nachher",
-    ),
-    "predictionRealityInsight": MessageLookupByLibrary.simpleMessage(
-      "Du warst vorher nervös. Wie fühlst du dich jetzt?",
     ),
     "predictionVsRealitySubtitle": MessageLookupByLibrary.simpleMessage(
       "Wie nervös du erwartest vs wie du dich wirklich fühlst",

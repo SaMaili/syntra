@@ -574,8 +574,7 @@
   "@weeklyRecapBody": {
     "placeholders": { "n": { "type": "int" } }
   },
-  "howNervousQuestion": "Wie nervös bist du gerade?",
-  "predictionRealityInsight": "Du warst vorher nervös. Wie fühlst du dich jetzt?",
+  "howNervousQuestion": "Wie nervös warst du vorher?",
   "notNervousAtAll": "Gar nicht",
   "veryNervous": "Sehr nervös",
   "predictionRealityGapTitle": "Nervosität vorher vs. Gefühl nachher",

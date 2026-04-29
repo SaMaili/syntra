@@ -3769,21 +3769,11 @@ class S {
     );
   }
 
-  /// `How nervous are you right now?`
+  /// `How nervous were you going in?`
   String get howNervousQuestion {
     return Intl.message(
-      'How nervous are you right now?',
+      'How nervous were you going in?',
       name: 'howNervousQuestion',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `You were nervous before. How do you feel now?`
-  String get predictionRealityInsight {
-    return Intl.message(
-      'You were nervous before. How do you feel now?',
-      name: 'predictionRealityInsight',
       desc: '',
       args: [],
     );
