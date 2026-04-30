@@ -14,6 +14,7 @@ abstract class AppTheme {
   static ThemeData light() {
     return ThemeData(
       useMaterial3: true,
+      fontFamily: 'King Richard',
       colorScheme: ColorScheme.fromSeed(
         seedColor: seedColor,
         brightness: Brightness.light,
@@ -24,8 +25,16 @@ abstract class AppTheme {
       brightness: Brightness.light,
       scaffoldBackgroundColor: const Color(0xFFFBF9F8),
       textTheme: const TextTheme(
-        headlineSmall: TextStyle(height: 1.2),
-        labelMedium: TextStyle(height: 1.2),
+        displayLarge:  TextStyle(fontFamily: 'King Richard', fontWeight: FontWeight.w700),
+        displayMedium: TextStyle(fontFamily: 'King Richard', fontWeight: FontWeight.w700),
+        displaySmall:  TextStyle(fontFamily: 'King Richard', fontWeight: FontWeight.w700),
+        headlineLarge: TextStyle(fontFamily: 'King Richard', fontWeight: FontWeight.w700),
+        headlineMedium:TextStyle(fontFamily: 'King Richard', fontWeight: FontWeight.w700),
+        headlineSmall: TextStyle(fontFamily: 'King Richard', fontWeight: FontWeight.w700, height: 1.2),
+        titleLarge:    TextStyle(fontFamily: 'King Richard', fontWeight: FontWeight.w700),
+        titleMedium:   TextStyle(fontFamily: 'King Richard', fontWeight: FontWeight.w700),
+        titleSmall:    TextStyle(fontFamily: 'King Richard', fontWeight: FontWeight.w700),
+        labelMedium:   TextStyle(fontFamily: 'King Richard', height: 1.2),
       ),
       appBarTheme: const AppBarTheme(
         centerTitle: false,
@@ -34,9 +43,10 @@ abstract class AppTheme {
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.black,
         titleTextStyle: TextStyle(
+          fontFamily: 'King Richard',
+          fontWeight: FontWeight.w700,
           color: Colors.black,
           fontSize: 20,
-          fontWeight: FontWeight.w800,
         ),
       ),
       cardTheme: CardThemeData(
@@ -111,6 +121,7 @@ abstract class AppTheme {
   static ThemeData dark() {
     return ThemeData(
       useMaterial3: true,
+      fontFamily: 'King Richard',
       scaffoldBackgroundColor: Colors.black,
       colorScheme: ColorScheme.fromSeed(
         seedColor: seedColor,
@@ -122,8 +133,16 @@ abstract class AppTheme {
       ),
       brightness: Brightness.dark,
       textTheme: const TextTheme(
-        headlineSmall: TextStyle(height: 1.2),
-        labelMedium: TextStyle(height: 1.2),
+        displayLarge:  TextStyle(fontFamily: 'King Richard', fontWeight: FontWeight.w700),
+        displayMedium: TextStyle(fontFamily: 'King Richard', fontWeight: FontWeight.w700),
+        displaySmall:  TextStyle(fontFamily: 'King Richard', fontWeight: FontWeight.w700),
+        headlineLarge: TextStyle(fontFamily: 'King Richard', fontWeight: FontWeight.w700),
+        headlineMedium:TextStyle(fontFamily: 'King Richard', fontWeight: FontWeight.w700),
+        headlineSmall: TextStyle(fontFamily: 'King Richard', fontWeight: FontWeight.w700, height: 1.2),
+        titleLarge:    TextStyle(fontFamily: 'King Richard', fontWeight: FontWeight.w700),
+        titleMedium:   TextStyle(fontFamily: 'King Richard', fontWeight: FontWeight.w700),
+        titleSmall:    TextStyle(fontFamily: 'King Richard', fontWeight: FontWeight.w700),
+        labelMedium:   TextStyle(fontFamily: 'King Richard', height: 1.2),
       ),
       cardTheme: CardThemeData(
         elevation: 0,
@@ -141,9 +160,10 @@ abstract class AppTheme {
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.white,
         titleTextStyle: TextStyle(
+          fontFamily: 'King Richard',
+          fontWeight: FontWeight.w700,
           color: Colors.white,
           fontSize: 20,
-          fontWeight: FontWeight.w800,
         ),
       ),
       filledButtonTheme: FilledButtonThemeData(
