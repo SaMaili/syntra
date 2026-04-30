@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:syntra/widgets/syntra_button.dart';
 
 import '../data/logbook_repository.dart';
 import '../generated/l10n.dart';
@@ -83,8 +84,6 @@ class ChallengeInfoNotification {
                         fontWeight: FontWeight.bold,
                         color: cs.onSurface,
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
@@ -146,7 +145,7 @@ class ChallengeInfoNotification {
               // ── Action ───────────────────────────────────────────────
               SizedBox(
                 width: double.infinity,
-                child: FilledButton(
+                child: SyntraButton(
                   onPressed: () => Navigator.of(ctx).pop(),
                   child: Text(l10n.okayButton),
                 ),

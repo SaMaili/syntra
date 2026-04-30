@@ -237,13 +237,7 @@ class _HomeBarState extends ConsumerState<HomeBar>
         message: l.greetingLongTime,
         autoDismiss: false,
       );
-    } else if (streak == 0) {
-      _showGreetingBanner(
-        icon: Icons.refresh_rounded,
-        message: l.greetingFresh,
-        autoDismiss: false,
-      );
-    } else {
+    }else {
       _showStreakCelebration(streak);
     }
   }

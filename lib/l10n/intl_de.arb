@@ -63,7 +63,7 @@
   "@shopAvailableAura": {
     "placeholders": { "aura": { "type": "int" } }
   },
-  "shopBuyFor": "Kaufen · {price} Aura",
+  "shopBuyFor": "Kaufen für {price} Aura",
   "@shopBuyFor": {
     "placeholders": { "price": { "type": "int" } }
   },
@@ -325,7 +325,6 @@
   "sat": "Sa",
   "sun": "So",
   "greetingLongTime": "Lange nicht gesehen. Keine Sorge, dein Fortschritt ist noch da.",
-  "greetingFresh": "Willkommen zurück. Bereit für einen neuen Start?",
   "greetingStreak": "Woche {streak}, bleib dran.",
   "@greetingStreak": {
     "placeholders": { "streak": { "type": "int" } }

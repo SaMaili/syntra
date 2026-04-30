@@ -133,7 +133,7 @@ class _ChallengeDoneScreenState extends ConsumerState<ChallengeDoneScreen> {
       extendBodyBehindAppBar: true,
       appBar: SyntraBlurAppBar(
         title: Text(_isAborted ? l.challengeAborted : l.challengeCompleted),
-        leading: const SizedBox.shrink(), // hide back button
+        automaticallyImplyLeading: false,
       ),
       body: Column(
         children: [
