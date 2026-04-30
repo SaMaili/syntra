@@ -249,10 +249,10 @@ class S {
     );
   }
 
-  /// `Buy · {price} Aura`
+  /// `Buy for {price} Aura`
   String shopBuyFor(int price) {
     return Intl.message(
-      'Buy · $price Aura',
+      'Buy for $price Aura',
       name: 'shopBuyFor',
       desc: '',
       args: [price],
@@ -2064,16 +2064,6 @@ class S {
     return Intl.message(
       'Long time. No worries, your progress is still here.',
       name: 'greetingLongTime',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Welcome back. Ready to start fresh today?`
-  String get greetingFresh {
-    return Intl.message(
-      'Welcome back. Ready to start fresh today?',
-      name: 'greetingFresh',
       desc: '',
       args: [],
     );

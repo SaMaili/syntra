@@ -47,7 +47,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m11(aura) => "Available: ${aura} Aura";
 
-  static String m12(price) => "Buy · ${price} Aura";
+  static String m12(price) => "Buy for ${price} Aura";
 
   static String m13(price) => "Buy a Streak Freeze for ${price} Aura?";
 
@@ -450,9 +450,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "good": MessageLookupByLibrary.simpleMessage("Good"),
     "greatJobDaily": MessageLookupByLibrary.simpleMessage(
       "Great job! You have mastered today\'s challenge.",
-    ),
-    "greetingFresh": MessageLookupByLibrary.simpleMessage(
-      "Welcome back. Ready to start fresh today?",
     ),
     "greetingLongTime": MessageLookupByLibrary.simpleMessage(
       "Long time. No worries, your progress is still here.",

@@ -21,12 +21,14 @@ class SyntraBlurAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget title;
   final List<Widget>? actions;
   final Widget? leading;
+  final bool automaticallyImplyLeading;
 
   const SyntraBlurAppBar({
     super.key,
     required this.title,
     this.actions,
     this.leading,
+    this.automaticallyImplyLeading = true,
   });
 
   /// Top padding a scrollable body should add so its first item clears the bar.
@@ -48,6 +50,7 @@ class SyntraBlurAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: title,
       centerTitle: false,
+      automaticallyImplyLeading: automaticallyImplyLeading,
       actions: actions,
       leading: leading,
       backgroundColor: Colors.transparent,

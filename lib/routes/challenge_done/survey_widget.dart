@@ -39,16 +39,16 @@ class SurveyWidgetState extends State<SurveyWidget> {
     Colors.red, Colors.orange, Colors.amber, Colors.lightGreen, Colors.green,
   ];
 
-  // Pre-anxiety scale: index 0 = calm (value 1) → index 4 = very nervous (value 5).
+  // Pre-anxiety scale: index 0 = very nervous (value 5) → index 4 = calm (value 1).
   static const _anxietyIcons = [
-    Icons.sentiment_very_satisfied,
-    Icons.sentiment_satisfied,
-    Icons.sentiment_neutral,
-    Icons.sentiment_dissatisfied,
     Icons.sentiment_very_dissatisfied,
+    Icons.sentiment_dissatisfied,
+    Icons.sentiment_neutral,
+    Icons.sentiment_satisfied,
+    Icons.sentiment_very_satisfied,
   ];
   static const _anxietyColors = [
-    Colors.green, Colors.lightGreen, Colors.amber, Colors.orange, Colors.red,
+    Colors.red, Colors.orange, Colors.amber, Colors.lightGreen, Colors.green,
   ];
 
   @override
@@ -99,7 +99,7 @@ class SurveyWidgetState extends State<SurveyWidget> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: List.generate(5, (i) {
-            final value = i + 1;
+            final value = 5 - i;
             final isSelected = _preAnxiety == value;
             return IconButton(
               icon: Icon(
@@ -118,8 +118,8 @@ class SurveyWidgetState extends State<SurveyWidget> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(l.notNervousAtAll, style: scaleLabel),
               Text(l.veryNervous, style: scaleLabel),
+              Text(l.notNervousAtAll, style: scaleLabel),
             ],
           ),
         ),
