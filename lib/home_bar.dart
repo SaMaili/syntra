@@ -340,6 +340,14 @@ class _HomeBarState extends ConsumerState<HomeBar>
                 surfaceTintColor: cs.surfaceTint.withValues(alpha: 0.15),
                 elevation: 0,
                 shadowColor: Colors.transparent,
+                labelTextStyle: WidgetStateProperty.resolveWith((states) {
+                  final selected = states.contains(WidgetState.selected);
+                  return TextStyle(
+                    fontSize: 10,
+                    fontWeight:
+                        selected ? FontWeight.w600 : FontWeight.normal,
+                  );
+                }),
               ),
               tooltipTheme: const TooltipThemeData(
                 triggerMode: TooltipTriggerMode.manual,

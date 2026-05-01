@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -20,53 +22,57 @@ class BadgeUnlockedScreen extends ConsumerStatefulWidget {
 
 class _BadgeUnlockedScreenState extends ConsumerState<BadgeUnlockedScreen>
     with TickerProviderStateMixin {
-  late AnimationController _iconCtrl;
-  late Animation<double> _iconScale;
-  late Animation<double> _iconRotation;
-
+  late AnimationController _enterCtrl;
+  late AnimationController _burstCtrl;
+  late AnimationController _glowCtrl;
   late AnimationController _textCtrl;
+
+  late Animation<double> _enterScale;
+  late Animation<double> _wobble;
+  late Animation<double> _glow;
   late Animation<double> _textOpacity;
   late Animation<Offset> _textSlide;
 
   @override
   void initState() {
     super.initState();
-    _iconCtrl = AnimationController(
+
+    _enterCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1500),
+      duration: const Duration(milliseconds: 800),
+    );
+    _enterScale = CurvedAnimation(parent: _enterCtrl, curve: Curves.elasticOut);
+
+    _burstCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
     );
 
-    _iconScale = CurvedAnimation(
-      parent: _iconCtrl,
-      curve: Curves.elasticOut,
+    _glowCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
     );
-
-    _iconRotation = Tween<double>(begin: -0.05, end: 0.05).animate(
-      CurvedAnimation(
-        parent: _iconCtrl,
-        curve: const Interval(0.2, 1.0, curve: Curves.easeInOut),
-      ),
+    _wobble = Tween<double>(begin: -0.03, end: 0.03).animate(
+      CurvedAnimation(parent: _glowCtrl, curve: Curves.easeInOut),
+    );
+    _glow = Tween<double>(begin: 0.25, end: 0.85).animate(
+      CurvedAnimation(parent: _glowCtrl, curve: Curves.easeInOut),
     );
 
     _textCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
     );
-
-    _textOpacity = CurvedAnimation(
-      parent: _textCtrl,
-      curve: Curves.easeIn,
-    );
-
+    _textOpacity = CurvedAnimation(parent: _textCtrl, curve: Curves.easeIn);
     _textSlide = Tween<Offset>(
       begin: const Offset(0, 0.2),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _textCtrl,
-      curve: Curves.easeOutCubic,
-    ));
+    ).animate(CurvedAnimation(parent: _textCtrl, curve: Curves.easeOutCubic));
 
-    _iconCtrl.forward();
+    _enterCtrl.forward();
+    _burstCtrl.forward();
+    _glowCtrl.repeat(reverse: true);
+
     Future.delayed(const Duration(milliseconds: 400), () {
       if (mounted) _textCtrl.forward();
     });
@@ -76,7 +82,9 @@ class _BadgeUnlockedScreenState extends ConsumerState<BadgeUnlockedScreen>
 
   @override
   void dispose() {
-    _iconCtrl.dispose();
+    _enterCtrl.dispose();
+    _burstCtrl.dispose();
+    _glowCtrl.dispose();
     _textCtrl.dispose();
     super.dispose();
   }
@@ -85,7 +93,6 @@ class _BadgeUnlockedScreenState extends ConsumerState<BadgeUnlockedScreen>
   Widget build(BuildContext context) {
     final tt = Theme.of(context).textTheme;
     final l = S.of(context);
-
     final badgeColor = widget.badge.color;
     final bgColor =
         Color.lerp(const Color(0xFF121212), badgeColor, 0.2) ??
@@ -114,19 +121,43 @@ class _BadgeUnlockedScreenState extends ConsumerState<BadgeUnlockedScreen>
               children: [
                 const Spacer(),
 
-                ScaleTransition(
-                  scale: _iconScale,
-                  child: RotationTransition(
-                    turns: _iconRotation,
-                    child: Container(
-                      width: 160,
-                      height: 160,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
+                AnimatedBuilder(
+                  animation:
+                      Listenable.merge([_enterCtrl, _burstCtrl, _glowCtrl]),
+                  builder: (context, _) => SizedBox(
+                    width: 300,
+                    height: 300,
+                    child: CustomPaint(
+                      painter: _BadgeCelebrationPainter(
+                        burstProgress: _burstCtrl.value,
                         color: badgeColor,
                       ),
-                      child: Icon(widget.badge.icon, size: 80,
-                          color: Colors.white),
+                      child: Center(
+                        child: Transform.scale(
+                          scale: _enterScale.value,
+                          child: Transform.rotate(
+                            angle: _wobble.value * 2 * pi,
+                            child: Container(
+                              width: 160,
+                              height: 160,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: badgeColor,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: badgeColor.withValues(
+                                        alpha: _glow.value * 0.7),
+                                    blurRadius: 30 + _glow.value * 30,
+                                    spreadRadius: 4 + _glow.value * 12,
+                                  ),
+                                ],
+                              ),
+                              child: Icon(widget.badge.icon,
+                                  size: 80, color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -189,15 +220,84 @@ class _BadgeUnlockedScreenState extends ConsumerState<BadgeUnlockedScreen>
       }
     }
     switch (id) {
-      case 'first_step': return l.badgeFirstStep;
-      case 'ten_challenges': return l.badgeTenChallenges;
-      case 'fifty_challenges': return l.badgeFiftyChallenges;
-      case 'three_week_streak': return l.badgeThreeWeekStreak;
-      case 'seven_week_streak': return l.badgeSevenWeekStreak;
-      case 'century_aura': return l.badgeCenturyAura;
-      case 'five_hundred_aura': return l.badgeFiveHundredAura;
-      case 'brave_minutes': return l.badgeBraveMinutes;
-      default: return id;
+      case 'first_step':
+        return l.badgeFirstStep;
+      case 'ten_challenges':
+        return l.badgeTenChallenges;
+      case 'fifty_challenges':
+        return l.badgeFiftyChallenges;
+      case 'three_week_streak':
+        return l.badgeThreeWeekStreak;
+      case 'seven_week_streak':
+        return l.badgeSevenWeekStreak;
+      case 'century_aura':
+        return l.badgeCenturyAura;
+      case 'five_hundred_aura':
+        return l.badgeFiveHundredAura;
+      case 'brave_minutes':
+        return l.badgeBraveMinutes;
+      default:
+        return id;
     }
   }
+}
+
+// ── Painter ───────────────────────────────────────────────────────────────────
+
+class _BadgeCelebrationPainter extends CustomPainter {
+  final double burstProgress;
+  final Color color;
+
+  // 12 particles evenly spread + slightly varied radii
+  static const _angles = [
+    0.0, 0.524, 1.047, 1.571, 2.094, 2.618,
+    3.142, 3.665, 4.189, 4.712, 5.236, 5.760,
+  ];
+  static const _dists = [
+    1.00, 0.88, 1.12, 0.92, 1.05, 0.85,
+    1.00, 0.95, 1.10, 0.88, 1.02, 0.90,
+  ];
+
+  _BadgeCelebrationPainter({required this.burstProgress, required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+
+    // Expanding rings (3, staggered)
+    for (int i = 0; i < 3; i++) {
+      final t = ((burstProgress - i * 0.2) / 0.6).clamp(0.0, 1.0);
+      if (t <= 0) continue;
+      canvas.drawCircle(
+        center,
+        80.0 + t * size.width * 0.42,
+        Paint()
+          ..color = color.withValues(alpha: (1.0 - t) * 0.55)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2.0,
+      );
+    }
+
+    // Burst particles
+    if (burstProgress > 0) {
+      final maxDist = size.width * 0.44;
+      for (int i = 0; i < _angles.length; i++) {
+        final r = burstProgress * maxDist * _dists[i];
+        final opacity = burstProgress < 0.55
+            ? 1.0
+            : (1.0 - burstProgress) / 0.45;
+        final pos = center +
+            Offset(cos(_angles[i]) * r, sin(_angles[i]) * r);
+        canvas.drawCircle(
+          pos,
+          5.0 * (1.0 - burstProgress * 0.5),
+          Paint()..color = color.withValues(alpha: opacity.clamp(0.0, 1.0)),
+        );
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(_BadgeCelebrationPainter old) =>
+      old.burstProgress != burstProgress;
 }

@@ -44,7 +44,11 @@ class ChallengeListItem extends StatelessWidget {
             onTap: () => _onInfoTap(context),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.md, AppSpacing.md, AppSpacing.md, AppSpacing.sm),
+                AppSpacing.md,
+                AppSpacing.md,
+                AppSpacing.md,
+                AppSpacing.sm,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -55,19 +59,20 @@ class ChallengeListItem extends StatelessWidget {
                           challenge.title,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
+                          style: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(fontWeight: FontWeight.w600),
                         ),
                       ),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 2),
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
                         margin: const EdgeInsets.only(left: AppSpacing.sm),
                         decoration: BoxDecoration(
                           gradient: ComfortZoneLogic.levelGradient(
-                              challenge.level),
+                            challenge.level,
+                          ),
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
@@ -82,14 +87,20 @@ class ChallengeListItem extends StatelessWidget {
                       if (isDone)
                         const Padding(
                           padding: EdgeInsets.only(left: AppSpacing.xs),
-                          child: Icon(Icons.check_circle_rounded,
-                              size: 16, color: AppTheme.successGreen),
+                          child: Icon(
+                            Icons.check_circle_rounded,
+                            size: 16,
+                            color: AppTheme.successGreen,
+                          ),
                         ),
                       if (challenge.flirt)
                         Padding(
                           padding: const EdgeInsets.only(left: AppSpacing.xs),
-                          child: Icon(Icons.favorite,
-                              size: 16, color: cs.secondary),
+                          child: Icon(
+                            Icons.favorite,
+                            size: 16,
+                            color: cs.secondary,
+                          ),
                         ),
                     ],
                   ),
@@ -98,10 +109,9 @@ class ChallengeListItem extends StatelessWidget {
                     challenge.description,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(color: cs.onSurfaceVariant),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: cs.onSurfaceVariant,
+                    ),
                   ),
                 ],
               ),
@@ -109,7 +119,11 @@ class ChallengeListItem extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(
-                AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
+              AppSpacing.md,
+              0,
+              AppSpacing.md,
+              AppSpacing.md,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -117,26 +131,30 @@ class ChallengeListItem extends StatelessWidget {
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       final compact = constraints.maxWidth < 155;
-                      return Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          MetaChip(
-                            icon: Icons.timer_outlined,
-                            label: _formatTime(challenge.time),
-                          ),
-                          const SizedBox(width: AppSpacing.sm),
-                          MetaChip(
-                            icon: Icons.emoji_events_outlined,
-                            label: compact
-                                ? '${challenge.aura}A'
-                                : '${challenge.aura} ${S.of(context).auraPoints}',
-                          ),
-                          const SizedBox(width: AppSpacing.sm),
-                          MetaChip(
-                            icon: challenge.typeIcon,
-                            label: challenge.typeLabel(S.of(context)),
-                          ),
-                        ],
+                      return FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            MetaChip(
+                              icon: Icons.timer_outlined,
+                              label: _formatTime(challenge.time),
+                            ),
+                            const SizedBox(width: AppSpacing.sm),
+                            MetaChip(
+                              icon: Icons.emoji_events_outlined,
+                              label: compact
+                                  ? '${challenge.aura}A'
+                                  : '${challenge.aura} ${S.of(context).auraPoints}',
+                            ),
+                            const SizedBox(width: AppSpacing.sm),
+                            MetaChip(
+                              icon: challenge.typeIcon,
+                              label: challenge.typeLabel(S.of(context)),
+                            ),
+                          ],
+                        ),
                       );
                     },
                   ),
@@ -172,6 +190,7 @@ class ChallengeListItem extends StatelessWidget {
 class MetaChip extends StatelessWidget {
   final IconData icon;
   final String label;
+
   const MetaChip({required this.icon, required this.label});
 
   @override
@@ -186,10 +205,9 @@ class MetaChip extends StatelessWidget {
           label,
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
-          style: Theme.of(context)
-              .textTheme
-              .labelSmall
-              ?.copyWith(color: cs.outline),
+          style: Theme.of(
+            context,
+          ).textTheme.labelSmall?.copyWith(color: cs.outline),
         ),
       ],
     );

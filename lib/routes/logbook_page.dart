@@ -216,7 +216,12 @@ class _LogbookPageState extends State<LogbookPage> {
                         child: RefreshIndicator(
                           onRefresh: _loadEntries,
                           child: ListView.separated(
-                            padding: const EdgeInsets.all(AppSpacing.md),
+                            padding: EdgeInsets.fromLTRB(
+                              AppSpacing.md,
+                              AppSpacing.md,
+                              AppSpacing.md,
+                              AppSpacing.md + MediaQuery.viewPaddingOf(context).bottom,
+                            ),
                             itemCount:
                                 _entries.length + (_isLoadingMore ? 1 : 0),
                             separatorBuilder: (_, _) =>

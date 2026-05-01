@@ -125,7 +125,7 @@ class ChallengeFiltersNotifier extends StateNotifier<ChallengeFilters> {
   static const _keyLevelFilter = 'filter_levels';
 
   void _load() {
-    final typeIdx = _prefs.getInt(_keyType) ?? 0;
+    final typeIdx = _prefs.getInt(_keyType) ?? ChallengeTypeFilter.all.index;
     final flirtIdx = _prefs.getInt(_keyFlirtV2) ?? 0;
     final notDone = _prefs.getBool(_keyNotDone) ?? false;
     final envIdx = _prefs.getInt(_keyEnv) ?? 0;

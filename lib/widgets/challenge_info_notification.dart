@@ -110,35 +110,36 @@ class ChallengeInfoNotification {
               const SizedBox(height: AppSpacing.sm),
 
               // ── Date row ─────────────────────────────────────────────
-              Row(
-                children: [
-                  Icon(Icons.calendar_today_outlined,
-                      size: 14, color: cs.onSurfaceVariant),
-                  const SizedBox(width: 6),
-                  Text(
-                    '${l10n.lastCompleted} $formattedTime',
-                    style: tt.bodySmall?.copyWith(
-                        color: cs.onSurfaceVariant),
+              Text.rich(
+                TextSpan(children: [
+                  WidgetSpan(
+                    alignment: PlaceholderAlignment.middle,
+                    child: Icon(Icons.calendar_today_outlined,
+                        size: 14, color: cs.onSurfaceVariant),
                   ),
-                ],
+                  const TextSpan(text: '  '),
+                  TextSpan(
+                    text: '${l10n.lastCompleted} $formattedTime',
+                    style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
+                  ),
+                ]),
               ),
               const SizedBox(height: AppSpacing.xs),
 
               // ── Repeat note ──────────────────────────────────────────
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(Icons.info_outline,
-                      size: 14, color: cs.onSurfaceVariant),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      l10n.repeatChallengeInfo,
-                      style: tt.bodySmall?.copyWith(
-                          color: cs.onSurfaceVariant),
-                    ),
+              Text.rich(
+                TextSpan(children: [
+                  WidgetSpan(
+                    alignment: PlaceholderAlignment.middle,
+                    child: Icon(Icons.info_outline,
+                        size: 14, color: cs.onSurfaceVariant),
                   ),
-                ],
+                  const TextSpan(text: '  '),
+                  TextSpan(
+                    text: l10n.repeatChallengeInfo,
+                    style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
+                  ),
+                ]),
               ),
               const SizedBox(height: AppSpacing.lg),
 

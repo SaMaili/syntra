@@ -510,10 +510,12 @@ class _PredictionRealityGapCard extends StatelessWidget {
               children: [
                 Icon(Icons.insights_rounded, size: 18, color: cs.primary),
                 const SizedBox(width: AppSpacing.xs),
-                Text(
-                  l.predictionRealityGapTitle,
-                  style: tt.titleSmall?.copyWith(
-                      fontWeight: FontWeight.bold, color: cs.primary),
+                Expanded(
+                  child: Text(
+                    l.predictionRealityGapTitle,
+                    style: tt.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold, color: cs.primary),
+                  ),
                 ),
               ],
             ),

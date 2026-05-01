@@ -278,11 +278,14 @@ class SlotChip extends StatelessWidget {
           children: [
             Icon(icon, color: selected ? color : cs.onSurfaceVariant, size: 28),
             const SizedBox(height: 6),
-            Text(label,
-                style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: selected ? color : cs.onSurfaceVariant)),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(label,
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: selected ? color : cs.onSurfaceVariant)),
+            ),
             const SizedBox(height: 2),
             Text(time,
                 style: TextStyle(
