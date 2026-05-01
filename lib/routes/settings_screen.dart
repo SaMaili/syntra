@@ -657,6 +657,7 @@ class ComfortZoneLevelCard extends ConsumerWidget {
           ),
           child: SafeArea(
             top: false,
+            child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -871,6 +872,7 @@ class ComfortZoneLevelCard extends ConsumerWidget {
 
               const SizedBox(height: AppSpacing.md),
             ],
+          ),
           ),
         ),
       );

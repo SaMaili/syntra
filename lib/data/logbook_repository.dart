@@ -78,6 +78,11 @@ class LogbookRepository {
     });
   }
 
+  Future<void> clearAllEntries() async {
+    final db = await _database;
+    await db.delete('logbook');
+  }
+
   // ─── Read ─────────────────────────────────────────────────────────────────
 
   /// Returns entries filtered by [status] and/or [challengeIds].

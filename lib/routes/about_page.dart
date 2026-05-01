@@ -1,8 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../generated/l10n.dart';
+import '../tools/fake_data_seeder.dart';
 import '../widgets/syntra_blur_app_bar.dart';
 
 class AboutNotePage extends StatelessWidget {
@@ -11,6 +13,17 @@ class AboutNotePage extends StatelessWidget {
   Future<String> _getVersion() async {
     final info = await PackageInfo.fromPlatform();
     return '${info.version}+${info.buildNumber}';
+  }
+
+  Future<void> _onVersionLongPress(BuildContext context) async {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Seeding fake data…')),
+    );
+    await seedFakeData();
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Done! Restart the app to see screenshot data.')),
+    );
   }
 
   @override
@@ -37,12 +50,17 @@ class AboutNotePage extends StatelessWidget {
                   style: tt.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
-                Text(
-                  '${l.aboutDescription}'
-                  '\n'
-                  '\nVersion: $version'
-                  '\n${l.developerLabel}',
-                  style: tt.bodyLarge,
+                GestureDetector(
+                  onLongPress: kDebugMode
+                      ? () => _onVersionLongPress(context)
+                      : null,
+                  child: Text(
+                    '${l.aboutDescription}'
+                    '\n'
+                    '\nVersion: $version'
+                    '\n${l.developerLabel}',
+                    style: tt.bodyLarge,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 Row(

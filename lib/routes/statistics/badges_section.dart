@@ -78,14 +78,15 @@ class BadgesSection extends ConsumerWidget {
                           final visible = sorted.take(count).toList();
                           return Row(
                             children: [
-                              for (final badge in visible) ...[
+                              for (int i = 0; i < visible.length; i++) ...[
                                 BadgeTile(
-                                  badge: badge,
-                                  isEarned: earned.contains(badge.id),
+                                  badge: visible[i],
+                                  isEarned: earned.contains(visible[i].id),
                                   onTap: () => showBadgeInfoSheet(
-                                      context, badge, earned.contains(badge.id)),
+                                      context, visible[i], earned.contains(visible[i].id)),
                                 ),
-                                const SizedBox(width: gap),
+                                if (i < visible.length - 1)
+                                  const SizedBox(width: gap),
                               ],
                             ],
                           );

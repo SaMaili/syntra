@@ -54,10 +54,9 @@ final averageMoodProvider =
 });
 
 /// Completions toward the next CZL level-up.
-/// SharedPreferences reads are synchronous and already flushed when
-/// [comfortZoneLevelProvider] notifies, so no extra refresh dependency needed.
 final czlCompletionsProvider = Provider<int>((ref) {
   ref.watch(comfortZoneLevelProvider);
+  ref.watch(statisticsRefreshProvider);
   return ref.read(comfortZoneLevelProvider.notifier).getCompletionsAtCurrentLevel();
 });
 
