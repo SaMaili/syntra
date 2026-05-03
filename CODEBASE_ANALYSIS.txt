@@ -1,12 +1,16 @@
 ================================================================================
 SYNTRA — CODEBASE CONCEPTUAL ANALYSIS (UPDATED)
 ================================================================================
-Written: 2026-04-25
-Replaces: 2026-04-24 version
-Purpose: Full architectural audit reflecting the current state of the codebase
-         after two code-quality sessions (chore/code-quality + chore/code-quality-2).
-         Incorporates all Q1–Q7 code quality items, dead code removal,
-         extension methods, named constants, new tests, and updated ratings.
+Written: 2026-05-01
+Replaces: 2026-04-25 version
+Status: APP IS IN PRODUCTION (v0.5.2+5)
+Purpose: Full architectural audit reflecting the current production state.
+         Incorporates all changes since the April 25 session:
+         CZL expansion to 10 levels, prediction-reality gap system shipped,
+         badge system overhaul (17 badges, unlock-order tracking, AllBadgesPage),
+         startup refactor, new providers, DetailCard/BadgeTile/PredictionGapCard
+         widgets, fake data seeder (debug-mode only), text scale clamping,
+         3 new test files. Theme is now a working dropdown.
 ================================================================================
 
 
@@ -21,14 +25,21 @@ accept them with a countdown timer, and log whether they succeeded or not.
 "Aura Points" (XP) is awarded on success, weekly streaks are tracked, and every
 attempt is stored in a logbook.
 
-The app is structured around a progression system: a five-level Comfort Zone
+The app is structured around a progression system: a ten-level Comfort Zone
 Level (CZL) which gates which challenges are visible, unlocking harder content
-as the user completes enough challenges at their current level.
+as the user completes enough challenges at their current level. The threshold
+per level grows (3 → 5 → 8 → 12 → 16 → 20 → 25 → 30 → 35 completions) so
+early progress is fast and later mastery requires genuine sustained effort.
 
 Each day a Mission Board offers three tailored challenges (Comfort / Growth /
 Bold tier), with a 10% Aura bonus for completing daily missions. The app
 reminds users via local notifications and celebrates streaks with an animated
 screen.
+
+The prediction-reality gap system — the most psychologically differentiated
+feature — is now fully shipped: users rate pre-challenge anxiety (1–5) on the
+Priming Screen; the data is stored in logbook.pre_anxiety; PredictionGapCard
+surfaces the gap per-challenge and overall on the statistics screen.
 
 There is no backend, no account system, and no cloud sync. All data lives on
 the device.
@@ -36,14 +47,14 @@ the device.
 TECH STACK:
   Flutter (Dart) · Riverpod 2.x · go_router · SQLite (sqflite) ·
   SharedPreferences · flutter_local_notifications · fl_chart ·
-  audioplayers · vibration · intl (flutter_intl)
+  audioplayers · vibration · intl (flutter_intl) · in_app_review
 
 PLATFORM SUPPORT:
   Android — fully supported, including exact-alarm scheduling via AlarmManager
   iOS — supported with flutter_local_notifications (UNUserNotificationCenter);
         no native scheduling layer equivalent to Android exists yet
 
-APP VERSION: 1.0.0+1 (pre-release)
+APP VERSION: 0.5.2+5 (pre-release; version deliberately below 1.0.0)
 DART SDK: ^3.8.1
 
 
@@ -52,7 +63,7 @@ SECTION 2 — PROJECT STRUCTURE (CURRENT)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 lib/
-├── main.dart                          Boot: copy DB, migrate settings, init router
+├── main.dart                          Boot: init SharedPrefs, migrate settings, init router
 ├── static.dart                        Notification message pools + streak milestones
 ├── challenge.dart                     Challenge data model + ChallengeType/ChallengeEnvironment constants
 ├── challenge_ui.dart                  UI extension on Challenge: typeIcon, typeLabel, environmentLabel
@@ -61,84 +72,97 @@ lib/
 │
 ├── theme/
 │   ├── app_theme.dart                 Material 3 ColorScheme from seed + ThemeData
-│   └── app_spacing.dart               8-point grid constants (xs/sm/md/lg/xl/xxl)
+│   └── app_spacing.dart              8-point grid constants (xs/sm/md/lg/xl/xxl)
 │
 ├── data/
-│   ├── challenge_repository.dart      Loads JSON assets → List<Challenge> (cached)
-│   ├── logbook_repository.dart        SQLite CRUD + stat queries (schema v2)
-│   └── settings_repository.dart      All settings via SharedPreferences (single source)
+│   ├── challenge_repository.dart     Loads JSON assets → List<Challenge> (cached)
+│   ├── logbook_repository.dart       SQLite CRUD + stat queries (schema v1)
+│   └── settings_repository.dart     All settings via SharedPreferences (single source)
 │
 ├── providers/
-│   ├── challenge_providers.dart       Catalog, CZL filter, challenge filters,
-│   │                                   displayedChallengesProvider (sorted + filtered)
-│   ├── daily_providers.dart           DailyMissionsNotifier + dailyMissionsProvider
-│   ├── settings_providers.dart        Theme, locale, notifications, CZL, sound effects
-│   ├── statistics_providers.dart      Stats/charts FutureProviders + refresh signal
-│   │                                   isChallengeCompletedProvider (family<bool, String>)
-│   ├── shop_providers.dart            Aura spend mechanic, streak freezes inventory
-│   ├── scroll_providers.dart          Scroll-to-top signals for all 4 nav tabs
-│   ├── router_notifier.dart           ChangeNotifier for GoRouter onboarding guard
+│   ├── challenge_providers.dart      Catalog, CZL filter, challenge filters,
+│   │                                  displayedChallengesProvider (sorted + filtered)
+│   ├── daily_providers.dart          DailyMissionsNotifier + dailyMissionsProvider
+│   ├── settings_providers.dart       Theme, locale, notifications, CZL, sound effects
+│   ├── statistics_providers.dart     Stats/charts FutureProviders + refresh signal
+│   │                                  isChallengeCompletedProvider (family<bool, String>)
+│   │                                  weeklyAuraByWeekProvider, frozenWeeksProvider
+│   ├── badges_providers.dart         unlockedBadgesOrderProvider
+│   ├── prediction_gap_providers.dart predictionGapProvider (family), overallPredictionGapProvider
+│   ├── note_providers.dart           lastNoteProvider (family<Map?,String>)
+│   ├── shop_providers.dart           Aura spend mechanic, streak freezes inventory
+│   ├── scroll_providers.dart         Scroll-to-top signals for all 4 nav tabs
+│   ├── router_notifier.dart          ChangeNotifier for GoRouter onboarding guard
 │   └── shared_preferences_provider.dart  SharedPreferences override for testability
 │
 ├── logic/
-│   ├── comfort_zone_logic.dart        CZL progression: level assignment, unlock logic
-│   ├── daily_missions_logic.dart      Three-tier daily mission selection + persistence
-│   ├── badges_logic.dart              Badge definitions and earned-set computation
-│   ├── weekly_streak_logic.dart       Weekly streak algorithm (pure, DST-safe)
-│   └── notification_manager.dart      High-level Dart scheduling + sendNotification
+│   ├── comfort_zone_logic.dart       CZL 10-level progression: level assignment, unlock logic
+│   ├── daily_missions_logic.dart     Three-tier daily mission selection + persistence
+│   ├── badges_logic.dart             Badge definitions (17 total), sortByDisplay
+│   ├── weekly_streak_logic.dart      Weekly streak algorithm (pure, DST-safe)
+│   ├── prediction_gap_logic.dart     Prediction-reality gap computation + PredictionGapTone
+│   └── notification_manager.dart    High-level Dart scheduling + sendNotification
 │
-├── routes/                            One file per screen
-│   ├── onboarding_screen.dart         7-page onboarding flow (shell; pages extracted)
+├── routes/                           One file per screen
+│   ├── onboarding_screen.dart        7-page onboarding flow (shell; pages extracted)
 │   ├── onboarding/
-│   │   ├── onboarding_pages.dart      Individual onboarding page widgets
-│   │   └── onboarding_shared.dart     Shared onboarding UI components
-│   ├── challenges_screen.dart         Browse + filter + collapsible header shell
+│   │   ├── onboarding_pages.dart     Individual onboarding page widgets
+│   │   └── onboarding_shared.dart   Shared onboarding UI components
+│   ├── challenges_screen.dart        Browse + filter + collapsible header shell
 │   ├── challenges/
-│   │   ├── challenges_header.dart     ChallengesHeaderDelegate + HeaderSnapPhysics
-│   │   ├── challenge_list.dart        ChallengeListSliver: paginated + fade-in list
-│   │   ├── challenge_list_item.dart   Individual challenge card widget
-│   │   ├── filter_bar.dart            Horizontal type-filter chip bar
-│   │   └── filter_sheet.dart          Advanced filter bottom sheet
-│   ├── challenge_detail_screen.dart   Full-screen challenge detail (mood history chart)
-│   ├── active_challenge_screen.dart   Live countdown timer + abort logic (~495 lines)
-│   ├── challenge_done_screen.dart     Post-challenge survey + XP display (~578 lines)
+│   │   ├── challenges_header.dart   ChallengesHeaderDelegate + HeaderSnapPhysics
+│   │   ├── challenge_list.dart      ChallengeListSliver: paginated + fade-in list
+│   │   ├── challenge_list_item.dart Individual challenge card widget
+│   │   ├── filter_bar.dart          Horizontal type-filter chip bar
+│   │   └── filter_sheet.dart        Advanced filter bottom sheet
+│   ├── challenge_detail_screen.dart  Full-screen challenge detail (mood history + gap card)
+│   ├── active_challenge_screen.dart  Live countdown timer + abort logic (~497 lines)
+│   ├── challenge_done_screen.dart    Post-challenge survey + XP display (~518 lines)
 │   ├── challenge_done/
-│   │   ├── survey_widget.dart         Feeling + perception emoji survey
-│   │   └── level_up_dialog.dart       CZL level-up inline dialog
-│   ├── daily_challenge_screen.dart    Mission Board (three-tier daily missions)
-│   ├── profile_screen.dart            Stats, badges, charts, logbook link (~90 lines)
-│   ├── statistics/                    Extracted widgets from the old statistics_screen
-│   │   ├── activity_calendar.dart     WeeklyAuraChart: 16-week Aura bar chart with 300 Aura threshold line
-│   │   ├── average_mood_card.dart     fl_chart mood line chart
-│   │   ├── badges_section.dart        All AppBadge icons, earned highlighted
-│   │   ├── overview_grid.dart         6-cell grid: Aura, streak, counts
-│   │   └── weekly_charts.dart         Grouped bar chart (completed vs tried + XP/day)
-│   ├── logbook_page.dart              Paginated history list
-│   ├── logbook_detail_page.dart       Single entry detail view (~576 lines, extracted)
+│   │   ├── survey_widget.dart        Feeling + perception emoji survey
+│   │   └── level_up_dialog.dart      CZL level-up inline dialog
+│   ├── daily_challenge_screen.dart   Mission Board (three-tier daily missions)
+│   ├── profile_screen.dart           Stats, badges, charts, logbook link (~90 lines)
+│   ├── statistics/
+│   │   ├── activity_calendar.dart   WeeklyAuraChart: 16-week Aura bar chart
+│   │   ├── average_mood_card.dart   fl_chart mood line chart
+│   │   ├── badges_section.dart      AppBadge icons, earned highlighted + AllBadgesPage link
+│   │   ├── overview_grid.dart       6-cell grid: Aura, streak, counts
+│   │   ├── weekly_charts.dart       Grouped bar chart (completed vs tried + XP/day)
+│   │   └── overall_prediction_card.dart  OverallPredictionCard widget
+│   ├── logbook_page.dart             Paginated history list
+│   ├── logbook_detail_page.dart      Single entry detail view (~595 lines)
 │   ├── logbook/
-│   │   ├── field_rows.dart            LogbookFeelingsRow + emotionIcon/Color/Text helpers
-│   │   ├── notes_section.dart         LogbookNotesCard
-│   │   └── mood_display.dart          LogbookMoodChartCard (ConsumerWidget)
-│   ├── settings_screen.dart           All app preferences
+│   │   ├── field_rows.dart          LogbookFeelingsRow + emotionIcon/Color/Text helpers
+│   │   ├── notes_section.dart       LogbookNotesCard
+│   │   └── mood_display.dart        LogbookMoodChartCard (ConsumerWidget)
+│   ├── all_badges_page.dart          Full-page badge list (/badges route)
+│   ├── settings_screen.dart          All app preferences
 │   ├── streak_celebration_screen.dart Animated streak/milestone celebration
-│   ├── level_up_screen.dart           Full-screen CZL level-up animation
-│   ├── badge_unlocked_screen.dart     Badge unlock celebration screen
-│   ├── priming_screen.dart            Motivational pre-challenge priming
-│   └── about_page.dart                App info, version, links
+│   ├── level_up_screen.dart          Full-screen CZL level-up animation
+│   ├── badge_unlocked_screen.dart    Badge unlock celebration screen
+│   ├── priming_screen.dart           Motivational pre-challenge priming + anxiety picker
+│   └── about_page.dart               App info, version, links + hidden seeder trigger
 │
 ├── services/
-│   ├── syntra_notification_service.dart  Enterprise notification bridge (~850 lines)
-│   ├── sound_service.dart                audioplayers wrapper (static methods)
+│   ├── syntra_notification_service.dart  Enterprise notification bridge (~845 lines)
+│   ├── sound_service.dart                audioplayers wrapper (static methods, init at boot)
 │   └── vibration_service.dart            vibration wrapper (static methods)
 │
 ├── widgets/
-│   ├── challenge_card.dart               Reusable card (title, XP badge, description)
-│   ├── syntra_button.dart                Custom FilledButton with icon variant
-│   ├── syntra_blur_app_bar.dart          Blurred pinned AppBar (used in profile)
-│   ├── syntra_progress_bar.dart          Animated XP bar
-│   ├── challenge_info_notification.dart  In-app info banner
+│   ├── badge_widgets.dart               BadgeTile, showBadgeInfoSheet, badgeLabel, badgeDesc
+│   ├── challenge_card.dart              Reusable card (title, XP badge, description)
+│   ├── detail_card.dart                 Reusable card with icon+title header + optional trailing
+│   ├── prediction_gap_card.dart         PredictionGapCard: gap insight display
+│   ├── syntra_button.dart               Custom FilledButton with icon variant
+│   ├── syntra_blur_app_bar.dart         Blurred pinned AppBar
+│   ├── syntra_progress_bar.dart         Animated XP bar
+│   ├── challenge_info_notification.dart In-app info banner
 │   ├── notification_permission_widget.dart Permission prompt UI
-│   └── not_sure_what_to_say_dialog.dart  Hint dialog during active challenge
+│   └── not_sure_what_to_say_dialog.dart Hint dialog during active challenge
+│
+├── tools/
+│   └── fake_data_seeder.dart           App Store screenshot data seeder (hidden 5-tap trigger)
 │
 └── generated/                         Auto-generated by flutter_intl — do not edit
     ├── l10n.dart
@@ -152,28 +176,33 @@ android/app/src/main/kotlin/app/inneract/syntra/
     └── SyntraBootReceiver.kt          Reschedules on: boot, update, timezone, clock
 
 assets/
-├── challenge_database.db              Initial asset DB (copied to logbook.db on first run)
 ├── data/
-│   ├── challenges.json                Challenge metadata: 112 challenges, IDs 0–111
+│   ├── challenges.json               Challenge metadata: 112 challenges, IDs 0–111
 │   └── translations/
-│       ├── en.json                    English title/description/hints by ID (0–111)
-│       └── de.json                    German translations (0–111, same keys)
+│       ├── en.json                   English title/description/hints by ID (0–111)
+│       └── de.json                   German translations (0–111, same keys)
 ├── ding-126626.mp3
 ├── error-call-to-attention-129258.mp3
-├── Loading_Sucsess_sound.wav          (xpComplete — used in sound_service.dart)
+├── Loading_Sucsess_sound.wav         (xpComplete — sound_service.dart:33)
 ├── Prompt_XP_Bar_Progress.wav
 ├── skyscraper_seven-click-buttons-...mp3
-└── yipee-45360.wav
+├── yipee-45360.wav
+├── SyntraBird.svg
+└── octarine.bold.otf
 
 test/
-├── badges_logic_test.dart             36 tests: boundary values for all 8 badges + 9 level badges
-├── challenge_filters_test.dart
-├── comfort_zone_logic_test.dart
-├── daily_mission_model_test.dart
-├── displayed_challenges_test.dart     7 tests: completion filter, sort orders (mocked SharedPrefs)
-├── social_proof_test.dart
-├── streak_logic_test.dart
-└── widget_test.dart                   (placeholder only)
+├── badges_logic_test.dart            133 lines: boundary values for all 8 main badges + 9 level badges
+├── challenge_filters_test.dart        29 lines
+├── comfort_zone_logic_test.dart      104 lines: completionsNeeded, 10-level unlock progression
+├── daily_mission_model_test.dart      51 lines
+├── displayed_challenges_test.dart    136 lines: completion filter, sort orders (mocked SharedPrefs)
+├── prediction_gap_logic_test.dart    200 lines: PredictionGapLogic.compute, edge cases, tones
+├── social_proof_test.dart             27 lines
+├── streak_logic_test.dart             89 lines
+├── weekly_streak_logic_test.dart     249 lines: countStreak, countPendingStreak, countStreakAutoFreeze
+└── widget_test.dart                    9 lines (placeholder)
+
+TOTAL TEST LINES: 1,027 across 10 files
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -186,23 +215,39 @@ main() runs these steps synchronously before runApp():
 
   1. WidgetsFlutterBinding.ensureInitialized()
   2. tz.initializeTimeZones() — timezone data for notification scheduling
-  3. _copyDatabaseIfNeeded() — copies challenge_database.db from assets to the
-     sqflite directory as logbook.db if not already present (first launch only).
-     This DB now only stores the logbook table; the challenge catalog is JSON.
-  4. _migrateSettingsJson() — one-time migration: reads legacy settings.json
+  3. SharedPreferences.getInstance() — loaded once; instance passed both to
+     SettingsRepository.configure() and to the ProviderScope override.
+     This guarantees both Riverpod and non-Riverpod code (NotificationManager)
+     share the exact same SharedPreferences instance.
+  4. SettingsRepository.configure(prefs) — makes SettingsRepository.instance
+     available to non-Riverpod callers (e.g. NotificationManager) without
+     requiring a BuildContext or Ref.
+  5. _migrateSettingsJson() — one-time migration: reads legacy settings.json
      from documents dir, writes values to SharedPreferences, deletes the file.
      Best-effort (errors ignored).
-  5. SettingsRepository.instance.loadOnboardingComplete() — read before router
+  6. SettingsRepository.instance.loadOnboardingComplete() — read before router
      init so the router can set initialLocation correctly.
-  6. routerNotifier = RouterNotifier(onboardingDone) — ChangeNotifier for GoRouter.
-  7. SyntraNotificationService.instance.initialize() — Flutter plugin init.
-  8. runApp(ProviderScope(child: SyntraApp()))
+  7. routerNotifier = RouterNotifier(onboardingDone) — ChangeNotifier for GoRouter.
+  8. SoundService.init() — audioplayers initialization (must happen before
+     first playback call in the UI).
+  9. SyntraNotificationService.instance.initialize() — Flutter plugin init.
+  10. runApp(ProviderScope(overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
+             child: SyntraApp()))
+
+IMPORTANT CHANGE FROM PREVIOUS VERSION:
+  _copyDatabaseIfNeeded() is REMOVED. There is no longer an asset copy step.
+  The logbook.db is created fresh on first launch by sqflite's onCreate callback
+  with schema version 1. The old challenge_database.db asset no longer exists.
+  The logbook table is created from scratch; challenge catalog comes from JSON.
 
 SyntraApp (ConsumerWidget):
   - Watches themeModeProvider → ThemeMode (light/dark/system)
   - Watches localeProvider → Locale (en/de)
   - Renders MaterialApp.router with AppTheme.light(), AppTheme.dark(),
     appRouter (GoRouter), S.delegate for localization.
+  - builder: wraps child in MediaQuery with textScaler.clamp(min: 1.0, max: 1.3)
+    so large system font-size settings do not break layouts while still allowing
+    mild scaling. This is a defensive accessibility measure.
 
 
 ─── 3.2 NAVIGATION ─────────────────────────────────────────────────────────────
@@ -218,21 +263,42 @@ ROUTE GUARD (router.dart):
 NAMED ROUTES (AppRoutes abstract class):
   /                    → HomeBar (bottom-nav shell)
   /onboarding          → OnboardingScreen
-  /active_challenge    → ActiveChallengeScreen (extra: Challenge)
+  /priming             → PrimingScreen (extra: _PrimingArgs)
+  /active_challenge    → ActiveChallengeScreen (extra: _ActiveChallengeArgs)
   /challenge_done      → ChallengeDoneScreen (extra: _ChallengeDoneArgs)
   /logbook             → LogbookPage
-  /logbook_detail      → LogbookDetailPage (extra: Map<String,dynamic>)
   /about               → AboutNotePage
   /streak_celebration  → StreakCelebrationScreen (extra: _StreakCelebrationArgs)
+  /level_up            → LevelUpScreen (extra: _LevelUpArgs)
+  /badge_unlocked      → BadgeUnlockedScreen (extra: _BadgeUnlockedArgs)
+  /badges              → AllBadgesPage  [NEW]
+
+  NOTE: /level_up and /badge_unlocked were previously reached via Navigator.push;
+  they are now proper GoRouter routes. LogbookDetailPage still uses
+  LogbookDetailPage.show() (a static method wrapping showModalBottomSheet or
+  Navigator.push) — it passes entry data as a plain Map<String,dynamic> with
+  title String.
 
 EXTENSION HELPERS (AppNavigation on BuildContext):
-  context.goActiveChallenge(challenge)
-  context.goChallengeDone(challenge, rewardFactor)
+  context.pushPriming(challenge, {isDailyMission})       → push priming
+  context.goPriming(challenge, {isDailyMission})         → go('/') then push priming
+  context.pushActiveChallenge(challenge, {isDailyMission, overrideTime})
+  context.goActiveChallenge(challenge, {isDailyMission, overrideTime})
+  context.pushChallengeDone(challenge, rewardFactor, {durationSeconds, isDailyMission})
   context.goLogbook()
-  context.goLogbookDetail(entry)
+  context.goLogbookDetail(entry, title)
   context.goAbout()
   context.goStreakCelebration(streak, isMilestone)
-  context.pushPriming(challenge) → pushes PrimingScreen as overlay
+  context.goLevelUp(newLevel)            [NEW]
+  context.goBadgeUnlocked(badge)         [NEW]
+  context.goAllBadges()                  [NEW]
+
+  goPriming() is a "try again" helper: calls go('/') to clear the stack, then
+  immediately pushes priming — both state changes are batched into a single
+  rebuild to avoid visible flash.
+
+  _ActiveChallengeArgs now carries an optional overrideTime: int? field, which
+  allows the timer to be overridden for testing or special flows.
 
 BOTTOM NAVIGATION (HomeBar):
   Uses a PageView + NavigationBar. Tabs:
@@ -250,39 +316,42 @@ BOTTOM NAVIGATION (HomeBar):
   provider (challengesScrollToTopProvider, dailyScrollToTopProvider,
   profileScrollToTopProvider, settingsScrollToTopProvider). Each screen
   listens via ref.listen and animates its ScrollController to offset 0.
-  Guard: tap only fires scroll if !_isAnimating (prevents re-entrant trigger
-  from the provider write that follows tab switches).
+  Guard: tap only fires scroll if !_isAnimating (prevents re-entrant trigger).
 
-NOTEWORTHY INCONSISTENCY:
-  ActiveChallengeScreen uses Navigator.of(context).push<double>() to reach
-  ChallengeDoneScreen — not GoRouter. This is intentional (needs a return value)
-  but means /challenge_done is not reachable via deep link from this path.
+REMAINING INCONSISTENCY:
+  ActiveChallengeScreen navigates to ChallengeDoneScreen via GoRouter.push<double>
+  (via context.pushChallengeDone). The return value (rewardFactor double) flows
+  back when the user pops ChallengeDoneScreen. This is now consistently a GoRouter
+  push, not a Navigator push — the previous mixed-navigation concern is resolved.
 
 
 ─── 3.3 CHALLENGE MODEL ────────────────────────────────────────────────────────
 
 File: lib/challenge.dart
 
-  Field              Type      Notes
-  ─────────────────────────────────────────────────────────────────────────────
-  id                 String    Sequential string ID, e.g. "0"–"111". From JSON.
-  title              String    Localized title
-  description        String    Main challenge text
+  Field              Type          Notes
+  ──────────────────────────────────────────────────────────────────────────────
+  id                 String        Sequential string ID, e.g. "0"–"111". From JSON.
+  title              String        Localized title
+  description        String        Main challenge text
   hints              List<String>  Suggested phrases shown in hint dialog
-  level              int       1–10 explicit difficulty level from catalog
-  xp                 int       Base reward points (called "Aura Points" in UI)
-  time               int       Timer duration in seconds
-  type               String    "solo" | "group" | "coop" | "dare"
-  flirt              bool      Whether this is a flirt-type challenge
-  environment        String    "all" | "street" | "transit" | "cafe" | "event"
+  level              int           1–10 explicit difficulty level from catalog
+  xp                 int           Base reward points (called "Aura Points" in UI)
+  time               int           Timer duration in seconds
+  type               String        "solo" | "group" | "coop" | "dare"
+  flirt              bool          Whether this is a flirt-type challenge
+  environment        String        "all" | "street" | "transit" | "cafe" | "event"
 
 All fields are final (immutable). The model is a pure data holder with a const
-constructor. Challenge IDs are sequential 0–111 (112 challenges total). The
-re-enumeration removed all gaps that existed in prior versions (was 0–181 with
-70 gaps). IDs are synchronized across challenges.json, en.json, and de.json.
+constructor. Challenge IDs are sequential 0–111 (112 challenges total).
+IDs are synchronized across challenges.json, en.json, and de.json.
+
+STRING CONSTANTS (abstract classes in challenge.dart):
+  ChallengeType.solo / .group / .coop / .dare
+  ChallengeEnvironment.all / .street / .transit / .cafe / .event
 
 
-─── 3.4 CHALLENGE DATA LAYER ────────────────────────────────────────────────────
+─── 3.4 CHALLENGE DATA LAYER ───────────────────────────────────────────────────
 
 CATALOG (read-only, JSON):
 
@@ -304,25 +373,34 @@ LOGBOOK (read/write, SQLite):
   Pattern: Singleton, lazy database open
 
   Database: logbook.db (path via getDatabasesPath())
-  Schema version: 2
+  Schema version: 1
+  Created fresh on first install. No asset copy. No migration path from old
+  versions. (If upgrading from a build that had the asset copy, the old DB
+  persists; schema v1 is forward-compatible as the column was always named
+  'aura' in the current DDL.)
 
-  logbook table (current schema — all columns in CREATE TABLE):
+  logbook table (current schema):
     id               INTEGER PK AUTOINCREMENT
     challenge_id     TEXT     (sequential string ID, e.g. "42")
     status           TEXT     'success' | 'tried'
-    earned           INTEGER  XP awarded (0 for aborted)
+    aura             INTEGER  Aura (XP) awarded (was 'earned' in older builds)
     timestamp        DATETIME ISO8601 string
     notes            TEXT     nullable
-    feeling          INTEGER  nullable, 0–4 emoji scale
+    feeling          INTEGER  nullable, 0–4 emoji scale (4 = very satisfied/calm)
     perception       INTEGER  nullable, 0–4 emoji scale
     duration_seconds INTEGER  nullable
-    pre_anxiety      INTEGER  nullable, 0–4 pre-challenge anxiety rating
+    pre_anxiety      INTEGER  nullable, 1–5 scale (5 = very nervous)
 
-  Migration history:
-    v1 → v2: Added three indexes for query performance:
-      idx_logbook_status_challenge ON logbook(status, challenge_id)
-      idx_logbook_timestamp        ON logbook(timestamp)
-      idx_logbook_challenge        ON logbook(challenge_id)
+  COLUMN RENAME NOTE: The column was 'earned' in older builds. It is now 'aura'
+  in the CREATE TABLE DDL. Any DB created by a prior build has 'earned'; the
+  repository now reads/writes 'aura'. This is a silent schema discrepancy on
+  upgrade paths that do not wipe data. A v1→v2 migration renaming the column
+  is the correct fix (Problem 1 below).
+
+  Indexes (created in onCreate):
+    idx_logbook_status_challenge ON logbook(status, challenge_id)
+    idx_logbook_timestamp        ON logbook(timestamp)
+    idx_logbook_challenge        ON logbook(challenge_id)
 
   Key methods:
     addEntry(...)                        → INSERT
@@ -330,41 +408,53 @@ LOGBOOK (read/write, SQLite):
       status, challengeIds})               status + ID filter
     allEntries({limit, offset})          → paginated SELECT DESC
     entryById(id)                        → SELECT by PK
-    overviewStats()                      → aggregate: totalXp, todayXp,
+    overviewStats()                      → aggregate: totalAura, todayAura,
                                            completedAllTime, completedToday,
                                            weekStreak, pendingWeekStreak,
                                            minutesBrave
-    weeklyXpByWeek({weeks=52})           → Map<isoWeekKey, xp> for streak logic
-    currentWeekXp()                      → int XP earned this Mon–Sun week
-    weeklyXp({days=7})                   → List<int> XP per day (oldest→newest)
+    weeklyAuraByWeek({weeks=52})         → Map<isoWeekKey, aura>
+    currentWeekAura()                    → int Aura earned this Mon–Sun week
+    weeklyAura({days=7})                 → List<int> Aura per day (oldest→newest)
     weeklyChallengeCounts({days=7})      → List<List<int>> [successes, tried] per day
     activityHeatmap({weeks=12})          → Map<dateStr, count>
-    completedChallengeIds()              → Set<String> all success challenge_ids
-    latestCompletionDates()              → Map<String, DateTime> newest per challenge
-    lastNotesForChallenge(id)            → most recent notes
-    deleteEntry(id)                      → DELETE
-    challengesCompletedThisWeek()        → int (for weekly goal progress)
-    moodHistoryForChallenge(id)          → List<int> feeling scores
-    averageMoodPerDay({days=14})         → List<({DateTime date, double avg})>
-    countStreak(dates, today) [static]   → legacy daily streak (test suite compat)
+    completedChallengeIds()             → Set<String> all success challenge_ids
+    latestCompletionDates()             → Map<String, DateTime> newest per challenge
+    lastNotesForChallenge(id)           → most recent notes + timestamp
+    entriesForChallenge(id, {limit=100}) → all entries for one challenge (for gap)
+    allEntriesForGap()                   → SELECT pre_anxiety, feeling WHERE both NOT NULL
+    deleteEntry(id)                      → DELETE; clears frozen weeks if table empty
+    challengesCompletedThisWeek()       → int (for weekly goal progress)
+    moodHistoryForChallenge(id)         → List<int> feeling scores
+    averageMoodPerDay({days=14})        → last 20 individual entries (not averaged by day)
+    countStreak(dates, today) [static]  → legacy daily streak (test suite compat)
+    clearAllEntries()                   → DELETE all rows (used by fake_data_seeder)
 
   WEEKLY STREAK ALGORITHM (lib/logic/weekly_streak_logic.dart):
     Pure, side-effect-free. Uses ISO 8601 week numbering (Mon-aligned).
-    kWeeklyXpThreshold = 300 Aura — minimum weekly XP for a streak week.
+    kWeeklyXpThreshold = 300 Aura — minimum weekly Aura for a streak week.
+    startOfIsoWeek(date) → DateTime (Monday of the week containing date)
+    isoYearWeek(date) → String (e.g. "2026-W18")
     countStreak(): walks back from current week, counts consecutive qualifying
       weeks. The current in-progress week counts immediately once it hits 300.
     countPendingStreak(): starts from last week — shows streak-in-grey when
       the current week hasn't activated yet.
     countStreakAutoFreeze(): auto-applies available streak freeze charges to
-      consecutive missed past weeks (identical to Duolingo's freeze mechanic).
+      consecutive missed past weeks.
 
 SETTINGS (SharedPreferences only):
 
   SettingsRepository (lib/data/settings_repository.dart)
-  Pattern: Singleton, direct SharedPreferences calls
+  Pattern: Singleton via configure(), injected into Riverpod via override.
 
-  Stored keys (partial list):
-    settings_dark_mode              bool?
+  KEY CHANGE: Theme is now stored as a string ("light"/"dark"/"system") under
+  _keyThemeMode = 'settings_theme_mode', not as a bool. loadThemeMode() migrates
+  from the legacy _keyDarkMode bool key on first call after upgrade. The legacy
+  key is kept for backward compat (saveDarkMode still writes it, but no new code
+  reads it for theme decisions).
+
+  All stored keys (current):
+    settings_theme_mode             String  "light" | "dark" | "system"
+    settings_dark_mode              bool    legacy; kept for migration compat
     settings_language               String?
     notifications_enabled           bool (default: false)
     sound_effects_enabled           bool (default: true)
@@ -372,18 +462,30 @@ SETTINGS (SharedPreferences only):
     notification{1,2,3}TimeHour     int
     notification{1,2,3}TimeMinute   int
     onboarding_complete             bool
-    comfort_zone_level              int (default: 1)
-    czl_completions_{1..5}          int (per-level completion counters)
+    comfort_zone_level              int (default: 1, range 1–10)
+    czl_completions_{1..10}         int (per-level completion counters)
     last_opened_date                String (ISO date)
     last_celebrated_streak          int (default: 0)
-    all_time_max_streak             int
+    all_time_max_streak             int  (legacy; superseded by best_weekly_streak)
+    best_weekly_streak              int  (current all-time best weekly streak)
+    last_goal_week                  String  ISO year-week when goal was last celebrated
     weekly_goal                     int (default: 5)
     daily_missions_date             String
     daily_missions_{comfort|growth|bold}_id    String
     daily_missions_{comfort|growth|bold}_done  bool
-    spent_aura                      int  (Aura spent in the shop)
-    streak_freezes                  int  (current freeze inventory, max 2)
-    frozen_weeks                    String (JSON list of frozen ISO week keys)
+    shop_spent_aura                 int  (Aura spent in the shop, lifetime)
+    shop_streak_freezes             int  (current freeze inventory, max 2)
+    shop_frozen_weeks               String  comma-separated ISO year-week keys
+    seen_badges                     String  comma-separated badge IDs (celebrated)
+    unlocked_badges_order           String  comma-separated badge IDs (oldest first)
+    last_review_request_ms          int  epoch ms of last in_app_review prompt
+
+  New methods for badge tracking:
+    loadSeenBadges() / saveSeenBadges(Set<String>)
+    loadUnlockedBadgesOrder() → List<String> (oldest first)
+    appendUnlockedBadges(Iterable<String>) — idempotent, deduplicates
+    loadBestWeeklyStreak() / saveBestWeeklyStreak(int)
+    loadLastGoalWeek() / saveLastGoalWeek(String)
 
 
 ─── 3.5 STATE MANAGEMENT (RIVERPOD) ────────────────────────────────────────────
@@ -400,6 +502,8 @@ SETTINGS PROVIDERS (settings_providers.dart):
   soundEffectsEnabledProvider     StateNotifierProvider<..., bool>
   comfortZoneLevelProvider        StateNotifierProvider<ComfortZoneNotifier, int>
   notificationSlotsProvider       StateNotifierProvider<..., List<NotificationSlotSettings>>
+  settingsRepositoryProvider      Provider<SettingsRepository>  — constructed from
+                                    sharedPreferencesProvider (injectable in tests)
 
   All StateNotifiers load from SharedPreferences on construction.
   comfortZoneLevelProvider.notifier.recordSuccessAndCheckLevelUp() handles CZL
@@ -409,20 +513,19 @@ CHALLENGE PROVIDERS (challenge_providers.dart):
   challengeCatalogProvider        FutureProvider<List<Challenge>>
                                     Watches activeLocaleProvider, reloads on lang change.
   czlFilteredChallengesProvider   Provider<AsyncValue<List<Challenge>>>
-                                    Applies CZL gate: only challenges at or below user level.
+                                    Applies CZL gate: challenges with level ≤ user CZL.
   challengeFiltersProvider        StateNotifierProvider<..., ChallengeFilters>
                                     Persisted to SharedPreferences.
   filteredChallengesProvider      Provider<AsyncValue<List<Challenge>>>
                                     Applies type/flirt/environment/level filters.
   displayedChallengesProvider     Provider<AsyncValue<List<Challenge>>>
                                     Applies completion filter + sort on top of filtered list.
-                                    Cached by Riverpod — recomputes only when inputs change.
 
   ChallengeFilters fields (all persisted):
     typeFilter          ChallengeTypeFilter  solo | group | all | coop | dare
     flirtFilter         FlirtFilter          all | showOnly | exclude
     environmentFilter   EnvironmentFilter    all | street | transit | cafe | event
-    showOnlyNotDone     bool                 (legacy, superseded by completionFilter)
+    showOnlyNotDone     bool                 legacy, superseded by completionFilter
     completionFilter    CompletionFilter     all | done | notDone
     auraSortOrder       AuraSortOrder        none | asc | desc
     completionSortOrder CompletionSortOrder  none | newestFirst | oldestFirst
@@ -433,67 +536,108 @@ STATISTICS PROVIDERS (statistics_providers.dart):
   statisticsRefreshProvider       StateProvider<int>  — bump to invalidate all stats
   homeTabIndexProvider            StateProvider<int>  — programmatic tab switching
   overviewStatsProvider           FutureProvider<Map<String,int>>
-                                    keys: totalXp, todayXp, completedAllTime,
+                                    keys: totalAura, todayAura, completedAllTime,
                                     completedToday, weekStreak, pendingWeekStreak,
                                     minutesBrave
-  weeklyXpProvider                FutureProvider<List<int>>
+  weeklyAuraProvider              FutureProvider<List<int>>   (was weeklyXpProvider)
   completedChallengeIdsProvider   FutureProvider<Set<String>>
   isChallengeCompletedProvider    Provider.family<bool, String>
-                                    Scoped: only rebuilds the widget for challenge id.
   latestCompletionDatesProvider   FutureProvider<Map<String,DateTime>>
-  personalBestStreakProvider      FutureProvider<int>
-  currentWeekXpProvider           FutureProvider<int>
+  personalBestStreakProvider       FutureProvider<int>  reads best_weekly_streak from prefs
+  currentWeekAuraProvider         FutureProvider<int>  (was currentWeekXpProvider)
   moodHistoryProvider             FutureProvider.family<List<int>, String>
   averageMoodProvider             FutureProvider<List<({DateTime date, double avg})>>
-  czlCompletionsProvider          Provider<int>  — completions toward next CZL level
-                                    (watches only comfortZoneLevelProvider, not the
-                                    refresh counter — SharedPrefs reads are synchronous)
+  czlCompletionsProvider          Provider<int>
+  weeklyAuraByWeekProvider        FutureProvider<Map<String,int>>  [NEW]
+                                    52-week Aura-by-ISO-week map for the history chart
+  frozenWeeksProvider             FutureProvider<Set<String>>  [NEW]
+                                    current frozen week keys (for chart coloring)
 
-  refreshStatistics(ref) — convenience function to bump the refresh counter.
+  refreshStatistics(ref) — convenience function to bump statisticsRefreshProvider.
+
+  PROVIDER RENAME NOTE: weeklyXpProvider → weeklyAuraProvider,
+  currentWeekXpProvider → currentWeekAuraProvider. Any call site using the old
+  names will fail to compile.
+
+BADGES PROVIDERS (badges_providers.dart):  [NEW FILE]
+  unlockedBadgesOrderProvider     FutureProvider<List<String>>
+    Watches statisticsRefreshProvider so newly earned badges appear immediately.
+    Reads settingsRepositoryProvider.loadUnlockedBadgesOrder().
+
+PREDICTION GAP PROVIDERS (prediction_gap_providers.dart):  [NEW FILE]
+  predictionGapProvider           FutureProvider.family<ChallengeGapInsight?, String>
+    Per-challenge gap: watches statisticsRefreshProvider, calls
+    LogbookRepository.instance.entriesForChallenge(challengeId), passes to
+    PredictionGapLogic.compute(). Returns null if fewer than 3 valid entries.
+  overallPredictionGapProvider    FutureProvider<ChallengeGapInsight?>
+    All-challenges aggregate: calls LogbookRepository.instance.allEntriesForGap().
+
+NOTE PROVIDERS (note_providers.dart):  [NEW FILE]
+  lastNoteProvider                FutureProvider.family<Map<String,dynamic>?, String>
+    Returns the most recent note (with timestamp) for a challenge.
+    Watches statisticsRefreshProvider.
 
 SHOP PROVIDERS (shop_providers.dart):
   spentAuraProvider               StateNotifierProvider<..., int>
-                                    Total Aura spent; persisted to SharedPreferences.
   streakFreezesProvider           StateNotifierProvider<..., int>
-                                    Current freeze inventory (0–2); persisted.
-  availableAuraProvider           Provider<int?>
-                                    totalXp − spentAura; null while stats loading.
-  applyStreakFreezesIfNeeded(ref) — call after each challenge completion. Reads
-                                    weekly XP, auto-applies freezes to missed past
-                                    weeks, persists frozen weeks + decrement inventory.
-
+  availableAuraProvider           Provider<int?>  totalAura − spentAura
+  applyStreakFreezesIfNeeded(ref) — auto-applies freezes to missed past weeks.
   Constants: kStreakFreezePrice = 500, kMaxStreakFreezes = 2
 
 SCROLL PROVIDERS (scroll_providers.dart):
-  challengesScrollToTopProvider   StateProvider<int>
-  dailyScrollToTopProvider        StateProvider<int>
-  profileScrollToTopProvider      StateProvider<int>
-  settingsScrollToTopProvider     StateProvider<int>
-  Incrementing any of these triggers a scroll-to-top in the corresponding tab.
+  challengesScrollToTopProvider / dailyScrollToTopProvider /
+  profileScrollToTopProvider / settingsScrollToTopProvider  — all StateProvider<int>
 
 
 ─── 3.6 COMFORT ZONE LEVEL (CZL) SYSTEM ────────────────────────────────────────
 
 File: lib/logic/comfort_zone_logic.dart
 
-Five levels, each with a name and description:
-  1 — Warming Up        "Micro-interactions — low stakes, high growth"
-  2 — Breaking the Ice  "Brief exchanges with real humans"
-  3 — Holding the Floor "Sustained conversations and presence"
-  4 — Taking Risks      "Vulnerability, compliments, assertiveness"
-  5 — The Bold Zone     "High-stakes social challenges"
+MAJOR CHANGE: CZL expanded from 5 levels to 10.
 
-Level assignment:
-  The challenge catalog has a fixed "level" field (1–5) set per challenge in
-  challenges.json. ComfortZoneLogic.filterByCzl(catalog, currentLevel) returns
-  only challenges with level ≤ currentLevel.
+Ten levels, each with a name, description, icon, and gradient colors:
 
-Level unlocking (recordSuccessAndCheckLevelUp):
-  Only completions of challenges AT or ABOVE the user's current level count.
-  After 3 completions at current level → level up.
-  Completion counts persisted per level: key 'czl_completions_' + level.
+  Lvl  Name              Gradient        Icon                      Description (summary)
+  ──────────────────────────────────────────────────────────────────────────────────────
+  1    Warming Up         Green           Icons.spa_rounded         Micro-interactions; ego only
+  2    Breaking the Ice   Blue            Icons.ac_unit_rounded     One sentence with expected contact
+  3    Holding the Floor  Orange          Icons.mic_rounded         Brief approach, 2-3 exchanges
+  4    Taking Risks       Red             Icons.flash_on_rounded    Personal compliment, assertiveness
+  5    The Bold Zone      Gold            Icons.star_rounded        Approach with no social cover
+  6    Stepping Up        Purple          Icons.trending_up_rounded Group approach, unusual requests
+  7    Owning the Room    Teal            Icons.emoji_events_rounded Direct personal declaration
+  8    Social Athlete     Deep Blue       Icons.fitness_center_rounded Real nerve, deep disclosure
+  9    Fearless           Pink            Icons.whatshot_rounded    Spectacle; sustained audience
+  10   Untouchable        Obsidian (grey) Icons.workspace_premium_rounded Just outside acceptable; go anyway
 
-On level-up: level_up_screen.dart provides a full-screen animation moment.
+Completion thresholds (completionsNeeded per level, index = current level):
+  Level 1 → 2:   3 completions
+  Level 2 → 3:   5 completions
+  Level 3 → 4:   8 completions
+  Level 4 → 5:  12 completions
+  Level 5 → 6:  16 completions
+  Level 6 → 7:  20 completions
+  Level 7 → 8:  25 completions
+  Level 8 → 9:  30 completions
+  Level 9 → 10: 35 completions
+
+Level assignment: challenges.json has an explicit `level` field (1–10). The
+field is hand-curated in the JSON, not computed at runtime. ComfortZoneLogic
+.assignLevel(challenge) simply returns challenge.level (static passthrough).
+
+recordSuccessAndCheckLevelUp(currentLevel, completed, catalog, prefs):
+  - Only completions where completed.level == currentLevel count.
+  - Increments czl_completions_{currentLevel} in SharedPreferences.
+  - Returns new level (currentLevel + 1) if threshold reached, else null.
+  - Returns null immediately if currentLevel >= maxLevel (10).
+
+filterByCzl(catalog, currentLevel): returns challenges where level ≤ currentLevel.
+
+levelGradient(level) → LinearGradient (topLeft → bottomRight).
+
+NOTE: The challenge catalog currently only has 112 challenges at levels 1–5.
+Levels 6–10 exist in the CZL system but no catalog content yet targets them.
+Users reaching level 6 will see no new challenges — endgame design is incomplete.
 
 
 ─── 3.7 DAILY MISSIONS SYSTEM ──────────────────────────────────────────────────
@@ -516,42 +660,48 @@ Selection algorithm (DailyMissionsLogic.getTodayMissions):
 
 markCompleted(tier) → sets the tier's done key to true.
 
-XP BONUS: ChallengeDoneScreen adds a 10% bonus (rounded) to earned Aura Points
-when isDailyMission = true and the challenge was not aborted.
+XP BONUS: ChallengeDoneScreen adds a 10% bonus (rounded) to earned Aura when
+isDailyMission = true and the challenge was not aborted.
 
 
 ─── 3.8 ONBOARDING FLOW ────────────────────────────────────────────────────────
 
-File: lib/routes/onboarding_screen.dart  (shell, ~188 lines after extraction)
-      lib/routes/onboarding/onboarding_pages.dart  (individual page widgets)
-      lib/routes/onboarding/onboarding_shared.dart  (shared UI components)
+File: lib/routes/onboarding_screen.dart  (shell, ~188 lines)
+      lib/routes/onboarding/onboarding_pages.dart
+      lib/routes/onboarding/onboarding_shared.dart
 
 7 pages navigated via a PageController (NeverScrollableScrollPhysics — no swipe):
   Page 1 — Hook            "You've come to the right place." CTA.
-  Page 2 — How It Works   3-step process overview with icons.
+  Page 2 — How It Works    3-step process overview with icons.
   Page 3 — Safety          Empathy statement, mental health note.
   Page 4 — Starting Point  User selects CZL 1/2/3 from animated cards.
-                            Auto-advances after 300ms.
+                             Auto-advances after 300ms.
   Page 5 — Commitment      Motivational framing.
   Page 6 — Notifications   Morning/Afternoon/Evening slot chips.
   Page 7 — First Challenge  Shows the easiest solo non-flirt challenge.
-                            "Start Now" → completeOnboarding → push active challenge
-                            "Do It Later" → completeOnboarding → go('/').
+                             "Start Now" → completeOnboarding → push active challenge
+                             "Do It Later" → completeOnboarding → go('/').
 
 Progress indicator: dot indicator with active dot expanding to 20px wide.
 
 
 ─── 3.9 ACTIVE CHALLENGE SCREEN ────────────────────────────────────────────────
 
-File: lib/routes/active_challenge_screen.dart  (~495 lines)
+File: lib/routes/active_challenge_screen.dart  (~497 lines)
 
 ConsumerStatefulWidget with TickerProviderStateMixin + WidgetsBindingObserver.
 
+Named constants at file top:
+  _kAbortLockSeconds = 15
+  _kFullReward = 1.0     (timer expired naturally)
+  _kLateReward = 0.8     (user tapped Done before timer expired)
+  _kAbortPenalty = -0.5  (user tapped Abort)
+
 State:
-  mainTimer         int    seconds remaining (decremented by wall-clock diff)
-  abortLockTimer    int    15 → 0 countdown before abort button appears
-  _progressController  AnimationController  drives continuous SyntraXpBar fill
-  _fadeController   AnimationController  fade-in on entry
+  mainTimer             int   seconds remaining (wall-clock diff)
+  abortLockTimer        int   15 → 0 countdown before abort button appears
+  _progressController   AnimationController  drives SyntraXpBar fill
+  _fadeController       AnimationController  fade-in on entry
 
 Two Future.doWhile() loops drive the timers (no periodic Timer).
 
@@ -560,42 +710,56 @@ Background handling (WidgetsBindingObserver):
   On resumed: re-syncs mainTimer from wall-clock, cancels notification if running
 
 rewardFactor:
-  1.0  — timer expired naturally (full XP)
+  1.0  — timer expired naturally (full Aura)
   0.8  — user tapped Done before timer expired
-  -0.5 — user tapped Abort (records 'tried', earns 0 XP)
+  -0.5 — user tapped Abort (records 'tried', earns 0 Aura)
 
 _finishChallenge(rewardFactor):
-  Uses Navigator.of(context).push<double>(MaterialPageRoute → ChallengeDoneScreen).
-  On return, cancels pending notification, calls widget.onDone?, pops to root.
+  Uses context.pushChallengeDone() (GoRouter.push<double>).
+  On return, cancels pending notification, calls widget.onDone?, pops.
 
 PopScope(canPop: false) prevents back-button navigation during a live challenge.
 
-NOTE: Magic numbers present — gesture thresholds (dx < -8, 0.4 ratio, velocity 500)
-and other inline values are not extracted to named constants. (See Problem 8.)
+overrideTime: int? — allows time to be overridden (e.g. from priming screen
+  duration picker). _ActiveChallengeArgs carries this parameter.
+
+REMAINING CONCERN: Gesture thresholds (dx < -8, 0.4 ratio, velocity 500) are
+still inline magic numbers — not extracted to named constants. (Problem 2 below.)
 
 
 ─── 3.10 CHALLENGE DONE SCREEN ─────────────────────────────────────────────────
 
-File: lib/routes/challenge_done_screen.dart  (~578 lines)
+File: lib/routes/challenge_done_screen.dart  (~518 lines)
       lib/routes/challenge_done/survey_widget.dart
       lib/routes/challenge_done/level_up_dialog.dart
 
-Receives: Challenge, rewardFactor, durationSeconds?, onDone?, isDailyMission.
+Receives: Challenge, rewardFactor, durationSeconds?, isDailyMission.
 
 XP Computation:
   _isAborted   → rewardFactor < 0
-  _earnedXp    → isAborted ? 0 : (challenge.xp * rewardFactor).round()
-  _bonusXp     → isDailyMission && !isAborted ? (_earnedXp * 0.1).round() : 0
-  _totalXp     → _earnedXp + _bonusXp
+  _earnedAura  → isAborted ? 0 : (challenge.xp * rewardFactor).round()
+  _bonusAura   → isDailyMission && !isAborted ? (_earnedAura * 0.1).round() : 0
+  _totalAura   → _earnedAura + _bonusAura
 
 _onBackToHome flow:
   1. Auto-submits survey if not already submitted
-  2. Writes logbook entry
-  3. If success: recordSuccessAndCheckLevelUp
-  4. If level-up: shows level_up_dialog or pushes level_up_screen
-  5. If new streak > last celebrated: pushes StreakCelebrationScreen
+  2. Writes logbook entry (status, aura, durationSeconds, feeling, perception,
+     notes, pre_anxiety from the priming screen)
+  3. If success: recordSuccessAndCheckLevelUp → if level up: goLevelUp(newLevel)
+  4. Check for new badges (diff earned vs. seen) → if new badge: goBadgeUnlocked(badge)
+  5. If new streak > last celebrated: goStreakCelebration(streak, isMilestone)
   6. refreshStatistics(ref)
-  7. Calls widget.onDone? + navigator.pop(rewardFactor)
+  7. Navigator pop (returns rewardFactor to the caller)
+
+BADGE UNLOCK FLOW:
+  After writing the logbook entry, the screen recomputes earned badges from
+  overviewStats + personalBestStreak. It diffs against seen_badges from
+  SettingsRepository. Any badge in earned but not in seen is:
+    1. Appended to unlocked_badges_order via appendUnlockedBadges()
+    2. Added to seen_badges
+    3. Displayed via goBadgeUnlocked(badge) — one screen per new badge, pushed
+       sequentially if multiple badges unlock in one session.
+  This flow ensures the badge celebration fires exactly once per badge.
 
 _SurveyWidget (in challenge_done/survey_widget.dart):
   Two 5-point emoji rows (feeling + perception).
@@ -608,141 +772,136 @@ COACH MESSAGES: pool of 7 messages, deterministic hash selects per challenge.
 
 ─── 3.11 CHALLENGES SCREEN ──────────────────────────────────────────────────────
 
-File: lib/routes/challenges_screen.dart  (shell, cleaned up)
-      lib/routes/challenges/challenges_header.dart
-      lib/routes/challenges/challenge_list.dart
-      lib/routes/challenges/challenge_list_item.dart
-      lib/routes/challenges/filter_bar.dart
-      lib/routes/challenges/filter_sheet.dart
+File: lib/routes/challenges_screen.dart
+      lib/routes/challenges/ (subdirectory)
 
 UI structure (CustomScrollView with SliverPersistentHeader):
   - ChallengesHeaderDelegate (pinned, collapsible):
-      Expanded: weekly XP progress ring, streak counter, freeze badges,
+      Expanded: weekly Aura progress ring, streak counter, freeze badges,
                 aura display, "Give me one" button
       Collapsed: compact stat chips row + filter bar
       Snap physics: HeaderSnapPhysics snaps header to fully open or closed
   - ChallengeListSliver (paginated):
-      Loads 20 challenges initially, fires _LoadMoreSentinel at list bottom
-      to auto-load next 20. Filter changes reset to page 1.
+      Loads 20 challenges initially, fires _LoadMoreSentinel at list bottom.
       Each item wrapped in _FadeInItem (320ms fade + 6% slide-up on first render).
-      displayedChallengesProvider feeds the list (completion filter + sort applied
-      at provider level; not re-applied in the widget).
+      displayedChallengesProvider feeds the list.
 
 State in _ChallengesScreenState:
-  _displayWeeklyXp — animated local copy of current week XP
-  _displayAura     — animated local copy of available Aura
-  Both animate upward with 500ms delay (from ModalRoute.isCurrent guard)
-  and downward immediately. Catches pending updates when returning from pushed
-  route via postFrameCallback.
-
-XP SCROLL-TO-TOP: ref.listen(challengesScrollToTopProvider, ...) → animateTo(0).
+  _displayWeeklyAura — animated local copy of current week Aura
+  _displayAura       — animated local copy of available Aura
+  Both animate upward with 500ms delay (ModalRoute.isCurrent guard)
+  and downward immediately.
 
 
 ─── 3.12 CHALLENGE DETAIL SCREEN ────────────────────────────────────────────────
 
 File: lib/routes/challenge_detail_screen.dart
 
-Full-screen detail pushed from ChallengesScreen (via info icon or card tap).
 Shows: challenge title, description, XP, time, tags (type/environment/flirt).
-Displays mood history chart (fl_chart LineChart) for this specific challenge,
-pulled from moodHistoryProvider.family(challenge.id).
+Displays mood history chart (fl_chart LineChart) from moodHistoryProvider.family.
 Has a "Start Challenge" CTA button at the bottom.
-Shows a green checkmark in AppBar if challenge has been completed before.
-Uses isChallengeCompletedProvider(challenge.id) (family provider) so only this
-challenge's completion state triggers a rebuild, not the full completed-ID set.
+Shows a green checkmark in AppBar if challenge has been completed before
+  (via isChallengeCompletedProvider.family).
+
+NEW: Shows PredictionGapCard if predictionGapProvider.family returns a non-null
+  ChallengeGapInsight (requires ≥3 attempts with both pre_anxiety and feeling).
+  Uses DetailCard as its container widget.
+Also shows lastNoteProvider.family result as a "last note" card if notes exist.
 
 
 ─── 3.13 DAILY CHALLENGE SCREEN (MISSION BOARD) ────────────────────────────────
 
 File: lib/routes/daily_challenge_screen.dart
 
-DailyMissionsNotifier (AsyncNotifierProvider) lives in lib/providers/daily_providers.dart.
-Screen file watches the provider and handles UI only.
-
-Loads missions via DailyMissionsLogic.getTodayMissions() via the notifier.
-Three mission cards stacked vertically (Comfort / Growth / Bold).
-Each card: tier label, title, description, XP + "+10%" note, timer, Start / checkmark.
-Starting a mission: calls context.pushPriming(challenge).
-On return: DailyMissionsLogic.markCompleted(tier) + card updates.
+Loads missions via DailyMissionsNotifier via dailyMissionsProvider.
+Three mission cards: Comfort / Growth / Bold.
+Starting a mission: context.pushPriming(challenge, isDailyMission: true).
+On return: DailyMissionsLogic.markCompleted(tier) + card update.
 Scroll-to-top: ref.listen(dailyScrollToTopProvider, ...).
 
 
 ─── 3.14 PROFILE SCREEN (STATS + ACHIEVEMENTS) ─────────────────────────────────
 
 File: lib/routes/profile_screen.dart  (~90 lines — thin shell)
-      lib/routes/statistics/activity_calendar.dart
-      lib/routes/statistics/average_mood_card.dart
-      lib/routes/statistics/badges_section.dart
-      lib/routes/statistics/overview_grid.dart
-      lib/routes/statistics/weekly_charts.dart
-
-ProfileScreen is a thin ConsumerStatefulWidget with a ListView and a
-RefreshIndicator. It imports its section widgets from routes/statistics/.
+      lib/routes/statistics/ (extracted widgets)
 
 Sections (in scroll order):
-  ComfortZoneLevelCard  — CZL level name + progress bar (imported from settings_screen)
+  ComfortZoneLevelCard  — CZL level name + progress bar (also used in settings)
   OverviewGrid          — 6-cell grid: Total Aura, Streak, Times Tried,
                           Minutes Brave, Best Streak, Done Today
-  BadgesSection         — all AppBadge icons, earned highlighted
-  WeeklyAuraChart       — 16-week Aura bar chart; bars below 300 are grey, above orange,
+  BadgesSection         — earned badges preview + "See All" button → goAllBadges()
+  WeeklyAuraChart       — 16-week Aura bar chart using weeklyAuraByWeekProvider +
+                          frozenWeeksProvider; bars below 300 are grey, above orange,
                           frozen weeks blue; 300 Aura threshold line drawn
-  WeeklyCharts          — grouped bar chart (completed vs tried) + XP per day bar chart
+  WeeklyCharts          — grouped bar chart (completed vs tried) + Aura per day bar chart
   AverageMoodCard       — fl_chart line chart of last ~20 mood data points
-  LogbookPage button    — pushes LogbookPage
+  OverallPredictionCard — overall prediction-reality gap insight [NEW]
+  LogbookPage button    — pushes /logbook
 
 Uses SyntraBlurAppBar (blurred pinned AppBar widget).
 Pull-to-refresh: refreshStatistics(ref).
 Scroll-to-top: ref.listen(profileScrollToTopProvider, ...).
 
-NOTE: This screen replaced the old statistics_screen.dart (~1023 lines monolith),
-which was deleted. The extracted routes/statistics/ widgets are now individually
-testable and reusable.
+
+─── 3.15 ALL BADGES PAGE ────────────────────────────────────────────────────────
+
+File: lib/routes/all_badges_page.dart  (162 lines)  [NEW SCREEN]
+Route: /badges
+
+ConsumerWidget. Watches: overviewStatsProvider, comfortZoneLevelProvider,
+unlockedBadgesOrderProvider.
+
+Computes earned set via BadgesLogic.computeEarned(enrichedStats, weekStreak).
+Sorts via BadgesLogic.sortByDisplay(earned, unlockedOrder):
+  - Most recently unlocked badges appear first (unlockedOrder is reversed).
+  - Earned badges not in unlockedOrder (legacy installs) fall after ordered ones.
+  - All locked badges follow.
+
+Renders two _BadgeGroupCard sections:
+  "Earned Badges" — count shown as e.g. "5/17"
+  "Locked Badges" — count shown as remaining locked count
+
+Each badge: _BadgeGrid → Wrap of BadgeTile (60px circles).
+Tapping a badge: showBadgeInfoSheet(context, badge, isEarned) — modal bottom
+  sheet with 88×88 badge circle, name, description, earned/locked chip.
 
 
-─── 3.15 STREAK CELEBRATION SCREEN ─────────────────────────────────────────────
+─── 3.16 STREAK CELEBRATION SCREEN ─────────────────────────────────────────────
 
 File: lib/routes/streak_celebration_screen.dart
 
-Two animation controllers:
-  _fireCtrl   — elasticOut scale + slight rotation on main icon
-  _textCtrl   — easeIn opacity + slide-up for text content
-
+Two animation controllers: _fireCtrl (elasticOut), _textCtrl (easeIn).
 Two phases (if isMilestone = true):
   Phase 0: Fire icon. "X week streak!"
-  Phase 1: Trophy icon. Milestone message for [3,7,14,30,60,100] weeks.
+  Phase 1: Trophy icon. Milestone message for [1, 3, 7, 14, 30, 60, 100] weeks.
 
-Background: hardcoded dark (#121212) with radial gradient (intentional — dramatic).
-Phase 1 has a golden tint (#1A1A00).
-
-Triggered from:
-  1. ChallengeDoneScreen._onBackToHome — after successful attempt
-  2. HomeBar._showStreakCelebration — on daily re-open with active streak
+Background: hardcoded dark (#121212) with radial gradient.
+Phase 1 has a golden tint (#1A1A00). Both are intentional.
 
 
-─── 3.16 SETTINGS SCREEN ────────────────────────────────────────────────────────
+─── 3.17 SETTINGS SCREEN ────────────────────────────────────────────────────────
 
 File: lib/routes/settings_screen.dart
 
 Sections:
-  Appearance: Light/Dark/System mode toggle (SegmentedButton)
+  Appearance: Light/Dark/System mode — dropdown menu (working correctly)
   Language: EN/DE selector (SegmentedButton)
   Sound Effects: on/off Switch
   Comfort Zone Level card (ComfortZoneLevelCard — also used in ProfileScreen)
   Notifications master toggle + three time slots (Morning/Afternoon/Evening)
   About link
 
+Theme stored as "light"/"dark"/"system" string. Dropdown selection maps
+directly to the stored string and works correctly on all launch scenarios.
+
 Scroll-to-top: ref.listen(settingsScrollToTopProvider, ...).
 
-KNOWN BUG: When system dark mode is enabled and the user has never changed the
-theme setting, the dark-mode switch shows no active selection while the app
-renders dark. (See Section 5 Problem 2.)
 
-
-─── 3.17 NOTIFICATION SYSTEM ────────────────────────────────────────────────────
+─── 3.18 NOTIFICATION SYSTEM ────────────────────────────────────────────────────
 
 Two classes manage notifications with some overlap.
 
-SyntraNotificationService (~850 lines) — primary service:
+SyntraNotificationService (~845 lines) — primary service:
   - Flutter plugin init (Android + iOS DarwinInitializationSettings)
   - MethodChannel setup for native Android bridge
   - Permission requests
@@ -763,223 +922,304 @@ Android native:
   - BroadcastReceiver for boot/update/timezone/clock-change reschedule
 
 
-─── 3.18 DESIGN SYSTEM ─────────────────────────────────────────────────────────
+─── 3.19 PREDICTION-REALITY GAP SYSTEM ──────────────────────────────────────────
+
+[NEW SYSTEM — fully shipped since 2026-04-25 version]
+
+Files:
+  lib/logic/prediction_gap_logic.dart
+  lib/providers/prediction_gap_providers.dart
+  lib/widgets/prediction_gap_card.dart
+  lib/routes/statistics/overall_prediction_card.dart
+
+DATA MODEL:
+  pre_anxiety is stored in logbook.pre_anxiety on a 1–5 scale where 5 = very nervous.
+  feeling is stored in logbook.feeling on a 0–4 scale where 4 = very satisfied/calm.
+
+  To compare both on the same scale, feeling is converted:
+    actualAnxiety = 5 − feeling.clamp(0, 4)  → result is 1–5, high = nervous
+
+  gap = preAnxiety.clamp(1,5) − actualAnxiety
+    Positive gap: user felt calmer than expected (confidence builder)
+    Negative gap: user felt more nervous than expected (reality check)
+
+TONE CATEGORIES (PredictionGapTone enum):
+  veryCalm   — averageGap > 1.5   ("Much calmer than expected")
+  calm       — averageGap > 0.5   ("Calmer than expected")
+  accurate   — |averageGap| < 0.5 ("Accurately predicted")
+  nervous    — averageGap ≤ −0.5  ("More nervous than expected")
+  tough      — averageGap < −1.5  ("Much tougher than expected")
+
+ChallengeGapInsight fields:
+  attempts          — number of valid entries (both pre_anxiety and feeling non-null)
+  averageGap        — mean gap across all valid entries
+  calmThanPredicted — count of entries where gap > 0
+
+PredictionGapLogic.compute(entries):
+  Returns null if fewer than minAttempts (3) valid entries.
+  "Valid" means both pre_anxiety and feeling are non-null integers.
+
+PredictionGapCard widget:
+  Uses DetailCard (icon: Icons.psychology_rounded) as its container.
+  Renders: tone message text, three _StatBlock cells (attempts, avg gap, calmer count).
+  formatGap: positive values prefixed with "+".
+
+OverallPredictionCard:
+  Thin ConsumerWidget wrapping overallPredictionGapProvider.
+  Renders nothing (SizedBox.shrink) while loading, on error, or if null.
+  Placed in ProfileScreen below AverageMoodCard.
+
+Per-challenge gap: predictionGapProvider.family(challengeId) renders a
+PredictionGapCard in ChallengeDetailScreen when ≥3 entries exist.
+
+
+─── 3.20 BADGE SYSTEM ──────────────────────────────────────────────────────────
+
+File: lib/logic/badges_logic.dart
+      lib/widgets/badge_widgets.dart
+      lib/providers/badges_providers.dart
+      lib/routes/all_badges_page.dart
+
+TOTAL BADGES: 17 (8 achievement + 9 CZL level badges)
+
+Achievement badges (BadgesLogic.all — definition order):
+  ID                   Icon                      Color       Condition
+  ─────────────────────────────────────────────────────────────────────────────
+  first_step           rocket_launch_rounded      green       completedAllTime ≥ 1
+  ten_challenges       directions_run_rounded     blue        completedAllTime ≥ 10
+  fifty_challenges     emoji_events_rounded       amber       completedAllTime ≥ 50
+  three_week_streak    local_fire_department      deep orange bestStreak ≥ 3
+  seven_week_streak    whatshot_rounded           dark red    bestStreak ≥ 7
+  century_aura         bolt_rounded               purple      totalAura ≥ 100
+  five_hundred_aura    military_tech_rounded      pink/wine   totalAura ≥ 500
+  brave_minutes        timer_rounded              teal        minutesBrave ≥ 60
+
+  NOTE: four IDs renamed from the previous version:
+    three_day_streak   → three_week_streak
+    seven_day_streak   → seven_week_streak
+    century_xp         → century_aura
+    five_hundred_xp    → five_hundred_aura
+  Any SharedPreferences data stored under the old keys will not match the new IDs.
+  Users with old seen_badges or unlocked_badges_order data will have those badges
+  appear unseen (re-celebrated) on next session. This is a minor regression for
+  beta users.
+
+CZL level badges (generated loop, for lvl = 2..10):
+  ID: 'level_2' through 'level_10'
+  Icon: ComfortZoneLogic.levelIcons[lvl]
+  Color: ComfortZoneLogic.levelGradientColors[lvl].$1 (first gradient stop)
+  Condition: stats['czlLevel'] >= lvl
+
+computeEarned(stats, bestStreak): returns Set<String> of earned badge IDs.
+  The stats map must include 'czlLevel' (injected at call site from
+  comfortZoneLevelProvider, not from overviewStatsProvider which doesn't include it).
+
+sortByDisplay({earned, unlockedOrder}):
+  Returns ordered List<AppBadge>:
+  1. Earned badges in reverse unlock order (most recently unlocked first).
+  2. Earned badges not in unlockedOrder (legacy), in definition order.
+  3. All locked badges, in definition order.
+  Uses a two-pass algorithm with an 'added' Set to prevent duplicates.
+
+BadgeTile widget (lib/widgets/badge_widgets.dart):
+  Circular container, default size 52px (overridable).
+  Earned: badge.color background at 0.15 alpha, colored border, colored icon.
+  Locked: surfaceContainerHighest background, no border, outlineVariant icon.
+  Supports onTap callback.
+
+showBadgeInfoSheet(context, badge, isEarned):
+  Modal bottom sheet (transparent background, 28px top radius).
+  88×88 circle, name (titleLarge bold), earned/locked chip, description.
+
+badgeLabel(l, id) / badgeDesc(l, id):
+  Switch expression on badge ID → localized label/description.
+  Level badge IDs parsed via _levelFromId (strips 'level_' prefix).
+
+
+─── 3.21 DESIGN SYSTEM ─────────────────────────────────────────────────────────
 
 Theme (lib/theme/app_theme.dart):
   Material 3 (useMaterial3: true).
   Seed color: Neon Pink (#FF10F0).
-  Light scheme secondary = Softer Cyan (#00B8D4), tertiary = Reddish Orange (#FF6D00)
-  Dark scheme secondary = Red (#FF2626), tertiary = Reddish Orange (#FF6D00)
+  Light: secondary = Softer Cyan (#00B8D4), tertiary = Reddish Orange (#FF6D00)
+  Dark: secondary = Red (#FF2626), tertiary = Reddish Orange (#FF6D00)
   Scaffold background (light): Snow (#F7F3F2)
-  AppTheme.successGreen = Color(0xFF10B981) — named constant for "done/success" tint.
+  AppTheme.successGreen = Color(0xFF10B981) — named constant for done/success tint.
 
 Spacing (lib/theme/app_spacing.dart — 8-point grid):
-  xs = 4,  sm = 8,  md = 16,  lg = 24,  xl = 32,  xxl = 48
-  cardRadius = 20,  buttonRadius = 16,  chipRadius = 24
+  xs = 4, sm = 8, md = 16, lg = 24, xl = 32, xxl = 48
+  cardRadius = 20, buttonRadius = 16, chipRadius = 24
+  bottomNavBarHeight(context) — accounts for system navigation bar
 
 String constants (lib/challenge.dart):
-  ChallengeType.solo / .group / .coop / .dare    — abstract class namespace
+  ChallengeType.solo / .group / .coop / .dare
   ChallengeEnvironment.all / .street / .transit / .cafe / .event
 
 UI extension (lib/challenge_ui.dart):
   extension ChallengeDisplay on Challenge
-    typeIcon            → IconData (single definition, used by all card/list widgets)
-    typeLabel(S l)      → localized string
+    typeIcon → IconData
+    typeLabel(S l) → localized string
     environmentLabel(S l) → localized string
 
+DetailCard widget (lib/widgets/detail_card.dart):  [NEW]
+  Reusable Card+Padding+header-Row pattern used across detail screens.
+  Constructor: icon (IconData), title (String), child (Widget), trailing (Widget?).
+  Header row: 20px primary icon, 8px gap, titleMedium w600 title, Spacer, trailing?.
+  Used by: PredictionGapCard, and expected to absorb future detail-screen cards.
+
 All screens use Theme.of(context).colorScheme — no hardcoded Color() in normal UI.
-Exceptions: StreakCelebrationScreen (intentional dark bg), SurveyWidget (emotion colors).
-AppTheme.successGreen is the named constant for the "done" badge green used in
-challenge_list_item.dart, daily_challenge_screen.dart, and challenge_detail_screen.dart.
-
-static.dart: notification message pools + streakMilestones = [1, 3, 7, 14, 30, 60, 100].
+Exceptions: StreakCelebrationScreen (intentional dark bg),
+SurveyWidget (emotion colors), BadgesLogic (badge accent colors are fixed brand colors).
 
 
-─── 3.19 LOCALIZATION ──────────────────────────────────────────────────────────
+─── 3.22 LOCALIZATION ──────────────────────────────────────────────────────────
 
 UI strings: flutter_intl generates the S class (lib/generated/l10n.dart).
 ARB files: lib/l10n/intl_en.arb and intl_de.arb.
 
-Challenge content: localized via assets/data/translations/{lang}.json by challenge ID.
-Keys are sequential integers as strings ("0"–"111"), synchronized with challenges.json.
-
-Language override: user can change in Settings. activeLocaleProvider is watched
-by challengeCatalogProvider which reloads the catalog on change.
+Challenge content: localized via assets/data/translations/{lang}.json by ID.
+Keys are sequential integers as strings ("0"–"111").
 
 Supported: 'en' (English), 'de' (German).
 
+NEW ARB KEYS (since 2026-04-25):
+  Prediction gap: predictionVsRealityTitle, predictionVsRealitySubtitle,
+    predictionInsight{VeryCalm,Calm,Accurate,Nervous,Tough},
+    predictionAttempts, predictionAvgGap, predictionCalmer
+  Badge labels/descs: badgeFirstStep/Desc, badgeTenChallenges/Desc,
+    badgeFiftyChallenges/Desc, badgeThreeWeekStreak/Desc, badgeSevenWeekStreak/Desc,
+    badgeCenturyAura/Desc, badgeFiveHundredAura/Desc, badgeBraveMinutes/Desc,
+    badgeLevelDesc(int lvl), badgeOpted, badgeLocked
+  All badges page: allBadgesTitle, badgesEarnedSection, badgesLockedSection,
+    badgesAllUnlocked
 
-─── 3.20 GAMIFICATION LOOP ─────────────────────────────────────────────────────
+
+─── 3.23 GAMIFICATION LOOP ─────────────────────────────────────────────────────
 
 Full user loop:
 
-  1. Onboarding → set CZL → unlock initial challenge pool
-  2. Open app → see challenges filtered by CZL + applied filters
+  1. Onboarding → set CZL → unlock initial challenge pool (levels ≤ chosen)
+  2. Open app → see challenges filtered by CZL (1–10) + applied filters
   3. Accept a challenge (or start a daily mission)
-  4. Priming screen → motivational framing before the challenge
+  4. Priming screen → pre-challenge anxiety rating (1–5) → motivational framing
   5. Timer runs → go do it in the real world
   6. Return → mark result → complete survey (mood, perception, notes)
-  7. Aura Points awarded → logged to SQLite → weekly XP accumulates
-  8. Weekly XP ≥ 300 → current week "active" → weekly streak active
+  7. Aura awarded → logged with pre_anxiety → weekly Aura accumulates
+  8. Weekly Aura ≥ 300 → current week "active" → weekly streak active
   9. Streak freezes auto-apply to missed past weeks (if freezes available)
-  10. CZL completions++ → at 3 completions → level-up screen → new challenges unlocked
-  11. Stats/Profile screen shows Aura charts, heatmap, badges, weekly goal
-  12. Notifications remind user each day via configurable time slots
+  10. CZL completions++ → at threshold → level-up screen → new challenges unlocked
+  11. New badge earned → badge_unlocked_screen celebration (once per badge)
+  12. Stats/Profile: Aura charts, gap insight, badges, weekly goal
+  13. Notifications remind user each day via configurable time slots
 
-WEEKLY STREAK: A streak week requires earning ≥300 Aura (kWeeklyXpThreshold).
-Consecutive qualifying weeks = weekly streak. The current in-progress week
-activates the moment it hits the threshold. Streak freezes protect up to 2
-missed past weeks from breaking the streak.
-
-Sound effects (SoundService via audioplayers):
-  playClick()    — nav bar taps
-  playDing()     — challenge start
-  playSuccess()  — challenge success
-  playError()    — challenge abort/failure
+Sound effects (SoundService):
+  playClick() — nav bar taps
+  playDing() — challenge start
+  playSuccess() — challenge success
+  playError() — challenge abort/failure
+  SoundService.init() is called at app startup.
 
 Haptic feedback:
   HapticFeedback.selectionClick() on nav bar press
-  VibrationService.start()        — when challenge timer starts
-  VibrationService.timerWarning() — at 10 seconds remaining
-  VibrationService.timerEnd()     — when timer hits zero
-  VibrationService.success()      — on successful completion
-  VibrationService.milestone()    — on streak milestone
+  VibrationService.start()        — challenge timer starts
+  VibrationService.timerWarning() — 10 seconds remaining
+  VibrationService.timerEnd()     — timer hits zero
+  VibrationService.success()      — successful completion
+  VibrationService.milestone()    — streak milestone
 
-Badges (lib/logic/badges_logic.dart):
-  8 badges: first_step, ten_challenges, fifty_challenges,
-  three_day_streak, seven_day_streak, century_xp, five_hundred_xp, brave_minutes.
-  Each has id, IconData, Color, and a condition function.
-  Evaluated from overviewStatsProvider + personalBestStreakProvider.
+
+─── 3.24 FAKE DATA SEEDER ──────────────────────────────────────────────────────
+
+File: lib/tools/fake_data_seeder.dart  (147 lines)  [NEW]
+
+Purpose: populates the app with realistic German-language data for App Store
+screenshot sessions. Called via a hidden 5-tap trigger on AboutNotePage.
+
+What it does:
+  1. clearAllEntries() — wipes the logbook entirely.
+  2. Inserts 52 logbook entries spanning ~7 weeks with realistic mood, pre_anxiety,
+     feeling, and notes data in German.
+     Aura distribution: W-7≈400, W-6[freeze], W-5≈610, W-4≈710, W-3≈950,
+     W-2≈1050, W-1≈790, W-0≈250 (current week, below threshold).
+     Result: pending streak of 7 displayed in grey.
+  3. Sets SharedPreferences:
+     - comfort_zone_level = 5, czl_completions_5 = 3
+     - best_weekly_streak = 7
+     - shop_frozen_weeks = ISO key for week -6
+     - last_goal_week = current week (suppresses weekly goal celebration)
+     - seen_badges = all badge IDs (suppresses badge celebration)
+     - unlocked_badges_order = all badge IDs
+
+  After seeding, the user must restart the app for all Riverpod providers to
+  pick up the new data. The seeder does not call refreshStatistics().
+
+  CAUTION: This is a destructive operation (clearAllEntries). It is behind a
+  5-tap hidden trigger for a reason. No confirmation dialog.
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 SECTION 4 — COMPLETED WORK (HISTORY)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-From the 2026-03-29 analysis (done):
-  [DONE] Replace challenge_database.db with JSON files (challenges.json + translations/)
-  [DONE] Adopt Riverpod for state management
-  [DONE] Unify settings to SharedPreferences only
-  [DONE] Proper Material 3 theme with fromSeed ColorScheme
-  [DONE] app_spacing.dart with 8-point grid
-  [DONE] go_router for navigation
-  [DONE] iOS notification initialization (DarwinInitializationSettings)
-  [DONE] Data layer split: ChallengeRepository / LogbookRepository / SettingsRepository
-  [DONE] Filter state persistence (ChallengeFiltersNotifier)
-  [DONE] Basic unit tests (5 test files)
-  [DONE] Replace card swiper with scrollable challenge list
+All items from previous analysis versions (2026-03-29 through 2026-04-25) remain
+done. Full history preserved for reference.
 
-From the 2026-04-03 analysis (done):
-  [DONE] Make Challenge fields final (immutable model)
-  [DONE] Add ChallengeDetailScreen (full-screen detail with mood history chart)
-  [DONE] Add PrimingScreen and wire it via context.pushPriming()
-  [DONE] Add BadgesSection to StatisticsScreen
-  [DONE] Add WeeklyGoalCard with 3/5/7 selector
-  [DONE] Add personalBestStreakProvider + Best Streak stat card
-  [DONE] Add averageMoodProvider + average mood chart on stats screen
-  [DONE] Add czlCompletionsProvider
-  [DONE] "Give me one" random challenge picker on ChallengesScreen
-  [DONE] challenge_done extracted: survey_widget.dart, level_up_dialog.dart
+New since the 2026-04-25 analysis (May 2026 session):
 
-From the 2026-04-05 analysis (done):
-  [DONE] Weekly goal progress card and provider (challengesCompletedThisWeek)
-  [DONE] Expanded filter system (environmentFilter, completionFilter, auraSortOrder,
-         completionSortOrder, levelFilter — all persisted to SharedPreferences)
-  [DONE] Challenge detail screen with per-challenge mood history chart
+  CZL EXPANSION:
+  [DONE] CZL expanded to 10 levels (Warming Up → Untouchable)
+         Variable completion thresholds: 3→5→8→12→16→20→25→30→35
+         10 level icons, 10 gradient color pairs
+         9 new CZL level badges (level_2 through level_10)
+         comfort_zone_logic.dart fully updated
 
-New since the 2026-04-05 analysis (April 2026 session):
+  PREDICTION-REALITY GAP:
+  [DONE] prediction_gap_logic.dart: PredictionGapLogic.compute, ChallengeGapInsight,
+         PredictionGapTone enum (veryCalm/calm/accurate/nervous/tough)
+  [DONE] prediction_gap_providers.dart: predictionGapProvider (family),
+         overallPredictionGapProvider
+  [DONE] PredictionGapCard widget (uses DetailCard)
+  [DONE] OverallPredictionCard in ProfileScreen (statistics/overall_prediction_card.dart)
+  [DONE] Per-challenge PredictionGapCard in ChallengeDetailScreen
+  [DONE] LogbookRepository.entriesForChallenge() and allEntriesForGap() added
+  [DONE] test/prediction_gap_logic_test.dart: 200 lines covering compute(), edge cases, tones
 
-  ARCHITECTURE & PERFORMANCE:
-  [DONE] TODO A — Weekly streak system fully implemented:
-         weekly_streak_logic.dart: countStreak, countPendingStreak, countStreakAutoFreeze
-         kWeeklyXpThreshold = 300 Aura; ISO 8601 week numbering; DST-safe
-         overviewStats() returns weekStreak + pendingWeekStreak
-         ChallengesHeader shows live weekly XP progress ring toward 300 Aura
-  [DONE] TODO C (partial) — Shop mechanics implemented:
-         spentAura, streakFreezesProvider, availableAuraProvider in shop_providers.dart
-         Freeze auto-apply after challenge completion (applyStreakFreezesIfNeeded)
-         kStreakFreezePrice = 500 Aura, kMaxStreakFreezes = 2
-         UI: freeze count shown in challenges header
-  [DONE] DB indexes added (schema → v2): status+challenge, timestamp, challenge
-  [DONE] displayedChallengesProvider: completion filter + sort moved out of widget
-         into a Riverpod Provider — cached, recomputes only when inputs change
-  [DONE] Gradual challenge loading: ChallengeListSliver paginates 20 at a time
-         via _LoadMoreSentinel; each new item fades + slides in 320ms (_FadeInItem)
-  [DONE] challenges_screen.dart cleaned up: private classes extracted
-  [DONE] challenges/ subdirectory: challenges_header.dart (ChallengesHeaderDelegate +
-         HeaderSnapPhysics), challenge_list.dart rewritten as ConsumerStatefulWidget
-  [DONE] statistics_screen.dart (1023-line monolith) deleted; replaced by:
-         profile_screen.dart (90-line shell) + routes/statistics/ extracted widgets
-  [DONE] onboarding_screen.dart extracted: onboarding/ subdirectory
-  [DONE] Scroll listener in challenges_screen removed: was triggering 60fps full-screen
-         rebuilds; SliverPersistentHeader receives shrinkOffset directly from framework
-  [DONE] czlCompletionsProvider: removed redundant statisticsRefreshProvider watch
-         (SharedPreferences reads are synchronous — no extra invalidation needed)
-  [DONE] SQLite indexes: 3 covering indexes added in v1→v2 migration
+  BADGE SYSTEM OVERHAUL:
+  [DONE] Badge IDs renamed (three_week_streak, seven_week_streak, century_aura,
+         five_hundred_aura) to use week/aura terminology consistently
+  [DONE] BadgesLogic.sortByDisplay() with unlock-order tracking
+  [DONE] badges_providers.dart: unlockedBadgesOrderProvider
+  [DONE] badge_widgets.dart: BadgeTile, showBadgeInfoSheet, badgeLabel, badgeDesc
+  [DONE] all_badges_page.dart: /badges route with earned/locked grouping
+  [DONE] SettingsRepository: loadSeenBadges, saveSeenBadges, appendUnlockedBadges,
+         loadUnlockedBadgesOrder, loadBestWeeklyStreak, saveBestWeeklyStreak
+  [DONE] ChallengeDoneScreen badge unlock flow: diff earned vs. seen, push
+         BadgeUnlockedScreen for each new badge
 
-  NAVIGATION & UX:
-  [DONE] Scroll-to-top on re-tap of active nav tab (all 4 tabs)
-         Re-entrant guard (!_isAnimating) prevents spurious scroll during tab switches
-  [DONE] scroll_providers.dart: 4 scroll-to-top signal providers
-  [DONE] ChallengesHeaderDelegate: label sizes unified at fontSize: 15; freeze icon 16px
+  WIDGETS:
+  [DONE] DetailCard — reusable icon+title card container (eliminates duplication)
+  [DONE] note_providers.dart: lastNoteProvider.family for per-challenge last note
 
-  CONTENT:
-  [DONE] Challenge IDs re-enumerated: sequential 0–111, no gaps
-         All three files synchronized: challenges.json, en.json, de.json
-  [DONE] level_up_screen.dart: full-screen CZL level-up animation
-  [DONE] badge_unlocked_screen.dart: badge unlock celebration
+  STARTUP & DATA:
+  [DONE] _copyDatabaseIfNeeded() removed; DB created fresh from DDL on first launch
+  [DONE] SoundService.init() added to main()
+  [DONE] SettingsRepository.configure(prefs) called before runApp()
+  [DONE] SharedPreferences instance shared between SettingsRepository and Riverpod
+  [DONE] Theme stored as string ("light"/"dark"/"system") with legacy bool migration
+  [DONE] DB column renamed: earned → aura in CREATE TABLE DDL
+  [DONE] overviewStats keys: totalAura/todayAura (were totalXp/todayXp)
+  [DONE] Provider renames: weeklyAuraProvider, currentWeekAuraProvider
+  [DONE] New providers: weeklyAuraByWeekProvider, frozenWeeksProvider
+  [DONE] Text scale clamping: 1.0–1.3 in SyntraApp builder
+  [DONE] in_app_review package added (last_review_request_ms key in settings)
 
-  CODE QUALITY:
-  [DONE] unnecessary_overrides lint: empty initState removed
-  [DONE] use_key_in_widget_constructors: ChallengesEmptyState given super.key
-  [DONE] unnecessary_underscores lint: (_, _) → (prev, next) and (context, index)
-
-Code quality session (2026-04-25 — branches: chore/code-quality, chore/code-quality-2):
-
-  ARCHITECTURE:
-  [DONE] Q1 — DailyMissionsNotifier + dailyMissionsProvider moved to
-              lib/providers/daily_providers.dart. Screen file only imports/watches.
-  [DONE] Q7 — Loading_Sucsess_sound.wav verified as used (sound_service.dart:33 xpComplete).
-              Kept in assets.
-
-  DESIGN SYSTEM:
-  [DONE] Q2 — AppTheme.successGreen = Color(0xFF10B981) named constant added to
-              app_theme.dart. All 3 hardcoded occurrences replaced.
-  [DONE] ChallengeType / ChallengeEnvironment abstract classes added to challenge.dart.
-         All 31 raw string comparisons across 8 files replaced with constants.
-  [DONE] challenge_ui.dart: UI extension on Challenge (typeIcon, typeLabel, environmentLabel).
-         Removes duplicate type-icon/label logic from all card and list widgets.
-
-  DEAD CODE REMOVAL:
-  [DONE] Q3 — Dead TODO comment block + import comment in challenge_list_item.dart removed.
-  [DONE] activityHeatmapProvider removed from statistics_providers.dart (no consumer;
-         heatmap was replaced by WeeklyAuraChart).
-
-  NAMED CONSTANTS:
-  [DONE] Q4 — _kAbortLockSeconds, _kFullReward, _kLateReward, _kAbortPenalty extracted
-              to top-of-file constants in active_challenge_screen.dart.
+  TOOLS:
+  [DONE] lib/tools/fake_data_seeder.dart — App Store screenshot data seeder
 
   TESTS:
-  [DONE] Q5 — test/badges_logic_test.dart: 36 tests covering all 8 main badges + 9 level
-              badges with boundary values (e.g. 49 vs 50 for fifty_challenges).
-  [DONE] Q5 — test/displayed_challenges_test.dart: 7 tests for displayedChallengesProvider
-              (completion filter, aura sort, completion date sort). Uses mocked
-              SharedPreferences + sharedPreferencesProvider.overrideWithValue.
-
-  WIDGET EXTRACTION:
-  [DONE] Q6 — logbook_detail_page.dart extracted to routes/logbook/ subdirectory:
-              field_rows.dart (LogbookFeelingsRow, emotionIcon/Color/Text helpers)
-              notes_section.dart (LogbookNotesCard)
-              mood_display.dart (LogbookMoodChartCard)
-              Detail page reduced from ~890 → ~576 lines.
-
-  POLISH:
-  [DONE] isChallengeCompletedProvider.family<bool, String> added to statistics_providers.
-         challenge_detail_screen.dart now watches only its own challenge's completion state.
-  [DONE] settings_screen.dart: duplicate 44×44 streak freeze icon container extracted to
-         _StreakFreezeIcon widget; silent catch (e) {} → debugPrint log.
-  [DONE] withOpacity deprecation fixed in level_up_screen.dart and streak_celebration_screen.dart
-         → .withValues(alpha: ...) throughout.
+  [DONE] test/comfort_zone_logic_test.dart: 104 lines
+  [DONE] test/weekly_streak_logic_test.dart: 249 lines
+  [DONE] test/prediction_gap_logic_test.dart: 200 lines
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -987,37 +1227,39 @@ SECTION 5 — CURRENT PROBLEMS & REMAINING GAPS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ────────────────────────────────────────────────────────────────────────────────
-PROBLEM 1 (LOW): CZL LEVEL ASSIGNMENT — VERIFY FIELD IS EXPLICIT IN JSON
+PROBLEM 1 (LOW): NO onUpgrade CALLBACK IN openDatabase
 ────────────────────────────────────────────────────────────────────────────────
 
-The prior analysis flagged that ComfortZoneLogic.assignLevel() computed levels
-from XP percentile, making level assignments unstable across catalog changes.
-The current challenge model has a `level` field, and challenges.json includes
-level values. Verify that these are hand-curated constants, not runtime-computed
-values, to ensure CZL stability across future catalog updates.
+The openDatabase call has only onCreate; there is no onUpgrade. This is fine
+right now: the app shipped with the `aura` column from day one, so every existing
+install has the correct schema (version 1, `aura INTEGER`). No prior build was
+distributed with the old `earned` column name, so there is nothing to migrate.
+
+This becomes relevant only if a future schema change is needed (e.g. adding a
+new column). At that point, bumping to version 2 and adding an onUpgrade handler
+will be required. Keep this in mind for future DB changes.
 
 ────────────────────────────────────────────────────────────────────────────────
-PROBLEM 2 (LOW): DARK MODE SWITCH BUG
+PROBLEM 2 (LOW): MAGIC NUMBERS IN active_challenge_screen.dart
 ────────────────────────────────────────────────────────────────────────────────
 
-When system dark mode is active and the user has never changed the theme
-setting, the SegmentedButton in SettingsScreen shows no active selection
-while the app renders in dark mode. Correct behavior but feels like a bug.
+Gesture detection thresholds (dx < -8, 0.4 ratio, velocity 500) in
+active_challenge_screen.dart are inline magic numbers. _kAbortLockSeconds,
+_kFullReward, _kLateReward, _kAbortPenalty are extracted but gesture thresholds
+are not.
 
-Fix: Default the stored preference to ThemeMode.system explicitly on first
-launch, and ensure the SegmentedButton marks "System" as selected when
-mode == ThemeMode.system.
+Fix: Extract to named constants at file top.
 
 ────────────────────────────────────────────────────────────────────────────────
-PROBLEM 3 (MEDIUM): NOTIFICATION ARCHITECTURE IS OVER-ENGINEERED / REDUNDANT
+PROBLEM 3 (MEDIUM): NOTIFICATION ARCHITECTURE OVER-ENGINEERED
 ────────────────────────────────────────────────────────────────────────────────
 
 NotificationManager.cancelAllNotifications() triple-cancels via three different
-paths. The two manager classes share responsibility in an unclear way.
+paths. SyntraNotificationService and NotificationManager share responsibility
+in an unclear way.
 
 Fix: Make SyntraNotificationService the single owner of all plugin/native ops.
-NotificationManager becomes a pure scheduling-logic layer that delegates all I/O
-to SyntraNotificationService.
+NotificationManager becomes a pure scheduling-logic layer.
 
 ────────────────────────────────────────────────────────────────────────────────
 PROBLEM 4 (LOW): routerNotifier IS A GLOBAL LATE VARIABLE
@@ -1025,67 +1267,62 @@ PROBLEM 4 (LOW): routerNotifier IS A GLOBAL LATE VARIABLE
 
 router_notifier.dart declares a module-level `late final RouterNotifier`.
 Not injectable/overridable in tests. Known go_router limitation.
-Low impact unless integration testing is needed.
 
 ────────────────────────────────────────────────────────────────────────────────
-PROBLEM 5 (LOW): MIXED NAVIGATION — Navigator.push INSIDE GoRouter SCREENS
+NOTE: CZL LEVELS 6–10 — DESIGN DECISION PENDING
 ────────────────────────────────────────────────────────────────────────────────
 
-ActiveChallengeScreen uses Navigator.of(context).push<double>() to reach
-ChallengeDoneScreen, and StreakCelebrationScreen is similarly pushed via
-Navigator.push. These routes are not deep-linkable.
+All 112 challenges are at levels 1–5. filterByCzl returns challenges where
+level ≤ currentLevel, so by the time a user reaches level 5 they can already
+see the entire catalog. Levels 6–10 currently function as pure achievement
+milestones (level-up animation + badge), not content gates.
 
-This is an intentional tradeoff (they need a return value). GoRouter.push<T>()
-supports this but requires refactoring.
-
-────────────────────────────────────────────────────────────────────────────────
-PROBLEM 6 (MEDIUM): logbook_detail_page.dart IS 890 LINES — ✅ RESOLVED
-────────────────────────────────────────────────────────────────────────────────
-
-Resolved: routes/logbook/ subdirectory created with field_rows.dart,
-notes_section.dart, mood_display.dart. logbook_detail_page.dart reduced to
-~576 lines. Remaining private classes inline are helpers specific to that file.
-
-active_challenge_screen.dart (~495 lines) still has inline private classes but
-is lower priority — gesture logic and timer state make extraction tricky.
+This is either intentional (levels 6–10 reward mastery of the existing 112
+challenges, not new content) or a future expansion target (add level 6–10
+challenges to unlock harder content). Both are valid designs. 112 challenges
+is substantial content on its own. No code change is needed for either path.
 
 ────────────────────────────────────────────────────────────────────────────────
-PROBLEM 7 (MEDIUM): DailyMissionsNotifier DEFINED IN SCREEN FILE — ✅ RESOLVED
+NOTE: BADGE ID RENAMES — NON-ISSUE (shipped clean)
 ────────────────────────────────────────────────────────────────────────────────
 
-Resolved: lib/providers/daily_providers.dart created. DailyMissionsNotifier and
-dailyMissionsProvider moved out of daily_challenge_screen.dart. Screen file
-imports and watches only.
+Badge IDs were renamed before the first public release. All production users
+have the new IDs (three_week_streak, century_aura, etc.) from day one.
+No migration needed.
 
 ────────────────────────────────────────────────────────────────────────────────
-PROBLEM 8 (LOW): MAGIC NUMBERS IN active_challenge_screen.dart
+PROBLEM 8 (LOW): averageMoodPerDay IGNORES `days` PARAMETER
 ────────────────────────────────────────────────────────────────────────────────
 
-Gesture detection thresholds (dx < -8, 0.4 ratio, velocity 500) and other
-inline numeric values in active_challenge_screen.dart are not extracted to
-named constants. This makes them hard to find and reason about.
-
-Fix: Extract to a local const block or to app_spacing.dart where appropriate.
-
-────────────────────────────────────────────────────────────────────────────────
-PROBLEM 9 (LOW): HARDCODED COLOR + DEAD TODO IN challenge_list_item.dart — ✅ RESOLVED
-────────────────────────────────────────────────────────────────────────────────
-
-Resolved:
-  1. Color(0xFF10B981) replaced with AppTheme.successGreen named constant
-     across all 3 files that used it.
-  2. Dead TODO comment block in challenge_list_item.dart deleted entirely.
+averageMoodPerDay({int days = 14}) is called with no argument (days=14 default),
+but internally the method ignores `days` and always fetches the last 20 individual
+entries with no date filter. The `days` parameter exists in the signature but does
+nothing. Either the parameter should be removed (the behavior is intentional —
+last 20 data points for chart density) or the implementation should respect it.
 
 ────────────────────────────────────────────────────────────────────────────────
-PROBLEM 10 (MEDIUM): MISSING TESTS FOR badges_logic AND challenge_providers — ✅ RESOLVED
+PROBLEM 9 (LOW): SEEDER WRITES WRONG KEY FOR FROZEN WEEKS
 ────────────────────────────────────────────────────────────────────────────────
 
-Resolved:
-  - test/badges_logic_test.dart: 36 tests covering all 8 main badges + 9 level
-    badges; each badge tested at boundary (e.g. 49 vs 50 completions).
-  - test/displayed_challenges_test.dart: 7 tests for displayedChallengesProvider
-    covering completion filter (all/done/notDone), aura sort (asc/desc), and
-    completion date sort (newest/oldest first).
+fake_data_seeder.dart line 137:
+  await prefs.setString('shop_frozen_weeks', frozenWeekKey);
+
+SettingsRepository._keyFrozenWeeks = 'shop_frozen_weeks' — this matches.
+BUT SettingsRepository.loadFrozenWeeks() parses the value as a comma-separated
+set, while the seeder writes a single key (no comma). This will work correctly
+for a single frozen week. HOWEVER, if a user has existing frozen weeks and runs
+the seeder again (which first clears all entries and then resets prefs), the
+seeder writes only the single new week. This is probably fine for screenshot
+purposes but the discrepancy in data format should be documented or a proper
+Set-serialization helper should be used.
+
+────────────────────────────────────────────────────────────────────────────────
+PROBLEM 10 (LOW): WIDGET TESTS ARE STILL A PLACEHOLDER
+────────────────────────────────────────────────────────────────────────────────
+
+test/widget_test.dart is 9 lines (placeholder). No smoke tests for HomeBar,
+ProfileScreen, or ChallengesScreen. With 10 logic test files now at 1,027 lines,
+the widget test file is the only remaining gap in test coverage.
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1098,216 +1335,201 @@ Each item is rated on:
   PRIORITY  — recommended order (1 = do first)
 
 ────────────────────────────────────────────────────────────────────────────────
-TODO A: WEEKLY STREAK SYSTEM — ✅ COMPLETED
+TODO A: RESERVE onUpgrade FOR NEXT SCHEMA CHANGE
 ────────────────────────────────────────────────────────────────────────────────
+IMPACT: Low  |  EFFORT: Low  |  PRIORITY: (do when next schema change is needed)
 
-Implemented in full: weekly_streak_logic.dart, kWeeklyXpThreshold = 300,
-ISO week numbering, frozen weeks, auto-freeze, pending streak display.
-The challenges header shows a live XP progress ring for the current week.
-
-────────────────────────────────────────────────────────────────────────────────
-TODO B: CLEAN DB + NEW CHALLENGES (updated values, tags, 6 per category)
-────────────────────────────────────────────────────────────────────────────────
-IMPACT: High  |  EFFORT: High (content work)  |  PRIORITY: 1
-
-This is a content task, not a code task:
-  - Audit existing challenges.json and translations/{en,de}.json for quality.
-  - Reassign XP values to be meaningful and consistent within levels.
-  - Update tags (type, environment, flirt flag) to be accurate.
-  - Verify that the "level" field in challenges.json is hand-curated (not
-    auto-assigned) — this fixes Problem 1.
-  - Target 6 challenges per category/level combination.
-  - Ensure German translations are complete and natural.
-
-NOTE: Challenge IDs are now sequential 0–111 and synchronized across all three
-files. Any future content addition must maintain this synchronization.
+All shipped installs have `aura INTEGER` (version 1, clean). No migration is
+needed now. When the next schema change is required (new column, index change),
+bump to version 2 and wire the onUpgrade callback at that point.
 
 ────────────────────────────────────────────────────────────────────────────────
-TODO C: STREAK SHIELD SHOP UI + THEME UNLOCKS (backend for shop UI)
+TODO B: CHALLENGE CONTENT QUALITY PASS (optional, future expansion)
 ────────────────────────────────────────────────────────────────────────────────
-IMPACT: High  |  EFFORT: Medium  |  PRIORITY: 2
+IMPACT: Medium  |  EFFORT: High (content work)  |  PRIORITY: 5
 
-The shop mechanics are implemented (spentAura, streakFreezesProvider, auto-apply).
-What remains is the UI layer and theme unlock system:
+112 challenges is a solid catalog. A future quality pass could:
+  - Audit XP values for consistency within levels
+  - Verify tags (type, environment, flirt) are accurate
+  - Add level 6–10 challenges if content gating is desired for those levels
+  - Ensure German translations are natural
 
-PART 1 — Shop screen / section:
-  Show available Aura balance, freeze inventory (0/1/2), and a buy button.
-  Buy freeze: spend 500 Aura via spentAuraNotifier.spend(500) + add freeze.
-  Integrate as a scrollable section at the bottom of ProfileScreen (not a new tab).
-
-PART 2 — App Themes:
-  Users spend Aura to unlock cosmetic seed-color themes.
-  Add Map<String, Color> of theme options, Set<String> unlockedThemes to
-  SettingsRepository, and a themed seed color provider reading from active theme.
+Not a release blocker. Do after core mechanics and shop UI are shipped.
 
 ────────────────────────────────────────────────────────────────────────────────
-TODO D: RENAME ALL XP TO "AURA" (consistent branding)
-────────────────────────────────────────────────────────────────────────────────
-IMPACT: Medium  |  EFFORT: Low  |  PRIORITY: 3
-
-UI already uses "Aura Points" but there are still inconsistent references:
-  - ARB keys: totalXp, xpEarnedThisWeek, centuryXp, fiveHundredXp
-  - Stat card label: l.totalXp
-  - Badge logic: 'century_xp', 'five_hundred_xp'
-  - Provider names: weeklyXpProvider, overviewStats 'totalXp' key
-
-User-visible strings in intl_en.arb / intl_de.arb should say "Aura" consistently.
-Internal Dart variable names (xp, totalXp) are fine to keep for code clarity.
-
-────────────────────────────────────────────────────────────────────────────────
-TODO E: FIX DARK MODE SWITCH DEFAULT BUG
-────────────────────────────────────────────────────────────────────────────────
-IMPACT: Low  |  EFFORT: Low  |  PRIORITY: 3 (quick win, do alongside D)
-
-See Problem 2. In ThemeModeNotifier._load(), ensure SegmentedButton marks
-"System" as selected when mode == ThemeMode.system.
-
-────────────────────────────────────────────────────────────────────────────────
-TODO F: WEEKLY GOAL ANIMATION (when goal is reached)
-────────────────────────────────────────────────────────────────────────────────
-IMPACT: Medium  |  EFFORT: Low  |  PRIORITY: 4
-
-When the weekly challenge goal (3/5/7) is completed, show an inline animation
-or push StreakCelebrationScreen with a "weekly goal" message variant.
-Store a SharedPreferences key weeklyGoalCelebratedWeek (ISO year-week) to
-avoid re-triggering every rebuild.
-
-────────────────────────────────────────────────────────────────────────────────
-TODO G: UPDATE "XPIERIENCE" SURVEY TO CONCRETE QUESTIONS
-────────────────────────────────────────────────────────────────────────────────
-IMPACT: Medium  |  EFFORT: Low  |  PRIORITY: 4
-
-Replace abstract emoji-scale labels with concrete behavioral prompts.
-Add rotating placeholder text to the notes field (guided reflection prompts).
-Changes only intl_en.arb / intl_de.arb strings — no logic changes needed.
-
-────────────────────────────────────────────────────────────────────────────────
-TODO H: BACKEND FOR REAL USER DATA + SOCIAL FEATURES (leaderboard)
-────────────────────────────────────────────────────────────────────────────────
-IMPACT: Very High (long-term)  |  EFFORT: Very High  |  PRIORITY: 7 (last)
-
-This is the largest architectural change — makes the app no longer offline-only.
-Requires: Auth service, Firestore sync, leaderboard API, AccountProvider,
-ConflictResolution strategy, Profile/Leaderboard screen.
-
-Real anonymized user notes on the challenge done screen (social proof) become
-possible with the backend — see Section 9.2.
-
-Do TODO A through F first. Backend work has the highest dependency on
-stable gameplay mechanics.
-
-────────────────────────────────────────────────────────────────────────────────
-TODO I: ADD iPHONE AESTHETICS (iOS-native polish)
+TODO C: SHOP UI (streak freeze purchase screen)
 ────────────────────────────────────────────────────────────────────────────────
 IMPACT: Low  |  EFFORT: Medium  |  PRIORITY: 6
 
-Material 3 on iOS looks slightly "off" vs native UIKit apps. Use platform-
-adaptive constructors (Switch.adaptive) and consider CupertinoPageRoute for
-navigation transitions. Use CupertinoSlidingSegmentedControl on iOS.
+Shop mechanics are fully implemented (spentAura, streakFreezes, auto-apply).
+With only one item to buy (streak freeze at 500 Aura), a dedicated shop screen
+is not worth building yet. Revisit when a second purchasable exists (e.g. theme
+unlocks from TODO I).
+
+When the time comes: implement as a scrollable section in ProfileScreen (not a
+new tab). Show Aura balance, freeze inventory (0/1/2), buy button.
+
+────────────────────────────────────────────────────────────────────────────────
+TODO D: RENAME XP → AURA IN ALL STRINGS
+────────────────────────────────────────────────────────────────────────────────
+IMPACT: Medium  |  EFFORT: Low  |  PRIORITY: 3 (do alongside E)
+
+Remaining inconsistencies:
+  - ARB keys still use xp in some labels (l.totalXp visible on stats grid)
+  - Provider formerly named weeklyXpProvider now weeklyAuraProvider — done
+  - Badge IDs now use 'aura' — done
+  - overviewStats keys now totalAura/todayAura — done
+
+────────────────────────────────────────────────────────────────────────────────
+TODO E: THEME SELECTION — ✅ RESOLVED (dropdown working in production)
+────────────────────────────────────────────────────────────────────────────────
+
+────────────────────────────────────────────────────────────────────────────────
+TODO F: WEEKLY GOAL COMPLETION ANIMATION
+────────────────────────────────────────────────────────────────────────────────
+IMPACT: Medium  |  EFFORT: Low  |  PRIORITY: 4
+
+When the weekly challenge goal (3/5/7) is hit, show an inline animation or
+push StreakCelebrationScreen with a "weekly goal" message variant.
+Use last_goal_week key (already in SettingsRepository) to avoid re-triggering.
+
+────────────────────────────────────────────────────────────────────────────────
+TODO G: CONCRETE SURVEY QUESTIONS + ROTATING NOTE PROMPTS
+────────────────────────────────────────────────────────────────────────────────
+IMPACT: Medium  |  EFFORT: Low  |  PRIORITY: 4
+
+Replace abstract emoji labels with concrete behavioral prompts.
+Add rotating placeholder text: "What was easier than you expected?",
+"What would you do differently?", "How did you feel physically?"
+Changes only intl_en.arb / intl_de.arb — no logic changes.
+
+────────────────────────────────────────────────────────────────────────────────
+TODO H: PREDICTION-REALITY GAP ON DONE SCREEN + LOGBOOK DETAIL
+────────────────────────────────────────────────────────────────────────────────
+IMPACT: High  |  EFFORT: Low  |  PRIORITY: 4
+
+The gap insight is now shown in ChallengeDetailScreen (historical view).
+What remains:
+  - ChallengeDoneScreen: show "you expected X, you felt Y" immediately after this
+    session if enough prior data exists (or after the first few attempts, show the
+    per-session comparison without aggregation).
+  - LogbookDetailPage: surface pre_anxiety vs. feeling gap for that specific entry.
+The data is captured. Only the display is missing.
+
+────────────────────────────────────────────────────────────────────────────────
+TODO I: APP THEMES (cosmetic seed-color unlocks)
+────────────────────────────────────────────────────────────────────────────────
+IMPACT: Medium  |  EFFORT: Medium  |  PRIORITY: 5
+
+Part 2 of the shop system: users spend Aura to unlock cosmetic seed-color themes.
+Add Map<String, Color> of theme options and Set<String> unlockedThemes to
+SettingsRepository. Active theme drives the ColorScheme seed in AppTheme.
+
+────────────────────────────────────────────────────────────────────────────────
+TODO J: iOS AESTHETIC POLISH
+────────────────────────────────────────────────────────────────────────────────
+IMPACT: Low  |  EFFORT: Medium  |  PRIORITY: 6
+
+Switch.adaptive, CupertinoPageRoute, CupertinoSlidingSegmentedControl on iOS.
+Material 3 on iOS looks slightly off vs UIKit apps.
+
+────────────────────────────────────────────────────────────────────────────────
+TODO K: BACKEND + SOCIAL FEATURES (leaderboard, real social proof)
+────────────────────────────────────────────────────────────────────────────────
+IMPACT: Very High (long-term)  |  EFFORT: Very High  |  PRIORITY: 7 (last)
+
+Auth, Firestore sync, leaderboard API, AccountProvider, conflict resolution.
+Do all other TODOs first. Backend has the highest dependency on stable mechanics.
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SECTION 7 — CODE QUALITY AUDIT FINDINGS
+SECTION 7 — CODE QUALITY AUDIT FINDINGS (CUMULATIVE)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-────────────────────────────────────────────────────────────────────────────────
-Q1: MOVE DailyMissionsNotifier TO providers/ — ✅ DONE
-────────────────────────────────────────────────────────────────────────────────
-lib/providers/daily_providers.dart created. DailyMissionsNotifier +
-dailyMissionsProvider moved out of daily_challenge_screen.dart.
+All Q1–Q7 items from the 2026-04-25 session remain done.
+
+NEW FINDINGS (2026-05-01):
 
 ────────────────────────────────────────────────────────────────────────────────
-Q2: REPLACE HARDCODED COLOR IN challenge_list_item.dart — ✅ DONE
+Q8: averageMoodPerDay IGNORES ITS `days` PARAMETER
 ────────────────────────────────────────────────────────────────────────────────
-AppTheme.successGreen = Color(0xFF10B981) named constant added. All 3 hardcoded
-occurrences (challenge_list_item.dart, daily_challenge_screen.dart,
-challenge_detail_screen.dart) replaced with AppTheme.successGreen.
+lib/data/logbook_repository.dart: averageMoodPerDay({int days = 14})
+The method fetches the last 20 entries regardless of the `days` value.
+If the intent is to always fetch the last 20 data points (good for chart density),
+remove the `days` parameter entirely. If it should filter by date range, fix the
+implementation. This is confusing as-is.
 
 ────────────────────────────────────────────────────────────────────────────────
-Q3: DELETE DEAD TODO COMMENT IN challenge_list_item.dart — ✅ DONE
+Q9: loadAllTimeMaxStreak / loadWeeklyGoal USE SharedPreferences.getInstance()
 ────────────────────────────────────────────────────────────────────────────────
-Dead TODO comment block and associated import comment deleted from
-challenge_list_item.dart.
+lib/data/settings_repository.dart:
+loadAllTimeMaxStreak(), saveAllTimeMaxStreak(), loadWeeklyGoal(), saveWeeklyGoal()
+all call SharedPreferences.getInstance() directly instead of using _prefs (the
+injected instance). This means those calls are not covered by the
+sharedPreferencesProvider.overrideWithValue pattern used in tests, making those
+specific settings untestable in isolation.
+
+Fix: Replace SharedPreferences.getInstance() calls with _prefs in all four methods.
 
 ────────────────────────────────────────────────────────────────────────────────
-Q4: EXTRACT MAGIC NUMBERS IN active_challenge_screen.dart — ✅ DONE
+Q10: czlCompletionsProvider CALLS getCompletionsAtCurrentLevel() VIA .notifier
 ────────────────────────────────────────────────────────────────────────────────
-_kAbortLockSeconds = 15, _kFullReward = 1.0, _kLateReward = 0.8,
-_kAbortPenalty = -0.5 extracted to top-of-file constants.
+lib/providers/statistics_providers.dart:
+  czlCompletionsProvider = Provider<int>((ref) {
+    ref.watch(comfortZoneLevelProvider);
+    ref.watch(statisticsRefreshProvider);
+    return ref.read(comfortZoneLevelProvider.notifier).getCompletionsAtCurrentLevel();
+  });
 
-────────────────────────────────────────────────────────────────────────────────
-Q5: ADD TESTS FOR badges_logic AND displayedChallengesProvider — ✅ DONE
-────────────────────────────────────────────────────────────────────────────────
-test/badges_logic_test.dart: 36 tests (8 main badges + 9 level badges, boundary values).
-test/displayed_challenges_test.dart: 7 tests (completion filter, aura sort,
-completion date sort). Uses SharedPreferences.setMockInitialValues pattern.
-
-────────────────────────────────────────────────────────────────────────────────
-Q6: EXTRACT logbook_detail_page.dart WIDGETS — ✅ DONE
-────────────────────────────────────────────────────────────────────────────────
-routes/logbook/ created: field_rows.dart, notes_section.dart, mood_display.dart.
-logbook_detail_page.dart reduced from ~890 to ~576 lines.
-
-────────────────────────────────────────────────────────────────────────────────
-Q7: VERIFY Loading_Sucsess_sound.wav IS USED — ✅ DONE
-────────────────────────────────────────────────────────────────────────────────
-Confirmed used: sound_service.dart:33 references it as xpComplete asset path.
-File retained in assets/.
+ref.read() inside a Provider is a code smell — it creates a non-reactive read
+in what appears to be a reactive provider. If the notifier's internal state
+changes without triggering comfortZoneLevelProvider's own change notification,
+czlCompletionsProvider will not update. This is low-risk because SharedPreferences
+reads are synchronous and the watch on comfortZoneLevelProvider covers the common
+path, but it should be made explicit.
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SECTION 8 — QUALITY IMPROVEMENTS (UNPROMPTED SUGGESTIONS)
+SECTION 8 — QUALITY IMPROVEMENT SUGGESTIONS (UNPROMPTED)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-────────────────────────────────────────────────────────────────────────────────
-S1: PERSIST COMPLETED CHALLENGE HIGHLIGHT IN DAILY MISSIONS
-────────────────────────────────────────────────────────────────────────────────
-Priority: MEDIUM
-If the user completes a daily mission and then kills and reopens the app,
-verify the DailyChallengeScreen correctly reads completion state on load (via
-the DailyMissionsNotifier) and not only after a challenge returns in-session.
+S1: PERSIST COMPLETED CHALLENGE HIGHLIGHT IN DAILY MISSIONS (MEDIUM)
+  Verify DailyChallengeScreen reads completion state on cold load correctly.
 
-────────────────────────────────────────────────────────────────────────────────
-S2: ADD "TRY AGAIN" BUTTON TO LogbookDetailPage
-────────────────────────────────────────────────────────────────────────────────
-Priority: LOW
-LogbookDetailPage shows a past attempt but has no way to retry the challenge.
-Add a "Try Again" button that navigates to PrimingScreen for that challenge.
-Requires looking up the challenge from the catalog by ID (already cached).
+S2: ADD "TRY AGAIN" FROM LogbookDetailPage (LOW)
+  "Try Again" button → goPriming(challenge) for the logged challenge ID.
+  Requires catalog lookup by ID (already cached in challengeCatalogProvider).
 
-────────────────────────────────────────────────────────────────────────────────
-S3: ADD HAPTIC FEEDBACK TO MORE INTERACTIONS
-────────────────────────────────────────────────────────────────────────────────
-Priority: LOW
-Missing haptics: badge unlock, weekly goal completion, CZL level-up.
-Opportunity: badge unlock moment (diff earned badges before/after challenge),
-triggered from ChallengeDoneScreen after the XP animation.
+S3: ADD HAPTIC FEEDBACK TO MORE INTERACTIONS (LOW)
+  Badge unlock, weekly goal completion, CZL level-up moments are missing haptics.
 
-────────────────────────────────────────────────────────────────────────────────
-S4: ACCESSIBILITY — SEMANTICS FOR CHARTS AND HEATMAP
-────────────────────────────────────────────────────────────────────────────────
-Priority: MEDIUM (App Store review consideration)
-fl_chart charts have no semantic labels. The heatmap has no accessibility.
-Add Semantics() wrappers with meaningful descriptions for screen readers.
-Example: "Weekly Aura chart. Mon: 80, Tue: 120, ..."
+S4: ACCESSIBILITY — SEMANTICS FOR CHARTS (MEDIUM — App Store consideration)
+  fl_chart charts have no semantic labels. Add Semantics() wrappers.
 
-────────────────────────────────────────────────────────────────────────────────
-S5: ADD ENVIRONMENT FILTER TO CHALLENGES SCREEN
-────────────────────────────────────────────────────────────────────────────────
-Priority: MEDIUM
-The environment field (street / transit / cafe / event / all) is persisted in
-ChallengeFilters and wired to filteredChallengesProvider. The filter_sheet.dart
-already has the pattern. Verify the environment filter chip is exposed in the
-advanced filter sheet and working end-to-end.
+S5: COACH MESSAGES SEGMENTED BY CHALLENGE TYPE (LOW)
+  Current: 7 generic messages, deterministic hash per challenge ID.
+  Better: pool messages per type (solo/group/flirt/dare), draw from relevant pool.
 
-────────────────────────────────────────────────────────────────────────────────
-S6: WIDGET TESTS — REPLACE PLACEHOLDER
-────────────────────────────────────────────────────────────────────────────────
-Priority: LOW
-test/widget_test.dart is a placeholder. Add smoke tests for:
-  - HomeBar renders without error
-  - ProfileScreen renders all sections
-  - ChallengesScreen renders filtered list
+S6: WIDGET TESTS — REPLACE PLACEHOLDER (LOW)
+  Add smoke tests: HomeBar renders, ProfileScreen renders all sections,
+  ChallengesScreen renders filtered list.
+
+S7: PREDICTION GAP ON DONE SCREEN — CURRENT SESSION COMPARISON (MEDIUM)
+  After completing a challenge, if pre_anxiety was set, show immediately:
+  "You expected X/5 — you felt Y/5. That's Z better than expected."
+  No historical minimum needed — works from a single data point.
+  This is more impactful than the aggregated historical view.
+
+S8: AURA MILESTONE CELEBRATIONS (LOW)
+  First time reaching 100 Aura, 500 Aura — push a celebration analogous to the
+  streak celebration. The data is in overviewStatsProvider.totalAura.
+  Store last_celebrated_aura_milestone in SharedPreferences.
+
+S9: ENDGAME DESIGN FOR CZL 10 (MEDIUM)
+  The progression ends at level 10. Post-level-10 users have no path forward.
+  Options: challenge mastery system (repeat challenges to "master" them),
+  a "coach" mode where the user sets their own challenges, or an infinite XP
+  accumulation leaderboard. Plan needed before content for levels 6-10 ships.
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1316,384 +1538,296 @@ SECTION 9 — ROADMAP PRIORITY SUMMARY
 
 Recommended order of work:
 
-  PHASE 1 — Core Gameplay Loop Polish (do before any social features)
-  ────────────────────────────────────────────────────────────────────
-  1. [TODO B] New challenges + clean catalog + verify explicit level field
-     Rationale: everything else builds on good challenge data.
-  2. [TODO C] Shop UI — buy streak freeze screen in ProfileScreen
-     Rationale: Aura economy is already functional; only the UI is missing.
-  3. [TODO D + TODO E] Rename XP→Aura in all strings + fix dark mode bug
-     Rationale: quick wins, should be one PR.
+  PHASE 1 — Core Gameplay Loop Polish
+  ────────────────────────────────────
+  1. [TODO B] New challenges + content quality pass + levels 6–10 catalog entries
+  2. [TODO C] Shop UI — buy streak freeze in ProfileScreen
+  3. [TODO D] Rename remaining XP→Aura strings (TODO E already resolved)
   4. [TODO G] Concrete survey questions + rotating note prompts
-     Rationale: improves data quality for future mood analytics.
+  5. [TODO H] Prediction gap on done screen (current-session comparison, S7)
 
   PHASE 2 — Engagement & Retention
   ─────────────────────────────────
-  5. [TODO F] Weekly goal completion animation
-     Rationale: closes the reward loop for weekly engagement.
-  6. [S4] Accessibility: Semantics() wrappers for charts
-     Rationale: App Store review consideration.
-  Note: Code Q1 (DailyMissionsNotifier) and Code Q5 (tests) are done.
+  6. [TODO F] Weekly goal completion animation
+  7. [S4] Accessibility: Semantics() for charts
+  8. [S9] Endgame design plan for post-CZL-10
 
   PHASE 3 — Platform Polish
   ─────────────────────────
-  8. [TODO I] iOS aesthetic polish (low priority, do when targeting App Store)
-  9. [S4] Accessibility: Semantics() wrappers for charts/heatmap
+  9. [TODO J] iOS aesthetic polish
 
-  PHASE 4 — Social (requires stable v1 mechanics)
-  ────────────────────────────────────────────────
-  10. [TODO H] Backend + leaderboard — start only after Phase 1 + 2 are done.
+  PHASE 4 — Economy & Social
+  ──────────────────────────
+  10. [TODO I] App theme unlocks
+  11. [TODO K] Backend + leaderboard — after Phase 1+2
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 SECTION 10 — PSYCHOLOGICAL DESIGN ANALYSIS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-This section evaluates what psychological mechanisms the app currently uses,
-which ones work well, and which are missing or misused.
-
 ────────────────────────────────────────────────────────────────────────────────
 10.1 WHAT THE APP GETS RIGHT
 ────────────────────────────────────────────────────────────────────────────────
 
-GRADUATED EXPOSURE (STRONG)
-The CZL system is a direct implementation of the clinical exposure therapy
-concept: face the least anxiety-provoking situations first, then escalate as
-you habituate. Level 1 ("Micro-interactions") → Level 5 ("The Bold Zone")
-exactly mirrors a SUDS (Subjective Units of Distress) hierarchy used by
-therapists treating social anxiety. This is the most psychologically credible
-part of the app. The mechanism is sound.
+GRADUATED EXPOSURE (STRONG — now stronger with 10 levels)
+The CZL system is a direct implementation of clinical exposure therapy.
+Ten levels from Level 1 ("internal discomfort only, no words required") to
+Level 10 ("just outside what feels acceptable — you feel the weight, you go anyway")
+form an extraordinarily precise SUDS (Subjective Units of Distress) hierarchy.
+The new level descriptions are psychologically sophisticated — they identify
+exactly which component of the social interaction creates the anxiety (the opener,
+staying present, revealing something personal, the visibility of the approach, the
+sustained audience). This mirrors systematic desensitization more faithfully than
+any comparable consumer app.
+
+PREDICTION-REALITY GAP (NOW IMPLEMENTED — strongest evidence-based feature)
+This is the most clinically validated mechanism for reducing social anxiety.
+Research consistently shows that anxious people catastrophically over-predict
+aversive outcomes. Showing the gap between expectation and reality — repeatedly,
+across challenges — is what creates lasting belief change, not just behavioral change.
+The full pipeline is now in place:
+  - Pre-challenge anxiety rating (1–5) captured on PrimingScreen
+  - Post-challenge feeling (0–4) captured on ChallengeDoneScreen survey
+  - Gap computation in PredictionGapLogic with tone categorization
+  - Per-challenge and aggregate display via PredictionGapCard
+
+The one remaining gap (TODO H, S7): showing the per-session comparison immediately
+on the ChallengeDoneScreen ("You expected 4/5 — you felt 2/5") would be the most
+powerful reinforcement moment. Currently the gap is only visible on the detail
+screen (historical view). The immediate comparison is what triggers the "oh, I was
+wrong about this" insight that drives habit change.
 
 BEHAVIORAL COMMITMENT (STRONG)
-The 15-second abort lock on the active challenge screen is a well-designed
-implementation of commitment theory. Removing the exit option briefly forces
-the user to sit with discomfort rather than flee immediately. Research on
-exposure therapy shows that brief tolerance of anxiety — not avoidance — is
-what produces habituation. The lock is the right call.
+The 15-second abort lock (_kAbortLockSeconds = 15) is a well-designed
+implementation of commitment theory. Brief tolerance of discomfort, not avoidance,
+is what produces habituation. The lock is the right call.
 
 PRIMING / IMPLEMENTATION INTENTIONS (GOOD)
-The PrimingScreen gives users 5 seconds of contextual framing before the
-timer starts (different headlines for flirt/group/quick/hard challenges).
-This mirrors implementation intentions: "I am about to do X in situation Y."
-The duration picker gives a small act of agency, reducing reactance.
+PrimingScreen gives contextual framing before the timer starts. Adding the anxiety
+rating before the challenge (implementation intention with an emotional baseline)
+is now the key data capture point for the gap system.
 
 IMMEDIATE REINFORCEMENT LOOP (STRONG)
-Challenge → timer → done → XP count-up animation → coach message → survey.
-The full loop is tight. The XP counter animation is a direct dopamine trigger.
-Reinforcement is most effective when it arrives within seconds of the behavior.
+Challenge → timer → done → Aura count-up → coach message → survey.
+The full loop is tight and well-timed.
 
-WEEKLY STREAK DESIGN (MUCH IMPROVED)
-The shift from daily to weekly streaks (kWeeklyXpThreshold = 300, Mon–Sun)
-correctly addresses the mismatch between social challenges and daily habit apps.
-Users can miss a day for work, travel, or low social energy without losing their
-streak, as long as they hit 300 Aura across the week. The streak freeze mechanic
-provides additional protection. This is now a well-designed retention system.
-
-METACOGNITIVE MOOD TRACKING (GOOD BUT UNDERUSED)
-The post-challenge survey captures feeling and perception per challenge.
-This is metacognitive training — users become aware of how they felt, building
-interoceptive awareness. Per-challenge mood history in ChallengeDetailScreen is
-genuinely valuable. The data foundation is excellent.
+WEEKLY STREAK DESIGN (STRONG)
+kWeeklyXpThreshold = 300, Mon–Sun, freeze mechanic. The design is sound:
+achievable in a realistic week, resilient to disruption, motivationally urgent.
 
 ────────────────────────────────────────────────────────────────────────────────
-10.2 WHAT IS MISSING OR BROKEN
+10.2 WHAT IS MISSING OR STILL WEAK
 ────────────────────────────────────────────────────────────────────────────────
 
-THE PREDICTION-REALITY GAP (PARTIALLY IMPLEMENTED)
-This is the single most evidence-backed mechanism for reducing social anxiety.
-Research consistently shows that people with social anxiety catastrophically
-over-predict how bad social situations will feel. Seeing the gap repeatedly —
-expectation vs. reality — is what creates lasting change.
-
-Current state:
-  ✅ PrimingScreen has a 5-icon pre-challenge anxiety picker (1–5 scale,
-     "How nervous are you?" with icons from very satisfied to very dissatisfied).
-  ✅ pre_anxiety is passed to the challenge session and stored in logbook.pre_anxiety.
-  ❌ The done screen does NOT yet show a comparison ("You expected 4/5 — reported 2/5").
-  ❌ The logbook detail view does not surface the pre/post gap.
-
-Remaining work: one targeted addition in ChallengeDoneScreen and LogbookDetailPage
-to surface the gap. The data is already captured — only the display is missing.
+PREDICTION GAP NOT SHOWN AT THE RIGHT MOMENT
+The gap insight is now displayed historically (detail screen, stats screen).
+But the highest-impact moment is the milliseconds right after completing a
+challenge — when the emotional memory is freshest and the cognitive dissonance
+("I thought this would be terrible, it was fine") is most salient. The done
+screen should show: "You expected [pre_anxiety icon], you felt [feeling icon]."
+Even without aggregation. Even on the first attempt.
 
 NO INSIGHT LAYER ON THE LOGBOOK
-The logbook stores rich data (mood, perception, notes, XP, duration, pre_anxiety)
-but shows it only as a chronological list. Missing derived insights like:
-  - "You complete 85% of solo challenges but only 40% of group ones"
-  - "Your average mood after challenges is 3.8/5"
+Rich data exists but is only displayed chronologically. Missing derived insights:
+  - "85% solo success vs. 40% group success"
+  - "Average mood after challenges: 3.8/5"
   - "You haven't tried a Bold challenge in 2 weeks"
 
-ABORT IS FRAMED AS FAILURE, NOT AS ATTEMPT
-Even an aborted challenge involved showing up, starting, and experiencing the
-beginning of the situation. The app should frame aborts as "you tried, that
-matters" more explicitly. Consider: rename "Tried" to "Attempted", celebrate
-the attempt, and explain that partial exposure still reduces anxiety.
+ABORT IS STILL FRAMED AS FAILURE
+Even an aborted challenge involved showing up and starting. The app should
+celebrate attempts more explicitly. Consider renaming "Tried" to "Attempted"
+and framing: "Partial exposure still reduces anxiety — you did the hardest part."
 
 SOCIAL PROOF IS FAKE AND INERT
-The "X others have done this challenge" (800–4499 deterministic hash) is not
-doing real psychological work. Real anonymized user notes would be far more
-anxiety-reducing. The UI slot is already there; this requires the backend (TODO H).
+"X others have done this challenge" (800–4499 hash) is not doing psychological
+work and is technically misleading. Real anonymized notes require backend (TODO K).
 
 COACH MESSAGES ARE NOT CONTEXTUAL
-7 generic messages hashed to a challenge ID. A coach message after a group
-challenge should differ from one after a flirt challenge. Pool messages by
-challenge type (solo/group/flirt/dare) and draw from the relevant pool.
+7 generic messages, deterministic by challenge ID. After a flirt challenge the
+message should differ from a group challenge. Pool by type and draw from the
+relevant pool (S5).
 
-NO REFLECTION PROMPTS IN NOTES FIELD
-A blank text box produces less reflection than guided prompts. Add rotating
-placeholder text: "What was easier than you expected?", "What would you do
-differently?", "How did you feel physically?" Costs near-zero to implement.
+CZL 6–10 HAS NO CONTENT
+The most psychologically sophisticated levels (7–10 in particular — "declare
+your interest directly", "become the spectacle", "just outside acceptable") are
+well-designed but have zero catalog entries. Users never experience them.
 
 ────────────────────────────────────────────────────────────────────────────────
-10.3 THE WEEKLY STREAK — DESIGN ASSESSMENT (UPDATED)
+10.3 THE WEEKLY STREAK — DESIGN ASSESSMENT
 ────────────────────────────────────────────────────────────────────────────────
 
-The weekly streak design (kWeeklyXpThreshold = 300, Mon–Sun week, freeze mechanic)
-is a significant improvement over the prior daily streak model. The key design
-choices are sound:
+The weekly streak design (kWeeklyXpThreshold = 300, Mon–Sun, freeze mechanic)
+is sound. 300 Aura ≈ 4 easy or 1–2 hard challenges. Achievable without daily
+commitment. Auto-freeze provides retroactive forgiveness on return. Pending
+streak creates motivational urgency without penalty.
 
-  - 300 Aura ≈ 4 easy challenges or 1 hard challenge. Achievable in a realistic
-    week without requiring daily behavior.
-  - Freeze mechanic (up to 2 weeks) provides resilience for real-life disruptions.
-  - Pending streak (grey display when current week is below threshold) gives
-    motivational urgency without penalty — the streak "breathes" as you progress.
-  - Auto-freeze applies retroactively on the next successful session, so a user
-    who was sick and comes back still gets credit for their frozen week.
-
-Remaining improvement opportunity:
-  - Connect the weekly streak to the weekly goal card so they tell a unified story.
-    Currently weekStreak and weeklyGoal are parallel systems. Consider:
-    "Your streak continues when you hit your weekly goal."
-  - Show a "X days left in your streak week" countdown to create appropriate urgency.
+Remaining opportunity: connect weekly streak and weekly goal into one unified
+system. Currently they run in parallel. "Your streak continues when you hit your
+weekly goal" would simplify the mental model.
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 SECTION 11 — GAMIFICATION LAYER RATINGS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Each gamification system is rated 1–10 on:
-  DESIGN  — how well-conceived the mechanism is for this app's goals
-  IMPL    — how well it is currently implemented in code/UX
+Each system rated 1–10 on:
+  DESIGN — how well-conceived the mechanism is
+  IMPL   — how well implemented in code/UX
 
 ────────────────────────────────────────────────────────────────────────────────
-LAYER 1: AURA POINTS (XP)
-Design: 7/10  |  Impl: 8/10
+LAYER 1: AURA POINTS
+Design: 7/10  |  Impl: 8/10  (unchanged)
 ────────────────────────────────────────────────────────────────────────────────
-What works:
-  - Immediate count-up animation on the done screen is satisfying.
-  - Points are proportional to difficulty (XP tied to challenge level).
-  - 10% daily mission bonus incentivizes mission use.
-  - The Aura branding is distinctive and on-brand.
-  - availableAuraProvider derives spendable balance (totalXp − spentAura) —
-    the economy foundation is in place.
-
-Still missing:
-  - Shop UI (buying streak freezes requires a screen, not just the mechanic).
-  - Aura milestone celebrations (reaching 500, 1000 Aura for the first time).
-  - XP breakdown visible on done screen: base + timer efficiency + daily bonus.
+What works: immediate count-up animation, proportional to difficulty, 10% daily
+bonus, Aura branding distinctive, economy foundation (availableAura) in place.
+Still missing: Shop UI, Aura milestone celebrations, XP breakdown on done screen.
 
 ────────────────────────────────────────────────────────────────────────────────
 LAYER 2: COMFORT ZONE LEVEL (CZL) PROGRESSION
-Design: 9/10  |  Impl: 8/10
+Design: 10/10  |  Impl: 8/10  (design improved from 9 to 10)
 ────────────────────────────────────────────────────────────────────────────────
-What works:
-  - 5-level model mirrors exposure therapy's graduated hierarchy.
-  - Gating harder challenges prevents overwhelm.
-  - 3 completions per level is achievable without grinding.
-  - CZL progress shown in challenges header creates ambient awareness.
-  - level_up_screen.dart provides a dramatic level-up moment (improved from
-    the old plain AlertDialog).
-
-Still missing:
-  - When you unlock a new level, the count of newly accessible challenges
-    should be shown explicitly in the level-up screen.
-  - Post-CZL-5 endgame: challenge mastery system.
+What works: 10-level model is now a clinical-grade SUDS hierarchy. Variable
+completion thresholds grow naturally. Level descriptions are precise. Icons and
+gradients are visually distinctive.
+Still missing: catalog content for levels 6–10 (critical); endgame design post-10.
+Impl note: level_up_screen.dart should show count of newly unlocked challenges.
 
 ────────────────────────────────────────────────────────────────────────────────
 LAYER 3: STREAK SYSTEM
-Design: 7/10  |  Impl: 8/10  (was 2/10 design, now fixed)
+Design: 7/10  |  Impl: 8/10  (unchanged)
 ────────────────────────────────────────────────────────────────────────────────
-The weekly model (kWeeklyXpThreshold = 300, Mon–Sun, freeze mechanic) is
-a significant improvement. Implementation is clean, pure, and tested.
-Remaining gap: visual connection between weekly goal progress and streak
-status — they should feel like one system, not two parallel ones.
+Weekly model, freeze mechanic, pending streak. Implementation is clean and tested.
+Gap: visual unification with weekly goal (they feel like two separate systems).
 
 ────────────────────────────────────────────────────────────────────────────────
 LAYER 4: DAILY MISSION BOARD (THREE-TIER)
-Design: 7/10  |  Impl: 7/10
+Design: 7/10  |  Impl: 7/10  (unchanged)
 ────────────────────────────────────────────────────────────────────────────────
-What works: Comfort/Growth/Bold naming, 10% bonus, daily refresh, three options.
-Still missing: mission expiry countdown ("resets in 4h"), full-board bonus,
-environment-aware mission selection, tier split by level not XP.
+Comfort/Growth/Bold, 10% bonus, daily refresh. Still missing: mission expiry
+countdown, full-board bonus, environment-aware selection, tier split by level not XP.
 
 ────────────────────────────────────────────────────────────────────────────────
 LAYER 5: BADGES
-Design: 4/10  |  Impl: 7/10
+Design: 6/10  |  Impl: 9/10  (design up from 4, impl up from 7)
 ────────────────────────────────────────────────────────────────────────────────
-What works: clean rendering in profile screen, earned/locked distinction.
-Still missing: badge unlock notification (badge_unlocked_screen.dart exists —
-confirm it is triggered from ChallengeDoneScreen when a new badge is earned),
-tiered progression (bronze/silver/gold), category-specific badges.
+What works: 17 badges (8 achievement + 9 level), unlock-order tracking, dedicated
+AllBadgesPage, modal info sheet with description, celebration fires exactly once.
+Still missing: tiered progression (bronze/silver/gold), category-specific badges,
+badge unlock haptic/sound.
+Impl is now genuinely good — the sortByDisplay algorithm and one-time celebration
+flow are properly thought through.
 
 ────────────────────────────────────────────────────────────────────────────────
-LAYER 6: WEEKLY GOAL
-Design: 7/10  |  Impl: 7/10
+LAYER 6: PREDICTION-REALITY GAP
+Design: 10/10  |  Impl: 7/10  (NEW LAYER)
 ────────────────────────────────────────────────────────────────────────────────
-What works: user-configurable (3/5/7), progress bar in profile screen.
-Still missing: goal completion animation (TODO F), unified story with weekly streak.
+The most evidence-backed mechanism for social anxiety reduction is now implemented.
+Data capture (pre_anxiety), gap computation (PredictionGapLogic), and display
+(PredictionGapCard) are all in place.
+Impl gap: the highest-impact display moment (done screen, per-session comparison)
+is still missing. The insight only surfaces in the historical views (detail screen,
+stats screen). Moving it to the done screen is the single highest-leverage remaining
+feature.
 
 ────────────────────────────────────────────────────────────────────────────────
-LAYER 7: PRIMING SCREEN
-Design: 8/10  |  Impl: 9/10
+LAYER 7: WEEKLY GOAL
+Design: 7/10  |  Impl: 7/10  (unchanged)
+────────────────────────────────────────────────────────────────────────────────
+User-configurable (3/5/7), progress bar in profile. Missing: goal completion
+animation (TODO F), unified story with weekly streak.
+
+────────────────────────────────────────────────────────────────────────────────
+LAYER 8: PRIMING SCREEN
+Design: 8/10  |  Impl: 9/10  (impl up from 9 — pre-anxiety picker implemented)
 ────────────────────────────────────────────────────────────────────────────────
 Polished, contextual, gives agency. Pre-challenge anxiety picker (1–5 icon scale)
-is now implemented on this screen and stored in logbook.pre_anxiety. The remaining
-missing piece is surfacing the pre/post gap on the done screen and in the logbook
-detail view (Section 10.2).
+is implemented and stored in logbook.pre_anxiety. The data feeds the gap system.
+Remaining: surfacing the immediate per-session gap comparison on the done screen.
 
 ────────────────────────────────────────────────────────────────────────────────
-LAYER 8: SOCIAL PROOF + COACH MESSAGES
-Design: 3/10  |  Impl: 5/10
+LAYER 9: SOCIAL PROOF + COACH MESSAGES
+Design: 3/10  |  Impl: 5/10  (unchanged)
 ────────────────────────────────────────────────────────────────────────────────
-Social proof is a deterministic hash (800–4499) — not doing real psychological
-work and technically misleading. Coach messages are generic across challenge types.
-Both require backend or contextual pooling to become genuinely useful.
+Social proof is a deterministic hash (fake data). Coach messages are generic.
+Both need backend or contextual pooling to become useful.
 
 ────────────────────────────────────────────────────────────────────────────────
-LAYER 9: LOGBOOK + MOOD HISTORY
-Design: 7/10  |  Impl: 7/10
+LAYER 10: LOGBOOK + MOOD HISTORY
+Design: 7/10  |  Impl: 7/10  (unchanged)
 ────────────────────────────────────────────────────────────────────────────────
-The data model is rich (feeling, perception, notes, duration, pre_anxiety).
-ChallengeDetailScreen shows per-challenge mood history. Still missing: insight
-layer, search/filter, completion count on challenge cards.
+Rich data model. Per-challenge mood history and gap insight now displayed.
+Still missing: insight layer, search/filter, completion count on cards.
 
 ────────────────────────────────────────────────────────────────────────────────
-LAYER 10: SOUND + HAPTICS
-Design: 8/10  |  Impl: 8/10
+LAYER 11: SOUND + HAPTICS
+Design: 8/10  |  Impl: 8/10  (unchanged)
 ────────────────────────────────────────────────────────────────────────────────
-Well-implemented. The 10-second timer haptic warning is a standout detail.
+Well-implemented. 10-second timer haptic warning is a standout detail.
+SoundService.init() now called at startup (was missing before).
 Missing: badge unlock sound/haptic, weekly goal completion haptic.
 
 ────────────────────────────────────────────────────────────────────────────────
-OVERALL GAMIFICATION SCORE: 7.0/10  (was 6.2/10)
+OVERALL GAMIFICATION SCORE: 7.5/10  (was 7.0/10)
 ────────────────────────────────────────────────────────────────────────────────
-The weekly streak redesign (+1.0) and CZL level-up moment improvement (+0.3)
-account for most of the score increase. Still held back by:
-  1. Aura has no shop UI yet (mechanics done, screen not built)
-  2. Badge unlocks still potentially silent
-  3. Prediction-reality gap not captured
-  4. No insight layer on logbook data
-  5. Coach messages not contextual to challenge type
+Score increase driven by:
+  - Prediction-reality gap system shipped (+0.3)
+  - CZL expanded to 10 psychologically precise levels (+0.1)
+  - Badge system overhauled with unlock-order tracking and AllBadgesPage (+0.1)
 
-Fix these five things and the gamification score reaches ~8.5/10.
+Still held back by:
+  1. Gap insight not on the done screen (highest-leverage remaining feature)
+  2. No catalog content for CZL levels 6–10
+  3. Shop UI not built (mechanics done)
+  4. No insight layer on logbook data
+  5. Coach messages not contextual
+
+Fix items 1 and 2 and the score reaches ~8.5/10.
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 SECTION 12 — PUBLICATION READINESS REVIEW
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Three thresholds are evaluated:
-  A. Internal / closed beta testing (friends, TestFlight internal track)
-  B. Public open beta (TestFlight external / Play Store open testing)
-  C. Production release (App Store + Play Store public listing)
+────────────────────────────────────────────────────────────────────────────────
+STATUS: IN PRODUCTION (v0.5.2+5)
+────────────────────────────────────────────────────────────────────────────────
+The app is live. All users have the current schema and correct data from day one.
+The core loop — onboarding, CZL progression, challenges, timer, survey, Aura,
+weekly streak, badges, prediction gap — is fully functional in production.
 
 ────────────────────────────────────────────────────────────────────────────────
-A. INTERNAL BETA — VERDICT: READY NOW
+NEXT UPDATE PRIORITIES
 ────────────────────────────────────────────────────────────────────────────────
-The core loop is complete and functional:
-  - Onboarding → CZL selection → challenge browse → timer → done → XP → streak
-  - DB schema is stable at v2 with performance indexes
-  - Settings, notifications, sound, haptics all work
-  - Two languages (EN/DE) complete and synchronized (IDs 0–111)
-  - Weekly streak system is live and tested
-  - Shop mechanics (freeze inventory) are functional
+Features that would meaningfully improve the production experience:
 
-────────────────────────────────────────────────────────────────────────────────
-B. PUBLIC OPEN BETA — VERDICT: NOT YET (~2–3 weeks of work needed)
-────────────────────────────────────────────────────────────────────────────────
-Blockers before opening to strangers:
-
-  1. CHALLENGE CONTENT QUALITY
-     The challenge catalog needs a quality pass before public users see it.
-     Challenges must be well-written, correctly tagged, and genuinely varied.
-     Content is product — this is the #1 retention risk now that the streak
-     system is fixed.
-
-  2. SHOP UI
-     Aura accumulates but can't be spent via any visible UI. A user who earns
-     600 Aura sees no indication that they could buy a streak freeze.
-     Implement the shop section in ProfileScreen (one screen, not a new tab).
-
-  3. BADGE UNLOCK MOMENT
-     A public user earning their first badge who doesn't navigate to the profile
-     screen will never know they earned it. Confirm that badge_unlocked_screen.dart
-     is triggered from ChallengeDoneScreen after XP animation.
-
-  4. DARK MODE BUG
-     Minor but visible before any public-facing release.
-
-Non-blocking but strongly recommended before open beta:
-  - Pre-challenge anxiety rating on PrimingScreen (1 tap, pre_anxiety column ready)
+  HIGH VALUE:
+  - Prediction gap on the done screen (S7 / TODO H) — show the per-session
+    comparison immediately after completing a challenge. The data is already
+    captured; this is the highest-value remaining feature.
   - Weekly goal completion animation (TODO F)
-  - Coach messages segmented by challenge type
 
-────────────────────────────────────────────────────────────────────────────────
-C. PRODUCTION RELEASE — VERDICT: NOT YET (~6–10 weeks of work)
-────────────────────────────────────────────────────────────────────────────────
-In addition to public beta blockers:
+  MEDIUM VALUE:
+  - Coach messages segmented by challenge type (S5)
+  - Logbook insight layer — derived stats across entries
+  - Aura milestone celebrations (S8)
 
-  MUST-HAVE:
-  - All public beta blockers resolved
-  - Privacy policy (required by both stores even for offline apps)
-  - App Store / Play Store screenshots and store listing copy
-  - Icon design finalized
-  - iOS notification behavior validated on device (test on real hardware,
-    iOS 16/17/18 — UNUserNotificationCenter reliability varies)
-  - Device testing: small screen (SE), large screen (Pro Max), tablets
-  - Edge case testing: zero challenges done, offline from day 1, language switch
-
-  SHOULD-HAVE:
-  - Prediction-reality gap feature shipped (pre_anxiety capture + comparison)
-  - Shop theme unlocks (cosmetic reward for Aura)
-  - Insight layer on logbook (or at minimum the prediction-reality feature)
-
-  NICE-TO-HAVE:
-  - Backend + leaderboard (can be v2)
-  - iOS aesthetic polish
-  - Additional badge tiers
-
-────────────────────────────────────────────────────────────────────────────────
-SUMMARY TABLE
-────────────────────────────────────────────────────────────────────────────────
-
-  Milestone              Status        ETA estimate
-  ─────────────────────────────────────────────────────────────────────────────
-  Internal beta          READY         Now
-  Public open beta       BLOCKED       ~2–3 weeks (content + shop UI + badge)
-  App Store production   NOT READY     ~6–10 weeks (full phase 1+2 roadmap)
+  FUTURE / V2:
+  - Shop UI when a second purchasable exists (TODO C / TODO I)
+  - Backend + social features (TODO K)
+  - iOS aesthetic polish (TODO J)
 
 ────────────────────────────────────────────────────────────────────────────────
 FINAL NOTE
 ────────────────────────────────────────────────────────────────────────────────
 
-After two code quality sessions the codebase is clean by any practical measure.
-All 7 code quality audit items are done. The architecture is now properly layered:
-business logic in providers/ and logic/, UI in screen files and subdirectory
-widgets, data in repository singletons. There are no unresolved architectural
-violations (providers in wrong files, hardcoded colors, dead providers, duplicate
-widgets, magic numbers in critical paths).
-
-The remaining flutter analyze issues are all infos: use_key_in_widget_constructors
-on private widgets, unnecessary_underscores in fl_chart callbacks, and a pre-existing
-prefer_initializing_formals in the notification service. None affect correctness.
-
-The gap between "working app" and "ready for public" is now primarily: challenge
-content quality, the shop UI screen (mechanics done, screen not built), and
-confirming the badge unlock celebration fires correctly. The psychological
-foundation — CZL progression, weekly streak, mood tracking, priming with
-pre-anxiety capture — is genuinely differentiated from generic habit apps.
-The single highest-value remaining feature is surfacing the prediction-reality
-gap on the done screen (data is already captured via pre_anxiety).
+The app is in production with a clean codebase: properly layered architecture,
+1,027 lines of logic tests across 10 files, and a psychologically differentiated
+design. The prediction-reality gap system — the most clinically validated mechanism
+for social anxiety reduction — is fully shipped. The highest remaining leverage
+is surfacing the per-session gap comparison on the done screen, while the
+emotional memory of the just-completed challenge is still fresh.
 
 ================================================================================
-END OF ANALYSIS — 2026-04-25
+END OF ANALYSIS — 2026-05-01
 ================================================================================
