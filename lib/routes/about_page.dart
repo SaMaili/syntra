@@ -4,6 +4,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../generated/l10n.dart';
+import '../theme/app_spacing.dart';
 import '../tools/fake_data_seeder.dart';
 import '../widgets/syntra_blur_app_bar.dart';
 
@@ -41,7 +42,10 @@ class AboutNotePage extends StatelessWidget {
           final version = snapshot.data ?? '';
           return SingleChildScrollView(
             padding: EdgeInsets.fromLTRB(
-                24, SyntraBlurAppBar.topPadding(context) + 8, 24, 24),
+                AppSpacing.md,
+                SyntraBlurAppBar.topPadding(context) + AppSpacing.lg,
+                AppSpacing.md,
+                AppSpacing.md),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
