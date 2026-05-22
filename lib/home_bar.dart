@@ -15,9 +15,9 @@ import 'providers/settings_providers.dart';
 import 'providers/statistics_providers.dart' show homeTabIndexProvider;
 import 'router.dart';
 import 'routes/challenges_screen.dart';
-import 'routes/daily_challenge_screen.dart';
 import 'routes/profile_screen.dart';
 import 'routes/settings_screen.dart';
+import 'routes/warmup_screen.dart';
 import 'services/sound_service.dart';
 import 'static.dart';
 
@@ -51,7 +51,7 @@ class _HomeBarState extends ConsumerState<HomeBar>
 
   static const _screens = <Widget>[
     ChallengesScreen(),
-    DailyChallengeScreen(),
+    WarmupScreen(),
     ProfileScreen(),
     SettingsScreen(),
   ];
@@ -302,8 +302,8 @@ class _HomeBarState extends ConsumerState<HomeBar>
               label: l.navChallenge,
             ),
             BottomNavigationBarItem(
-              icon: const Icon(CupertinoIcons.calendar),
-              activeIcon: const Icon(CupertinoIcons.calendar_today),
+              icon: const Icon(CupertinoIcons.flame),
+              activeIcon: const Icon(CupertinoIcons.flame_fill),
               label: l.navDaily,
             ),
             BottomNavigationBarItem(
@@ -365,8 +365,8 @@ class _HomeBarState extends ConsumerState<HomeBar>
                   label: l.navChallenge,
                 ),
                 NavigationDestination(
-                  icon: const Icon(Icons.calendar_today_outlined),
-                  selectedIcon: const Icon(Icons.calendar_today),
+                  icon: const Icon(Icons.local_fire_department_outlined),
+                  selectedIcon: const Icon(Icons.local_fire_department),
                   label: l.navDaily,
                 ),
                 NavigationDestination(

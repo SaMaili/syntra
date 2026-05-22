@@ -6,11 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../generated/l10n.dart';
 import '../../providers/challenge_providers.dart';
 import '../../theme/app_spacing.dart';
+import '../../widgets/syntra_sheet.dart';
 import 'filter_sheet.dart';
 
 class ChallengesFilterBar extends ConsumerWidget {
-  final VoidCallback onGiveMeOne;
-  const ChallengesFilterBar({super.key, required this.onGiveMeOne});
+  const ChallengesFilterBar({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,25 +28,25 @@ class ChallengesFilterBar extends ConsumerWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md, vertical: AppSpacing.xs),
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.xs,
+      ),
       child: Row(
         children: [
           Expanded(
             child: TypeSelector(
               selected: filters.typeFilter,
               onChanged: notifier.setTypeFilter,
-              labels: [
-                S.of(context).solo,
-                S.of(context).filterAll,
-              ],
+              labels: [S.of(context).solo, S.of(context).filterAll],
             ),
           ),
           IconButton(
             icon: Icon(flirtIcon, color: flirtColor),
             tooltip: S.of(context).filterFlirtLabel,
             onPressed: () {
-              final next = FlirtFilter
-                  .values[(filters.flirtFilter.index + 1) % FlirtFilter.values.length];
+              final next =
+                  FlirtFilter.values[(filters.flirtFilter.index + 1) %
+                      FlirtFilter.values.length];
               notifier.setFlirtFilter(next);
             },
           ),
@@ -59,11 +59,6 @@ class ChallengesFilterBar extends ConsumerWidget {
               onPressed: () => _openFilterSheet(context),
             ),
           ),
-          IconButton(
-            icon: const Icon(Icons.casino_rounded),
-            tooltip: S.of(context).giveMeOneTooltip,
-            onPressed: onGiveMeOne,
-          ),
         ],
       ),
     );
@@ -74,13 +69,19 @@ class ChallengesFilterBar extends ConsumerWidget {
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
+      backgroundColor: Colors.transparent,
+      barrierColor: Colors.black.withValues(alpha: 0.55),
+      constraints: const BoxConstraints(maxWidth: double.infinity),
       builder: (_) => DraggableScrollableSheet(
         initialChildSize: 0.7,
         minChildSize: 0.4,
         maxChildSize: 1.0,
         expand: false,
-        builder: (context, scrollController) =>
-            ChallengesFilterSheet(scrollController: scrollController),
+        builder: (context, scrollController) => Container(
+          decoration: syntraSheetDecoration(context),
+          clipBehavior: Clip.antiAlias,
+          child: ChallengesFilterSheet(scrollController: scrollController),
+        ),
       ),
     );
   }
@@ -94,10 +95,7 @@ class TypeSelector extends StatelessWidget {
     ChallengeTypeFilter.solo,
     ChallengeTypeFilter.all,
   ];
-  static const _icons = [
-    Icons.person_rounded,
-    Icons.all_inclusive_rounded,
-  ];
+  static const _icons = [Icons.person_rounded, Icons.all_inclusive_rounded];
 
   final ChallengeTypeFilter selected;
   final ValueChanged<ChallengeTypeFilter> onChanged;

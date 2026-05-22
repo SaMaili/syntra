@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'challenge.dart';
 import 'home_bar.dart';
 import 'logic/badges_logic.dart';
+import 'logic/warmup_logic.dart' show WarmupSession;
 import 'providers/router_notifier.dart';
 import 'routes/about_page.dart';
 import 'routes/active_challenge_screen.dart';
@@ -12,7 +13,6 @@ import 'routes/challenge_done_screen.dart';
 import 'routes/logbook_detail_page.dart';
 import 'routes/logbook_page.dart';
 import 'routes/onboarding_screen.dart';
-import 'routes/priming_screen.dart';
 import 'routes/badge_unlocked_screen.dart';
 import 'routes/level_up_screen.dart';
 import 'routes/streak_celebration_screen.dart';
@@ -25,7 +25,6 @@ abstract class AppRoutes {
   static const challengeDone = '/challenge_done';
   static const logbook = '/logbook';
   static const about = '/about';
-  static const priming = '/priming';
   static const streakCelebration = '/streak_celebration';
   static const levelUp = '/level_up';
   static const badgeUnlocked = '/badge_unlocked';
@@ -52,23 +51,14 @@ final appRouter = GoRouter(
       builder: (context, state) => const OnboardingScreen(),
     ),
     GoRoute(
-      path: AppRoutes.priming,
-      builder: (context, state) {
-        final args = state.extra as _PrimingArgs;
-        return PrimingScreen(
-          challenge: args.challenge,
-          isDailyMission: args.isDailyMission,
-        );
-      },
-    ),
-    GoRoute(
       path: AppRoutes.activeChallenge,
       builder: (context, state) {
         final args = state.extra as _ActiveChallengeArgs;
         return ActiveChallengeScreen(
           challenge: args.challenge,
-          isDailyMission: args.isDailyMission,
+          isGuided: args.isGuided,
           overrideTime: args.overrideTime,
+          warmup: args.warmup,
         );
       },
     ),
@@ -80,7 +70,8 @@ final appRouter = GoRouter(
           challenge: args.challenge,
           rewardFactor: args.rewardFactor,
           durationSeconds: args.durationSeconds,
-          isDailyMission: args.isDailyMission,
+          isGuided: args.isGuided,
+          warmup: args.warmup,
         );
       },
     ),
@@ -123,30 +114,27 @@ final appRouter = GoRouter(
   ],
 );
 
-class _PrimingArgs {
-  final Challenge challenge;
-  final bool isDailyMission;
-  const _PrimingArgs(this.challenge, {this.isDailyMission = false});
-}
-
 class _ActiveChallengeArgs {
   final Challenge challenge;
-  final bool isDailyMission;
+  final bool isGuided;
   final int? overrideTime;
+  final WarmupSession? warmup;
   const _ActiveChallengeArgs(this.challenge,
-      {this.isDailyMission = false, this.overrideTime});
+      {this.isGuided = false, this.overrideTime, this.warmup});
 }
 
 class _ChallengeDoneArgs {
   final Challenge challenge;
   final double rewardFactor;
   final int? durationSeconds;
-  final bool isDailyMission;
+  final bool isGuided;
+  final WarmupSession? warmup;
   const _ChallengeDoneArgs(
     this.challenge,
     this.rewardFactor, {
     this.durationSeconds,
-    this.isDailyMission = false,
+    this.isGuided = false,
+    this.warmup,
   });
 }
 
@@ -168,56 +156,43 @@ class _BadgeUnlockedArgs {
 
 /// Type-safe helpers so callers never deal with raw strings or dynamic casts.
 extension AppNavigation on BuildContext {
-  /// Push the priming countdown screen. Returns the reward factor once the full
-  /// challenge flow completes, or null if the user cancelled at the priming step.
-  Future<double?> pushPriming(Challenge challenge, {bool isDailyMission = false}) =>
-      GoRouter.of(this).push<double>(
-        AppRoutes.priming,
-        extra: _PrimingArgs(challenge, isDailyMission: isDailyMission),
-      );
-
-  /// Replaces the entire stack with a fresh priming screen (use for "try again").
-  /// Resets to home then immediately pushes priming — both state changes are
-  /// batched into a single rebuild so there is no visible flash.
-  void goPriming(Challenge challenge, {bool isDailyMission = false}) {
-    final router = GoRouter.of(this);
-    router.go(AppRoutes.home);
-    router.push(
-      AppRoutes.priming,
-      extra: _PrimingArgs(challenge, isDailyMission: isDailyMission),
-    );
-  }
-
   Future<double?> pushActiveChallenge(
     Challenge challenge, {
-    bool isDailyMission = false,
+    bool isGuided = false,
     int? overrideTime,
+    WarmupSession? warmup,
   }) =>
       GoRouter.of(this).push<double>(
         AppRoutes.activeChallenge,
         extra: _ActiveChallengeArgs(challenge,
-            isDailyMission: isDailyMission,
-            overrideTime: overrideTime),
+            isGuided: isGuided,
+            overrideTime: overrideTime,
+            warmup: warmup),
       );
 
   /// Replaces the entire navigation stack with a fresh [ActiveChallengeScreen].
-  /// Use this for "try again" so the old challenge route is not left in the stack.
+  /// Use this for "try again" and warm-up chaining so the old challenge route
+  /// is not left in the stack.
   void goActiveChallenge(
     Challenge challenge, {
-    bool isDailyMission = false,
+    bool isGuided = false,
     int? overrideTime,
+    WarmupSession? warmup,
   }) =>
       GoRouter.of(this).go(
         AppRoutes.activeChallenge,
         extra: _ActiveChallengeArgs(challenge,
-            isDailyMission: isDailyMission, overrideTime: overrideTime),
+            isGuided: isGuided,
+            overrideTime: overrideTime,
+            warmup: warmup),
       );
 
   Future<double?> pushChallengeDone(
     Challenge challenge,
     double rewardFactor, {
     int? durationSeconds,
-    bool isDailyMission = false,
+    bool isGuided = false,
+    WarmupSession? warmup,
   }) =>
       GoRouter.of(this).push<double>(
         AppRoutes.challengeDone,
@@ -225,9 +200,14 @@ extension AppNavigation on BuildContext {
           challenge,
           rewardFactor,
           durationSeconds: durationSeconds,
-          isDailyMission: isDailyMission,
+          isGuided: isGuided,
+          warmup: warmup,
         ),
       );
+
+  /// Resets the stack to the home shell — used to end a warm-up run cleanly
+  /// (the chained `.go` navigations leave no home route to pop back to).
+  void goHome() => GoRouter.of(this).go(AppRoutes.home);
 
   void goLogbook() => GoRouter.of(this).push(AppRoutes.logbook);
 

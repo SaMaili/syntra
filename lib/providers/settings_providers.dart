@@ -180,36 +180,51 @@ class ComfortZoneNotifier extends StateNotifier<int> {
       ComfortZoneLogic().getCompletionsAtLevel(state, _prefs);
 }
 
-final notificationSlotsProvider =
-    StateNotifierProvider<NotificationSlotsNotifier,
-        List<NotificationSlotSettings>>(
-  (ref) => NotificationSlotsNotifier(ref.watch(settingsRepositoryProvider)),
+/// Whether the daily reminder fires. Optional and independent of the master
+/// notifications switch.
+final reminderEnabledProvider =
+    StateNotifierProvider<ReminderEnabledNotifier, bool>(
+  (ref) => ReminderEnabledNotifier(ref.watch(settingsRepositoryProvider)),
 );
 
-class NotificationSlotsNotifier
-    extends StateNotifier<List<NotificationSlotSettings>> {
+class ReminderEnabledNotifier extends StateNotifier<bool> {
   final SettingsRepository _repo;
 
-  NotificationSlotsNotifier(this._repo)
-      : super([
-          const NotificationSlotSettings(
-              enabled: false, time: TimeOfDay(hour: 9, minute: 0)),
-          const NotificationSlotSettings(
-              enabled: false, time: TimeOfDay(hour: 14, minute: 0)),
-          const NotificationSlotSettings(
-              enabled: false, time: TimeOfDay(hour: 19, minute: 0)),
-        ]) {
+  ReminderEnabledNotifier(this._repo) : super(true) {
     _load();
   }
 
   Future<void> _load() async {
-    state = await _repo.loadAllSlots();
+    state = await _repo.loadReminderEnabled();
   }
 
-  Future<void> updateSlot(int index, NotificationSlotSettings settings) async {
-    final updated = [...state];
-    updated[index] = settings;
-    state = updated;
-    await _repo.saveSlot(index + 1, settings);
+  Future<void> set(bool value) async {
+    state = value;
+    await _repo.saveReminderEnabled(value);
+  }
+}
+
+/// The single daily-reminder time. There is exactly one notification per day;
+/// the user picks when.
+final reminderTimeProvider =
+    StateNotifierProvider<ReminderTimeNotifier, TimeOfDay>(
+  (ref) => ReminderTimeNotifier(ref.watch(settingsRepositoryProvider)),
+);
+
+class ReminderTimeNotifier extends StateNotifier<TimeOfDay> {
+  final SettingsRepository _repo;
+
+  ReminderTimeNotifier(this._repo)
+      : super(const TimeOfDay(hour: 9, minute: 0)) {
+    _load();
+  }
+
+  Future<void> _load() async {
+    state = await _repo.loadReminderTime();
+  }
+
+  Future<void> setTime(TimeOfDay time) async {
+    state = time;
+    await _repo.saveReminderTime(time);
   }
 }

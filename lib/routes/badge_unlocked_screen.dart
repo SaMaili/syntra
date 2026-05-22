@@ -8,6 +8,7 @@ import '../logic/badges_logic.dart';
 import '../logic/comfort_zone_logic.dart';
 import '../services/vibration_service.dart';
 import '../theme/app_spacing.dart';
+import '../theme/brand_colors.dart';
 import '../widgets/syntra_button.dart';
 
 class BadgeUnlockedScreen extends ConsumerStatefulWidget {
@@ -95,8 +96,8 @@ class _BadgeUnlockedScreenState extends ConsumerState<BadgeUnlockedScreen>
     final l = S.of(context);
     final badgeColor = widget.badge.color;
     final bgColor =
-        Color.lerp(const Color(0xFF121212), badgeColor, 0.2) ??
-            const Color(0xFF121212);
+        Color.lerp(BrandColors.rootBg, badgeColor, 0.2) ??
+            BrandColors.rootBg;
     final badgeName = _badgeName(l, widget.badge.id);
 
     return Scaffold(

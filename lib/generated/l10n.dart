@@ -109,6 +109,1046 @@ class S {
     return Intl.message('System', name: 'themeSystem', desc: '', args: []);
   }
 
+  /// `For you`
+  String get tabForYou {
+    return Intl.message('For you', name: 'tabForYou', desc: '', args: []);
+  }
+
+  /// `Saved`
+  String get tabSaved {
+    return Intl.message('Saved', name: 'tabSaved', desc: '', args: []);
+  }
+
+  /// `Flirt`
+  String get tabFlirt {
+    return Intl.message('Flirt', name: 'tabFlirt', desc: '', args: []);
+  }
+
+  /// `Done`
+  String get tabDone {
+    return Intl.message('Done', name: 'tabDone', desc: '', args: []);
+  }
+
+  /// `Sort by`
+  String get sortBy {
+    return Intl.message('Sort by', name: 'sortBy', desc: '', args: []);
+  }
+
+  /// `Recommended`
+  String get sortRecommended {
+    return Intl.message(
+      'Recommended',
+      name: 'sortRecommended',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Level ↑ (easy first)`
+  String get sortLevelAsc {
+    return Intl.message(
+      'Level ↑ (easy first)',
+      name: 'sortLevelAsc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Level ↓ (hard first)`
+  String get sortLevelDesc {
+    return Intl.message(
+      'Level ↓ (hard first)',
+      name: 'sortLevelDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aura ↓ (most rewarding)`
+  String get sortAuraDesc {
+    return Intl.message(
+      'Aura ↓ (most rewarding)',
+      name: 'sortAuraDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Time ↑ (shortest)`
+  String get sortTimeAsc {
+    return Intl.message(
+      'Time ↑ (shortest)',
+      name: 'sortTimeAsc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Search challenges…`
+  String get searchChallengesHint {
+    return Intl.message(
+      'Search challenges…',
+      name: 'searchChallengesHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{n} attempts`
+  String predictionAttemptsCount(int n) {
+    return Intl.message(
+      '$n attempts',
+      name: 'predictionAttemptsCount',
+      desc: '',
+      args: [n],
+    );
+  }
+
+  /// `challenges felt`
+  String get predictionEasierBefore {
+    return Intl.message(
+      'challenges felt',
+      name: 'predictionEasierBefore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `easier`
+  String get predictionEasierKey {
+    return Intl.message(
+      'easier',
+      name: 'predictionEasierKey',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `than you expected`
+  String get predictionEasierAfter {
+    return Intl.message(
+      'than you expected',
+      name: 'predictionEasierAfter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Easier`
+  String get predictionEasier {
+    return Intl.message('Easier', name: 'predictionEasier', desc: '', args: []);
+  }
+
+  /// `Same`
+  String get predictionSame {
+    return Intl.message('Same', name: 'predictionSame', desc: '', args: []);
+  }
+
+  /// `Harder`
+  String get predictionHarder {
+    return Intl.message('Harder', name: 'predictionHarder', desc: '', args: []);
+  }
+
+  /// `Your brain says`
+  String get predictionTakeawayBefore {
+    return Intl.message(
+      'Your brain says',
+      name: 'predictionTakeawayBefore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `this will be awful`
+  String get predictionTakeawayQuote {
+    return Intl.message(
+      'this will be awful',
+      name: 'predictionTakeawayQuote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `but is wrong`
+  String get predictionTakeawayMiddle {
+    return Intl.message(
+      'but is wrong',
+      name: 'predictionTakeawayMiddle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `of the time.`
+  String get predictionTakeawayAfter {
+    return Intl.message(
+      'of the time.',
+      name: 'predictionTakeawayAfter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Logbook`
+  String get profileLogbookLabel {
+    return Intl.message(
+      'Logbook',
+      name: 'profileLogbookLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{n} entries`
+  String profileLogbookEntries(int n) {
+    return Intl.message(
+      '$n entries',
+      name: 'profileLogbookEntries',
+      desc: '',
+      args: [n],
+    );
+  }
+
+  /// `Badges`
+  String get profileBadgesLabel {
+    return Intl.message(
+      'Badges',
+      name: 'profileBadgesLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{earned} / {total}`
+  String profileBadgesCount(int earned, int total) {
+    return Intl.message(
+      '$earned / $total',
+      name: 'profileBadgesCount',
+      desc: '',
+      args: [earned, total],
+    );
+  }
+
+  /// `Mood trend`
+  String get profileMoodTitle {
+    return Intl.message(
+      'Mood trend',
+      name: 'profileMoodTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aura this week`
+  String get profileAuraWeekTitle {
+    return Intl.message(
+      'Aura this week',
+      name: 'profileAuraWeekTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Activity`
+  String get profileActivityTitle {
+    return Intl.message(
+      'Activity',
+      name: 'profileActivityTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `last {n}`
+  String lastNCount(int n) {
+    return Intl.message('last $n', name: 'lastNCount', desc: '', args: [n]);
+  }
+
+  /// `{n} ago`
+  String moodAgoLabel(int n) {
+    return Intl.message('$n ago', name: 'moodAgoLabel', desc: '', args: [n]);
+  }
+
+  /// `Today`
+  String get moodTodayLabel {
+    return Intl.message('Today', name: 'moodTodayLabel', desc: '', args: []);
+  }
+
+  /// `{total} / {goal} goal`
+  String auraWeekRight(int total, int goal) {
+    return Intl.message(
+      '$total / $goal goal',
+      name: 'auraWeekRight',
+      desc: '',
+      args: [total, goal],
+    );
+  }
+
+  /// `{n} active`
+  String activeWeeksCount(int n) {
+    return Intl.message(
+      '$n active',
+      name: 'activeWeeksCount',
+      desc: '',
+      args: [n],
+    );
+  }
+
+  /// `≥{threshold} aura`
+  String activityLegendActive(int threshold) {
+    return Intl.message(
+      '≥$threshold aura',
+      name: 'activityLegendActive',
+      desc: '',
+      args: [threshold],
+    );
+  }
+
+  /// `Quiet`
+  String get activityLegendQuiet {
+    return Intl.message(
+      'Quiet',
+      name: 'activityLegendQuiet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Streak freeze`
+  String get activityLegendFreeze {
+    return Intl.message(
+      'Streak freeze',
+      name: 'activityLegendFreeze',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your Aura`
+  String get auraWalletLabel {
+    return Intl.message(
+      'Your Aura',
+      name: 'auraWalletLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Streak Freeze`
+  String get streakFreezeName {
+    return Intl.message(
+      'Streak Freeze',
+      name: 'streakFreezeName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Inventory`
+  String get sectionInventory {
+    return Intl.message(
+      'Inventory',
+      name: 'sectionInventory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Notifications`
+  String get sectionNotifications {
+    return Intl.message(
+      'Notifications',
+      name: 'sectionNotifications',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Feel`
+  String get sectionFeel {
+    return Intl.message('Feel', name: 'sectionFeel', desc: '', args: []);
+  }
+
+  /// `Appearance`
+  String get sectionAppearance {
+    return Intl.message(
+      'Appearance',
+      name: 'sectionAppearance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `About`
+  String get sectionAbout {
+    return Intl.message('About', name: 'sectionAbout', desc: '', args: []);
+  }
+
+  /// `All notifications`
+  String get notificationsMasterLabel {
+    return Intl.message(
+      'All notifications',
+      name: 'notificationsMasterLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Master switch · turn everything off`
+  String get notificationsMasterSublabel {
+    return Intl.message(
+      'Master switch · turn everything off',
+      name: 'notificationsMasterSublabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Daily reminder`
+  String get dailyReminderLabel {
+    return Intl.message(
+      'Daily reminder',
+      name: 'dailyReminderLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A nudge to do your daily challenge`
+  String get dailyReminderSublabel {
+    return Intl.message(
+      'A nudge to do your daily challenge',
+      name: 'dailyReminderSublabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reminder time`
+  String get reminderTimeLabel {
+    return Intl.message(
+      'Reminder time',
+      name: 'reminderTimeLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back`
+  String get activeBack {
+    return Intl.message('Back', name: 'activeBack', desc: '', args: []);
+  }
+
+  /// `Bail`
+  String get activeBail {
+    return Intl.message('Bail', name: 'activeBail', desc: '', args: []);
+  }
+
+  /// `I'm going`
+  String get activeImGoing {
+    return Intl.message(
+      'I\'m going',
+      name: 'activeImGoing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stay with it`
+  String get activeStayWithIt {
+    return Intl.message(
+      'Stay with it',
+      name: 'activeStayWithIt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unlocks once you've actually given it a moment.`
+  String get activeLockHint {
+    return Intl.message(
+      'Unlocks once you\'ve actually given it a moment.',
+      name: 'activeLockHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Almost there. Did it count?`
+  String get activeLast10Caption {
+    return Intl.message(
+      'Almost there. Did it count?',
+      name: 'activeLast10Caption',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Need a starter line?`
+  String get activeNeedStarter {
+    return Intl.message(
+      'Need a starter line?',
+      name: 'activeNeedStarter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hide starter lines`
+  String get activeHideStarters {
+    return Intl.message(
+      'Hide starter lines',
+      name: 'activeHideStarters',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `See your last note`
+  String get activeSeeLastNote {
+    return Intl.message(
+      'See your last note',
+      name: 'activeSeeLastNote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Last attempt`
+  String get activeLastAttempt {
+    return Intl.message(
+      'Last attempt',
+      name: 'activeLastAttempt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your note`
+  String get activeYourNote {
+    return Intl.message(
+      'Your note',
+      name: 'activeYourNote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Got it`
+  String get activeGotIt {
+    return Intl.message('Got it', name: 'activeGotIt', desc: '', args: []);
+  }
+
+  /// `Save it for later?`
+  String get bailTitle {
+    return Intl.message(
+      'Save it for later?',
+      name: 'bailTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No streak loss. Showing up is half the battle, and you already did that.`
+  String get bailBody {
+    return Intl.message(
+      'No streak loss. Showing up is half the battle, and you already did that.',
+      name: 'bailBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keep going`
+  String get bailKeepGoing {
+    return Intl.message(
+      'Keep going',
+      name: 'bailKeepGoing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save for later`
+  String get bailSaveForLater {
+    return Intl.message(
+      'Save for later',
+      name: 'bailSaveForLater',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Take a breath.`
+  String get coachBreath {
+    return Intl.message(
+      'Take a breath.',
+      name: 'coachBreath',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pick your moment.`
+  String get coachMoment {
+    return Intl.message(
+      'Pick your moment.',
+      name: 'coachMoment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No rush. Go when it feels right.`
+  String get coachNoRush {
+    return Intl.message(
+      'No rush. Go when it feels right.',
+      name: 'coachNoRush',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `They want to be approached, too.`
+  String get coachWantsToo {
+    return Intl.message(
+      'They want to be approached, too.',
+      name: 'coachWantsToo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Challenge complete`
+  String get celebrateEyebrow {
+    return Intl.message(
+      'Challenge complete',
+      name: 'celebrateEyebrow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aura earned`
+  String get auraEarnedLabel {
+    return Intl.message(
+      'Aura earned',
+      name: 'auraEarnedLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reflect on this`
+  String get reflectOnThis {
+    return Intl.message(
+      'Reflect on this',
+      name: 'reflectOnThis',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Skip and save the win`
+  String get skipSaveTheWin {
+    return Intl.message(
+      'Skip and save the win',
+      name: 'skipSaveTheWin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reflect`
+  String get reflectEyebrow {
+    return Intl.message('Reflect', name: 'reflectEyebrow', desc: '', args: []);
+  }
+
+  /// `Mostly {anchor}`
+  String mostlyX(String anchor) {
+    return Intl.message(
+      'Mostly $anchor',
+      name: 'mostlyX',
+      desc: '',
+      args: [anchor],
+    );
+  }
+
+  /// `Somewhere in the middle`
+  String get somewhereInTheMiddle {
+    return Intl.message(
+      'Somewhere in the middle',
+      name: 'somewhereInTheMiddle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Skip this question`
+  String get skipThisQuestion {
+    return Intl.message(
+      'Skip this question',
+      name: 'skipThisQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `One more thing`
+  String get notesEyebrow {
+    return Intl.message(
+      'One more thing',
+      name: 'notesEyebrow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Anything to remember?`
+  String get notesQuestion {
+    return Intl.message(
+      'Anything to remember?',
+      name: 'notesQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A line for future-you. Skip if it wasn't a moment.`
+  String get notesHelper {
+    return Intl.message(
+      'A line for future-you. Skip if it wasn\'t a moment.',
+      name: 'notesHelper',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add a note`
+  String get addANote {
+    return Intl.message('Add a note', name: 'addANote', desc: '', args: []);
+  }
+
+  /// `They smiled back`
+  String get notePromptSmiled {
+    return Intl.message(
+      'They smiled back',
+      name: 'notePromptSmiled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Easier than expected`
+  String get notePromptEasier {
+    return Intl.message(
+      'Easier than expected',
+      name: 'notePromptEasier',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Felt powerful`
+  String get notePromptPowerful {
+    return Intl.message(
+      'Felt powerful',
+      name: 'notePromptPowerful',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Awkward but worth it`
+  String get notePromptAwkward {
+    return Intl.message(
+      'Awkward but worth it',
+      name: 'notePromptAwkward',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save reflection`
+  String get saveReflection {
+    return Intl.message(
+      'Save reflection',
+      name: 'saveReflection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Saved.`
+  String get savedTitle {
+    return Intl.message('Saved.', name: 'savedTitle', desc: '', args: []);
+  }
+
+  /// `This one's in your story. The next one will be a little easier.`
+  String get savedBody {
+    return Intl.message(
+      'This one\'s in your story. The next one will be a little easier.',
+      name: 'savedBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{n}-week streak alive`
+  String streakAliveN(int n) {
+    return Intl.message(
+      '$n-week streak alive',
+      name: 'streakAliveN',
+      desc: '',
+      args: [n],
+    );
+  }
+
+  /// `{done} of {goal} challenges this week`
+  String weeklyGoalProgress(int done, int goal) {
+    return Intl.message(
+      '$done of $goal challenges this week',
+      name: 'weeklyGoalProgress',
+      desc: '',
+      args: [done, goal],
+    );
+  }
+
+  /// `Mon`
+  String get weekdayShortMon {
+    return Intl.message('Mon', name: 'weekdayShortMon', desc: '', args: []);
+  }
+
+  /// `Tue`
+  String get weekdayShortTue {
+    return Intl.message('Tue', name: 'weekdayShortTue', desc: '', args: []);
+  }
+
+  /// `Wed`
+  String get weekdayShortWed {
+    return Intl.message('Wed', name: 'weekdayShortWed', desc: '', args: []);
+  }
+
+  /// `Thu`
+  String get weekdayShortThu {
+    return Intl.message('Thu', name: 'weekdayShortThu', desc: '', args: []);
+  }
+
+  /// `Fri`
+  String get weekdayShortFri {
+    return Intl.message('Fri', name: 'weekdayShortFri', desc: '', args: []);
+  }
+
+  /// `Sat`
+  String get weekdayShortSat {
+    return Intl.message('Sat', name: 'weekdayShortSat', desc: '', args: []);
+  }
+
+  /// `Sun`
+  String get weekdayShortSun {
+    return Intl.message('Sun', name: 'weekdayShortSun', desc: '', args: []);
+  }
+
+  /// `This week`
+  String get weekGroupThis {
+    return Intl.message('This week', name: 'weekGroupThis', desc: '', args: []);
+  }
+
+  /// `Last week`
+  String get weekGroupLast {
+    return Intl.message('Last week', name: 'weekGroupLast', desc: '', args: []);
+  }
+
+  /// `{n} wks ago`
+  String weekGroupAgoWeeks(int n) {
+    return Intl.message(
+      '$n wks ago',
+      name: 'weekGroupAgoWeeks',
+      desc: '',
+      args: [n],
+    );
+  }
+
+  /// `This month`
+  String get logbookThisMonth {
+    return Intl.message(
+      'This month',
+      name: 'logbookThisMonth',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `challenges`
+  String get logbookChallengesPlural {
+    return Intl.message(
+      'challenges',
+      name: 'logbookChallengesPlural',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mood {pct}%`
+  String logbookMoodDelta(int pct) {
+    return Intl.message(
+      'Mood $pct%',
+      name: 'logbookMoodDelta',
+      desc: '',
+      args: [pct],
+    );
+  }
+
+  /// `8 wks ago`
+  String get logbookEightWksAgo {
+    return Intl.message(
+      '8 wks ago',
+      name: 'logbookEightWksAgo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Now`
+  String get logbookNow {
+    return Intl.message('Now', name: 'logbookNow', desc: '', args: []);
+  }
+
+  /// `{n} entries`
+  String logbookEntriesCount(int n) {
+    return Intl.message(
+      '$n entries',
+      name: 'logbookEntriesCount',
+      desc: '',
+      args: [n],
+    );
+  }
+
+  /// `Jan`
+  String get monthJanShort {
+    return Intl.message('Jan', name: 'monthJanShort', desc: '', args: []);
+  }
+
+  /// `Feb`
+  String get monthFebShort {
+    return Intl.message('Feb', name: 'monthFebShort', desc: '', args: []);
+  }
+
+  /// `Mar`
+  String get monthMarShort {
+    return Intl.message('Mar', name: 'monthMarShort', desc: '', args: []);
+  }
+
+  /// `Apr`
+  String get monthAprShort {
+    return Intl.message('Apr', name: 'monthAprShort', desc: '', args: []);
+  }
+
+  /// `May`
+  String get monthMayShort {
+    return Intl.message('May', name: 'monthMayShort', desc: '', args: []);
+  }
+
+  /// `Jun`
+  String get monthJunShort {
+    return Intl.message('Jun', name: 'monthJunShort', desc: '', args: []);
+  }
+
+  /// `Jul`
+  String get monthJulShort {
+    return Intl.message('Jul', name: 'monthJulShort', desc: '', args: []);
+  }
+
+  /// `Aug`
+  String get monthAugShort {
+    return Intl.message('Aug', name: 'monthAugShort', desc: '', args: []);
+  }
+
+  /// `Sep`
+  String get monthSepShort {
+    return Intl.message('Sep', name: 'monthSepShort', desc: '', args: []);
+  }
+
+  /// `Oct`
+  String get monthOctShort {
+    return Intl.message('Oct', name: 'monthOctShort', desc: '', args: []);
+  }
+
+  /// `Nov`
+  String get monthNovShort {
+    return Intl.message('Nov', name: 'monthNovShort', desc: '', args: []);
+  }
+
+  /// `Dec`
+  String get monthDecShort {
+    return Intl.message('Dec', name: 'monthDecShort', desc: '', args: []);
+  }
+
+  /// `Insight`
+  String get logbookInsightEyebrow {
+    return Intl.message(
+      'Insight',
+      name: 'logbookInsightEyebrow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You felt better than you predicted.`
+  String get logbookInsightBetter {
+    return Intl.message(
+      'You felt better than you predicted.',
+      name: 'logbookInsightBetter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `It felt harder than you predicted.`
+  String get logbookInsightWorse {
+    return Intl.message(
+      'It felt harder than you predicted.',
+      name: 'logbookInsightWorse',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your prediction matched reality.`
+  String get logbookInsightMatched {
+    return Intl.message(
+      'Your prediction matched reality.',
+      name: 'logbookInsightMatched',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reflection`
+  String get logbookReflectionEyebrow {
+    return Intl.message(
+      'Reflection',
+      name: 'logbookReflectionEyebrow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Note`
+  String get logbookNoteEyebrow {
+    return Intl.message('Note', name: 'logbookNoteEyebrow', desc: '', args: []);
+  }
+
+  /// `Mood trend`
+  String get logbookMoodTrendEyebrow {
+    return Intl.message(
+      'Mood trend',
+      name: 'logbookMoodTrendEyebrow',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Sound Effects`
   String get soundEffects {
     return Intl.message(
@@ -214,9 +1254,9 @@ class S {
     return Intl.message('Challenge', name: 'navChallenge', desc: '', args: []);
   }
 
-  /// `Daily`
+  /// `Warm-ups`
   String get navDaily {
-    return Intl.message('Daily', name: 'navDaily', desc: '', args: []);
+    return Intl.message('Warm-ups', name: 'navDaily', desc: '', args: []);
   }
 
   /// `Profile`
@@ -227,6 +1267,281 @@ class S {
   /// `Settings`
   String get navSettings {
     return Intl.message('Settings', name: 'navSettings', desc: '', args: []);
+  }
+
+  /// `Warm-ups`
+  String get warmupTitle {
+    return Intl.message('Warm-ups', name: 'warmupTitle', desc: '', args: []);
+  }
+
+  /// `Step 1`
+  String get warmupStep1Eyebrow {
+    return Intl.message(
+      'Step 1',
+      name: 'warmupStep1Eyebrow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Where are you going?`
+  String get warmupStep1Question {
+    return Intl.message(
+      'Where are you going?',
+      name: 'warmupStep1Question',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We'll build a short ladder of challenges to prime you for it.`
+  String get warmupStep1Subtitle {
+    return Intl.message(
+      'We\'ll build a short ladder of challenges to prime you for it.',
+      name: 'warmupStep1Subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pick a vibe, or use My warm-up below.`
+  String get warmupPickVibeHint {
+    return Intl.message(
+      'Pick a vibe, or use My warm-up below.',
+      name: 'warmupPickVibeHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Step 2 · How long?`
+  String get warmupStep2Eyebrow {
+    return Intl.message(
+      'Step 2 · How long?',
+      name: 'warmupStep2Eyebrow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `tap to swap`
+  String get warmupTapToSwap {
+    return Intl.message(
+      'tap to swap',
+      name: 'warmupTapToSwap',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Coffee run`
+  String get warmupVibeCoffee {
+    return Intl.message(
+      'Coffee run',
+      name: 'warmupVibeCoffee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Errands`
+  String get warmupVibeErrands {
+    return Intl.message(
+      'Errands',
+      name: 'warmupVibeErrands',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Night out`
+  String get warmupVibeNight {
+    return Intl.message(
+      'Night out',
+      name: 'warmupVibeNight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pre-meeting`
+  String get warmupVibeMeeting {
+    return Intl.message(
+      'Pre-meeting',
+      name: 'warmupVibeMeeting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Anywhere`
+  String get warmupVibeAny {
+    return Intl.message('Anywhere', name: 'warmupVibeAny', desc: '', args: []);
+  }
+
+  /// `5 min`
+  String get warmupLength5 {
+    return Intl.message('5 min', name: 'warmupLength5', desc: '', args: []);
+  }
+
+  /// `10 min`
+  String get warmupLength10 {
+    return Intl.message('10 min', name: 'warmupLength10', desc: '', args: []);
+  }
+
+  /// `15 min`
+  String get warmupLength15 {
+    return Intl.message('15 min', name: 'warmupLength15', desc: '', args: []);
+  }
+
+  /// `For {vibe}`
+  String warmupForVibe(String vibe) {
+    return Intl.message(
+      'For $vibe',
+      name: 'warmupForVibe',
+      desc: '',
+      args: [vibe],
+    );
+  }
+
+  /// `{vibe} warm-up`
+  String warmupVibeCardTitle(String vibe) {
+    return Intl.message(
+      '$vibe warm-up',
+      name: 'warmupVibeCardTitle',
+      desc: '',
+      args: [vibe],
+    );
+  }
+
+  /// `{n} challenges · ~{time} · +{aura} aura`
+  String warmupCardSummary(int n, String time, int aura) {
+    return Intl.message(
+      '$n challenges · ~$time · +$aura aura',
+      name: 'warmupCardSummary',
+      desc: '',
+      args: [n, time, aura],
+    );
+  }
+
+  /// `Start warm-up`
+  String get warmupStart {
+    return Intl.message(
+      'Start warm-up',
+      name: 'warmupStart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your saved · custom`
+  String get warmupMySectionEyebrow {
+    return Intl.message(
+      'Your saved · custom',
+      name: 'warmupMySectionEyebrow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `My warm-up`
+  String get warmupMyTitle {
+    return Intl.message(
+      'My warm-up',
+      name: 'warmupMyTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{n} challenges · ~{time} · +{aura} aura · drag to reorder`
+  String warmupMySummary(int n, String time, int aura) {
+    return Intl.message(
+      '$n challenges · ~$time · +$aura aura · drag to reorder',
+      name: 'warmupMySummary',
+      desc: '',
+      args: [n, time, aura],
+    );
+  }
+
+  /// `Save challenges from the Challenge list. They'll stack here as your own warm-up.`
+  String get warmupMyEmpty {
+    return Intl.message(
+      'Save challenges from the Challenge list. They\'ll stack here as your own warm-up.',
+      name: 'warmupMyEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open Challenge list to save more`
+  String get warmupAddMore {
+    return Intl.message(
+      'Open Challenge list to save more',
+      name: 'warmupAddMore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Just one quick challenge`
+  String get warmupJustOne {
+    return Intl.message(
+      'Just one quick challenge',
+      name: 'warmupJustOne',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Warm-up {n}/{total}`
+  String warmupProgress(int n, int total) {
+    return Intl.message(
+      'Warm-up $n/$total',
+      name: 'warmupProgress',
+      desc: '',
+      args: [n, total],
+    );
+  }
+
+  /// `Up next: {title}`
+  String warmupNextUp(String title) {
+    return Intl.message(
+      'Up next: $title',
+      name: 'warmupNextUp',
+      desc: '',
+      args: [title],
+    );
+  }
+
+  /// `Continue warm-up`
+  String get warmupContinue {
+    return Intl.message(
+      'Continue warm-up',
+      name: 'warmupContinue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Warm-up complete`
+  String get warmupCompleteTitle {
+    return Intl.message(
+      'Warm-up complete',
+      name: 'warmupCompleteTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You ran the whole ladder. That's real momentum. Carry it with you.`
+  String get warmupCompleteBody {
+    return Intl.message(
+      'You ran the whole ladder. That\'s real momentum. Carry it with you.',
+      name: 'warmupCompleteBody',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Profile`
@@ -2439,10 +3754,10 @@ class S {
     );
   }
 
-  /// `Let's see how it works →`
+  /// `Let's see how it works`
   String get onboarding1Button {
     return Intl.message(
-      'Let\'s see how it works →',
+      'Let\'s see how it works',
       name: 'onboarding1Button',
       desc: '',
       args: [],
@@ -2499,10 +3814,40 @@ class S {
     );
   }
 
-  /// `Got it →`
+  /// `A challenge that nudges you, not breaks you.`
+  String get onboarding2Step1Desc {
+    return Intl.message(
+      'A challenge that nudges you, not breaks you.',
+      name: 'onboarding2Step1Desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Out in the real world. A timer keeps you honest.`
+  String get onboarding2Step2Desc {
+    return Intl.message(
+      'Out in the real world. A timer keeps you honest.',
+      name: 'onboarding2Step2Desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How it went. How it felt. Watch the gap shrink.`
+  String get onboarding2Step3Desc {
+    return Intl.message(
+      'How it went. How it felt. Watch the gap shrink.',
+      name: 'onboarding2Step3Desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Got it`
   String get onboarding2Button {
     return Intl.message(
-      'Got it →',
+      'Got it',
       name: 'onboarding2Button',
       desc: '',
       args: [],
@@ -2529,10 +3874,10 @@ class S {
     );
   }
 
-  /// `I'm in →`
+  /// `I'm in`
   String get onboarding3Button {
     return Intl.message(
-      'I\'m in →',
+      'I\'m in',
       name: 'onboarding3Button',
       desc: '',
       args: [],
@@ -2639,11 +3984,66 @@ class S {
     );
   }
 
-  /// `Set my reminder →`
+  /// `Set my reminder`
   String get onboarding5Button {
     return Intl.message(
-      'Set my reminder →',
+      'Set my reminder',
       name: 'onboarding5Button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `3`
+  String get onboarding5Stat1Value {
+    return Intl.message('3', name: 'onboarding5Stat1Value', desc: '', args: []);
+  }
+
+  /// `attempts`
+  String get onboarding5Stat1Label {
+    return Intl.message(
+      'attempts',
+      name: 'onboarding5Stat1Label',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `5 min`
+  String get onboarding5Stat2Value {
+    return Intl.message(
+      '5 min',
+      name: 'onboarding5Stat2Value',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `a day`
+  String get onboarding5Stat2Label {
+    return Intl.message(
+      'a day',
+      name: 'onboarding5Stat2Label',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `100%`
+  String get onboarding5Stat3Value {
+    return Intl.message(
+      '100%',
+      name: 'onboarding5Stat3Value',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `opt-in`
+  String get onboarding5Stat3Label {
+    return Intl.message(
+      'opt-in',
+      name: 'onboarding5Stat3Label',
       desc: '',
       args: [],
     );
@@ -2879,6 +4279,11 @@ class S {
     return Intl.message('Not now', name: 'notNow', desc: '', args: []);
   }
 
+  /// `Back`
+  String get primingBack {
+    return Intl.message('Back', name: 'primingBack', desc: '', args: []);
+  }
+
   /// `Comfort Zone`
   String get comfortZone {
     return Intl.message(
@@ -2996,6 +4401,16 @@ class S {
       name: 'levelDownCancel',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `Downgrade to Level {level}`
+  String downgradeToLevel(int level) {
+    return Intl.message(
+      'Downgrade to Level $level',
+      name: 'downgradeToLevel',
+      desc: '',
+      args: [level],
     );
   }
 
@@ -3699,10 +5114,10 @@ class S {
     );
   }
 
-  /// `You've unlocked every badge — incredible!`
+  /// `You've unlocked every badge. Incredible!`
   String get badgesAllUnlocked {
     return Intl.message(
-      'You\'ve unlocked every badge — incredible!',
+      'You\'ve unlocked every badge. Incredible!',
       name: 'badgesAllUnlocked',
       desc: '',
       args: [],
@@ -3716,16 +5131,6 @@ class S {
       name: 'weeklyGoalTitle',
       desc: '',
       args: [],
-    );
-  }
-
-  /// `{done} of {goal} challenges this week`
-  String weeklyGoalProgress(int done, int goal) {
-    return Intl.message(
-      '$done of $goal challenges this week',
-      name: 'weeklyGoalProgress',
-      desc: '',
-      args: [done, goal],
     );
   }
 

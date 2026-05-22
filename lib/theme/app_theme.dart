@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 
 import 'app_spacing.dart';
+import 'brand_colors.dart';
 
 /// Material 3 theme built from a single seed color.
 /// Flutter generates the full tonal palette automatically.
+///
+/// All concrete hex values live in [BrandColors] / [SyntraSurface] — this file
+/// only wires those tokens into Material's `ThemeData`.
 abstract class AppTheme {
-  /// Primary brand color — Neon Pink.
-  static const Color seedColor = Color(0xFFFF10F0);
+  /// Primary brand color — Neon Pink. Re-exported here for legacy callers; new
+  /// code should reference [BrandColors.pink] directly.
+  static const Color seedColor = BrandColors.pink;
 
-  /// Colour used for "done / success" states (checkmark icons, completed-card tint).
-  static const Color successGreen = Color(0xFF10B981);
+  /// Colour used for "done / success" states (checkmark icons, completed-card
+  /// tint). Re-exported from [BrandColors.green] for legacy callers.
+  static const Color successGreen = BrandColors.green;
 
   static ThemeData light() {
     return ThemeData(
@@ -19,11 +25,11 @@ abstract class AppTheme {
         seedColor: seedColor,
         brightness: Brightness.light,
         primary: seedColor,
-        secondary: const Color(0xFF00B8D4), // Softer Cyan
-        tertiary: const Color(0xFFFF6D00), // Reddish Orange
+        secondary: BrandColors.cyan,
+        tertiary: BrandColors.orange,
       ),
       brightness: Brightness.light,
-      scaffoldBackgroundColor: const Color(0xFFFBF9F8),
+      scaffoldBackgroundColor: BrandColors.lightScaffold,
       textTheme: const TextTheme(
         displayLarge:  TextStyle(fontFamily: 'Octarine', fontWeight: FontWeight.w700),
         displayMedium: TextStyle(fontFamily: 'Octarine', fontWeight: FontWeight.w700),
@@ -127,9 +133,9 @@ abstract class AppTheme {
         seedColor: seedColor,
         brightness: Brightness.dark,
         primary: seedColor,
-        secondary: const Color(0xFFFF2626),
-        tertiary: const Color(0xFFFF6D00),
-        surface: const Color(0xFF0D0D0D),
+        secondary: BrandColors.red,
+        tertiary: BrandColors.orange,
+        surface: SyntraSurface.dark.bg1,
       ),
       brightness: Brightness.dark,
       textTheme: const TextTheme(

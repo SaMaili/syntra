@@ -6,6 +6,7 @@ import '../../logic/weekly_streak_logic.dart';
 import '../../providers/shop_providers.dart';
 import '../../providers/statistics_providers.dart';
 import '../../theme/app_spacing.dart';
+import '../../theme/brand_colors.dart';
 import '../../widgets/syntra_progress_bar.dart';
 import 'filter_bar.dart';
 
@@ -137,7 +138,7 @@ class _StreakBarState extends State<StreakBar> {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
 
-    final labelColor = widget.isActive ? const Color(0xFFFF6D00) : cs.onSurfaceVariant;
+    final labelColor = widget.isActive ? BrandColors.orange : cs.onSurfaceVariant;
     final barColor = cs.primary;
 
     return Opacity(
@@ -239,7 +240,6 @@ class ChallengesHeaderDelegate extends SliverPersistentHeaderDelegate {
   final int currentWeekAura;
   final double progress;
   final int filterCount;
-  final VoidCallback onGiveMeOne;
   final VoidCallback onFilterTap;
 
   ChallengesHeaderDelegate({
@@ -251,7 +251,6 @@ class ChallengesHeaderDelegate extends SliverPersistentHeaderDelegate {
     required this.currentWeekAura,
     required this.progress,
     required this.filterCount,
-    required this.onGiveMeOne,
     required this.onFilterTap,
   });
 
@@ -277,7 +276,7 @@ class ChallengesHeaderDelegate extends SliverPersistentHeaderDelegate {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
     final l = S.of(context);
-    final streakColor = isWeekComplete ? const Color(0xFFFF6D00) : cs.onSurfaceVariant;
+    final streakColor = isWeekComplete ? BrandColors.orange : cs.onSurfaceVariant;
 
     return SizedBox(
       height: maxExtent,
@@ -316,7 +315,7 @@ class ChallengesHeaderDelegate extends SliverPersistentHeaderDelegate {
                   opacity: filterBarOpacity,
                   child: IgnorePointer(
                     ignoring: filterBarOpacity < 0.5,
-                    child: ChallengesFilterBar(onGiveMeOne: onGiveMeOne),
+                    child: const ChallengesFilterBar(),
                   ),
                 ),
               ),
@@ -393,7 +392,7 @@ class ChallengesHeaderDelegate extends SliverPersistentHeaderDelegate {
 
                       Icon(Icons.emoji_events_rounded, size: 16, color: cs.primary),
                       const SizedBox(width: 3),
-                      _AnimatedAuraCounter(value: availableAura),
+                      AnimatedAuraCounter(value: availableAura),
 
                       if (freezes > 0)
                         Align(
@@ -464,21 +463,20 @@ class ChallengesHeaderDelegate extends SliverPersistentHeaderDelegate {
       old.currentWeekAura != currentWeekAura ||
       old.progress != progress ||
       old.filterCount != filterCount ||
-      old.onGiveMeOne != onGiveMeOne ||
       old.onFilterTap != onFilterTap;
 }
 
 // ─── Animated aura counter ────────────────────────────────────────────────────
 
-class _AnimatedAuraCounter extends StatefulWidget {
+class AnimatedAuraCounter extends StatefulWidget {
   final int value;
-  const _AnimatedAuraCounter({required this.value});
+  const AnimatedAuraCounter({super.key, required this.value});
 
   @override
-  State<_AnimatedAuraCounter> createState() => _AnimatedAuraCounterState();
+  State<AnimatedAuraCounter> createState() => _AnimatedAuraCounterState();
 }
 
-class _AnimatedAuraCounterState extends State<_AnimatedAuraCounter> {
+class _AnimatedAuraCounterState extends State<AnimatedAuraCounter> {
   late int _prevValue;
 
   @override
@@ -488,7 +486,7 @@ class _AnimatedAuraCounterState extends State<_AnimatedAuraCounter> {
   }
 
   @override
-  void didUpdateWidget(_AnimatedAuraCounter old) {
+  void didUpdateWidget(AnimatedAuraCounter old) {
     super.didUpdateWidget(old);
     if (old.value != widget.value) {
       setState(() => _prevValue = old.value);

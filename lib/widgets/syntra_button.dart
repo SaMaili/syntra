@@ -95,9 +95,9 @@ class _SyntraButtonState extends ConsumerState<SyntraButton> with SingleTickerPr
     // Determine the base intent color (defaulting to primary)
     final baseColor = widget.color ?? cs.primary;
 
-    // Apply the softening logic you liked (45% grey) to make it 
-    // "less intimidating" regardless of which neon color we use.
-    final mainColor = Color.lerp(baseColor, Colors.grey, 0.45)!;
+    // Brand spec: the face is the pure intent color (primary = #FF10F0),
+    // not softened toward grey.
+    final mainColor = baseColor;
     
     // Increase shadow contrast by darkening the lerp factor
     final shadowColor = Color.lerp(mainColor, Colors.black, 0.35) ?? Colors.black;

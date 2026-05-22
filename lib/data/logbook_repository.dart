@@ -8,8 +8,7 @@ import '../logic/weekly_streak_logic.dart';
 /// The challenge catalog tables are no longer read here — they live in JSON.
 class LogbookRepository {
   static LogbookRepository? _instance;
-  static LogbookRepository get instance =>
-      _instance ??= LogbookRepository._();
+  static LogbookRepository get instance => _instance ??= LogbookRepository._();
 
   LogbookRepository._();
 
@@ -31,9 +30,15 @@ class LogbookRepository {
   ''';
 
   static Future<void> _createIndexes(Database db) async {
-    await db.execute('CREATE INDEX IF NOT EXISTS idx_logbook_status_challenge ON logbook(status, challenge_id)');
-    await db.execute('CREATE INDEX IF NOT EXISTS idx_logbook_timestamp ON logbook(timestamp)');
-    await db.execute('CREATE INDEX IF NOT EXISTS idx_logbook_challenge ON logbook(challenge_id)');
+    await db.execute(
+      'CREATE INDEX IF NOT EXISTS idx_logbook_status_challenge ON logbook(status, challenge_id)',
+    );
+    await db.execute(
+      'CREATE INDEX IF NOT EXISTS idx_logbook_timestamp ON logbook(timestamp)',
+    );
+    await db.execute(
+      'CREATE INDEX IF NOT EXISTS idx_logbook_challenge ON logbook(challenge_id)',
+    );
   }
 
   Future<Database> get _database async {
@@ -90,8 +95,8 @@ class LogbookRepository {
   Future<List<Map<String, dynamic>>> filteredEntries({
     int limit = 50,
     int offset = 0,
-    String? status,              // 'success' | 'tried' | null = all
-    Set<String>? challengeIds,   // restrict to these challenge IDs (title search)
+    String? status, // 'success' | 'tried' | null = all
+    Set<String>? challengeIds, // restrict to these challenge IDs (title search)
   }) async {
     final db = await _database;
     final conditions = <String>[];
@@ -147,7 +152,8 @@ class LogbookRepository {
     final db = await _database;
     final today = DateTime.now().toIso8601String().substring(0, 10);
 
-    final rows = await db.rawQuery('''
+    final rows = await db.rawQuery(
+      '''
       SELECT
         COALESCE(SUM(aura), 0)                                          AS totalAura,
         COALESCE(SUM(CASE WHEN date(timestamp) = ? THEN aura ELSE 0 END), 0) AS todayAura,
@@ -155,21 +161,29 @@ class LogbookRepository {
         COALESCE(SUM(CASE WHEN status = 'success' AND date(timestamp) = ? THEN 1 ELSE 0 END), 0) AS completedToday,
         COALESCE(SUM(duration_seconds), 0) AS totalSeconds
       FROM logbook
-    ''', [today, today]);
+    ''',
+      [today, today],
+    );
 
     final row = rows.first;
     final totalSeconds = (row['totalSeconds'] as int?) ?? 0;
     final now = DateTime.now();
     final auraByWeek = await weeklyAuraByWeek(weeks: 52);
     final frozenWeeks = await SettingsRepository.instance.loadFrozenWeeks();
-    final weekStreak =
-        WeeklyStreakLogic.countStreak(auraByWeek, now, frozenWeeks: frozenWeeks);
+    final weekStreak = WeeklyStreakLogic.countStreak(
+      auraByWeek,
+      now,
+      frozenWeeks: frozenWeeks,
+    );
     // pendingWeekStreak: streak from last week — shown in grey when the current
     // week hasn't reached the threshold yet (grace period motivational cue).
     // Resets to 0 only when two or more consecutive weeks were missed.
     final pendingWeekStreak = weekStreak == 0
-        ? WeeklyStreakLogic.countPendingStreak(auraByWeek, now,
-            frozenWeeks: frozenWeeks)
+        ? WeeklyStreakLogic.countPendingStreak(
+            auraByWeek,
+            now,
+            frozenWeeks: frozenWeeks,
+          )
         : 0;
 
     return {
@@ -188,16 +202,21 @@ class LogbookRepository {
   Future<Map<String, int>> weeklyAuraByWeek({int weeks = 52}) async {
     final db = await _database;
     final now = DateTime.now();
-    final cutoff = DateTime(now.year, now.month, now.day - weeks * 7)
-        .toIso8601String()
-        .substring(0, 10);
+    final cutoff = DateTime(
+      now.year,
+      now.month,
+      now.day - weeks * 7,
+    ).toIso8601String().substring(0, 10);
 
-    final rows = await db.rawQuery('''
+    final rows = await db.rawQuery(
+      '''
       SELECT timestamp, COALESCE(SUM(aura), 0) AS aura
       FROM logbook
       WHERE date(timestamp) >= ?
       GROUP BY strftime('%Y-%W', timestamp)
-    ''', [cutoff]);
+    ''',
+      [cutoff],
+    );
 
     final result = <String, int>{};
     for (final r in rows) {
@@ -215,11 +234,14 @@ class LogbookRepository {
     final monday = WeeklyStreakLogic.startOfIsoWeek(now);
     final mondayStr = monday.toIso8601String().substring(0, 10);
 
-    final rows = await db.rawQuery('''
+    final rows = await db.rawQuery(
+      '''
       SELECT COALESCE(SUM(aura), 0) AS aura
       FROM logbook
       WHERE date(timestamp) >= ?
-    ''', [mondayStr]);
+    ''',
+      [mondayStr],
+    );
     return (rows.first['aura'] as int?) ?? 0;
   }
 
@@ -258,12 +280,15 @@ class LogbookRepository {
     final startStr = start.toIso8601String().substring(0, 10);
     final endStr = now.toIso8601String().substring(0, 10);
 
-    final rows = await db.rawQuery('''
+    final rows = await db.rawQuery(
+      '''
       SELECT date(timestamp) AS day, COALESCE(SUM(aura), 0) AS aura
       FROM logbook
       WHERE date(timestamp) BETWEEN ? AND ?
       GROUP BY date(timestamp)
-    ''', [startStr, endStr]);
+    ''',
+      [startStr, endStr],
+    );
 
     final map = {for (final r in rows) r['day'] as String: r['aura'] as int};
     return List.generate(days, (i) {
@@ -273,11 +298,30 @@ class LogbookRepository {
   }
 
   /// Last notes entry for a given challenge (for the "already completed" dialog).
-  Future<Map<String, dynamic>?> lastNotesForChallenge(String challengeId) async {
+  Future<Map<String, dynamic>?> lastNotesForChallenge(
+    String challengeId,
+  ) async {
     final db = await _database;
     final rows = await db.rawQuery(
       'SELECT notes, timestamp FROM logbook '
       'WHERE challenge_id = ? AND notes IS NOT NULL AND notes != "" '
+      'ORDER BY timestamp DESC LIMIT 1',
+      [challengeId],
+    );
+    return rows.isNotEmpty ? rows.first : null;
+  }
+
+  /// Most recent attempt for a challenge that has at least a mood score or a
+  /// written note. Returns null only when the challenge has never been attempted
+  /// with any subjective data.
+  Future<Map<String, dynamic>?> lastAttemptForChallenge(
+    String challengeId,
+  ) async {
+    final db = await _database;
+    final rows = await db.rawQuery(
+      'SELECT notes, feeling, pre_anxiety, timestamp FROM logbook '
+      'WHERE challenge_id = ? '
+      'AND (feeling IS NOT NULL OR (notes IS NOT NULL AND notes != "")) '
       'ORDER BY timestamp DESC LIMIT 1',
       [challengeId],
     );
@@ -305,7 +349,8 @@ class LogbookRepository {
     final db = await _database;
     return await db.rawQuery(
       'SELECT pre_anxiety, feeling FROM logbook '
-      'WHERE pre_anxiety IS NOT NULL AND feeling IS NOT NULL',
+      'WHERE pre_anxiety IS NOT NULL AND feeling IS NOT NULL '
+      'ORDER BY timestamp ASC',
     );
   }
 
@@ -337,7 +382,8 @@ class LogbookRepository {
     final db = await _database;
     await db.delete('logbook', where: 'id = ?', whereArgs: [id]);
     final count = Sqflite.firstIntValue(
-        await db.rawQuery('SELECT COUNT(*) FROM logbook'));
+      await db.rawQuery('SELECT COUNT(*) FROM logbook'),
+    );
     if (count == 0) {
       await SettingsRepository.instance.saveFrozenWeeks({});
     }
@@ -350,7 +396,8 @@ class LogbookRepository {
     final startStr = start.toIso8601String().substring(0, 10);
     final endStr = now.toIso8601String().substring(0, 10);
 
-    final rows = await db.rawQuery('''
+    final rows = await db.rawQuery(
+      '''
       SELECT
         date(timestamp) AS day,
         SUM(CASE WHEN status = 'success' THEN 1 ELSE 0 END) AS completed,
@@ -358,7 +405,9 @@ class LogbookRepository {
       FROM logbook
       WHERE date(timestamp) BETWEEN ? AND ?
       GROUP BY date(timestamp)
-    ''', [startStr, endStr]);
+    ''',
+      [startStr, endStr],
+    );
 
     final completedMap = <String, int>{};
     final failedMap = <String, int>{};
@@ -385,17 +434,21 @@ class LogbookRepository {
     // Align to Monday of the earliest week
     final todayWeekday = now.weekday; // 1=Mon
     final endOfGrid = now;
-    final startOfGrid =
-        now.subtract(Duration(days: (weeks - 1) * 7 + (todayWeekday - 1)));
+    final startOfGrid = now.subtract(
+      Duration(days: (weeks - 1) * 7 + (todayWeekday - 1)),
+    );
     final startStr = startOfGrid.toIso8601String().substring(0, 10);
     final endStr = endOfGrid.toIso8601String().substring(0, 10);
 
-    final rows = await db.rawQuery('''
+    final rows = await db.rawQuery(
+      '''
       SELECT date(timestamp) AS day, COUNT(*) AS cnt
       FROM logbook
       WHERE date(timestamp) BETWEEN ? AND ?
       GROUP BY date(timestamp)
-    ''', [startStr, endStr]);
+    ''',
+      [startStr, endStr],
+    );
 
     return {for (final r in rows) r['day'] as String: r['cnt'] as int};
   }
@@ -404,19 +457,23 @@ class LogbookRepository {
   /// Only rows where feeling IS NOT NULL are included.
   Future<List<int>> moodHistoryForChallenge(String challengeId) async {
     final db = await _database;
-    final rows = await db.rawQuery('''
+    final rows = await db.rawQuery(
+      '''
       SELECT feeling
       FROM logbook
       WHERE challenge_id = ? AND feeling IS NOT NULL
       ORDER BY timestamp ASC
-    ''', [challengeId]);
+    ''',
+      [challengeId],
+    );
     return rows.map((r) => r['feeling'] as int).toList();
   }
 
   /// Returns the last [limit] individual feeling scores with their timestamps,
   /// oldest first. Each entry is one challenge completion.
-  Future<List<({DateTime date, double avg})>> averageMoodPerDay(
-      {int days = 14}) async {
+  Future<List<({DateTime date, double avg})>> averageMoodPerDay({
+    int days = 14,
+  }) async {
     final db = await _database;
     // Fetch last 20 individual entries so the chart shows a curve even when
     // all data is from a single day.
@@ -440,11 +497,14 @@ class LogbookRepository {
     final now = DateTime.now();
     final monday = now.subtract(Duration(days: now.weekday - 1));
     final mondayStr = monday.toIso8601String().substring(0, 10);
-    final rows = await db.rawQuery('''
+    final rows = await db.rawQuery(
+      '''
       SELECT COUNT(*) AS cnt
       FROM logbook
       WHERE status = 'success' AND date(timestamp) >= ?
-    ''', [mondayStr]);
+    ''',
+      [mondayStr],
+    );
     return (rows.first['cnt'] as int?) ?? 0;
   }
 }

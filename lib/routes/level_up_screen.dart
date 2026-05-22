@@ -5,6 +5,7 @@ import '../generated/l10n.dart';
 import '../logic/comfort_zone_logic.dart';
 import '../services/vibration_service.dart';
 import '../theme/app_spacing.dart';
+import '../theme/brand_colors.dart';
 import '../widgets/syntra_button.dart';
 
 class LevelUpScreen extends ConsumerStatefulWidget {
@@ -87,8 +88,8 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen>
     final level = widget.newLevel.clamp(1, ComfortZoneLogic.maxLevel);
     final gradient = ComfortZoneLogic.levelGradient(level);
     final (bgBegin, _) = ComfortZoneLogic.levelGradientColors[level];
-    final bgColor = Color.lerp(const Color(0xFF121212), bgBegin, 0.25) ??
-        const Color(0xFF121212);
+    final bgColor = Color.lerp(BrandColors.rootBg, bgBegin, 0.25) ??
+        BrandColors.rootBg;
     final icon = ComfortZoneLogic.levelIcons[level];
     final name = ComfortZoneLogic.levelNames[level];
     final desc = ComfortZoneLogic.levelDescriptions[level];

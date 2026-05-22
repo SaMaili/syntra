@@ -20,12 +20,20 @@ class ChallengeListSliver extends ConsumerStatefulWidget {
 class _ChallengeListSliverState extends ConsumerState<ChallengeListSliver> {
   static const _pageSize = 20;
   int _visibleCount = _pageSize;
+  String? _focusedId;
 
   @override
   Widget build(BuildContext context) {
     // Reset paging and re-enable stagger whenever filters change.
     ref.listen(challengeFiltersProvider, (prev, next) {
       if (mounted) setState(() => _visibleCount = _pageSize);
+    });
+    // Clear focus when the user switches tabs or types in search.
+    ref.listen(challengeHomeTabProvider, (prev, next) {
+      if (mounted) setState(() => _focusedId = null);
+    });
+    ref.listen(challengeSearchQueryProvider, (prev, next) {
+      if (mounted) setState(() => _focusedId = null);
     });
 
     final displayedAsync = ref.watch(displayedChallengesProvider);
@@ -58,18 +66,22 @@ class _ChallengeListSliverState extends ConsumerState<ChallengeListSliver> {
                 AppSpacing.md,
                 0,
               ),
-              sliver: SliverList.separated(
+              sliver: SliverList.builder(
                 itemCount: showing,
-                separatorBuilder: (context, index) =>
-                    const SizedBox(height: AppSpacing.sm),
-                itemBuilder: (context, i) => _FadeInItem(
-                  key: ValueKey(filtered[i].id),
-                  child: ChallengeListItem(
-                    challenge: filtered[i],
-                    isDone: completedIds.contains(filtered[i].id),
-                    onStart: () => widget.onStart(context, filtered[i]),
-                  ),
-                ),
+                itemBuilder: (context, i) {
+                  final challenge = filtered[i];
+                  return _FadeInItem(
+                    key: ValueKey(challenge.id),
+                    child: ChallengeListItem(
+                      challenge: challenge,
+                      isDone: completedIds.contains(challenge.id),
+                      focused: _focusedId == challenge.id,
+                      onTap: () => setState(() => _focusedId =
+                          _focusedId == challenge.id ? null : challenge.id),
+                      onStart: () => widget.onStart(context, challenge),
+                    ),
+                  );
+                },
               ),
             ),
             SliverToBoxAdapter(
@@ -132,13 +144,15 @@ class _FadeInItemState extends State<_FadeInItem>
     super.initState();
     _ctrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 320),
+      duration: const Duration(milliseconds: 440),
     )..forward();
-    _opacity = CurvedAnimation(parent: _ctrl, curve: Curves.easeOut);
+    // Design-system signature easing — the smooth decel used app-wide.
+    const designEase = Cubic(.16, 1, .3, 1);
+    _opacity = CurvedAnimation(parent: _ctrl, curve: designEase);
     _slide = Tween<Offset>(
-      begin: const Offset(0, 0.06),
+      begin: const Offset(0, 0.08),
       end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
+    ).animate(CurvedAnimation(parent: _ctrl, curve: designEase));
   }
 
   @override

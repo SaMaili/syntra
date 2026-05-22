@@ -34,69 +34,51 @@ class NotificationManager {
     await SyntraNotificationService.instance.requestPermissions();
   }
 
-  /// Calculates user-controlled notification times for a given date.
+  /// The single daily reminder time for a given date — there is exactly one
+  /// notification per day. Returns an empty list when notifications are off.
   static Future<List<DateTime>> calculateUserControlledNotificationTimes([
     DateTime? targetDate,
   ]) async {
     final date = targetDate ?? DateTime.now();
     final prefs = await SharedPreferences.getInstance();
-    final List<DateTime> scheduledTimes = [];
 
     final notificationsEnabled = prefs.getBool('notifications_enabled') ?? true;
     if (!notificationsEnabled) {
       debugPrint('🚫 Global notifications disabled - returning empty schedule');
-      return scheduledTimes;
+      return [];
     }
 
-    final hasSlotSettings =
-        prefs.containsKey('notification1Enabled') ||
-        prefs.containsKey('notification2Enabled') ||
-        prefs.containsKey('notification3Enabled');
+    final reminderEnabled = prefs.getBool('reminder_enabled') ?? true;
+    if (!reminderEnabled) {
+      debugPrint('🚫 Daily reminder disabled - returning empty schedule');
+      return [];
+    }
 
-    final notification1Enabled = prefs.getBool('notification1Enabled') ?? false;
-    final notification2Enabled = prefs.getBool('notification2Enabled') ?? false;
-    final notification3Enabled = prefs.getBool('notification3Enabled') ?? false;
+    // Prefer the explicit reminder time; fall back to the first enabled legacy
+    // slot (a value the user may have picked during onboarding), then 09:00.
+    int hour = 9;
+    int minute = 0;
+    final h = prefs.getInt('reminder_hour');
+    final m = prefs.getInt('reminder_minute');
+    if (h != null && m != null) {
+      hour = h;
+      minute = m;
+    } else {
+      for (var slot = 1; slot <= 3; slot++) {
+        if (prefs.getBool('notification${slot}Enabled') ?? false) {
+          hour = prefs.getInt('notification${slot}TimeHour') ??
+              const [9, 14, 19][slot - 1];
+          minute = prefs.getInt('notification${slot}TimeMinute') ?? 0;
+          break;
+        }
+      }
+    }
 
     debugPrint(
-        '🔎 Slot state @${date.toIso8601String()} | hasSlots=$hasSlotSettings, '
-        'n1=$notification1Enabled, n2=$notification2Enabled, n3=$notification3Enabled');
+        '📅 Daily reminder @${date.toIso8601String()} → '
+        '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}');
 
-    if (!hasSlotSettings) {
-      debugPrint('📅 No slot settings found - using default schedule');
-      for (final timeString in ['09:00', '14:00', '19:00']) {
-        final parts = timeString.split(':');
-        scheduledTimes.add(DateTime(
-          date.year, date.month, date.day,
-          int.parse(parts[0]), int.parse(parts[1]),
-        ));
-        debugPrint('📅 Added default notification time: $timeString');
-      }
-      return scheduledTimes;
-    }
-
-    if (!notification1Enabled && !notification2Enabled && !notification3Enabled) {
-      debugPrint('🚫 All individual notification slots disabled');
-      return scheduledTimes;
-    }
-
-    final hour1 = prefs.getInt('notification1TimeHour') ?? 9;
-    final min1  = prefs.getInt('notification1TimeMinute') ?? 0;
-    final hour2 = prefs.getInt('notification2TimeHour') ?? 14;
-    final min2  = prefs.getInt('notification2TimeMinute') ?? 0;
-    final hour3 = prefs.getInt('notification3TimeHour') ?? 19;
-    final min3  = prefs.getInt('notification3TimeMinute') ?? 0;
-
-    if (notification1Enabled) {
-      scheduledTimes.add(DateTime(date.year, date.month, date.day, hour1, min1));
-    }
-    if (notification2Enabled) {
-      scheduledTimes.add(DateTime(date.year, date.month, date.day, hour2, min2));
-    }
-    if (notification3Enabled) {
-      scheduledTimes.add(DateTime(date.year, date.month, date.day, hour3, min3));
-    }
-
-    return scheduledTimes;
+    return [DateTime(date.year, date.month, date.day, hour, minute)];
   }
 
   /// Schedules daily reminders using [SyntraNotificationService].
