@@ -20,62 +20,104 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'de';
 
-  static String m0(level) =>
+  static String m0(n) => "${n} aktiv";
+
+  static String m1(threshold) => "≥${threshold} Aura";
+
+  static String m2(total, goal) => "${total} / ${goal} Ziel";
+
+  static String m3(level) =>
       "Erreiche Level ${level} auf deiner Komfortzonen-Reise.";
 
-  static String m1(challengeTitle) => "Bereit für: ${challengeTitle}?";
+  static String m4(challengeTitle) => "Bereit für: ${challengeTitle}?";
 
-  static String m2(id) => "Challenge #${id}";
+  static String m5(id) => "Challenge #${id}";
 
-  static String m3(challengeTitle) =>
+  static String m6(challengeTitle) =>
       "Deine Challenge \"${challengeTitle}\" ist gerade beendet! 🏆";
 
-  static String m4(done, needed, next) =>
+  static String m7(done, needed, next) =>
       "${done} / ${needed} Abschlüsse bis Level ${next}";
 
-  static String m5(streak) => "Woche ${streak}, bleib dran.";
+  static String m8(level) => "Auf Level ${level} herabstufen";
 
-  static String m6(level) => "Level ${level}";
+  static String m9(streak) => "Woche ${streak}, bleib dran.";
 
-  static String m7(level) => "Level ${level} freigeschaltet!";
+  static String m10(n) => "letzte ${n}";
 
-  static String m8(time) => "Nächste Motivation 1: ${time}";
+  static String m11(level) => "Level ${level}";
 
-  static String m9(time) => "Nächste Motivation 2: ${time}";
+  static String m12(level) => "Level ${level} freigeschaltet!";
 
-  static String m10(period, time) =>
+  static String m13(n) => "${n} Einträge";
+
+  static String m14(pct) => "Stimmung ${pct}%";
+
+  static String m15(n) => "vor ${n}";
+
+  static String m16(anchor) => "Eher ${anchor}";
+
+  static String m17(time) => "Nächste Motivation 1: ${time}";
+
+  static String m18(time) => "Nächste Motivation 2: ${time}";
+
+  static String m19(n) => "${n} Versuche";
+
+  static String m20(earned, total) => "${earned} / ${total}";
+
+  static String m21(n) => "${n} Einträge";
+
+  static String m22(period, time) =>
       "⏰ ${period} Erinnerung aktualisiert auf ${time}";
 
-  static String m11(aura) => "Verfügbar: ${aura} Aura";
+  static String m23(aura) => "Verfügbar: ${aura} Aura";
 
-  static String m12(price) => "Kaufen für ${price} Aura";
+  static String m24(price) => "Kaufen für ${price} Aura";
 
-  static String m13(price) => "Streak Freeze für ${price} Aura kaufen?";
+  static String m25(price) => "Streak Freeze für ${price} Aura kaufen?";
 
-  static String m14(count, max) => "${count} / ${max} im Inventar";
+  static String m26(count, max) => "${count} / ${max} im Inventar";
 
-  static String m15(seconds) => "In ${seconds} Sekunden verfügbar";
+  static String m27(seconds) => "In ${seconds} Sekunden verfügbar";
 
-  static String m16(kilo) =>
+  static String m28(kilo) =>
       "${kilo}k Aura verdient. Du baust etwas Echtes auf.";
 
-  static String m17(aura) => "${aura} Aura durch echtes Handeln verdient.";
+  static String m29(aura) => "${aura} Aura durch echtes Handeln verdient.";
 
-  static String m18(minutes) => "${minutes} Minuten mutig gewesen.";
+  static String m30(minutes) => "${minutes} Minuten mutig gewesen.";
 
-  static String m19(count) =>
+  static String m31(count) =>
       "Du bist ${count} Mal aus deiner Komfortzone herausgetreten.";
 
-  static String m20(days) =>
+  static String m32(days) =>
       "Du bist auf einem ${days}-Tage-Streak. Bleib dran!";
 
-  static String m21(days) => "Du bist seit ${days} Wochen dabei. Weiter so.";
+  static String m33(n) => "${n}-Wochen-Streak lebt";
 
-  static String m22(days) => "${days}-Wochen-Serie!";
+  static String m34(days) => "Du bist seit ${days} Wochen dabei. Weiter so.";
 
-  static String m23(done, goal) => "${done} von ${goal} Challenges diese Woche";
+  static String m35(days) => "${days}-Wochen-Serie!";
 
-  static String m24(n) =>
+  static String m36(n, time, aura) =>
+      "${n} Challenges · ~${time} · +${aura} Aura";
+
+  static String m37(vibe) => "Für ${vibe}";
+
+  static String m38(n, time, aura) =>
+      "${n} Challenges · ~${time} · +${aura} Aura · zum Neuordnen ziehen";
+
+  static String m39(title) => "Als Nächstes: ${title}";
+
+  static String m40(n, total) => "Warm-up ${n}/${total}";
+
+  static String m41(vibe) => "${vibe} Warm-up";
+
+  static String m42(n) => "vor ${n} Wochen";
+
+  static String m43(done, goal) => "${done} von ${goal} Challenges diese Woche";
+
+  static String m44(n) =>
       "Diese Woche hast du ${n} Challenges abgeschlossen. Weiter so!";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -91,10 +133,41 @@ class MessageLookup extends MessageLookupByLibrary {
     "acceptChallenge": MessageLookupByLibrary.simpleMessage(
       "Challenge annehmen",
     ),
+    "activeBack": MessageLookupByLibrary.simpleMessage("Zurück"),
+    "activeBail": MessageLookupByLibrary.simpleMessage("Abbrechen"),
+    "activeGotIt": MessageLookupByLibrary.simpleMessage("Verstanden"),
+    "activeHideStarters": MessageLookupByLibrary.simpleMessage(
+      "Einstiegssätze ausblenden",
+    ),
+    "activeImGoing": MessageLookupByLibrary.simpleMessage("Ich mach\'s"),
+    "activeLast10Caption": MessageLookupByLibrary.simpleMessage(
+      "Gleich geschafft. Hat\'s gezählt?",
+    ),
+    "activeLastAttempt": MessageLookupByLibrary.simpleMessage(
+      "Letzter Versuch",
+    ),
+    "activeLockHint": MessageLookupByLibrary.simpleMessage(
+      "Schaltet frei, sobald du dir wirklich einen Moment Zeit gelassen hast.",
+    ),
+    "activeNeedStarter": MessageLookupByLibrary.simpleMessage(
+      "Brauchst du einen Einstieg?",
+    ),
+    "activeSeeLastNote": MessageLookupByLibrary.simpleMessage(
+      "Letzte Notiz ansehen",
+    ),
+    "activeStayWithIt": MessageLookupByLibrary.simpleMessage("Bleib dran"),
+    "activeWeeksCount": m0,
+    "activeYourNote": MessageLookupByLibrary.simpleMessage("Deine Notiz"),
     "activity": MessageLookupByLibrary.simpleMessage("Aktivität"),
+    "activityLegendActive": m1,
+    "activityLegendFreeze": MessageLookupByLibrary.simpleMessage(
+      "Streak-Schutz",
+    ),
+    "activityLegendQuiet": MessageLookupByLibrary.simpleMessage("Ruhig"),
     "activitySubtitle": MessageLookupByLibrary.simpleMessage(
       "jedes Quadrat ist ein Tag",
     ),
+    "addANote": MessageLookupByLibrary.simpleMessage("Notiz hinzufügen"),
     "addCustomChallenge": MessageLookupByLibrary.simpleMessage(
       "Challenge hinzufügen",
     ),
@@ -115,10 +188,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Genaue Alarme zulassen",
     ),
     "aura": MessageLookupByLibrary.simpleMessage("Aura"),
+    "auraEarnedLabel": MessageLookupByLibrary.simpleMessage("Aura verdient"),
     "auraEarnedThisWeek": MessageLookupByLibrary.simpleMessage(
       "Aura diese Woche",
     ),
     "auraPoints": MessageLookupByLibrary.simpleMessage("Aura"),
+    "auraWalletLabel": MessageLookupByLibrary.simpleMessage("Deine Aura"),
+    "auraWeekRight": m2,
     "avgMoodEmpty": MessageLookupByLibrary.simpleMessage(
       "Bewerte dein Gefühl nach jeder Challenge, um deinen Stimmungsverlauf zu sehen.",
     ),
@@ -154,7 +230,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "badgeFiveHundredAuraDesc": MessageLookupByLibrary.simpleMessage(
       "Verdiene 500 Aura-Punkte",
     ),
-    "badgeLevelDesc": m0,
+    "badgeLevelDesc": m3,
     "badgeLocked": MessageLookupByLibrary.simpleMessage("Gesperrt"),
     "badgeOpted": MessageLookupByLibrary.simpleMessage("Geschafft"),
     "badgeSevenWeekStreak": MessageLookupByLibrary.simpleMessage(
@@ -174,7 +250,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Baue einen 3-Wochen-Streak auf",
     ),
     "badgesAllUnlocked": MessageLookupByLibrary.simpleMessage(
-      "Du hast alle Badges freigeschaltet — unglaublich!",
+      "Du hast alle Badges freigeschaltet. Unglaublich!",
     ),
     "badgesEarnedSection": MessageLookupByLibrary.simpleMessage("Geschafft"),
     "badgesLocked": MessageLookupByLibrary.simpleMessage(
@@ -182,13 +258,24 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "badgesLockedSection": MessageLookupByLibrary.simpleMessage("Gesperrt"),
     "badgesTitle": MessageLookupByLibrary.simpleMessage("Abzeichen"),
+    "bailBody": MessageLookupByLibrary.simpleMessage(
+      "Kein Streak-Verlust. Hinzugehen ist die halbe Miete, und das hast du schon geschafft.",
+    ),
+    "bailKeepGoing": MessageLookupByLibrary.simpleMessage("Weitermachen"),
+    "bailSaveForLater": MessageLookupByLibrary.simpleMessage(
+      "Für später speichern",
+    ),
+    "bailTitle": MessageLookupByLibrary.simpleMessage("Für später speichern?"),
     "basicNotifications": MessageLookupByLibrary.simpleMessage(
       "Basis-Benachrichtigungen",
     ),
     "beforeLabel": MessageLookupByLibrary.simpleMessage("Vorher"),
-    "bestStreak": MessageLookupByLibrary.simpleMessage("Bester Streak"),
+    "bestStreak": MessageLookupByLibrary.simpleMessage("Rekord"),
     "boldMove": MessageLookupByLibrary.simpleMessage("Mutiger Schritt"),
     "cancel": MessageLookupByLibrary.simpleMessage("Abbrechen"),
+    "celebrateEyebrow": MessageLookupByLibrary.simpleMessage(
+      "Challenge geschafft",
+    ),
     "celebrateSmallWins": MessageLookupByLibrary.simpleMessage(
       "Feiere täglich kleine Erfolge",
     ),
@@ -217,7 +304,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "challengeCompletedSnackbar": MessageLookupByLibrary.simpleMessage(
       "Challenge abgeschlossen! Logbuch-Eintrag gespeichert.",
     ),
-    "challengeConfirmMessage": m1,
+    "challengeConfirmMessage": m4,
     "challengeConfirmTitle": MessageLookupByLibrary.simpleMessage(
       "Challenge starten?",
     ),
@@ -236,11 +323,11 @@ class MessageLookup extends MessageLookupByLibrary {
       "Challenge-Logbuch",
     ),
     "challengeName": MessageLookupByLibrary.simpleMessage("Challenge-Name"),
-    "challengeNumber": m2,
+    "challengeNumber": m5,
     "challengeStartQuestion": MessageLookupByLibrary.simpleMessage(
       "Challenge starten?",
     ),
-    "challengeTimerCompleteBody": m3,
+    "challengeTimerCompleteBody": m6,
     "challengeTimerCompleteTitle": MessageLookupByLibrary.simpleMessage(
       "🎉 Timer abgelaufen!",
     ),
@@ -255,6 +342,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Jeder Balken ist ein Tag. Grün = geschafft, orange = versucht.",
     ),
     "closeDialog": MessageLookupByLibrary.simpleMessage("Schließen"),
+    "coachBreath": MessageLookupByLibrary.simpleMessage("Atme tief durch."),
+    "coachMoment": MessageLookupByLibrary.simpleMessage("Wähle deinen Moment."),
     "coachMsg1": MessageLookupByLibrary.simpleMessage(
       "Du hast gerade etwas getan, was die meisten nie versuchen. Das erfordert Mut.",
     ),
@@ -276,6 +365,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "coachMsg7": MessageLookupByLibrary.simpleMessage(
       "Die Version von dir vor sechs Monaten wäre stolz.",
     ),
+    "coachNoRush": MessageLookupByLibrary.simpleMessage(
+      "Keine Eile. Geh, wenn\'s sich richtig anfühlt.",
+    ),
+    "coachWantsToo": MessageLookupByLibrary.simpleMessage(
+      "Sie wollen auch angesprochen werden.",
+    ),
     "comfortZone": MessageLookupByLibrary.simpleMessage("Komfortzone"),
     "comfortZoneLevel": MessageLookupByLibrary.simpleMessage(
       "Komfortzonen-Level",
@@ -285,7 +380,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Schließe ein paar Challenges ab, um sie hier zu sehen!",
     ),
     "completed": MessageLookupByLibrary.simpleMessage("Abgeschlossen"),
-    "completionsToLevel": m4,
+    "completionsToLevel": m7,
     "congratulations": MessageLookupByLibrary.simpleMessage(
       "Glückwunsch! Du hast die Challenge abgeschlossen.",
     ),
@@ -296,6 +391,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "dailyBonus": MessageLookupByLibrary.simpleMessage("Tages-Bonus"),
     "dailyChallenge": MessageLookupByLibrary.simpleMessage(
       "Tägliche Challenge",
+    ),
+    "dailyReminderLabel": MessageLookupByLibrary.simpleMessage(
+      "Tägliche Erinnerung",
+    ),
+    "dailyReminderSublabel": MessageLookupByLibrary.simpleMessage(
+      "Ein Anstoß für deine tägliche Challenge",
     ),
     "dailyReminders": MessageLookupByLibrary.simpleMessage(
       "Tägliche Erinnerungen",
@@ -334,7 +435,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "doItLater": MessageLookupByLibrary.simpleMessage("Später machen"),
     "done": MessageLookupByLibrary.simpleMessage("Erledigt"),
     "doneExcited": MessageLookupByLibrary.simpleMessage("GESCHAFFT!"),
-    "doneToday": MessageLookupByLibrary.simpleMessage("Heute geschafft"),
+    "doneToday": MessageLookupByLibrary.simpleMessage("Heute"),
+    "downgradeToLevel": m8,
     "embraceChallenges": MessageLookupByLibrary.simpleMessage(
       "Betrachte Herausforderungen als Chancen",
     ),
@@ -464,7 +566,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "greetingLongTime": MessageLookupByLibrary.simpleMessage(
       "Lange nicht gesehen. Keine Sorge, dein Fortschritt ist noch da.",
     ),
-    "greetingStreak": m5,
+    "greetingStreak": m9,
     "group": MessageLookupByLibrary.simpleMessage("Gruppe"),
     "growthStartsDecision": MessageLookupByLibrary.simpleMessage(
       "Wachstum beginnt mit einer Entscheidung: Mut, Offenheit und Positivität.",
@@ -508,6 +610,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "lastCompleted": MessageLookupByLibrary.simpleMessage(
       "Zuletzt abgeschlossen:",
     ),
+    "lastNCount": m10,
     "lastNote": MessageLookupByLibrary.simpleMessage("Letzte Notiz:"),
     "lastNoteTitle": MessageLookupByLibrary.simpleMessage("Letzte Notiz"),
     "learnSetbacks": MessageLookupByLibrary.simpleMessage(
@@ -561,7 +664,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "levelDownTitle": MessageLookupByLibrary.simpleMessage(
       "Einen Schritt zurück?",
     ),
-    "levelN": m6,
+    "levelN": m11,
     "levelName1": MessageLookupByLibrary.simpleMessage("Aufwärmen"),
     "levelName10": MessageLookupByLibrary.simpleMessage("Unberührbar"),
     "levelName2": MessageLookupByLibrary.simpleMessage("Das Eis brechen"),
@@ -572,8 +675,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "levelName7": MessageLookupByLibrary.simpleMessage("Den Raum beherrschen"),
     "levelName8": MessageLookupByLibrary.simpleMessage("Sozialer Athlet"),
     "levelName9": MessageLookupByLibrary.simpleMessage("Furchtlos"),
-    "levelUnlocked": m7,
+    "levelUnlocked": m12,
     "logbook": MessageLookupByLibrary.simpleMessage("Logbuch"),
+    "logbookChallengesPlural": MessageLookupByLibrary.simpleMessage(
+      "Challenges",
+    ),
+    "logbookEightWksAgo": MessageLookupByLibrary.simpleMessage("vor 8 Wo."),
+    "logbookEntriesCount": m13,
     "logbookEntry": MessageLookupByLibrary.simpleMessage("Logbuch-Eintrag"),
     "logbookEntrySaved": MessageLookupByLibrary.simpleMessage(
       "Logbuch-Eintrag gespeichert",
@@ -583,9 +691,29 @@ class MessageLookup extends MessageLookupByLibrary {
       "Abgeschlossen",
     ),
     "logbookFilterTried": MessageLookupByLibrary.simpleMessage("Versucht"),
+    "logbookInsightBetter": MessageLookupByLibrary.simpleMessage(
+      "Du hast dich besser gefühlt als erwartet.",
+    ),
+    "logbookInsightEyebrow": MessageLookupByLibrary.simpleMessage("Erkenntnis"),
+    "logbookInsightMatched": MessageLookupByLibrary.simpleMessage(
+      "Deine Vorhersage hat gestimmt.",
+    ),
+    "logbookInsightWorse": MessageLookupByLibrary.simpleMessage(
+      "Es war schwerer als erwartet.",
+    ),
+    "logbookMoodDelta": m14,
+    "logbookMoodTrendEyebrow": MessageLookupByLibrary.simpleMessage(
+      "Stimmungsverlauf",
+    ),
+    "logbookNoteEyebrow": MessageLookupByLibrary.simpleMessage("Notiz"),
+    "logbookNow": MessageLookupByLibrary.simpleMessage("Jetzt"),
+    "logbookReflectionEyebrow": MessageLookupByLibrary.simpleMessage(
+      "Reflexion",
+    ),
     "logbookSearchHint": MessageLookupByLibrary.simpleMessage(
       "Nach Challenge-ID suchen…",
     ),
+    "logbookThisMonth": MessageLookupByLibrary.simpleMessage("Dieser Monat"),
     "lostForWords": MessageLookupByLibrary.simpleMessage("Sprachlos?"),
     "mindsetGrowth": MessageLookupByLibrary.simpleMessage("Mindset & Wachstum"),
     "mindsetShapesReality": MessageLookupByLibrary.simpleMessage(
@@ -594,9 +722,24 @@ class MessageLookup extends MessageLookupByLibrary {
     "mindsetTips": MessageLookupByLibrary.simpleMessage("Mindset-Tipps"),
     "minutesBrave": MessageLookupByLibrary.simpleMessage("Min. mutig"),
     "mon": MessageLookupByLibrary.simpleMessage("Mo"),
+    "monthAprShort": MessageLookupByLibrary.simpleMessage("Apr"),
+    "monthAugShort": MessageLookupByLibrary.simpleMessage("Aug"),
+    "monthDecShort": MessageLookupByLibrary.simpleMessage("Dez"),
+    "monthFebShort": MessageLookupByLibrary.simpleMessage("Feb"),
+    "monthJanShort": MessageLookupByLibrary.simpleMessage("Jan"),
+    "monthJulShort": MessageLookupByLibrary.simpleMessage("Jul"),
+    "monthJunShort": MessageLookupByLibrary.simpleMessage("Jun"),
+    "monthMarShort": MessageLookupByLibrary.simpleMessage("Mär"),
+    "monthMayShort": MessageLookupByLibrary.simpleMessage("Mai"),
+    "monthNovShort": MessageLookupByLibrary.simpleMessage("Nov"),
+    "monthOctShort": MessageLookupByLibrary.simpleMessage("Okt"),
+    "monthSepShort": MessageLookupByLibrary.simpleMessage("Sep"),
+    "moodAgoLabel": m15,
+    "moodTodayLabel": MessageLookupByLibrary.simpleMessage("Heute"),
     "moodTrend": MessageLookupByLibrary.simpleMessage("Stimmungsverlauf"),
     "more": MessageLookupByLibrary.simpleMessage("Mehr"),
     "morning": MessageLookupByLibrary.simpleMessage("Morgen"),
+    "mostlyX": m16,
     "motivationMessage1": MessageLookupByLibrary.simpleMessage(
       "Bereit für eine neue Herausforderung? Los geht\'s!",
     ),
@@ -625,7 +768,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "\"Die einzige Grenze für die Verwirklichung von morgen werden unsere Zweifel von heute sein.\"",
     ),
     "navChallenge": MessageLookupByLibrary.simpleMessage("Challenge"),
-    "navDaily": MessageLookupByLibrary.simpleMessage("Täglich"),
+    "navDaily": MessageLookupByLibrary.simpleMessage("Warm-ups"),
     "navProfile": MessageLookupByLibrary.simpleMessage("Profil"),
     "navSettings": MessageLookupByLibrary.simpleMessage("Einstellungen"),
     "negative": MessageLookupByLibrary.simpleMessage("Negativ"),
@@ -634,8 +777,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "newChallengesAvailable": MessageLookupByLibrary.simpleMessage(
       "Neue Challenges sind jetzt in deinem Katalog verfügbar.",
     ),
-    "nextMotivation1": m8,
-    "nextMotivation2": m9,
+    "nextMotivation1": m17,
+    "nextMotivation2": m18,
     "noChallengesFound": MessageLookupByLibrary.simpleMessage(
       "Keine Challenges gefunden",
     ),
@@ -679,9 +822,28 @@ class MessageLookup extends MessageLookupByLibrary {
     "notePrompt9": MessageLookupByLibrary.simpleMessage(
       "Was würdest du einem Freund sagen, der das versuchen will?",
     ),
+    "notePromptAwkward": MessageLookupByLibrary.simpleMessage(
+      "Komisch, aber wert",
+    ),
+    "notePromptEasier": MessageLookupByLibrary.simpleMessage(
+      "Leichter als gedacht",
+    ),
+    "notePromptPowerful": MessageLookupByLibrary.simpleMessage(
+      "Hat sich stark angefühlt",
+    ),
+    "notePromptSmiled": MessageLookupByLibrary.simpleMessage(
+      "Sie haben zurückgelächelt",
+    ),
     "notes": MessageLookupByLibrary.simpleMessage("Notizen:"),
+    "notesEyebrow": MessageLookupByLibrary.simpleMessage("Eine letzte Sache"),
+    "notesHelper": MessageLookupByLibrary.simpleMessage(
+      "Eine Zeile für dein Zukunfts-Ich. Überspringen, wenn nichts hängen geblieben ist.",
+    ),
     "notesPlaceholder": MessageLookupByLibrary.simpleMessage(
       "Deine Gedanken, Beobachtungen, ...",
+    ),
+    "notesQuestion": MessageLookupByLibrary.simpleMessage(
+      "Etwas zum Festhalten?",
     ),
     "notificationPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Syntra benötigt Benachrichtigungsrechte, um dich an deine Challenges zu erinnern und wichtige Updates zu liefern.",
@@ -696,12 +858,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "notificationsEnabled": MessageLookupByLibrary.simpleMessage(
       "✅ Benachrichtigungen aktiviert",
     ),
+    "notificationsMasterLabel": MessageLookupByLibrary.simpleMessage(
+      "Alle Benachrichtigungen",
+    ),
+    "notificationsMasterSublabel": MessageLookupByLibrary.simpleMessage(
+      "Hauptschalter · alles ausschalten",
+    ),
     "notificationsSubtitle": MessageLookupByLibrary.simpleMessage(
       "Lass dich an tägliche Herausforderungen erinnern",
     ),
     "okayButton": MessageLookupByLibrary.simpleMessage("Okay"),
     "onboarding1Button": MessageLookupByLibrary.simpleMessage(
-      "So funktioniert\'s →",
+      "So funktioniert\'s",
     ),
     "onboarding1Headline": MessageLookupByLibrary.simpleMessage(
       "Soziale Sicherheit ist eine Fähigkeit.\nFähigkeiten kann man trainieren.",
@@ -709,25 +877,32 @@ class MessageLookup extends MessageLookupByLibrary {
     "onboarding1Subtext": MessageLookupByLibrary.simpleMessage(
       "Syntra gibt dir jeden Tag kleine, reale Herausforderungen zum Üben. Keine Kurse. Keine Skripte. Nur du, draußen in der Welt.",
     ),
-    "onboarding2Button": MessageLookupByLibrary.simpleMessage("Verstanden →"),
+    "onboarding2Button": MessageLookupByLibrary.simpleMessage("Verstanden"),
     "onboarding2Headline": MessageLookupByLibrary.simpleMessage(
       "Eine Challenge nach der anderen.",
     ),
     "onboarding2Step1": MessageLookupByLibrary.simpleMessage(
       "Wähle eine Challenge",
     ),
+    "onboarding2Step1Desc": MessageLookupByLibrary.simpleMessage(
+      "Eine Challenge, die dich anstupst, nicht überfordert.",
+    ),
     "onboarding2Step2": MessageLookupByLibrary.simpleMessage(
       "Mach sie, der Timer hilft",
+    ),
+    "onboarding2Step2Desc": MessageLookupByLibrary.simpleMessage(
+      "Draußen in der echten Welt. Ein Timer hält dich ehrlich.",
     ),
     "onboarding2Step3": MessageLookupByLibrary.simpleMessage(
       "Protokolliere dein Ergebnis",
     ),
+    "onboarding2Step3Desc": MessageLookupByLibrary.simpleMessage(
+      "Wie es lief. Wie es sich anfühlte. Sieh die Lücke schrumpfen.",
+    ),
     "onboarding2Subtext": MessageLookupByLibrary.simpleMessage(
       "Jede ist so gestaltet, dass sie dich leicht aus deiner Komfortzone schiebt. Du entscheidest, wie weit.",
     ),
-    "onboarding3Button": MessageLookupByLibrary.simpleMessage(
-      "Ich bin dabei →",
-    ),
+    "onboarding3Button": MessageLookupByLibrary.simpleMessage("Ich bin dabei"),
     "onboarding3Headline": MessageLookupByLibrary.simpleMessage(
       "Es ist okay, nervös zu sein.\nDarum geht es ja.",
     ),
@@ -759,11 +934,17 @@ class MessageLookup extends MessageLookupByLibrary {
       "Sei ehrlich: deine ersten Challenges werden darauf abgestimmt. Du kannst es jederzeit ändern.",
     ),
     "onboarding5Button": MessageLookupByLibrary.simpleMessage(
-      "Erinnerung einstellen →",
+      "Erinnerung einstellen",
     ),
     "onboarding5Headline": MessageLookupByLibrary.simpleMessage(
       "5 Minuten am Tag reichen.",
     ),
+    "onboarding5Stat1Label": MessageLookupByLibrary.simpleMessage("Versuche"),
+    "onboarding5Stat1Value": MessageLookupByLibrary.simpleMessage("3"),
+    "onboarding5Stat2Label": MessageLookupByLibrary.simpleMessage("pro Tag"),
+    "onboarding5Stat2Value": MessageLookupByLibrary.simpleMessage("5 Min"),
+    "onboarding5Stat3Label": MessageLookupByLibrary.simpleMessage("freiwillig"),
+    "onboarding5Stat3Value": MessageLookupByLibrary.simpleMessage("100%"),
     "onboarding5Subtext": MessageLookupByLibrary.simpleMessage(
       "Die Wissenschaft zur Gewohnheitsbildung sagt: Regelmäßigkeit ist wichtiger als Intensität. Eine kleine Sache, jeden Tag, verändert dein Gehirn. Wortwörtlich.",
     ),
@@ -775,8 +956,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "perception": MessageLookupByLibrary.simpleMessage("Wahrnehmung"),
     "positive": MessageLookupByLibrary.simpleMessage("Positiv"),
     "predictionAttempts": MessageLookupByLibrary.simpleMessage("Versuche"),
+    "predictionAttemptsCount": m19,
     "predictionAvgGap": MessageLookupByLibrary.simpleMessage("Ø Differenz"),
     "predictionCalmer": MessageLookupByLibrary.simpleMessage("Ruhiger"),
+    "predictionEasier": MessageLookupByLibrary.simpleMessage("Leichter"),
+    "predictionEasierAfter": MessageLookupByLibrary.simpleMessage(
+      "an als erwartet",
+    ),
+    "predictionEasierBefore": MessageLookupByLibrary.simpleMessage(
+      "Challenges fühlten sich",
+    ),
+    "predictionEasierKey": MessageLookupByLibrary.simpleMessage("leichter"),
+    "predictionHarder": MessageLookupByLibrary.simpleMessage("Schwerer"),
     "predictionInsightAccurate": MessageLookupByLibrary.simpleMessage(
       "Deine Vorhersagen sind ziemlich genau",
     ),
@@ -795,6 +986,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "predictionRealityGapTitle": MessageLookupByLibrary.simpleMessage(
       "Nervosität vorher vs. Gefühl nachher",
     ),
+    "predictionSame": MessageLookupByLibrary.simpleMessage("Gleich"),
+    "predictionTakeawayAfter": MessageLookupByLibrary.simpleMessage(
+      "der Fälle daneben.",
+    ),
+    "predictionTakeawayBefore": MessageLookupByLibrary.simpleMessage(
+      "Dein Kopf sagt",
+    ),
+    "predictionTakeawayMiddle": MessageLookupByLibrary.simpleMessage(
+      "und liegt in",
+    ),
+    "predictionTakeawayQuote": MessageLookupByLibrary.simpleMessage(
+      "das wird furchtbar",
+    ),
     "predictionVsRealitySubtitle": MessageLookupByLibrary.simpleMessage(
       "Wie nervös du erwartest vs wie du dich wirklich fühlst",
     ),
@@ -804,6 +1008,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "preferAnotherChallenge": MessageLookupByLibrary.simpleMessage(
       "Ich hätte lieber eine andere Challenge",
     ),
+    "primingBack": MessageLookupByLibrary.simpleMessage("Zurück"),
     "primingHeadlineDefault": MessageLookupByLibrary.simpleMessage(
       "Atme durch.\nDu schaffst das.",
     ),
@@ -837,6 +1042,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "privacyPolicy": MessageLookupByLibrary.simpleMessage(
       "Datenschutzerklärung",
     ),
+    "profileActivityTitle": MessageLookupByLibrary.simpleMessage("Aktivität"),
+    "profileAuraWeekTitle": MessageLookupByLibrary.simpleMessage(
+      "Aura diese Woche",
+    ),
+    "profileBadgesCount": m20,
+    "profileBadgesLabel": MessageLookupByLibrary.simpleMessage("Badges"),
+    "profileLogbookEntries": m21,
+    "profileLogbookLabel": MessageLookupByLibrary.simpleMessage("Logbuch"),
+    "profileMoodTitle": MessageLookupByLibrary.simpleMessage(
+      "Stimmungsverlauf",
+    ),
     "profileTitle": MessageLookupByLibrary.simpleMessage("Profil"),
     "quote1": MessageLookupByLibrary.simpleMessage(
       "\"Die einzige Grenze für die Verwirklichung von morgen werden unsere Zweifel von heute sein.\"",
@@ -865,13 +1081,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "reachedTheTop": MessageLookupByLibrary.simpleMessage(
       "Du hast die Spitze erreicht. Mach weiter.",
     ),
+    "reflectEyebrow": MessageLookupByLibrary.simpleMessage("Reflexion"),
+    "reflectOnThis": MessageLookupByLibrary.simpleMessage(
+      "Reflektiere darüber",
+    ),
     "rememberOnMyOwn": MessageLookupByLibrary.simpleMessage(
       "Ich erinnere mich selbst →",
     ),
     "reminderExplanation": MessageLookupByLibrary.simpleMessage(
       "Wir senden dir einen Impuls am Tag, du wählst wann. Kein Spam. Du kannst es jederzeit in den Einstellungen abschalten.",
     ),
-    "reminderUpdated": m10,
+    "reminderTimeLabel": MessageLookupByLibrary.simpleMessage(
+      "Erinnerungszeit",
+    ),
+    "reminderUpdated": m22,
     "repeatChallengeInfo": MessageLookupByLibrary.simpleMessage(
       "Du kannst diese Challenge so oft wiederholen, wie du möchtest!",
     ),
@@ -880,21 +1103,40 @@ class MessageLookup extends MessageLookupByLibrary {
     "rewardFactor": MessageLookupByLibrary.simpleMessage("Belohnungsfaktor"),
     "sat": MessageLookupByLibrary.simpleMessage("Sa"),
     "saveEntry": MessageLookupByLibrary.simpleMessage("Eintrag speichern"),
+    "saveReflection": MessageLookupByLibrary.simpleMessage(
+      "Reflexion speichern",
+    ),
+    "savedBody": MessageLookupByLibrary.simpleMessage(
+      "Diese gehört zu deiner Geschichte. Die nächste wird ein kleines Stück leichter.",
+    ),
+    "savedTitle": MessageLookupByLibrary.simpleMessage("Gespeichert."),
     "score": MessageLookupByLibrary.simpleMessage("Punkte:"),
     "searchChallenge": MessageLookupByLibrary.simpleMessage("Challenge suchen"),
+    "searchChallengesHint": MessageLookupByLibrary.simpleMessage(
+      "Challenges suchen…",
+    ),
     "searchForChallenge": MessageLookupByLibrary.simpleMessage(
       "Nach einer Challenge suchen...",
+    ),
+    "sectionAbout": MessageLookupByLibrary.simpleMessage("Über"),
+    "sectionAppearance": MessageLookupByLibrary.simpleMessage(
+      "Erscheinungsbild",
+    ),
+    "sectionFeel": MessageLookupByLibrary.simpleMessage("Gefühl"),
+    "sectionInventory": MessageLookupByLibrary.simpleMessage("Inventar"),
+    "sectionNotifications": MessageLookupByLibrary.simpleMessage(
+      "Benachrichtigungen",
     ),
     "seeAllBadges": MessageLookupByLibrary.simpleMessage("Alle ansehen"),
     "setDifficultyManually": MessageLookupByLibrary.simpleMessage(
       "Schwierigkeit manuell setzen",
     ),
     "settingsTitle": MessageLookupByLibrary.simpleMessage("Einstellungen"),
-    "shopAvailableAura": m11,
-    "shopBuyFor": m12,
-    "shopConfirmBody": m13,
+    "shopAvailableAura": m23,
+    "shopBuyFor": m24,
+    "shopConfirmBody": m25,
     "shopConfirmTitle": MessageLookupByLibrary.simpleMessage("Kauf bestätigen"),
-    "shopInInventory": m14,
+    "shopInInventory": m26,
     "shopMaxOwned": MessageLookupByLibrary.simpleMessage("Maximum erreicht"),
     "shopNotEnoughAura": MessageLookupByLibrary.simpleMessage(
       "Nicht genug Aura",
@@ -912,10 +1154,31 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "skip": MessageLookupByLibrary.simpleMessage("Überspringen"),
     "skipForNow": MessageLookupByLibrary.simpleMessage("Erstmal überspringen"),
+    "skipSaveTheWin": MessageLookupByLibrary.simpleMessage(
+      "Überspringen und Sieg behalten",
+    ),
+    "skipThisQuestion": MessageLookupByLibrary.simpleMessage(
+      "Frage überspringen",
+    ),
     "solo": MessageLookupByLibrary.simpleMessage("Solo"),
     "somePermissionsMissing": MessageLookupByLibrary.simpleMessage(
       "Einige Berechtigungen fehlen noch. Bitte aktiviere sie manuell.",
     ),
+    "somewhereInTheMiddle": MessageLookupByLibrary.simpleMessage(
+      "Irgendwo dazwischen",
+    ),
+    "sortAuraDesc": MessageLookupByLibrary.simpleMessage(
+      "Aura ↓ (meiste Belohnung)",
+    ),
+    "sortBy": MessageLookupByLibrary.simpleMessage("Sortieren nach"),
+    "sortLevelAsc": MessageLookupByLibrary.simpleMessage(
+      "Level ↑ (leicht zuerst)",
+    ),
+    "sortLevelDesc": MessageLookupByLibrary.simpleMessage(
+      "Level ↓ (schwer zuerst)",
+    ),
+    "sortRecommended": MessageLookupByLibrary.simpleMessage("Empfohlen"),
+    "sortTimeAsc": MessageLookupByLibrary.simpleMessage("Zeit ↑ (kürzeste)"),
     "soundEffects": MessageLookupByLibrary.simpleMessage("Soundeffekte"),
     "soundEffectsSubtitle": MessageLookupByLibrary.simpleMessage(
       "Spiele Töne für Interaktionen",
@@ -931,22 +1194,24 @@ class MessageLookup extends MessageLookupByLibrary {
     "stayCurious": MessageLookupByLibrary.simpleMessage(
       "Bleibe neugierig und aufgeschlossen",
     ),
-    "stillSecondsLeft": m15,
-    "storyAuraKilo": m16,
-    "storyAuraSmall": m17,
+    "stillSecondsLeft": m27,
+    "storyAuraKilo": m28,
+    "storyAuraSmall": m29,
     "storyFirstChallenge": MessageLookupByLibrary.simpleMessage(
       "Deine Geschichte beginnt mit der ersten Challenge, die du abschließt.",
     ),
-    "storyMinutesBrave": m18,
-    "storyNTimes": m19,
+    "storyMinutesBrave": m30,
+    "storyNTimes": m31,
     "storyOnce": MessageLookupByLibrary.simpleMessage(
       "Du bist einmal aus deiner Komfortzone herausgetreten. Das erfordert Mut.",
     ),
-    "storyStreakMany": m20,
+    "storyStreakMany": m32,
     "storyStreakOne": MessageLookupByLibrary.simpleMessage(
       "Tag 1 eines neuen Streaks. Jeder große Streak hat hier angefangen.",
     ),
     "streak": MessageLookupByLibrary.simpleMessage("Serie"),
+    "streakAliveN": m33,
+    "streakFreezeName": MessageLookupByLibrary.simpleMessage("Streak-Schutz"),
     "streakMilestone100": MessageLookupByLibrary.simpleMessage(
       "100 Wochen. Du hast etwas Außergewöhnliches aufgebaut. Respekt.",
     ),
@@ -965,9 +1230,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "streakMilestone7": MessageLookupByLibrary.simpleMessage(
       "7 Wochen! Fast zwei Monate drangeblieben. Deine Komfortzone ist gewachsen.",
     ),
-    "streakMilestoneGeneric": m21,
-    "streakMilestoneTitle": m22,
+    "streakMilestoneGeneric": m34,
+    "streakMilestoneTitle": m35,
     "sun": MessageLookupByLibrary.simpleMessage("So"),
+    "tabDone": MessageLookupByLibrary.simpleMessage("Erledigt"),
+    "tabFlirt": MessageLookupByLibrary.simpleMessage("Flirt"),
+    "tabForYou": MessageLookupByLibrary.simpleMessage("Für dich"),
+    "tabSaved": MessageLookupByLibrary.simpleMessage("Gespeichert"),
     "thankYouFeedback": MessageLookupByLibrary.simpleMessage(
       "Danke für dein Feedback!",
     ),
@@ -986,7 +1255,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Zeit ist um!",
     ),
     "timerCustomLabel": MessageLookupByLibrary.simpleMessage("Timer setzen:"),
-    "timesTried": MessageLookupByLibrary.simpleMessage("Mal versucht"),
+    "timesTried": MessageLookupByLibrary.simpleMessage("Versucht"),
     "today": MessageLookupByLibrary.simpleMessage("Heute"),
     "todaysMissions": MessageLookupByLibrary.simpleMessage("Heutige Missionen"),
     "tooBad": MessageLookupByLibrary.simpleMessage(
@@ -1007,8 +1276,74 @@ class MessageLookup extends MessageLookupByLibrary {
     "wantReminders": MessageLookupByLibrary.simpleMessage(
       "Sollen wir dich erinnern?",
     ),
+    "warmupAddMore": MessageLookupByLibrary.simpleMessage(
+      "Challenge-Liste öffnen, um weitere zu speichern",
+    ),
+    "warmupCardSummary": m36,
+    "warmupCompleteBody": MessageLookupByLibrary.simpleMessage(
+      "Du hast die ganze Leiter geschafft. Das ist echter Schwung. Nimm ihn mit.",
+    ),
+    "warmupCompleteTitle": MessageLookupByLibrary.simpleMessage(
+      "Warm-up abgeschlossen",
+    ),
+    "warmupContinue": MessageLookupByLibrary.simpleMessage(
+      "Warm-up fortsetzen",
+    ),
+    "warmupForVibe": m37,
+    "warmupJustOne": MessageLookupByLibrary.simpleMessage(
+      "Nur eine schnelle Challenge",
+    ),
+    "warmupLength10": MessageLookupByLibrary.simpleMessage("10 Min"),
+    "warmupLength15": MessageLookupByLibrary.simpleMessage("15 Min"),
+    "warmupLength5": MessageLookupByLibrary.simpleMessage("5 Min"),
+    "warmupMyEmpty": MessageLookupByLibrary.simpleMessage(
+      "Speichere Challenges aus der Challenge-Liste. Sie sammeln sich hier als dein eigenes Warm-up.",
+    ),
+    "warmupMySectionEyebrow": MessageLookupByLibrary.simpleMessage(
+      "Deine Gespeicherten · individuell",
+    ),
+    "warmupMySummary": m38,
+    "warmupMyTitle": MessageLookupByLibrary.simpleMessage("Mein Warm-up"),
+    "warmupNextUp": m39,
+    "warmupPickVibeHint": MessageLookupByLibrary.simpleMessage(
+      "Wähle einen Vibe oder nutze unten Mein Warm-up.",
+    ),
+    "warmupProgress": m40,
+    "warmupStart": MessageLookupByLibrary.simpleMessage("Warm-up starten"),
+    "warmupStep1Eyebrow": MessageLookupByLibrary.simpleMessage("Schritt 1"),
+    "warmupStep1Question": MessageLookupByLibrary.simpleMessage(
+      "Wo gehst du hin?",
+    ),
+    "warmupStep1Subtitle": MessageLookupByLibrary.simpleMessage(
+      "Wir bauen dir eine kurze Challenge-Leiter, die dich darauf einstimmt.",
+    ),
+    "warmupStep2Eyebrow": MessageLookupByLibrary.simpleMessage(
+      "Schritt 2 · Wie lange?",
+    ),
+    "warmupTapToSwap": MessageLookupByLibrary.simpleMessage(
+      "tippen zum Tauschen",
+    ),
+    "warmupTitle": MessageLookupByLibrary.simpleMessage("Warm-ups"),
+    "warmupVibeAny": MessageLookupByLibrary.simpleMessage("Egal wo"),
+    "warmupVibeCardTitle": m41,
+    "warmupVibeCoffee": MessageLookupByLibrary.simpleMessage("Kaffee holen"),
+    "warmupVibeErrands": MessageLookupByLibrary.simpleMessage("Besorgungen"),
+    "warmupVibeMeeting": MessageLookupByLibrary.simpleMessage(
+      "Vor dem Meeting",
+    ),
+    "warmupVibeNight": MessageLookupByLibrary.simpleMessage("Ausgehen"),
     "wed": MessageLookupByLibrary.simpleMessage("Mi"),
-    "weekStreak": MessageLookupByLibrary.simpleMessage("Wochen-Streak"),
+    "weekGroupAgoWeeks": m42,
+    "weekGroupLast": MessageLookupByLibrary.simpleMessage("Letzte Woche"),
+    "weekGroupThis": MessageLookupByLibrary.simpleMessage("Diese Woche"),
+    "weekStreak": MessageLookupByLibrary.simpleMessage("Streak"),
+    "weekdayShortFri": MessageLookupByLibrary.simpleMessage("Fr"),
+    "weekdayShortMon": MessageLookupByLibrary.simpleMessage("Mo"),
+    "weekdayShortSat": MessageLookupByLibrary.simpleMessage("Sa"),
+    "weekdayShortSun": MessageLookupByLibrary.simpleMessage("So"),
+    "weekdayShortThu": MessageLookupByLibrary.simpleMessage("Do"),
+    "weekdayShortTue": MessageLookupByLibrary.simpleMessage("Di"),
+    "weekdayShortWed": MessageLookupByLibrary.simpleMessage("Mi"),
     "weeklyAuraGoalReached": MessageLookupByLibrary.simpleMessage(
       "Ziel erreicht! Diese Woche zählt.",
     ),
@@ -1018,10 +1353,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "weeklyChallenges": MessageLookupByLibrary.simpleMessage(
       "Wöchentliche Challenges",
     ),
-    "weeklyGoalProgress": m23,
+    "weeklyGoalProgress": m43,
     "weeklyGoalSetLabel": MessageLookupByLibrary.simpleMessage("Ziel setzen:"),
     "weeklyGoalTitle": MessageLookupByLibrary.simpleMessage("Wochenziel"),
-    "weeklyRecapBody": m24,
+    "weeklyRecapBody": m44,
     "weeklyRecapTitle": MessageLookupByLibrary.simpleMessage("Wochenrückblick"),
     "weeklyXpProgress": MessageLookupByLibrary.simpleMessage(
       "Wöchentliche Aura",

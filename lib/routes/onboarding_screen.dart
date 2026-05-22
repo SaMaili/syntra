@@ -12,7 +12,6 @@ import '../providers/router_notifier.dart';
 import '../providers/settings_providers.dart';
 import '../routes/active_challenge_screen.dart';
 import '../services/syntra_notification_service.dart';
-import '../theme/app_spacing.dart';
 import 'onboarding/onboarding_pages.dart';
 import 'onboarding/onboarding_shared.dart';
 
@@ -66,7 +65,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   void _next() {
     if (_page < _totalPages - 1) {
       _controller.nextPage(
-        duration: const Duration(milliseconds: 350),
+        duration: const Duration(milliseconds: 340),
         curve: Curves.easeInOut,
       );
     }
@@ -101,86 +100,118 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
 
-    return Scaffold(
-      backgroundColor: cs.surface,
-      body: SafeArea(
-        child: Column(
-          children: [
-            // ─── Header bar ──────────────────────────────────────────────────
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md, vertical: AppSpacing.sm),
-              child: Row(
-                children: [
-                  Expanded(child: DotIndicator(page: _page, total: _totalPages)),
-                  if (_page < _totalPages - 1)
-                    TextButton(
-                      onPressed: _skip,
-                      child: Text(S.of(context).skip,
-                          style: TextStyle(color: cs.onSurfaceVariant)),
-                    ),
-                ],
-              ),
-            ),
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final scaffold = Theme.of(context).scaffoldBackgroundColor;
 
-            // ─── Page content ─────────────────────────────────────────────────
-            Expanded(
-              child: PageView(
-                controller: _controller,
-                onPageChanged: (i) => setState(() => _page = i),
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  Page1Hook(onNext: _next),
-                  Page2HowItWorks(onNext: _next),
-                  Page3Safety(onNext: _next),
-                  Page4StartingPoint(
-                    selected: _comfortLevel,
-                    onSelect: (level) async {
-                      setState(() => _comfortLevel = level);
-                      await SettingsRepository.instance.saveComfortZoneLevel(level);
-                      await ref.read(comfortZoneLevelProvider.notifier).setLevel(level);
-                      await Future.delayed(const Duration(milliseconds: 300));
-                      _next();
-                    },
-                  ),
-                  Page5Commitment(onNext: _next),
-                  Page6Notifications(
-                    selectedSlots: _selectedSlots,
-                    requesting: _requestingPermission,
-                    onToggleSlot: (slot) =>
-                        setState(() => _selectedSlots.contains(slot)
-                            ? _selectedSlots.remove(slot)
-                            : _selectedSlots.add(slot)),
-                    onEnable: () async {
-                      setState(() => _requestingPermission = true);
-                      await SyntraNotificationService.instance.requestPermissions();
-                      await ref.read(notificationsEnabledProvider.notifier).set(true);
-                      final slots = _selectedSlots.isEmpty ? {1, 2, 3} : _selectedSlots;
-                      for (final slot in slots) {
-                        await ref.read(notificationSlotsProvider.notifier).updateSlot(
-                          slot - 1,
-                          (await SettingsRepository.instance.loadSlot(slot))
-                              .copyWith(enabled: true),
-                        );
-                      }
-                      if (mounted) setState(() => _requestingPermission = false);
-                      _next();
-                    },
-                    onSkip: _next,
-                  ),
-                  Page7FirstChallenge(
-                    challenge: _firstChallenge,
-                    onStartNow: _finishWithChallenge,
-                    onLater: () async {
-                      final router = GoRouter.of(context);
-                      await _completeOnboarding();
-                      if (mounted) router.go('/');
-                    },
-                  ),
-                ],
+    final pages = <Widget>[
+      Page1Hook(onNext: _next),
+      Page2HowItWorks(onNext: _next),
+      Page3Safety(onNext: _next),
+      Page4StartingPoint(
+        selected: _comfortLevel,
+        onSelect: (level) async {
+          setState(() => _comfortLevel = level);
+          await SettingsRepository.instance.saveComfortZoneLevel(level);
+          await ref.read(comfortZoneLevelProvider.notifier).setLevel(level);
+          await Future.delayed(const Duration(milliseconds: 300));
+          _next();
+        },
+      ),
+      Page5Commitment(onNext: _next),
+      Page6Notifications(
+        selectedSlots: _selectedSlots,
+        requesting: _requestingPermission,
+        onToggleSlot: (slot) => setState(() {
+          // Single-select (design + onboarding chat: one slot only).
+          _selectedSlots
+            ..clear()
+            ..add(slot);
+        }),
+        onEnable: () async {
+          setState(() => _requestingPermission = true);
+          await SyntraNotificationService.instance.requestPermissions();
+          await ref.read(notificationsEnabledProvider.notifier).set(true);
+          // One nudge a day. The picked preset (morning/afternoon/evening)
+          // seeds the single reminder time; default to morning (09:00).
+          final slot = _selectedSlots.isEmpty ? 1 : _selectedSlots.first;
+          const presetHour = {1: 9, 2: 14, 3: 19};
+          await ref.read(reminderEnabledProvider.notifier).set(true);
+          await ref.read(reminderTimeProvider.notifier).setTime(
+                TimeOfDay(hour: presetHour[slot] ?? 9, minute: 0),
+              );
+          if (mounted) setState(() => _requestingPermission = false);
+          _next();
+        },
+        onSkip: _next,
+      ),
+      Page7FirstChallenge(
+        challenge: _firstChallenge,
+        onStartNow: _finishWithChallenge,
+        onLater: () async {
+          final router = GoRouter.of(context);
+          await _completeOnboarding();
+          if (mounted) router.go('/');
+        },
+      ),
+    ];
+
+    return Scaffold(
+      body: DecoratedBox(
+        decoration: BoxDecoration(
+          // Pink halo from the top — design: radial-gradient 120% 80% at 50% 0%.
+          gradient: RadialGradient(
+            center: const Alignment(0, -1),
+            radius: 1.2,
+            colors: [
+              cs.primary.withValues(alpha: isDark ? 0.18 : 0.12),
+              scaffold,
+            ],
+            stops: const [0.0, 0.6],
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              // ─── Header: progress + Skip ──────────────────────────────
+              Padding(
+                padding: const EdgeInsets.fromLTRB(22, 14, 22, 0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: OnbProgress(page: _page, total: _totalPages),
+                    ),
+                    if (_page < _totalPages - 1)
+                      TextButton(
+                        onPressed: _skip,
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.fromLTRB(14, 6, 0, 6),
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        child: Text(
+                          S.of(context).skip,
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: cs.onSurfaceVariant,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            ),
-          ],
+              // ─── Page body: pages slide side-by-side (real PageView) ──
+              Expanded(
+                child: PageView(
+                  controller: _controller,
+                  physics: const NeverScrollableScrollPhysics(),
+                  onPageChanged: (i) => setState(() => _page = i),
+                  children: pages,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

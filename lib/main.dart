@@ -65,21 +65,16 @@ Future<void> _migrateSettingsJson() async {
       await repo.saveNotificationsEnabled(
           data['notificationsEnabled'] as bool);
     }
+    // One notification a day: seed the single reminder time from the first
+    // enabled legacy slot in the old settings.json (else leave the default).
     for (int slot = 1; slot <= 3; slot++) {
-      final enabled = data['notification${slot}Enabled'];
-      final hour = data['notification${slot}TimeHour'];
-      final minute = data['notification${slot}TimeMinute'];
-      if (enabled != null || hour != null) {
-        await repo.saveSlot(
-          slot,
-          NotificationSlotSettings(
-            enabled: (enabled as bool?) ?? false,
-            time: TimeOfDay(
-              hour: (hour as int?) ?? [9, 14, 19][slot - 1],
-              minute: (minute as int?) ?? 0,
-            ),
-          ),
-        );
+      if (data['notification${slot}Enabled'] == true) {
+        await repo.saveReminderTime(TimeOfDay(
+          hour: (data['notification${slot}TimeHour'] as int?) ??
+              [9, 14, 19][slot - 1],
+          minute: (data['notification${slot}TimeMinute'] as int?) ?? 0,
+        ));
+        break;
       }
     }
 

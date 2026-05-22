@@ -1,10 +1,10 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../generated/l10n.dart';
 import '../../providers/statistics_providers.dart';
 import '../../theme/app_spacing.dart';
+import '../../theme/brand_colors.dart';
 
 // ─── Weekly Aura chart ────────────────────────────────────────────────────────
 
@@ -53,44 +53,61 @@ class AuraBarChart extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = S.of(context);
     final days = [l.mon, l.tue, l.wed, l.thu, l.fri, l.sat, l.sun];
-    final cs = Theme.of(context).colorScheme;
-    final maxY = aura.fold(0, (a, b) => a > b ? a : b).toDouble();
+    final tt = Theme.of(context).textTheme;
+    final restColor = SyntraSurface.of(context).bg3;
 
-    return BarChart(
-      BarChartData(
-        maxY: maxY == 0 ? 100 : maxY * 1.2,
-        borderData: FlBorderData(show: false),
-        gridData: const FlGridData(show: false),
-        titlesData: FlTitlesData(
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              getTitlesWidget: (value, _) {
-                final idx = value.toInt();
-                if (idx < 0 || idx >= days.length) return const SizedBox();
-                return Text(days[idx], style: Theme.of(context).textTheme.labelSmall);
-              },
-            ),
-          ),
-          leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        ),
-        barGroups: [
-          for (int i = 0; i < aura.length; i++)
-            BarChartGroupData(
-              x: i,
-              barRods: [
-                BarChartRodData(
-                  toY: aura[i].toDouble(),
-                  color: cs.primary,
-                  width: 16,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
+    final maxVal = aura.fold(0, (a, b) => a > b ? a : b);
+    final maxY = maxVal == 0 ? 100.0 : maxVal * 1.2;
+
+    return Column(
+      children: [
+        Expanded(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              for (int i = 0; i < aura.length; i++) ...[
+                if (i > 0) const SizedBox(width: 4),
+                Expanded(
+                  child: FractionallySizedBox(
+                    heightFactor: (aura[i] / maxY).clamp(0.04, 1.0),
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: aura[i] > 0
+                            ? const LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: BrandColors.auraWeekGradient,
+                              )
+                            : null,
+                        color: aura[i] > 0 ? null : restColor,
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(6),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ],
-            ),
-        ],
-      ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 4),
+        Row(
+          children: [
+            for (int i = 0; i < days.length; i++) ...[
+              if (i > 0) const SizedBox(width: 4),
+              Expanded(
+                child: Text(
+                  days[i],
+                  textAlign: TextAlign.center,
+                  style: tt.labelSmall,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ],
     );
   }
 }

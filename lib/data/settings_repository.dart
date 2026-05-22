@@ -19,6 +19,13 @@ class SettingsRepository {
   static const _keyLanguage = 'settings_language';
   static const _keyNotificationsEnabled = 'notifications_enabled';
   static const _keySoundEffectsEnabled = 'sound_effects_enabled';
+  // Single daily reminder: an on/off independent of the master switch, plus
+  // its time (hour/minute, 24h).
+  static const _keyReminderEnabled = 'reminder_enabled';
+  static const _keyReminderHour = 'reminder_hour';
+  static const _keyReminderMinute = 'reminder_minute';
+  // Legacy multi-slot keys — read only, for one-time migration to the
+  // single reminder time above.
   static const _keySlot1Enabled = 'notification1Enabled';
   static const _keySlot1TimeH = 'notification1TimeHour';
   static const _keySlot1TimeM = 'notification1TimeMinute';
@@ -51,6 +58,12 @@ class SettingsRepository {
   /// that have been protected by a streak freeze.
   static const _keyFrozenWeeks = 'shop_frozen_weeks';
   static const _keyLastReviewRequest = 'last_review_request_ms';
+  /// Comma-separated challenge IDs the user has bookmarked (saved for later).
+  static const _keyBookmarkedChallenges = 'bookmarked_challenges';
+  /// User-defined ordering of bookmarked challenges for the Warm-ups screen.
+  /// Stores the full ordered list; reconciled against [_keyBookmarkedChallenges]
+  /// on load so it never holds dangling IDs.
+  static const _keyWarmupOrder = 'warmup_order';
 
   final SharedPreferences _prefs;
 
@@ -120,23 +133,37 @@ class SettingsRepository {
   Future<void> saveSoundEffectsEnabled(bool value) async =>
       _prefs.setBool(_keySoundEffectsEnabled, value);
 
-  Future<NotificationSlotSettings> loadSlot(int slot) async {
-    assert(slot >= 1 && slot <= 3);
-    return NotificationSlotSettings(
-      enabled: _prefs.getBool(_enabledKey(slot)) ?? false,
-      time: TimeOfDay(
-        hour: _prefs.getInt(_hourKey(slot)) ?? _defaultHour(slot),
-        minute: _prefs.getInt(_minuteKey(slot)) ?? 0,
-      ),
-    );
+  /// The single daily-reminder time. Falls back, in order, to: an explicit
+  /// reminder time the user set; the first enabled legacy slot (the value the
+  /// user may have picked during onboarding); 09:00.
+  Future<TimeOfDay> loadReminderTime() async {
+    final h = _prefs.getInt(_keyReminderHour);
+    final m = _prefs.getInt(_keyReminderMinute);
+    if (h != null && m != null) return TimeOfDay(hour: h, minute: m);
+
+    for (var slot = 1; slot <= 3; slot++) {
+      if (_prefs.getBool(_enabledKey(slot)) ?? false) {
+        return TimeOfDay(
+          hour: _prefs.getInt(_hourKey(slot)) ?? _defaultHour(slot),
+          minute: _prefs.getInt(_minuteKey(slot)) ?? 0,
+        );
+      }
+    }
+    return const TimeOfDay(hour: 9, minute: 0);
   }
 
-  Future<void> saveSlot(int slot, NotificationSlotSettings s) async {
-    assert(slot >= 1 && slot <= 3);
-    await _prefs.setBool(_enabledKey(slot), s.enabled);
-    await _prefs.setInt(_hourKey(slot), s.time.hour);
-    await _prefs.setInt(_minuteKey(slot), s.time.minute);
+  Future<void> saveReminderTime(TimeOfDay t) async {
+    await _prefs.setInt(_keyReminderHour, t.hour);
+    await _prefs.setInt(_keyReminderMinute, t.minute);
   }
+
+  /// Whether the daily reminder fires at all. Independent of the master
+  /// notifications switch; defaults to on so existing users keep their nudge.
+  Future<bool> loadReminderEnabled() async =>
+      _prefs.getBool(_keyReminderEnabled) ?? true;
+
+  Future<void> saveReminderEnabled(bool value) async =>
+      _prefs.setBool(_keyReminderEnabled, value);
 
   // ─── Onboarding ───────────────────────────────────────────────────────────
 
@@ -157,9 +184,6 @@ class SettingsRepository {
 
   Future<void> saveLastOpenedDate(String date) async =>
       _prefs.setString(_keyLastOpenedDate, date);
-
-  Future<List<NotificationSlotSettings>> loadAllSlots() =>
-      Future.wait([loadSlot(1), loadSlot(2), loadSlot(3)]);
 
   // ─── Streak milestones ───────────────────────────────────────────────────
 
@@ -260,6 +284,28 @@ class SettingsRepository {
   Future<void> saveFrozenWeeks(Set<String> weeks) async =>
       _prefs.setString(_keyFrozenWeeks, weeks.join(','));
 
+  // ─── Bookmarks ────────────────────────────────────────────────────────────
+
+  Future<Set<String>> loadBookmarkedChallenges() async {
+    final raw = _prefs.getString(_keyBookmarkedChallenges) ?? '';
+    if (raw.isEmpty) return {};
+    return raw.split(',').where((e) => e.isNotEmpty).toSet();
+  }
+
+  Future<void> saveBookmarkedChallenges(Set<String> ids) async =>
+      _prefs.setString(_keyBookmarkedChallenges, ids.join(','));
+
+  // ─── Warm-up custom ordering ──────────────────────────────────────────────
+
+  Future<List<String>> loadWarmupOrder() async {
+    final raw = _prefs.getString(_keyWarmupOrder) ?? '';
+    if (raw.isEmpty) return const [];
+    return raw.split(',').where((e) => e.isNotEmpty).toList();
+  }
+
+  Future<void> saveWarmupOrder(List<String> ids) async =>
+      _prefs.setString(_keyWarmupOrder, ids.join(','));
+
   // ─── In-app review gate ───────────────────────────────────────────────────
 
   /// Returns true and records now if at least 30 days have passed since the
@@ -287,23 +333,4 @@ class SettingsRepository {
       [_keySlot1TimeM, _keySlot2TimeM, _keySlot3TimeM][slot - 1];
 
   int _defaultHour(int slot) => [9, 14, 19][slot - 1];
-}
-
-class NotificationSlotSettings {
-  final bool enabled;
-  final TimeOfDay time;
-
-  const NotificationSlotSettings({required this.enabled, required this.time});
-
-  NotificationSlotSettings copyWith({bool? enabled, TimeOfDay? time}) =>
-      NotificationSlotSettings(
-        enabled: enabled ?? this.enabled,
-        time: time ?? this.time,
-      );
-
-  String get formatted {
-    final h = time.hour.toString().padLeft(2, '0');
-    final m = time.minute.toString().padLeft(2, '0');
-    return '$h:$m';
-  }
 }

@@ -44,7 +44,12 @@ class SyntraBlurAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final scrimAlpha = isDark ? 0.65 : 0.35;
+    // The scrim is always the scaffold tone so the top edge blends into the
+    // page instead of stamping a contrasting bar over it. In light mode it's
+    // a gentle, fully-fading wash (no hard solid band, no dark shadow); in
+    // dark mode it stays a touch stronger to keep content legible underneath.
+    final scaffoldColor = Theme.of(context).scaffoldBackgroundColor;
+    final scrimAlpha = isDark ? 0.65 : 0.55;
     final fgColor = isDark ? Colors.white : Colors.black;
 
     return AppBar(
@@ -57,16 +62,20 @@ class SyntraBlurAppBar extends StatelessWidget implements PreferredSizeWidget {
       foregroundColor: fgColor,
       elevation: 0,
       scrolledUnderElevation: 0,
+      shadowColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
       flexibleSpace: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Colors.black.withValues(alpha: scrimAlpha),
+              scaffoldColor.withValues(alpha: scrimAlpha),
               Colors.transparent,
             ],
-            stops: const [0.3, 1.0],
+            // Smooth top-to-bottom fade — no flat opaque segment, so it
+            // never reads as a band/shadow across the bar.
+            stops: const [0.0, 1.0],
           ),
         ),
       ),

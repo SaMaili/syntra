@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../challenge.dart';
 import '../data/challenge_repository.dart';
+import '../data/settings_repository.dart';
 import '../logic/comfort_zone_logic.dart';
 import 'settings_providers.dart';
 import 'shared_preferences_provider.dart';
@@ -225,6 +226,59 @@ class ChallengeFiltersNotifier extends StateNotifier<ChallengeFilters> {
   }
 }
 
+// ─── Bookmarks ────────────────────────────────────────────────────────────────
+
+/// Set of challenge IDs the user has saved (bookmark icon on the focused card).
+final bookmarkedChallengeIdsProvider =
+    StateNotifierProvider<BookmarkedChallengesNotifier, Set<String>>(
+  (ref) => BookmarkedChallengesNotifier(ref.watch(settingsRepositoryProvider)),
+);
+
+class BookmarkedChallengesNotifier extends StateNotifier<Set<String>> {
+  final SettingsRepository _repo;
+
+  BookmarkedChallengesNotifier(this._repo) : super(const {}) {
+    _load();
+  }
+
+  Future<void> _load() async {
+    state = await _repo.loadBookmarkedChallenges();
+  }
+
+  Future<void> toggle(String id) async {
+    final next = Set<String>.from(state);
+    if (next.contains(id)) {
+      next.remove(id);
+    } else {
+      next.add(id);
+    }
+    state = next;
+    await _repo.saveBookmarkedChallenges(next);
+  }
+}
+
+// ─── Home-screen tab (For you / Saved / Flirt / Done) ────────────────────────
+
+enum ChallengeHomeTab { foryou, saved, flirt, done }
+
+final challengeHomeTabProvider =
+    StateProvider<ChallengeHomeTab>((_) => ChallengeHomeTab.foryou);
+
+// ─── Search + Sort ───────────────────────────────────────────────────────────
+
+final challengeSearchQueryProvider = StateProvider<String>((_) => '');
+
+enum ChallengeSortMode {
+  recommended,
+  levelAsc,
+  levelDesc,
+  auraDesc,
+  timeAsc,
+}
+
+final challengeSortModeProvider =
+    StateProvider<ChallengeSortMode>((_) => ChallengeSortMode.recommended);
+
 // ─── Displayed list (filtered + sorted, ready to render) ─────────────────────
 
 /// Applies completion filter and sort on top of [filteredChallengesProvider].
@@ -234,9 +288,25 @@ final displayedChallengesProvider = Provider<AsyncValue<List<Challenge>>>((ref) 
   final filters = ref.watch(challengeFiltersProvider);
   final completedIds = ref.watch(completedChallengeIdsProvider).valueOrNull ?? {};
   final completionDates = ref.watch(latestCompletionDatesProvider).valueOrNull ?? {};
+  final tab = ref.watch(challengeHomeTabProvider);
+  final bookmarks = ref.watch(bookmarkedChallengeIdsProvider);
+  final query = ref.watch(challengeSearchQueryProvider).trim().toLowerCase();
+  final sortMode = ref.watch(challengeSortModeProvider);
 
   return baseAsync.whenData((list) {
     var result = List<Challenge>.from(list);
+
+    // Home tab filter (For you / Saved / Flirt / Done).
+    switch (tab) {
+      case ChallengeHomeTab.foryou:
+        break;
+      case ChallengeHomeTab.saved:
+        result = result.where((c) => bookmarks.contains(c.id)).toList();
+      case ChallengeHomeTab.flirt:
+        result = result.where((c) => c.flirt).toList();
+      case ChallengeHomeTab.done:
+        result = result.where((c) => completedIds.contains(c.id)).toList();
+    }
 
     switch (filters.completionFilter) {
       case CompletionFilter.notDone:
@@ -247,21 +317,41 @@ final displayedChallengesProvider = Provider<AsyncValue<List<Challenge>>>((ref) 
         break;
     }
 
-    if (filters.completionSortOrder != CompletionSortOrder.none) {
-      result.sort((a, b) {
-        final da = completionDates[a.id];
-        final db = completionDates[b.id];
-        if (da == null && db == null) return 0;
-        if (da == null) return 1;
-        if (db == null) return -1;
-        return filters.completionSortOrder == CompletionSortOrder.newestFirst
-            ? db.compareTo(da)
-            : da.compareTo(db);
-      });
-    } else if (filters.auraSortOrder != AuraSortOrder.none) {
-      result.sort((a, b) => filters.auraSortOrder == AuraSortOrder.asc
-          ? a.aura.compareTo(b.aura)
-          : b.aura.compareTo(a.aura));
+    if (query.isNotEmpty) {
+      result = result
+          .where((c) =>
+              c.title.toLowerCase().contains(query) ||
+              c.description.toLowerCase().contains(query))
+          .toList();
+    }
+
+    // Sort precedence: explicit sortMode overrides legacy filter sorts.
+    switch (sortMode) {
+      case ChallengeSortMode.levelAsc:
+        result.sort((a, b) => a.level.compareTo(b.level));
+      case ChallengeSortMode.levelDesc:
+        result.sort((a, b) => b.level.compareTo(a.level));
+      case ChallengeSortMode.auraDesc:
+        result.sort((a, b) => b.aura.compareTo(a.aura));
+      case ChallengeSortMode.timeAsc:
+        result.sort((a, b) => a.time.compareTo(b.time));
+      case ChallengeSortMode.recommended:
+        if (filters.completionSortOrder != CompletionSortOrder.none) {
+          result.sort((a, b) {
+            final da = completionDates[a.id];
+            final db = completionDates[b.id];
+            if (da == null && db == null) return 0;
+            if (da == null) return 1;
+            if (db == null) return -1;
+            return filters.completionSortOrder == CompletionSortOrder.newestFirst
+                ? db.compareTo(da)
+                : da.compareTo(db);
+          });
+        } else if (filters.auraSortOrder != AuraSortOrder.none) {
+          result.sort((a, b) => filters.auraSortOrder == AuraSortOrder.asc
+              ? a.aura.compareTo(b.aura)
+              : b.aura.compareTo(a.aura));
+        }
     }
 
     return result;

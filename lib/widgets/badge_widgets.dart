@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import '../generated/l10n.dart';
 import '../logic/badges_logic.dart';
 import '../logic/comfort_zone_logic.dart';
-import '../theme/app_spacing.dart';
+import '../theme/brand_colors.dart';
+import 'syntra_sheet.dart';
 
 String badgeLabel(S l, String id) {
   final lvl = _levelFromId(id);
@@ -42,6 +43,68 @@ int? _levelFromId(String id) {
   return int.tryParse(id.substring(6));
 }
 
+/// Circular badge medallion in the brand language: a radial tint glow + thin
+/// accent ring for earned badges (1:1 with the `OnbDisc` treatment), a flat
+/// muted surface for locked ones.
+class _BadgeDisc extends StatelessWidget {
+  final Color color;
+  final IconData icon;
+  final bool earned;
+  final double size;
+  final bool glow;
+
+  const _BadgeDisc({
+    required this.color,
+    required this.icon,
+    required this.earned,
+    required this.size,
+    this.glow = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final s = SyntraSurface.of(context);
+    final core = isDark
+        ? const Color(0xFF0A0A0A)
+        : Theme.of(context).scaffoldBackgroundColor;
+
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: earned
+            ? RadialGradient(
+                center: const Alignment(-0.4, -0.4),
+                radius: 0.95,
+                colors: [
+                  color.withValues(alpha: 0.22),
+                  color.withValues(alpha: 0.07),
+                  core,
+                ],
+                stops: const [0.0, 0.6, 1.0],
+              )
+            : null,
+        color: earned ? null : s.bg2,
+        border: Border.all(
+          color: earned ? color.withValues(alpha: 0.40) : s.bg3,
+          width: earned ? 1.5 : 1,
+        ),
+        boxShadow: earned && glow
+            ? [BoxShadow(color: color.withValues(alpha: 0.22), blurRadius: 36)]
+            : null,
+      ),
+      child: Icon(
+        icon,
+        size: size * 0.46,
+        color: earned ? color : cs.onSurfaceVariant,
+      ),
+    );
+  }
+}
+
 class BadgeTile extends StatelessWidget {
   final AppBadge badge;
   final bool isEarned;
@@ -58,129 +121,118 @@ class BadgeTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          color: isEarned
-              ? badge.color.withValues(alpha: 0.15)
-              : cs.surfaceContainerHighest,
-          shape: BoxShape.circle,
-          border: isEarned
-              ? Border.all(color: badge.color, width: 2)
-              : null,
-        ),
-        child: Icon(
-          badge.icon,
-          color: isEarned ? badge.color : cs.outlineVariant,
-          size: size * 0.5,
-        ),
+      behavior: HitTestBehavior.opaque,
+      child: _BadgeDisc(
+        color: badge.color,
+        icon: badge.icon,
+        earned: isEarned,
+        size: size,
       ),
     );
   }
 }
 
-void showBadgeInfoSheet(
-  BuildContext context,
-  AppBadge badge,
-  bool isEarned,
-) {
+/// The badge detail sheet — rebuilt in the design language: a dark glass panel
+/// with an accent halo, the medallion as hero, Octarine title, an uppercase
+/// status pill, and muted body copy.
+void showBadgeInfoSheet(BuildContext context, AppBadge badge, bool isEarned) {
   final l = S.of(context);
   final name = badgeLabel(l, badge.id);
   final desc = badgeDesc(l, badge.id);
 
-  showModalBottomSheet<void>(
-    context: context,
-    isScrollControlled: true,
-    useSafeArea: true,
-    backgroundColor: Colors.transparent,
+  showSyntraSheet<void>(
+    context,
+    accent: isEarned ? badge.color : null,
     builder: (ctx) {
       final cs = Theme.of(ctx).colorScheme;
-      final tt = Theme.of(ctx).textTheme;
-      return Container(
-        decoration: BoxDecoration(
-          color: cs.surfaceContainerLow,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-        ),
-        child: SafeArea(
-          top: false,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 12),
-              Center(
-                child: Container(
-                  width: 36,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: cs.onSurfaceVariant.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xl),
-              Container(
-                width: 88,
-                height: 88,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: isEarned
-                      ? badge.color.withValues(alpha: 0.15)
-                      : cs.surfaceContainerHighest,
-                  border: isEarned
-                      ? Border.all(color: badge.color, width: 2.5)
-                      : null,
-                ),
-                child: Icon(
-                  badge.icon,
-                  size: 44,
-                  color: isEarned ? badge.color : cs.outlineVariant,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.md),
-              Text(
-                name,
-                style: tt.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppSpacing.xs),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.sm, vertical: 4),
-                decoration: BoxDecoration(
-                  color: isEarned
-                      ? badge.color.withValues(alpha: 0.12)
-                      : cs.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
-                ),
-                child: Text(
-                  isEarned ? '✓ ${l.badgeOpted}' : l.badgeLocked,
-                  style: tt.labelSmall?.copyWith(
-                    color: isEarned ? badge.color : cs.onSurfaceVariant,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.md),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-                child: Text(
-                  desc,
-                  style: tt.bodyMedium?.copyWith(
-                    color: cs.onSurfaceVariant,
-                    height: 1.5,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xxl),
-            ],
+      final isDark = Theme.of(ctx).brightness == Brightness.dark;
+      final s = SyntraSurface.of(ctx);
+      final fg = isDark ? Colors.white : cs.onSurface;
+      final accent = isEarned ? badge.color : cs.onSurfaceVariant;
+
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 20),
+          TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0.6, end: 1.0),
+            duration: const Duration(milliseconds: 520),
+            curve: const Cubic(0.34, 1.56, 0.64, 1),
+            builder: (_, v, child) => Transform.scale(scale: v, child: child),
+            child: _BadgeDisc(
+              color: badge.color,
+              icon: badge.icon,
+              earned: isEarned,
+              size: 104,
+              glow: true,
+            ),
           ),
-        ),
+          const SizedBox(height: 22),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 28),
+            child: Text(
+              name,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Octarine',
+                fontWeight: FontWeight.w700,
+                fontSize: 26,
+                height: 1.15,
+                letterSpacing: -0.4,
+                color: fg,
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: isEarned ? badge.color.withValues(alpha: 0.12) : s.bg2,
+              border: Border.all(
+                color: isEarned ? badge.color.withValues(alpha: 0.30) : s.bg3,
+              ),
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  isEarned ? Icons.check_rounded : Icons.lock_rounded,
+                  size: 13,
+                  color: accent,
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  (isEarned ? l.badgeOpted : l.badgeLocked).toUpperCase(),
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.2,
+                    color: accent,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 18),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            child: Text(
+              desc,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 14.5,
+                height: 1.55,
+                color: cs.onSurfaceVariant,
+              ),
+            ),
+          ),
+          const SizedBox(height: 32),
+        ],
       );
     },
   );
