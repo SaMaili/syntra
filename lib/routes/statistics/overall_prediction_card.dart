@@ -252,51 +252,63 @@ class PredictionTakeawayBox extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final emphasisColor = isDark ? Colors.white : cs.onSurface;
-    return Container(
-      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-      decoration: BoxDecoration(
-        color: cs.primary.withValues(alpha: 0.08),
-        border: Border.all(color: cs.primary.withValues(alpha: 0.2)),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.psychology_rounded,
-              size: 18, color: cs.primary),
-          const SizedBox(width: 8),
-          Expanded(
-            child: RichText(
-              text: TextSpan(
-                style: tt.bodyMedium?.copyWith(
-                  color: cs.primary,
-                  height: 1.4,
-                ),
-                children: [
-                  TextSpan(text: '${S.of(context).predictionTakeawayBefore} '),
-                  TextSpan(
-                    text: '"${S.of(context).predictionTakeawayQuote}"',
-                    style: TextStyle(
-                      color: emphasisColor,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  TextSpan(text: ' ${S.of(context).predictionTakeawayMiddle} '),
-                  TextSpan(
-                    text: '$pct%',
-                    style: TextStyle(
-                      color: emphasisColor,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  TextSpan(text: ' ${S.of(context).predictionTakeawayAfter}'),
-                ],
-              ),
-            ),
+    final s = SyntraSurface.of(context);
+    final valueColor = isDark ? Colors.white : cs.onSurface;
+    final l = S.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Divider(color: s.bg3, height: 1, thickness: 1),
+        const SizedBox(height: 16),
+        Text(
+          l.predictionTakeawayBefore.toUpperCase(),
+          style: tt.labelSmall?.copyWith(
+            color: cs.onSurfaceVariant,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 1.2,
+            fontSize: 10,
           ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          '"${l.predictionTakeawayQuote}"',
+          style: TextStyle(
+            fontFamily: 'Octarine',
+            fontWeight: FontWeight.w700,
+            fontSize: 20,
+            height: 1.25,
+            letterSpacing: -0.3,
+            color: valueColor,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          l.predictionTakeawayMiddle,
+          style: tt.bodyMedium?.copyWith(
+            color: cs.onSurfaceVariant,
+            height: 1.5,
+          ),
+        ),
+        Text(
+          '$pct%',
+          style: TextStyle(
+            fontFamily: 'Octarine',
+            fontWeight: FontWeight.w700,
+            fontSize: 38,
+            letterSpacing: -1,
+            height: 1.1,
+            color: cs.primary,
+          ),
+        ),
+        Text(
+          l.predictionTakeawayAfter,
+          style: tt.bodyMedium?.copyWith(
+            color: cs.onSurfaceVariant,
+            height: 1.5,
+          ),
+        ),
+      ],
     );
   }
 }

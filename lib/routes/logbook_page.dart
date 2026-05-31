@@ -561,26 +561,15 @@ class _MoodRibbon extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final s = SyntraSurface.of(context);
     final l = S.of(context);
-    const green = BrandColors.green;
-    const greenSoft = BrandColors.greenSoft;
-    const greenLight = BrandColors.greenLight;
-    final scaffold = Theme.of(context).scaffoldBackgroundColor;
     final valueColor = isDark ? Colors.white : cs.onSurface;
 
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 14),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            green.withValues(alpha: 0.10),
-            scaffold,
-          ],
-          stops: const [0.0, 0.6],
-        ),
-        border: Border.all(color: green.withValues(alpha: 0.22), width: 1),
+        color: s.bg1,
+        border: Border.all(color: s.bg3, width: 1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Padding(
@@ -598,7 +587,7 @@ class _MoodRibbon extends StatelessWidget {
                       Text(
                         l.logbookThisMonth.toUpperCase(),
                         style: tt.labelSmall?.copyWith(
-                          color: greenLight,
+                          color: cs.primary,
                           fontWeight: FontWeight.w700,
                           letterSpacing: 2,
                           fontSize: 11,
@@ -640,9 +629,9 @@ class _MoodRibbon extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: green.withValues(alpha: 0.16),
+                      color: cs.primary.withValues(alpha: 0.12),
                       border: Border.all(
-                          color: green.withValues(alpha: 0.32), width: 1),
+                          color: cs.primary.withValues(alpha: 0.28), width: 1),
                       borderRadius: BorderRadius.circular(999),
                     ),
                     child: Row(
@@ -653,7 +642,7 @@ class _MoodRibbon extends StatelessWidget {
                               ? Icons.trending_up_rounded
                               : Icons.trending_down_rounded,
                           size: 13,
-                          color: greenSoft,
+                          color: cs.primary,
                         ),
                         const SizedBox(width: 4),
                         Text(
@@ -662,7 +651,7 @@ class _MoodRibbon extends StatelessWidget {
                             fontFamily: 'Octarine',
                             fontWeight: FontWeight.w700,
                             fontSize: 12,
-                            color: greenSoft,
+                            color: cs.primary,
                           ),
                         ),
                       ],
@@ -727,38 +716,20 @@ class _MoodBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const green = BrandColors.green;
-    const greenSoft = BrandColors.greenSoft;
+    final cs = Theme.of(context).colorScheme;
+    final s = SyntraSurface.of(context);
     return FractionallySizedBox(
       heightFactor: fraction,
       alignment: Alignment.bottomCenter,
       child: Container(
         decoration: BoxDecoration(
-          gradient: recent
-              ? const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [greenSoft, green],
-                )
-              : const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [BrandColors.greenInk, BrandColors.greenInkDark],
-                ),
+          color: recent ? cs.primary : s.bg3,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(3),
             topRight: Radius.circular(3),
             bottomLeft: Radius.circular(1),
             bottomRight: Radius.circular(1),
           ),
-          boxShadow: recent
-              ? [
-                  BoxShadow(
-                    color: green.withValues(alpha: 0.4),
-                    blurRadius: 8,
-                  ),
-                ]
-              : null,
         ),
       ),
     );

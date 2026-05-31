@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -25,38 +23,7 @@ class SyntraSwitch extends StatefulWidget {
   State<SyntraSwitch> createState() => _SyntraSwitchState();
 }
 
-class _SyntraSwitchState extends State<SyntraSwitch>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _pulse;
-
-  @override
-  void initState() {
-    super.initState();
-    _pulse = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2600),
-    );
-    if (widget.value) _pulse.repeat();
-  }
-
-  @override
-  void didUpdateWidget(SyntraSwitch old) {
-    super.didUpdateWidget(old);
-    if (widget.value != old.value) {
-      if (widget.value) {
-        _pulse.repeat();
-      } else {
-        _pulse.stop();
-        _pulse.value = 0;
-      }
-    }
-  }
-
-  @override
-  void dispose() {
-    _pulse.dispose();
-    super.dispose();
-  }
+class _SyntraSwitchState extends State<SyntraSwitch> {
 
   @override
   Widget build(BuildContext context) {
@@ -160,40 +127,21 @@ class _SyntraSwitchState extends State<SyntraSwitch>
                 top: 2,
                 bottom: 2,
                 width: 30,
-                child: AnimatedBuilder(
-                  animation: _pulse,
-                  builder: (_, child) {
-                    // Sine pulse: 0..1..0
-                    final t = widget.value
-                        ? (0.5 - 0.5 * math.cos(_pulse.value * 2 * math.pi))
-                        : 0.0;
-                    final glowAlpha = 0.45 + 0.4 * t;
-                    return Container(
-                      decoration: BoxDecoration(
-                        gradient: widget.value
-                            ? LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  cs.primary.withValues(alpha: 0.92),
-                                  cs.primary,
-                                ],
-                              )
-                            : null,
-                        color: widget.value ? null : inactiveLever,
-                        borderRadius: BorderRadius.circular(4),
-                        boxShadow: widget.value
-                            ? [
-                                BoxShadow(
-                                  color: cs.primary
-                                      .withValues(alpha: glowAlpha),
-                                  blurRadius: 14,
-                                ),
-                              ]
-                            : null,
-                      ),
-                    );
-                  },
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: widget.value
+                        ? LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              cs.primary.withValues(alpha: 0.92),
+                              cs.primary,
+                            ],
+                          )
+                        : null,
+                    color: widget.value ? null : inactiveLever,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
                 ),
               ),
             ],

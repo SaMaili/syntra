@@ -532,6 +532,7 @@ class _StatRow extends ConsumerWidget {
     final weekStreak = stats?['weekStreak'] ?? 0;
     final pendingStreak = stats?['pendingWeekStreak'] ?? 0;
     final streak = weekStreak > 0 ? weekStreak : pendingStreak;
+    final isStreakActive = weekStreak > 0;
     final aura = ref.watch(availableAuraProvider) ?? 0;
     final level = ref.watch(comfortZoneLevelProvider);
     final levelName = level >= 1 && level <= ComfortZoneLogic.maxLevel
@@ -562,12 +563,18 @@ class _StatRow extends ConsumerWidget {
                       Icon(
                         Icons.local_fire_department_rounded,
                         size: 16,
-                        color: BrandColors.orange,
+                        color: isStreakActive
+                            ? BrandColors.orange
+                            : s.mutedSubtle,
                       ),
                       const SizedBox(width: 4),
                       Text(
                         '$streak',
-                        style: const TextStyle(color: BrandColors.orange),
+                        style: TextStyle(
+                          color: isStreakActive
+                              ? BrandColors.orange
+                              : s.mutedSubtle,
+                        ),
                       ),
                       const SizedBox(width: 14),
                       Icon(Icons.star_rounded, size: 16, color: cs.primary),

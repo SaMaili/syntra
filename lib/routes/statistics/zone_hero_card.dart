@@ -24,7 +24,6 @@ class ZoneHeroCard extends ConsumerWidget {
     final isMax = level >= ComfortZoneLogic.maxLevel;
     final needed = ComfortZoneLogic.completionsNeeded(level);
     final progress = isMax ? 1.0 : (completions / needed).clamp(0.0, 1.0);
-    final remaining = (needed - completions).clamp(0, needed);
 
     final gradient = ComfortZoneLogic.levelGradient(level);
     final tt = Theme.of(context).textTheme;
@@ -107,21 +106,53 @@ class ZoneHeroCard extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Text(
-                      isMax
-                          ? l.reachedTheTop
-                          : (nextLevelName == null
-                                ? l.completionsToLevel(
-                                    completions,
-                                    needed,
-                                    level + 1,
-                                  )
-                                : '$remaining → $nextLevelName'),
-                      style: tt.bodyMedium?.copyWith(
-                        color: Colors.white.withValues(alpha: 0.85),
-                        height: 1.4,
+                    if (isMax)
+                      Text(
+                        l.reachedTheTop,
+                        style: tt.bodyMedium?.copyWith(
+                          color: Colors.white.withValues(alpha: 0.85),
+                          height: 1.4,
+                        ),
+                      )
+                    else if (nextLevelName == null)
+                      Text(
+                        l.completionsToLevel(completions, needed, level + 1),
+                        style: tt.bodyMedium?.copyWith(
+                          color: Colors.white.withValues(alpha: 0.85),
+                          height: 1.4,
+                        ),
+                      )
+                    else
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        spacing: 8,
+                        children: [
+                          Text(
+                            l.completionsToLevel(completions, needed, level + 1),
+                            style: tt.bodyMedium?.copyWith(
+                              color: Colors.white.withValues(alpha: 0.85),
+                              height: 1.4,
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 9, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.18),
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                            child: Text(
+                              nextLevelName,
+                              style: tt.labelSmall?.copyWith(
+                                color: Colors.white.withValues(alpha: 0.90),
+                                fontWeight: FontWeight.w700,
+                                fontSize: 11,
+                                letterSpacing: 0.2,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
                     if (!isMax) ...[
                       const SizedBox(height: 18),
                       _ProgressRow(
@@ -186,8 +217,8 @@ class _ProgressRow extends StatelessWidget {
                 tween: Tween<double>(begin: 0, end: progress),
                 duration: const Duration(milliseconds: 800),
                 curve: Curves.easeOutCubic,
-                builder: (_, value, __) => FractionallySizedBox(
-                  widthFactor: value,
+                builder: (context, v, child) => FractionallySizedBox(
+                  widthFactor: v,
                   heightFactor: 1,
                   child: Container(
                     decoration: BoxDecoration(

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../widgets/syntra_button.dart';
+
 import '../../data/settings_repository.dart';
 import '../../generated/l10n.dart';
 import '../../logic/weekly_streak_logic.dart';
@@ -13,25 +15,39 @@ import '../../widgets/syntra_sheet.dart';
 /// Compact inventory row showing the Streak Freeze item — slot dots for
 /// the current count and a "buy" chip pinned to the right. Tapping the chip
 /// opens the existing confirm sheet and spends Aura.
-class InventoryCard extends ConsumerWidget {
+class InventoryCard extends ConsumerStatefulWidget {
   const InventoryCard({super.key});
 
-  Future<void> _buy(BuildContext context, WidgetRef ref) async {
+  @override
+  ConsumerState<InventoryCard> createState() => _InventoryCardState();
+}
+
+class _InventoryCardState extends ConsumerState<InventoryCard> {
+  bool _busy = false;
+
+  Future<void> _buy() async {
+    if (_busy) return;
+    setState(() => _busy = true);
+    try {
+      await _doBuy();
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _doBuy() async {
     HapticFeedback.selectionClick();
     final available = ref.read(availableAuraProvider);
     final freezes = ref.read(streakFreezesProvider);
     final l = S.of(context);
+    final messenger = ScaffoldMessenger.of(context);
 
     if (freezes >= kMaxStreakFreezes) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l.shopMaxOwned)));
+      messenger..clearSnackBars()..showSnackBar(SnackBar(content: Text(l.shopMaxOwned)));
       return;
     }
     if (available == null || available < kStreakFreezePrice) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l.shopNotEnoughAura)));
+      messenger..clearSnackBars()..showSnackBar(SnackBar(content: Text(l.shopNotEnoughAura)));
       return;
     }
 
@@ -71,16 +87,14 @@ class InventoryCard extends ConsumerWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
-              FilledButton(
+              SyntraButton(
                 onPressed: () => Navigator.pop(ctx, true),
-                style: FilledButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 48),
-                ),
                 child: Text(l.shopBuyFor(kStreakFreezePrice)),
               ),
-              const SizedBox(height: 8),
-              TextButton(
+              const SizedBox(height: 12),
+              SyntraButton(
                 onPressed: () => Navigator.pop(ctx, false),
+                color: Theme.of(ctx).colorScheme.surfaceContainerHigh,
                 child: Text(l.cancel),
               ),
             ],
@@ -100,14 +114,12 @@ class InventoryCard extends ConsumerWidget {
     });
 
     if (context.mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l.shopPurchased)));
+      messenger..clearSnackBars()..showSnackBar(SnackBar(content: Text(l.shopPurchased)));
     }
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -178,8 +190,8 @@ class InventoryCard extends ConsumerWidget {
                 price: kStreakFreezePrice,
                 bg: chipBg,
                 border: divider,
-                onTap: () => _buy(context, ref),
-                enabled: freezes < kMaxStreakFreezes,
+                onTap: _buy,
+                enabled: freezes < kMaxStreakFreezes && !_busy,
               ),
             ],
           ),
