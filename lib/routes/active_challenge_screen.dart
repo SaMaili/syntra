@@ -384,7 +384,15 @@ class _ActiveChallengeScreenState extends ConsumerState<ActiveChallengeScreen>
         .watch(lastAttemptProvider(widget.challenge.id))
         .valueOrNull;
 
-    return PopScope(
+    // Force dark brightness so every isDark check in this immersive screen
+    // resolves to true regardless of the user's app-level theme preference.
+    return Theme(
+      data: Theme.of(context).copyWith(
+        colorScheme: Theme.of(
+          context,
+        ).colorScheme.copyWith(brightness: Brightness.dark),
+      ),
+      child: PopScope(
       canPop: false,
       // System/predictive back routes through the same bail logic: a free
       // exit while still in the ready phase, a confirm sheet once committed.
@@ -395,6 +403,7 @@ class _ActiveChallengeScreenState extends ConsumerState<ActiveChallengeScreen>
         _showBailSheet();
       },
       child: Scaffold(
+        backgroundColor: Colors.black,
         body: Stack(
           children: [
             _AmbientGlow(phase: _phase),
@@ -449,6 +458,7 @@ class _ActiveChallengeScreenState extends ConsumerState<ActiveChallengeScreen>
             ),
           ],
         ),
+      ),
       ),
     );
   }

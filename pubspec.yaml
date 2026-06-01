@@ -51,6 +51,7 @@ dependencies:
   intl: ^0.20.2
   in_app_review: ^2.0.9
   intl_utils: ^2.8.14
+  flutter_svg: ^2.3.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -70,6 +71,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/
+    - assets/icon/
     - assets/data/challenges.json
     - assets/data/translations/en.json
     - assets/data/translations/de.json

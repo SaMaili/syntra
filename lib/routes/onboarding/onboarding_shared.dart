@@ -18,7 +18,7 @@ class OnbProgress extends StatefulWidget {
 }
 
 class _OnbProgressState extends State<OnbProgress>
-    with TickerProviderStateMixin {
+    with SingleTickerProviderStateMixin {
   static const _moveCurve = Cubic(0.32, 0.72, 0.24, 1);
 
   late final AnimationController _move = AnimationController(
@@ -28,15 +28,9 @@ class _OnbProgressState extends State<OnbProgress>
   late Animation<double> _shown =
       AlwaysStoppedAnimation(widget.page.toDouble());
 
-  late final AnimationController _pulse = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 1200),
-  )..repeat(reverse: true);
-
   @override
   void initState() {
     super.initState();
-    // Sweep the first active segment's fill in on mount.
     _move.forward(from: 0);
   }
 
@@ -53,7 +47,6 @@ class _OnbProgressState extends State<OnbProgress>
   @override
   void dispose() {
     _move.dispose();
-    _pulse.dispose();
     super.dispose();
   }
 
@@ -63,7 +56,7 @@ class _OnbProgressState extends State<OnbProgress>
     return SizedBox(
       height: 12,
       child: AnimatedBuilder(
-        animation: Listenable.merge([_move, _pulse]),
+        animation: _move,
         builder: (context, _) => CustomPaint(
           size: Size.infinite,
           painter: _OnbBarPainter(
@@ -71,7 +64,6 @@ class _OnbProgressState extends State<OnbProgress>
             page: widget.page,
             total: widget.total,
             fill: _move.isAnimating ? _move.value : 1.0,
-            pulse: _pulse.value,
             pink: BrandColors.pink,
             track: track,
           ),
@@ -86,7 +78,6 @@ class _OnbBarPainter extends CustomPainter {
   final int page;
   final int total;
   final double fill;
-  final double pulse;
   final Color pink;
   final Color track;
   static const _gap = 6.0;
@@ -97,15 +88,12 @@ class _OnbBarPainter extends CustomPainter {
     required this.page,
     required this.total,
     required this.fill,
-    required this.pulse,
     required this.pink,
     required this.track,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Active segment grows to ~3× the others; neighbours interpolate during
-    // the move so the width handoff is smooth.
     final weights = List<double>.generate(total, (i) {
       final t = (1 - (i - shown).abs()).clamp(0.0, 1.0);
       return 1 + 2 * t;
@@ -133,20 +121,13 @@ class _OnbBarPainter extends CustomPainter {
               ? fill
               : 0.0;
       if (f > 0) {
-        final fr = RRect.fromRectAndRadius(
-          Rect.fromLTWH(x, cy - _h / 2, w * f, _h),
-          const Radius.circular(999),
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(
+            Rect.fromLTWH(x, cy - _h / 2, w * f, _h),
+            const Radius.circular(999),
+          ),
+          fillPaint,
         );
-        if (i == page) {
-          canvas.drawRRect(
-            fr,
-            Paint()
-              ..color = pink.withValues(alpha: 0.5 + 0.45 * pulse)
-              ..maskFilter =
-                  MaskFilter.blur(BlurStyle.normal, 4 + 5 * pulse),
-          );
-        }
-        canvas.drawRRect(fr, fillPaint);
       }
       x += w + _gap;
     }
@@ -157,52 +138,73 @@ class _OnbBarPainter extends CustomPainter {
       old.shown != shown ||
       old.page != page ||
       old.fill != fill ||
-      old.pulse != pulse ||
       old.total != total ||
       old.pink != pink ||
       old.track != track;
 }
 
-// ─── Page atoms (design: OnbDisc / OnbHeadline / OnbSubtext / shell) ─────────
+// ─── Page atoms ───────────────────────────────────────────────────────────────
 
-/// Big icon disc — 110px, radial tint glow + thin ring. Design `OnbDisc`.
-class OnbDisc extends StatelessWidget {
+/// Three-layer hero icon — static, no animation.
+///
+/// Outer ambient circle (148px), mid ring (104px), core rounded square (68px).
+class OnbHeroIcon extends StatelessWidget {
   final IconData icon;
   final Color? tint;
-  const OnbDisc({super.key, required this.icon, this.tint});
+  const OnbHeroIcon({super.key, required this.icon, this.tint});
 
   @override
   Widget build(BuildContext context) {
     final t = tint ?? Theme.of(context).colorScheme.primary;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final core =
-        isDark ? const Color(0xFF0A0A0A) : Theme.of(context).scaffoldBackgroundColor;
-    return Container(
-      width: 110,
-      height: 110,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: RadialGradient(
-          center: const Alignment(-0.4, -0.4),
-          radius: 0.95,
-          colors: [
-            t.withValues(alpha: 0.20),
-            t.withValues(alpha: 0.067),
-            core,
-          ],
-          stops: const [0.0, 0.6, 1.0],
-        ),
-        border: Border.all(color: t.withValues(alpha: 0.33)),
-        boxShadow: [
-          BoxShadow(color: t.withValues(alpha: 0.20), blurRadius: 40),
+    final coreBg = isDark ? const Color(0xFF0F0F0F) : const Color(0xFFF5F2F0);
+
+    return SizedBox(
+      width: 148,
+      height: 148,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Outer ambient halo
+          Container(
+            width: 148,
+            height: 148,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: t.withValues(alpha: 0.07),
+            ),
+          ),
+          // Mid ring
+          Container(
+            width: 104,
+            height: 104,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: t.withValues(alpha: 0.10),
+              border: Border.all(color: t.withValues(alpha: 0.18), width: 1),
+            ),
+          ),
+          // Core icon square
+          Container(
+            width: 68,
+            height: 68,
+            decoration: BoxDecoration(
+              color: coreBg,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: t.withValues(alpha: 0.28), width: 1.5),
+            ),
+            child: Icon(icon, size: 32, color: t),
+          ),
         ],
       ),
-      child: Icon(icon, size: 52, color: t),
     );
   }
 }
 
-/// Centered display headline — Octarine 30 / -0.6 tracking. Design `OnbHeadline`.
+/// Backwards-compat alias — callers that still use OnbDisc get OnbHeroIcon.
+typedef OnbDisc = OnbHeroIcon;
+
+/// Centered display headline — Octarine 34 / -0.8 tracking.
 class OnbHeadline extends StatelessWidget {
   final String text;
   const OnbHeadline(this.text, {super.key});
@@ -212,16 +214,16 @@ class OnbHeadline extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(22, 28, 22, 12),
+      padding: const EdgeInsets.fromLTRB(22, 24, 22, 12),
       child: Text(
         text,
         textAlign: TextAlign.center,
         style: TextStyle(
           fontFamily: 'Octarine',
           fontWeight: FontWeight.w700,
-          fontSize: 30,
-          height: 1.15,
-          letterSpacing: -0.6,
+          fontSize: 34,
+          height: 1.12,
+          letterSpacing: -0.8,
           color: isDark ? Colors.white : cs.onSurface,
         ),
       ),
@@ -229,7 +231,7 @@ class OnbHeadline extends StatelessWidget {
   }
 }
 
-/// Centered supporting copy — Inter 15 / 1.55. Design `OnbSubtext`.
+/// Centered supporting copy — Inter 15 / 1.55.
 class OnbSubtext extends StatelessWidget {
   final String text;
   const OnbSubtext(this.text, {super.key});
@@ -253,39 +255,100 @@ class OnbSubtext extends StatelessWidget {
   }
 }
 
-/// Page shell: vertically-centred, scroll-on-overflow content with a pinned
-/// footer. Matches the design's per-page flex column + bottom button area.
-class OnbScaffold extends StatelessWidget {
+/// Page shell with staggered entrance animation.
+///
+/// Each child fades + slides up (8px) with a 110ms stagger between items.
+/// Re-animates whenever the widget is rebuilt with a new key (page change).
+class OnbScaffold extends StatefulWidget {
   final List<Widget> children;
   final Widget? footer;
   const OnbScaffold({super.key, required this.children, this.footer});
 
   @override
+  State<OnbScaffold> createState() => _OnbScaffoldState();
+}
+
+class _OnbScaffoldState extends State<OnbScaffold>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 560),
+  )..forward();
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: LayoutBuilder(
-            builder: (context, c) => SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: c.maxHeight),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 16),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: children,
+    return AnimatedBuilder(
+      animation: _ctrl,
+      builder: (context, _) {
+        Widget stagger(Widget child, int index) {
+          final start = (index * 0.11).clamp(0.0, 0.7);
+          final end = (start + 0.46).clamp(0.0, 1.0);
+          final curve = CurvedAnimation(
+            parent: _ctrl,
+            curve: Interval(start, end, curve: Curves.easeOut),
+          );
+          return FadeTransition(
+            opacity: curve,
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(0, 0.055),
+                end: Offset.zero,
+              ).animate(curve),
+              child: child,
+            ),
+          );
+        }
+
+        final footerStart = (widget.children.length * 0.11).clamp(0.0, 0.55);
+        final footerCurve = CurvedAnimation(
+          parent: _ctrl,
+          curve: Interval(footerStart, 1.0, curve: Curves.easeOut),
+        );
+
+        return Column(
+          children: [
+            Expanded(
+              child: LayoutBuilder(
+                builder: (context, c) => SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(minHeight: c.maxHeight),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 16),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          for (var i = 0; i < widget.children.length; i++)
+                            stagger(widget.children[i], i),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ),
-        if (footer != null)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(22, 4, 22, 12),
-            child: footer!,
-          ),
-      ],
+            if (widget.footer != null)
+              FadeTransition(
+                opacity: footerCurve,
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(0, 0.04),
+                    end: Offset.zero,
+                  ).animate(footerCurve),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(22, 4, 22, 12),
+                    child: widget.footer!,
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -102,24 +104,32 @@ class _NotificationsGroup extends ConsumerStatefulWidget {
 }
 
 class _NotificationsGroupState extends ConsumerState<_NotificationsGroup> {
+  bool _busy = false;
+
   Future<void> _onMasterToggle(bool value) async {
+    if (_busy) return;
+    setState(() => _busy = true);
+    // Await only the fast provider write so the UI reflects the new state.
     await ref.read(notificationsEnabledProvider.notifier).set(value);
-    try {
-      await SyntraNotificationService.instance.setNativeNotificationsEnabled(
-        value,
-      );
-    } catch (e) {
-      debugPrint('Failed to set native notifications: $e');
-    }
+    if (!mounted) return;
+    // Unblock the switch immediately — don't hold it disabled while native
+    // notification scheduling (permission check + MethodChannel batch) runs.
+    setState(() => _busy = false);
     if (value) {
-      await NotificationManager.scheduleDailyReminders();
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(S.of(context).notificationsEnabled)),
-        );
-      }
+      ScaffoldMessenger.of(context)
+        ..clearSnackBars()
+        ..showSnackBar(SnackBar(content: Text(S.of(context).notificationsEnabled)));
+    }
+    // Fire native work in background — both helpers have internal error handling.
+    unawaited(
+      SyntraNotificationService.instance
+          .setNativeNotificationsEnabled(value)
+          .catchError((e) => debugPrint('Failed to sync native flag: $e')),
+    );
+    if (value) {
+      unawaited(NotificationManager.scheduleDailyReminders());
     } else {
-      await NotificationManager.cancelAllNotifications();
+      unawaited(NotificationManager.cancelAllNotifications());
     }
   }
 
@@ -164,7 +174,10 @@ class _NotificationsGroupState extends ConsumerState<_NotificationsGroup> {
           icon: Icons.notifications_active_outlined,
           label: l.notificationsMasterLabel,
           sublabel: l.notificationsMasterSublabel,
-          trailing: SyntraSwitch(value: enabled, onChanged: _onMasterToggle),
+          trailing: SyntraSwitch(
+            value: enabled,
+            onChanged: _busy ? null : _onMasterToggle,
+          ),
           last: !enabled,
         ),
         SynReveal(

@@ -53,20 +53,25 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Future<void> _loadFirstChallenge() async {
     final locale = ref.read(activeLocaleProvider);
     final challenges = await ChallengeRepository.instance.loadChallenges(locale);
-    final soloEasy = challenges
-        .where((c) => c.type == ChallengeType.solo && !c.flirt)
-        .toList()
-      ..sort((a, b) => a.aura.compareTo(b.aura));
     if (mounted) {
-      setState(() => _firstChallenge = soloEasy.isNotEmpty ? soloEasy.first : challenges.first);
+      final byId = challenges.where((c) => c.id == '1');
+      final soloEasy = challenges
+          .where((c) => c.type == ChallengeType.solo && !c.flirt)
+          .toList()
+        ..sort((a, b) => a.aura.compareTo(b.aura));
+      setState(() => _firstChallenge = byId.isNotEmpty
+          ? byId.first
+          : soloEasy.isNotEmpty
+              ? soloEasy.first
+              : challenges.first);
     }
   }
 
   void _next() {
     if (_page < _totalPages - 1) {
       _controller.nextPage(
-        duration: const Duration(milliseconds: 340),
-        curve: Curves.easeInOut,
+        duration: const Duration(milliseconds: 380),
+        curve: const Cubic(0.25, 0.46, 0.45, 0.94),
       );
     }
   }
@@ -99,9 +104,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final scaffold = Theme.of(context).scaffoldBackgroundColor;
 
     final pages = <Widget>[
       Page1Hook(onNext: _next),
@@ -156,22 +158,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     ];
 
     return Scaffold(
-      body: DecoratedBox(
-        decoration: BoxDecoration(
-          // Pink halo from the top — design: radial-gradient 120% 80% at 50% 0%.
-          gradient: RadialGradient(
-            center: const Alignment(0, -1),
-            radius: 1.2,
-            colors: [
-              cs.primary.withValues(alpha: isDark ? 0.18 : 0.12),
-              scaffold,
-            ],
-            stops: const [0.0, 0.6],
-          ),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
+      body: SafeArea(
+        child: Column(
+          children: [
               // ─── Header: progress + Skip ──────────────────────────────
               Padding(
                 padding: const EdgeInsets.fromLTRB(22, 14, 22, 0),
@@ -210,10 +199,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   children: pages,
                 ),
               ),
-            ],
-          ),
+          ],
         ),
       ),
     );
   }
 }
+

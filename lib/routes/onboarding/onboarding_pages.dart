@@ -54,15 +54,14 @@ class Page2HowItWorks extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(22, 28, 22, 0),
           child: Column(
             children: [
-              for (var i = 0; i < steps.length; i++) ...[
-                if (i > 0) const SizedBox(height: 10),
-                _StepCard(
+              for (var i = 0; i < steps.length; i++)
+                _StepRow(
                   number: i + 1,
                   icon: steps[i].$1,
                   title: steps[i].$2,
                   desc: steps[i].$3,
+                  isLast: i == steps.length - 1,
                 ),
-              ],
             ],
           ),
         ),
@@ -71,16 +70,18 @@ class Page2HowItWorks extends StatelessWidget {
   }
 }
 
-class _StepCard extends StatelessWidget {
+class _StepRow extends StatelessWidget {
   final int number;
   final IconData icon;
   final String title;
   final String desc;
-  const _StepCard({
+  final bool isLast;
+  const _StepRow({
     required this.number,
     required this.icon,
     required this.title,
     required this.desc,
+    required this.isLast,
   });
 
   @override
@@ -88,80 +89,85 @@ class _StepCard extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final s = SyntraSurface.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      decoration: BoxDecoration(
-        color: s.bg1,
-        border: Border.all(color: s.bg3),
-        borderRadius: BorderRadius.circular(16),
-      ),
+    return IntrinsicHeight(
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // Timeline column: number circle + vertical connector
           SizedBox(
             width: 40,
-            height: 40,
-            child: Stack(
-              clipBehavior: Clip.none,
+            child: Column(
               children: [
                 Container(
-                  width: 36,
-                  height: 36,
+                  width: 32,
+                  height: 32,
                   decoration: BoxDecoration(
-                    color: cs.primary.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(10),
+                    color: cs.primary.withValues(alpha: 0.14),
+                    border: Border.all(
+                        color: cs.primary.withValues(alpha: 0.35), width: 1.5),
+                    shape: BoxShape.circle,
                   ),
-                  child: Icon(icon, size: 20, color: cs.primary),
-                ),
-                Positioned(
-                  right: 0,
-                  top: -4,
-                  child: Container(
-                    width: 16,
-                    height: 16,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: cs.primary,
-                      shape: BoxShape.circle,
-                    ),
+                  child: Center(
                     child: Text(
                       '$number',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: 'Octarine',
                         fontWeight: FontWeight.w700,
-                        fontSize: 9,
-                        color: Colors.white,
+                        fontSize: 14,
+                        color: cs.primary,
                       ),
                     ),
                   ),
                 ),
+                if (!isLast)
+                  Expanded(
+                    child: Container(
+                      width: 1.5,
+                      margin: const EdgeInsets.symmetric(vertical: 4),
+                      color: s.bg3,
+                    ),
+                  ),
               ],
             ),
           ),
           const SizedBox(width: 14),
+          // Content
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontFamily: 'Octarine',
-                    fontWeight: FontWeight.w700,
-                    fontSize: 15,
-                    color: isDark ? Colors.white : cs.onSurface,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: isLast ? 0 : 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Icon(icon, size: 16, color: cs.primary),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                            fontFamily: 'Octarine',
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                            color: isDark ? Colors.white : cs.onSurface,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  desc,
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 12,
-                    height: 1.35,
-                    color: cs.onSurfaceVariant,
+                  const SizedBox(height: 4),
+                  Text(
+                    desc,
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 13,
+                      height: 1.45,
+                      color: cs.onSurfaceVariant,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
@@ -178,45 +184,13 @@ class Page3Safety extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final l = S.of(context);
-    const green = BrandColors.green;
     return OnbScaffold(
       footer: SyntraButton(onPressed: onNext, child: Text(l.onboarding3Button)),
       children: [
-        const OnbDisc(icon: Icons.shield_rounded, tint: green),
+        const OnbHeroIcon(icon: Icons.shield_rounded),
         OnbHeadline(l.onboarding3Headline),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(22, 8, 22, 0),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            decoration: BoxDecoration(
-              color: green.withValues(alpha: 0.08),
-              border: Border.all(color: green.withValues(alpha: 0.25)),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Icon(Icons.info_rounded, size: 16, color: green),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    l.onboarding3Subtext,
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 13,
-                      height: 1.5,
-                      color:
-                          isDark ? BrandColors.greenLight : cs.onSurface,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+        OnbSubtext(l.onboarding3Subtext),
       ],
     );
   }
@@ -411,7 +385,7 @@ class Page5Commitment extends StatelessWidget {
     return OnbScaffold(
       footer: SyntraButton(onPressed: onNext, child: Text(l.onboarding5Button)),
       children: [
-        const OnbDisc(icon: Icons.schedule_rounded, tint: BrandColors.orange),
+        const OnbDisc(icon: Icons.schedule_rounded),
         OnbHeadline(l.onboarding5Headline),
         OnbSubtext(l.onboarding5Subtext),
         Padding(
@@ -451,26 +425,33 @@ class _StatGrid extends StatelessWidget {
             Expanded(
               child: Column(
                 children: [
-                  Text(
-                    stats[i].$1,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'Octarine',
-                      fontWeight: FontWeight.w700,
-                      fontSize: 26,
-                      letterSpacing: -0.5,
-                      color: cs.primary,
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      stats[i].$1,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Octarine',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 42,
+                        letterSpacing: -1.0,
+                        color: cs.primary,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    stats[i].$2.toUpperCase(),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 11,
-                      letterSpacing: 1,
-                      color: cs.outline,
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      stats[i].$2.toUpperCase(),
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 11,
+                        letterSpacing: 0.4,
+                        color: cs.outline,
+                      ),
                     ),
                   ),
                 ],

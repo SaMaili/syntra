@@ -5,11 +5,7 @@ import '../../generated/l10n.dart';
 import '../../providers/shop_providers.dart';
 import '../../theme/brand_colors.dart';
 
-/// Quiet brand-tinted "Your Aura" card at the top of Settings.
-///
-/// Pink-to-dark diagonal gradient, soft pink glow blob in the top-right
-/// corner, star icon + uppercase label + big total. Theme-aware: in light
-/// mode the gradient fades into the surface tint rather than near-black.
+/// "Your Aura" balance card at the top of Settings.
 class AuraWalletCard extends ConsumerWidget {
   const AuraWalletCard({super.key});
 
@@ -22,52 +18,18 @@ class AuraWalletCard extends ConsumerWidget {
     final l = S.of(context);
     final available = ref.watch(availableAuraProvider) ?? 0;
 
-    final surfaceTint = s.bg1;
     final valueColor = isDark ? Colors.white : cs.onSurface;
 
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 18),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            cs.primary.withValues(alpha: 0.10),
-            surfaceTint,
-          ],
-          stops: const [0.0, 0.6],
-        ),
-        border: Border.all(color: cs.primary.withValues(alpha: 0.22)),
+        color: s.bg1,
+        border: Border.all(color: s.bg3),
         borderRadius: BorderRadius.circular(20),
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: Stack(
-          children: [
-            // Pink glow blob — anchored top-right.
-            Positioned(
-              top: -40,
-              right: -40,
-              child: IgnorePointer(
-                child: Container(
-                  width: 140,
-                  height: 140,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: RadialGradient(
-                      colors: [
-                        cs.primary.withValues(alpha: 0.30),
-                        cs.primary.withValues(alpha: 0.0),
-                      ],
-                      stops: const [0.0, 0.7],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(18, 14, 18, 14),
-              child: Row(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(18, 14, 18, 14),
+        child: Row(
                 children: [
                   Container(
                     width: 38,
@@ -109,9 +71,6 @@ class AuraWalletCard extends ConsumerWidget {
                     ),
                   ),
                 ],
-              ),
-            ),
-          ],
         ),
       ),
     );
