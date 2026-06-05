@@ -43,6 +43,7 @@ class _ChallengeListItemState extends ConsumerState<ChallengeListItem>
     with SingleTickerProviderStateMixin {
   // Design-system signature easing.
   static const _ease = Cubic(.16, 1, .3, 1);
+
   // The action content trails the height: it only starts fading + sliding in
   // once the row is ~a third open (the design's 100–120ms reveal delay).
   static const _reveal = Interval(0.30, 1.0, curve: _ease);
@@ -385,6 +386,7 @@ class _MetaRow extends StatelessWidget {
 class _BookmarkButton extends StatelessWidget {
   final bool bookmarked;
   final VoidCallback onTap;
+
   const _BookmarkButton({required this.bookmarked, required this.onTap});
 
   @override
@@ -420,6 +422,7 @@ class _BookmarkButton extends StatelessWidget {
 
 class _InfoButton extends StatelessWidget {
   final VoidCallback onTap;
+
   const _InfoButton({required this.onTap});
 
   @override
